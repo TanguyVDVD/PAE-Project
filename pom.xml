@@ -5,10 +5,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>be.vinci.pae</groupId>
-	<artifactId>projet-ae-boilerplate</artifactId>
+	<artifactId>projet-ae-groupe04</artifactId>
 	<packaging>jar</packaging>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>projet-ae-boilerplate</name>
+	<name>projet-ae-groupe04</name>
 
 	<properties>
 		<maven.compiler.source>17</maven.compiler.source>
