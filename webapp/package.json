@@ -1,14 +1,12 @@
 {
-  "name": "js-router-boilerplate",
+  "name": "pae-front",
   "version": "1.0.0",
-  "description": "myJScourse's frontend boilerplate with a router",
+  "description": "PAE front",
   "scripts": {
     "dev": "webpack --mode development",
     "build": "webpack --mode production",
     "start": "webpack serve --mode development"
   },
-  "author": "e-baron",
-  "license": "CC-BY-SA-4.0",
   "devDependencies": {
     "@babel/core": "^7.14.3",
     "@babel/preset-env": "^7.14.4",
