@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-unused-vars
-import { Navbar as BootstrapNavbar } from 'bootstrap';
+import {Navbar as BootstrapNavbar} from 'bootstrap';
+import logo from '../../img/RieCochet_Logo.png';
 
 /**
  * Render the Navbar which is styled by using Bootstrap
@@ -12,31 +13,44 @@ const Navbar = () => {
   const navbarWrapper = document.querySelector('#navbarWrapper');
   const navbar = `
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="#">Add your brand here</a>
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                <a class="nav-link" aria-current="page" href="#" data-uri="/">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#" data-uri="/new">New Page</a>
-              </li>                        
-            </ul>
-          </div>
-        </div>
-      </nav>
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">
+      <img src="${logo}" alt="" width="50" height="45">
+    </a>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="#">Accueil</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Proposer un objet</a>
+        </li>
+        <li class="nav-item hidden">
+          <a class="nav-link" href="#">Propositions</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link hidden" href="#">Objets</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link hidden" href="#">Utilisateurs</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link hidden" href="#">Tableau de bord</a>
+        </li>
+      </ul>
+    </div>
+    <div class="d-flex align-items-center">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">S'inscrire</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-uri="/login">S'identifier</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
   `;
   navbarWrapper.innerHTML = navbar;
 };
