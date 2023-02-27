@@ -5,11 +5,16 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
+/**
+ * Class that implements ExceptionMapper to manage exceptions
+ */
 @Provider
 public class WebExceptionMapper implements ExceptionMapper<Throwable> {
 
   /**
-   * @param exception
+   * Method that allow to make a reponse to represent an exception
+   *
+   * @param exception the exception raise
    * @return a response representing the exception
    */
   @Override

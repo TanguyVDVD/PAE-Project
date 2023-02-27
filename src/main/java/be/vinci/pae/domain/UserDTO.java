@@ -2,6 +2,10 @@ package be.vinci.pae.domain;
 
 import java.util.Date;
 
+/**
+ * Interface representing a data transfer object (DTO) for a user in the domain The interface only
+ * contains getter and setter
+ */
 public interface UserDTO extends User {
 
   String getLastName();
