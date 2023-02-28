@@ -21,7 +21,6 @@ public class UserUCCImpl implements UserUCC {
    * @param userDTO the user to login
    * @param request the request
    * @return the user that has been logged
-   * @throws throw an exception if there is a problem
    */
   @Override
   @POST
