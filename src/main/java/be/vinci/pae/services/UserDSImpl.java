@@ -4,7 +4,7 @@ import be.vinci.pae.domain.DomainFactory;
 import jakarta.inject.Inject;
 
 /**
- * Class that implements UserDs interface Provide the different methods
+ * UserDS class that implements UserDs interface Provide the different methods.
  */
 public class UserDSImpl implements UserDS {
 

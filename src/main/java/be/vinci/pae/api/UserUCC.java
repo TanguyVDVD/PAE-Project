@@ -5,7 +5,7 @@ import jakarta.ws.rs.core.Context;
 import org.glassfish.jersey.server.ContainerRequest;
 
 /**
- * Interface that provide the login and logout mehtod of a user
+ * UserUCC interface that provide the login and logout mehtod of a user.
  */
 public interface UserUCC {
 

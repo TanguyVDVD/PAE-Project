@@ -3,7 +3,7 @@ package be.vinci.pae.domain;
 import java.util.Date;
 
 /**
- * Class that implements the UserDTO interface Contains all the attribute of a user
+ * UserImpl class that implements the UserDTO interface Contains all the attribute of a user.
  */
 public class UserImpl implements UserDTO {
 
@@ -17,7 +17,7 @@ public class UserImpl implements UserDTO {
   private boolean isHelper;
 
   /**
-   * Return the last name of a user
+   * Return the last name of a user.
    *
    * @return a String corresponding to the last name of a user
    */
@@ -27,7 +27,9 @@ public class UserImpl implements UserDTO {
   }
 
   /**
-   * @param lastName the last name of a user set the last name of a user
+   * set the last name of a user.
+   *
+   * @param lastName the last name of a user
    */
   @Override
   public void setLastName(String lastName) {
@@ -35,7 +37,7 @@ public class UserImpl implements UserDTO {
   }
 
   /**
-   * Return the first name of a user
+   * Return the first name of a user.
    *
    * @return a String corresponding to the first name of a user
    */
@@ -45,7 +47,9 @@ public class UserImpl implements UserDTO {
   }
 
   /**
-   * @param firstName the first name of a user set the first name of a user
+   * set the first name of a user.
+   *
+   * @param firstName the first name of a user
    */
   @Override
   public void setFirstName(String firstName) {
@@ -53,7 +57,7 @@ public class UserImpl implements UserDTO {
   }
 
   /**
-   * Return the phone number of a user
+   * Return the phone number of a user.
    *
    * @return a String corresponding to the phone number of a user
    */
@@ -63,7 +67,9 @@ public class UserImpl implements UserDTO {
   }
 
   /**
-   * @param phoneNumber the phone number of a user set the phone number of a user
+   * set the phone number of a user.
+   *
+   * @param phoneNumber the phone number of a user
    */
   @Override
   public void setPhoneNumber(String phoneNumber) {
@@ -71,7 +77,7 @@ public class UserImpl implements UserDTO {
   }
 
   /**
-   * Return the email of a user
+   * Return the email of a user.
    *
    * @return a String corresponding to the email of a user
    */
@@ -81,7 +87,9 @@ public class UserImpl implements UserDTO {
   }
 
   /**
-   * @param email the email of a user set the email of a user
+   * set the email of a user.
+   *
+   * @param email the email of a user
    */
   @Override
   public void setEmail(String email) {
@@ -89,7 +97,7 @@ public class UserImpl implements UserDTO {
   }
 
   /**
-   * Return the password of a user
+   * Return the password of a user.
    *
    * @return a String corresponding to the password of a user
    */
@@ -99,7 +107,9 @@ public class UserImpl implements UserDTO {
   }
 
   /**
-   * @param password the password of a user set the password of a user
+   * set the password of a user.
+   *
+   * @param password the password of a user
    */
   @Override
   public void setPassword(String password) {
@@ -107,7 +117,7 @@ public class UserImpl implements UserDTO {
   }
 
   /**
-   * Return the photo link of a user
+   * Return the photo link of a user.
    *
    * @return a String corresponding to the link of the photo
    */
@@ -117,7 +127,9 @@ public class UserImpl implements UserDTO {
   }
 
   /**
-   * @param photo the new photo link of a user set the new photo link of a user
+   * set the new photo link of a user.
+   *
+   * @param photo the new photo link of a user
    */
   @Override
   public void setPhoto(String photo) {
@@ -125,7 +137,7 @@ public class UserImpl implements UserDTO {
   }
 
   /**
-   * Return the register date of a user
+   * Return the register date of a user.
    *
    * @return a date corresponding to the register date of a user
    */
@@ -135,7 +147,9 @@ public class UserImpl implements UserDTO {
   }
 
   /**
-   * @param registerDate the register date of a user set the register date of a user
+   * set the register date of a user.
+   *
+   * @param registerDate the register date of a user
    */
   @Override
   public void setRegisterDate(Date registerDate) {
@@ -143,7 +157,7 @@ public class UserImpl implements UserDTO {
   }
 
   /**
-   * Return a boolean corresponding if a user is a helper
+   * Return a boolean corresponding if a user is a helper.
    *
    * @return true if the user is a helper false if he is not
    */
@@ -153,8 +167,9 @@ public class UserImpl implements UserDTO {
   }
 
   /**
-   * @param isHelper the value to change set the boolean value corresponding if the user is a
-   *                 helper
+   * set the boolean value corresponding if the user is a helper.
+   *
+   * @param isHelper the value
    */
   @Override
   public void setIsHelper(boolean isHelper) {
@@ -162,7 +177,7 @@ public class UserImpl implements UserDTO {
   }
 
   /**
-   * Return true if the password is correct, false if he is not
+   * Return true if the password is correct, false if he is not.
    *
    * @return a boolean
    */

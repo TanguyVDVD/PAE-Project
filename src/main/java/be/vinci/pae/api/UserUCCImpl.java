@@ -10,12 +10,13 @@ import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.server.ContainerRequest;
 
 /**
- * Class that implements the UserUCC interface provide the declared class login and logout
+ * UserUCCImpl class that implements the UserUCC interface provide the declared class login and
+ * logout.
  */
 public class UserUCCImpl implements UserUCC {
 
   /**
-   * Method that login a user if the parameters are correct
+   * Method that login a user if the parameters are correct.
    *
    * @param userDTO the user to login
    * @param request the request
@@ -35,7 +36,7 @@ public class UserUCCImpl implements UserUCC {
   }
 
   /**
-   * Method that allow a user to logout
+   * Method that allow a user to logout.
    *
    * @param userDTO the user to logout
    * @return the user that has been logged out
