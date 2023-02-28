@@ -71,11 +71,10 @@ function renderRegisterForm() {
                       
                       <div class='position'>
                       <div class="form-outline mb-4">
-                        <input type="photo" id="form2Example11" class="form-control" size="80"  placeholder="Photo de profil" />
+                        <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg">
                         <label class="form-label" for="form2Example11">Photo*</label>
                       </div>
                       </div>
-                      
                       
                       <div class="text-center pt-1 mb-5 pb-1">
                         <button class="btn btn-secondary btn-block fa-lg gradient-custom-2 mb-3" type="button">S'inscrire</button>
