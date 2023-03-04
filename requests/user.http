@@ -1,0 +1,9 @@
+### Login the default user
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email":"tanguy@gmail.com",
+  "password":"password"
+}
+

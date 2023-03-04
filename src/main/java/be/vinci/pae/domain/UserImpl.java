@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * UserImpl class that implements the UserDTO interface Contains all the attribute of a user.
  */
-public class UserImpl implements UserDTO {
+public class UserImpl implements User {
 
   private String lastName;
   private String firstName;

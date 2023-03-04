@@ -7,6 +7,11 @@ package be.vinci.pae.domain;
  */
 public interface DomainFactory {
 
+  /**
+   * Returns a new instance of a UserDTO.
+   *
+   * @return a UserImpl
+   */
   UserDTO getUser();
 
 }
