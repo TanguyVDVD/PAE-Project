@@ -41,7 +41,7 @@ public class Main {
   /**
    * Main method.
    *
-   * @param args
+   * @param args main args String[]
    * @throws IOException
    */
   public static void main(String[] args) throws IOException {

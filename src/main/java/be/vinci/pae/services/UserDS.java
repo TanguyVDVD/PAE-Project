@@ -13,6 +13,6 @@ public interface UserDS {
    * @param userDTO the user to insert in the db
    * @return true if succeed false if not
    */
-  public UserDTO insert(UserDTO userDTO);
+  UserDTO insert(UserDTO userDTO);
 
 }
