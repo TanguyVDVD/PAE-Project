@@ -1,4 +1,5 @@
-import {clearPage} from "../../utils/render";
+import { clearPage } from '../../utils/render';
+import Navigate from '../Router/Navigate';
 
 const LoginPage = () => {
   clearPage();
@@ -7,57 +8,41 @@ const LoginPage = () => {
 
 function renderLoginForm() {
   const main = document.querySelector('main');
+
   const loginForm = document.createElement('div');
-  loginForm.className='loginpage'
-  loginForm.innerHTML =  ` 
-  
-      <div class="container py-5 h-100">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-          <div class="col-xl-10">
-            <div class="card rounded-3 text-black">
-              <div class="row g-0">
-                <div class="col-lg-12">
-                  <div class="card-body p-md-5 mx-md-4">
-    
-                    <div class="text-center">
-                      <img src="" style="width: 185px;" alt="logo">
-                      <h4 class="mt-1 mb-5 pb-1">Identifiez-vous </h4>
-                    </div>
-    
-                    <form>
-                  
-                      <div class='pos2'>
-                      <div class="form-outline mb-4">
-                        <input type="email" id="form2Example11" class="form-control" size="40"  placeholder="Email address" />
-                        <label class="form-label" for="form2Example11">E-mail*</label>
-                      </div>
-                      </div>
-    
-                      <div class='pos2'>
-                      <div class="form-outline mb-4">
-                        <input type="password" id="form2Example22" class="form-control" size="90" />
-                        <label class="form-label" for="form2Example22">Mot de passe*</label>
-                      </div>
-                      </div>
-              
-                      <div class="text-center pt-1 mb-5 pb-1">
-                        <button class="btn btn-secondary btn-block fa-lg gradient-custom-2 mb-3" type="button">Se connecter</button>
-                      </div>
-    
-                    </form>
-    
-                  </div>
-                </div>
-                
-              </div>
-            </div>
-          </div>
+  loginForm.className = 'container p-5';
+
+  loginForm.innerHTML = `
+    <h1 class="text-center mb-5">Identifiez-vous</h1>
+    <div class="row justify-content-center">
+      <form class="col-12 col-lg-6 col-xl-4">
+        <div class="mb-3">
+          <label for="input-email" class="form-label">E-mail</label>
+          <input type="email" class="form-control" id="input-email" placeholder="nom@exemple.com" required />
         </div>
-      </div>
-    `
-    main.appendChild(loginForm);
+        <div class="mb-3">
+          <label for="input-password" class="form-label">Mot de passe</label>
+          <input type="password" class="form-control" id="input-password" placeholder="********" required />
+        </div>
+        <div class="mb-3 form-check">
+          <input class="form-check-input" type="checkbox" value="" id="input-remember" />
+          <label class="form-check-label" for="input-remember">Se souvenir de moi</label>
+        </div>
+        <input type="submit" value="S'identifier" class="btn btn-primary w-100" />
+        <div class="hstack gap-2 mt-3 justify-content-between">
+          <span>Pas de compte ?</span>
+          <a href="#" id="register-link">Inscrivez-vous ici</a>
+        </div>
+      </form>
+    </div>
+  `;
 
+  main.appendChild(loginForm);
 
+  document.querySelector('#register-link').addEventListener('click', (e) => {
+    e.preventDefault();
+    Navigate('/register');
+  });
 }
 
 export default LoginPage;
