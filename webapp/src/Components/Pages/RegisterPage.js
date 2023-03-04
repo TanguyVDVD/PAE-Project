@@ -1,99 +1,124 @@
-import {clearPage} from "../../utils/render";
+import { clearPage } from '../../utils/render';
 
-const RegisterPage= () => {
+const RegisterPage = () => {
   clearPage();
   renderRegisterForm();
 };
 
 function renderRegisterForm() {
   const main = document.querySelector('main');
-  const RegisterForm = document.createElement('div');
-  RegisterForm.className='loginpage'
-  RegisterForm.innerHTML =  ` 
-  
-      <div class="container py-5 h-100">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-          <div class="col-xl-10">
-            <div class="card rounded-3 text-black">
-              <div class="row g-0">
-                <div class="col-lg-12">
-                  <div class="card-body p-md-5 mx-md-4">
-    
-                    <div class="text-center">
-                      <img src="" style="width: 185px;" alt="logo">
-                      <h4 class="mt-1 mb-5 pb-1">Inscrivez-vous </h4>
-                    </div>
-    
-                    <form>
-                      <div class='position'>
-                      <div class="form-outline mb-4">
-                        <input type="nom" id="formExample" class="form-control" size="90" placeholder="Nom" />
-                        <label class="form-label" for="formExample">Nom*</label>
-                      </div>
-                      </div>
-    
-                      <div class= 'position'>
-                      <div class="form-outline mb-4">
-                        <input type="prenom" id="form2Example11" class="form-control" size="90"  placeholder="Prenom" />
-                        <label class="form-label" for="form2Example11">Prenom*</label>
-                      </div>
-                      </div>
-                      
-                      <div class='position'>
-                      <div class="form-outline mb-4">
-                        <input type="email" id="form2Example11" class="form-control" size="90"  placeholder="Email address" />
-                        <label class="form-label" for="form2Example11">E-mail*</label>
-                      </div>
-                      </div>
-    
-                      
-                      <div class='position'>
-                      <div class="form-outline mb-4">
-                        <input type="numero" id="form2Example11" class="form-control" size="90"  placeholder="Numero de gsm" />
-                        <label class="form-label" for="form2Example11">Numero de gsm*</label>
-                      </div>
-                      </div>
-                      
-                     
-                      <div class='position'>
-                      <div class="form-outline mb-4">
-                        <input type="password" id="form2Example22" class="form-control" size="90" />
-                        <label class="form-label" for="form2Example22">Mot de passe*</label>
-                      </div>
-                      </div>
-    
-                      <div class='position'>
-                      <div class="form-outline mb-4">
-                        <input type="password" id="form2Example22" class="form-control" size="90" />
-                        <label class="form-label" for="form2Example22">Confirmer mot de passe*</label>
-                      </div>
-                      </div>
-                      
-                      <div class='position'>
-                      <div class="form-outline mb-4">
-                        <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg">
-                        <label class="form-label" for="form2Example11">Photo*</label>
-                      </div>
-                      </div>
-                      
-                      <div class="text-center pt-1 mb-5 pb-1">
-                        <button class="btn btn-secondary btn-block fa-lg gradient-custom-2 mb-3" type="button">S'inscrire</button>
-                      </div>
-    
-                    </form>
-    
-                  </div>
-                </div>
-                
-              </div>
-            </div>
+
+  const registerForm = document.createElement('div');
+  registerForm.className = 'container p-5';
+
+  registerForm.innerHTML = `
+    <h1 class="text-center mb-5">Inscrivez-vous</h1>
+    <div class="row justify-content-center">
+      <form class="col-12 col-xl-8">
+        <div class="row row-cols-1 row-cols-md-2">
+          <div class="col mb-3">
+            <label for="input-lastname" class="form-label">Nom*</label>
+            <input
+              type="text"
+              class="form-control"
+              id="input-lastname"
+              placeholder="Nom"
+              required
+            />
+          </div>
+          <div class="col mb-3">
+            <label for="input-firstname" class="form-label">Prénom*</label>
+            <input
+              type="text"
+              class="form-control"
+              id="input-firstname"
+              placeholder="Prénom"
+              required
+            />
           </div>
         </div>
-      </div>
-    `
-  main.appendChild(RegisterForm);
+        <div class="row row-cols-1 row-cols-md-2">
+          <div class="col mb-3">
+            <label for="input-email" class="form-label">E-mail*</label>
+            <input
+              type="email"
+              class="form-control"
+              id="input-email"
+              placeholder="nom@exemple.com"
+              required
+            />
+          </div>
+          <div class="col mb-3">
+            <label for="input-phone" class="form-label">Numéro de GSM*</label>
+            <input
+              type="tel"
+              class="form-control"
+              id="input-phone"
+              placeholder="0xxxxxxxx"
+              required
+            />
+          </div>
+        </div>
+        <div class="row row-cols-1 row-cols-md-2">
+          <div class="col mb-3">
+            <label for="input-password" class="form-label">Mot de passe*</label>
+            <input
+              type="password"
+              class="form-control"
+              id="input-password"
+              placeholder="********"
+              required
+            />
+          </div>
+          <div class="col mb-3">
+            <label for="input-password-confirm" class="form-label">
+              Confirmer le mot de passe*
+            </label>
+            <input
+              type="password"
+              class="form-control"
+              id="input-password-confirm"
+              placeholder="********"
+              required
+            />
+          </div>
+        </div>
+        <div class="row row-cols-1 row-cols-md-2">
+          <div class="col mb-3">
+            <label for="input-photo" class="form-label">Photo de profil</label>
+            <input
+              type="file"
+              accept="image/png, image/jpeg"
+              class="form-control"
+              id="input-photo"
+              placeholder=""
+            />
+          </div>
+          <div class="col mb-3 align-self-end">
+            <button type="submit" class="btn btn-primary w-100">S'inscrire</button>
+          </div>
+        </div>
+        <div>
+          <span class="text-muted">* Champs obligatoires</span>
+        </div>
+      </form>
+    </div>
+  `;
 
+  main.appendChild(registerForm);
 
+  // Check if the password and the password confirmation are the same
+  const passwordInput = document.querySelector('#input-password');
+  const passwordConfirmInput = document.querySelector('#input-password-confirm');
+  passwordConfirmInput.addEventListener('input', () => {
+    if (passwordInput.value !== passwordConfirmInput.value) {
+      passwordConfirmInput.setCustomValidity(
+        'La confirmation du mot de passe doit être identique au mot de passe.',
+      );
+    } else {
+      passwordConfirmInput.setCustomValidity('');
+    }
+  });
 }
 
 export default RegisterPage;
