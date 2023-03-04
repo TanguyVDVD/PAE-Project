@@ -1,1 +1,13 @@
+$primary: #444444;
+$primary-bg-subtle: #888;
+$primary-border-subtle: #aaa;
+$input-placeholder-color: rgba(0, 0, 0, 0.4);
+
+:root {
+  --bs-link-opacity: 0.75;
+}
+
 @import '~bootstrap/scss/bootstrap';
+
+// Writing your own styles should be the last resort.
+// Please try your best to use the existing Bootstrap classes first.
