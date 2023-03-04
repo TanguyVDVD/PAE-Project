@@ -12,7 +12,7 @@ function onNavBarClick() {
   navItems.forEach((item) => {
     item.addEventListener('click', (e) => {
       e.preventDefault();
-      const uri = e.target?.dataset?.uri;
+      const uri = e.currentTarget?.dataset?.uri;
       const componentToRender = routes[uri];
       if (!componentToRender) throw Error(`The ${uri} ressource does not exist.`);
 
