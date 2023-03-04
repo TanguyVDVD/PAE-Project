@@ -5,7 +5,6 @@ import be.vinci.pae.utils.Config;
 import be.vinci.pae.utils.WebExceptionMapper;
 import java.io.IOException;
 import java.net.URI;
-import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -60,9 +59,8 @@ public class Main {
     }
 
     // Connection to the database
-    Connection connection = null;
     try {
-      connection = DriverManager.getConnection(DATABASE_URL, DATABASE_USER, DATABASE_PASSWORD);
+      DriverManager.getConnection(DATABASE_URL, DATABASE_USER, DATABASE_PASSWORD);
     } catch (SQLException e) {
       System.out.println("Unable to reach the server!");
       System.exit(1);
