@@ -22,4 +22,14 @@ public class UserDSImpl implements UserDS {
   public UserDTO insert(UserDTO userDTO) {
     return null;
   }
+
+  /**
+   * Get the user by the email.
+   *
+   * @param email the user
+   * @return the user correponding to the email
+   */
+  public UserDTO getOneByEmail(String email) {
+    return null;
+  }
 }
