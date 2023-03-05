@@ -1,0 +1,112 @@
+------------- VERSION 1.0 --------------
+
+-------------- INIT DB -----------------
+
+DROP SCHEMA IF EXISTS pae CASCADE;
+CREATE SCHEMA pae;
+
+
+----------- CREATE TABLES --------------
+
+
+CREATE TABLE pae.users (
+	id_user SERIAL PRIMARY KEY,
+	last_name VARCHAR(50) NOT NULL,
+	first_name VARCHAR(50) NOT NULL,
+	phone_number VARCHAR(12) NOT NULL,
+	email VARCHAR(100) NOT NULL,
+	password VARCHAR(100) NOT NULL,
+	photo VARCHAR(100) NOT NULL,
+	register_date DATE NOT NULL,
+	is_helper BOOLEAN NOT NULL
+);
+
+CREATE TABLE pae.object_types (
+	id_object_type SERIAL PRIMARY KEY,
+	label VARCHAR(25)
+);
+
+CREATE TABLE pae.availability (
+	id_availability SERIAL PRIMARY KEY,
+	date DATE NOT NULL
+);
+
+CREATE TABLE pae.objects (
+    id_object SERIAL PRIMARY KEY,
+    description VARCHAR(120) NOT NULL,
+    photo VARCHAR(100) NOT NULL,
+    is_visible BOOLEAN NOT NULL ,
+    selling_price INTEGER,
+    state VARCHAR (15),
+    acceptance_date DATE,
+    deposit_date DATE,
+    selling_date DATE,
+    withdrawal_date DATE,
+    time_slot BOOLEAN NOT NULL,
+    status VARCHAR(15),
+    reason_for_refusal VARCHAR(50),
+    phone_number VARCHAR(12),
+    proposal_date INTEGER REFERENCES pae.availability NOT NULL,
+    id_user INTEGER REFERENCES pae.users,
+    id_object_type INTEGER REFERENCES pae.object_types NOT NULL
+);
+
+CREATE TABLE pae.notifications (
+    id_notification SERIAL PRIMARY KEY,
+    notification_text VARCHAR(50) NOT NULL ,
+    id_object INTEGER REFERENCES pae.objects NOT NULL
+);
+
+CREATE TABLE pae.users_notifications (
+    read BOOLEAN NOT NULL ,
+    id_notification INTEGER REFERENCES pae.notifications NOT NULL ,
+    id_user INTEGER REFERENCES pae.users NOT NULL ,
+    PRIMARY KEY(id_notification, id_user)
+);
+
+
+--------------- SEED ------------------
+
+
+INSERT INTO pae.users VALUES (DEFAULT, 'Riez', 'Christophe', '+32498183040', 'riez@ressourcerie.be',
+	'pwdToHash', 'photoPath', '2023-02-01', true);
+INSERT INTO pae.users VALUES (DEFAULT, 'Vdv', 'Constantine', '+32498183041', 'constantine@ressourcerie.be',
+	'pwdToHash', 'photoPath', '2023-02-01', true);
+INSERT INTO pae.users VALUES (DEFAULT, 'lsh', 'Bernard', '+32498183042', 'bernard@ressourcerie.be',
+	'pwdToHash', 'photoPath', '2023-02-01', true);
+INSERT INTO pae.users VALUES (DEFAULT, 'bdh', 'Lise', '+32498183043', 'lise@ressourcerie.be',
+	'pwdToHash', 'photoPath', '2023-02-01', false);
+
+INSERT INTO pae.object_types VALUES (DEFAULT,'Meuble');
+INSERT INTO pae.object_types VALUES (DEFAULT,'Table');
+INSERT INTO pae.object_types VALUES (DEFAULT,'Chaise');
+INSERT INTO pae.object_types VALUES (DEFAULT,'Fauteuil');
+INSERT INTO pae.object_types VALUES (DEFAULT,'Lit/sommier');
+INSERT INTO pae.object_types VALUES (DEFAULT,'Matelas');
+INSERT INTO pae.object_types VALUES (DEFAULT,'Couvertures');
+INSERT INTO pae.object_types VALUES (DEFAULT,'Matériel de cuisine');
+INSERT INTO pae.object_types VALUES (DEFAULT,'Vaisselle');
+
+INSERT INTO pae.availability VALUES (DEFAULT, '2023-04-08');
+INSERT INTO pae.availability VALUES (DEFAULT, '2023-04-09');
+INSERT INTO pae.availability VALUES (DEFAULT, '2023-04-10');
+INSERT INTO pae.availability VALUES (DEFAULT, '2023-04-11');
+INSERT INTO pae.availability VALUES (DEFAULT, '2023-04-12');
+INSERT INTO pae.availability VALUES (DEFAULT, '2023-04-15');
+INSERT INTO pae.availability VALUES (DEFAULT, '2023-04-16');
+INSERT INTO pae.availability VALUES (DEFAULT, '2023-04-28');
+INSERT INTO pae.availability VALUES (DEFAULT, '2023-04-29');
+INSERT INTO pae.availability VALUES (DEFAULT, '2023-05-08');
+INSERT INTO pae.availability VALUES (DEFAULT, '2023-05-09');
+INSERT INTO pae.availability VALUES (DEFAULT, '2023-05-10');
+INSERT INTO pae.availability VALUES (DEFAULT, '2023-05-11');
+INSERT INTO pae.availability VALUES (DEFAULT, '2023-05-12');
+INSERT INTO pae.availability VALUES (DEFAULT, '2023-05-15');
+INSERT INTO pae.availability VALUES (DEFAULT, '2023-05-16');
+INSERT INTO pae.availability VALUES (DEFAULT, '2023-05-28');
+INSERT INTO pae.availability VALUES (DEFAULT, '2023-05-29');
+
+INSERT INTO pae.objects VALUES (DEFAULT, 'Description!!!', './path', true, 6, 'en vente', '2023-02-15', '2023-02-16', '2023-02-17', null, true, 'accepte', null, null, 1, 3, 1);
+INSERT INTO pae.objects VALUES (DEFAULT, 'Description!!!', './path', true, 6, 'propose', null, null, null, null, true, 'accepte', null, null, 1, 3, 1);
+INSERT INTO pae.objects VALUES (DEFAULT, 'Description!!!', './path', false, null, 'refuse', null, null, null, null, false, 'refuse', 'trop mauvais etat', '+32412369482', 2, null, 3);
+INSERT INTO pae.objects VALUES (DEFAULT, 'Description!!!', './path', false, 9, 'retire', '2023-02-15', '2023-02-16', '2023-02-17', '2023-03-20', true, 'accepte', null, null, 1, 3, 1);
