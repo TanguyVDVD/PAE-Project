@@ -15,4 +15,12 @@ public interface UserDS {
    */
   UserDTO insert(UserDTO userDTO);
 
+  /**
+   * Get the user by the email.
+   *
+   * @param email the user
+   * @return the user correponding to the email
+   */
+  UserDTO getOneByEmail(String email);
+
 }
