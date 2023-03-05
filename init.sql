@@ -1,4 +1,4 @@
-------------- VERSION 1.0 --------------
+------------- VERSION 1.1 --------------
 
 -------------- INIT DB -----------------
 
@@ -36,7 +36,7 @@ CREATE TABLE pae.objects (
     description VARCHAR(120) NOT NULL,
     photo VARCHAR(100) NOT NULL,
     is_visible BOOLEAN NOT NULL ,
-    selling_price INTEGER,
+    price INTEGER,
     state VARCHAR (15),
     acceptance_date DATE,
     deposit_date DATE,
