@@ -1,11 +1,20 @@
 import { clearPage } from '../../utils/render';
+import { isAuthenticated, setAuthenticatedUser } from '../../utils/auths';
+import Navigate from '../Router/Navigate';
 
 const RegisterPage = () => {
+  if (isAuthenticated()) {
+    Navigate('/');
+    return;
+  }
+
   clearPage();
   renderRegisterForm();
 };
 
 function renderRegisterForm() {
+  let isSubmitting = false;
+
   const main = document.querySelector('main');
 
   const registerForm = document.createElement('div');
@@ -105,11 +114,9 @@ function renderRegisterForm() {
     </div>
   `;
 
-  main.appendChild(registerForm);
-
   // Check if the password and the password confirmation are the same
-  const passwordInput = document.querySelector('#input-password');
-  const passwordConfirmInput = document.querySelector('#input-password-confirm');
+  const passwordInput = registerForm.querySelector('#input-password');
+  const passwordConfirmInput = registerForm.querySelector('#input-password-confirm');
   passwordConfirmInput.addEventListener('input', () => {
     if (passwordInput.value !== passwordConfirmInput.value) {
       passwordConfirmInput.setCustomValidity(
@@ -119,6 +126,63 @@ function renderRegisterForm() {
       passwordConfirmInput.setCustomValidity('');
     }
   });
+
+  registerForm.querySelector('form').addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    if (isSubmitting) return;
+    isSubmitting = true;
+
+    renderError();
+
+    const formData = new FormData();
+
+    ['lastname', 'firstname', 'email', 'phone', 'password', 'photo'].forEach((key) => {
+      const input = registerForm.querySelector(`#input-${key}`);
+
+      formData.append(key, input.type === 'file' ? input.files[0] : input.value);
+    });
+
+    fetch('/api/users/register', {
+      method: 'POST',
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) throw new Error(data.error);
+
+        setAuthenticatedUser(data);
+        Navigate('/');
+      })
+      .catch((err) => {
+        renderError(err.message);
+      })
+      .finally(() => {
+        isSubmitting = false;
+      });
+  });
+
+  main.appendChild(registerForm);
+}
+
+function renderError(error) {
+  const container = document.querySelector('main > .container');
+
+  if (container.querySelector('.alert')) {
+    container.querySelector('.alert').remove();
+  }
+
+  if (!error) return;
+
+  const alert = document.createElement('div');
+  alert.className = 'alert alert-danger d-flex align-items-center';
+  alert.setAttribute('role', 'alert');
+  alert.innerHTML = `
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    <span>${error}</span>
+  `;
+
+  container.prepend(alert);
 }
 
 export default RegisterPage;
