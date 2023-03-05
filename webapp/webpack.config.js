@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
+const autoprefixer = require('autoprefixer');
 
 module.exports = {
   mode: 'none',
@@ -14,7 +15,7 @@ module.exports = {
   devServer: {
     // contentBase: path.join(__dirname, 'dist'),
     static: {
-      directory: path.join(__dirname, 'dist')
+      directory: path.join(__dirname, 'dist'),
     },
     client: {
       overlay: {
@@ -42,6 +43,28 @@ module.exports = {
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.(scss)$/,
+        use: [
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'css-loader',
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: () => [autoprefixer],
+              },
+            },
+          },
+          {
+            loader: 'sass-loader',
+          },
+        ],
       },
 
       // emits a separate file and exports the URLs => works for import in JS and url in CSS
