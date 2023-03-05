@@ -56,7 +56,7 @@ public class Main {
   }
 
   /**
-   * Load the PostgresSQL driver and connect to the database
+   * Load the PostgresSQL driver and connect to the database.
    */
   public static void connectDatabase() {
     // Load the PostgresSQL driver
