@@ -5,6 +5,7 @@ import be.vinci.pae.utils.Config;
 import be.vinci.pae.utils.WebExceptionMapper;
 import java.io.IOException;
 import java.net.URI;
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -24,6 +25,8 @@ public class Main {
   public static final String DATABASE_USER = Config.getProperty("DatabaseUser");
   // User's password
   public static final String DATABASE_PASSWORD = Config.getProperty("DatabasePassword");
+
+  public static Connection DB_CONNECTION = null;
 
   static {
     Config.load("dev.properties");
@@ -60,7 +63,7 @@ public class Main {
 
     // Connection to the database
     try {
-      DriverManager.getConnection(DATABASE_URL, DATABASE_USER, DATABASE_PASSWORD);
+      DB_CONNECTION = DriverManager.getConnection(DATABASE_URL, DATABASE_USER, DATABASE_PASSWORD);
     } catch (SQLException e) {
       System.out.println("Unable to reach the server!");
       System.exit(1);
