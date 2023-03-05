@@ -11,6 +11,9 @@ const clearAuthenticatedUser = () => {
 
   localStorage.removeItem(STORE_REMEMBER);
   currentUser = undefined;
+
+  // Update the navbar
+  Navbar();
 };
 
 const getAuthenticatedUser = () => {
