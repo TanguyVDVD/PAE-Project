@@ -18,19 +18,24 @@ import org.glassfish.jersey.server.ResourceConfig;
 public class Main {
 
   // Base URI the Grizzly HTTP server will listen on
-  public static final String BASE_URI = Config.getProperty("BaseUri");
+  public static final String BASE_URI;
   // Database url
-  public static final String DATABASE_URL = Config.getProperty("DatabaseUrl");
+  public static final String DATABASE_URL;
   // User connecting to the database
-  public static final String DATABASE_USER = Config.getProperty("DatabaseUser");
+  public static final String DATABASE_USER;
   // User's password
-  public static final String DATABASE_PASSWORD = Config.getProperty("DatabasePassword");
+  public static final String DATABASE_PASSWORD;
 
   // Connection to the database
   public static Connection DB_CONNECTION = null;
 
+  // Loading properties
   static {
     Config.load("dev.properties");
+    BASE_URI = Config.getProperty("BaseUri");
+    DATABASE_URL = Config.getProperty("DatabaseUrl");
+    DATABASE_USER = Config.getProperty("DatabaseUser");
+    DATABASE_PASSWORD = Config.getProperty("DatabasePassword");
   }
 
   /**
