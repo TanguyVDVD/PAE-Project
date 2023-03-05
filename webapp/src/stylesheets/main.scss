@@ -1,1 +1,33 @@
+$primary: #444444;
+$primary-bg-subtle: #888;
+$primary-border-subtle: #aaa;
+$input-placeholder-color: rgba(0, 0, 0, 0.4);
+
+:root {
+  --bs-link-opacity: 0.75;
+}
+
+$enable-negative-margins: true;
+
 @import '~bootstrap/scss/bootstrap';
+$bootstrap-icons-font-dir: '~bootstrap-icons/font/fonts';
+@import '~bootstrap-icons/font/bootstrap-icons';
+
+// Writing your own styles should be the last resort.
+// Please try your best to use the existing Bootstrap classes first.
+
+.card-object {
+  width: 200px;
+  height: 100%;
+  margin: auto;
+  text-align: center;
+
+  img {
+    height: 200px;
+    object-fit: cover;
+  }
+
+  .card-body {
+    padding: 0.5rem;
+  }
+}
