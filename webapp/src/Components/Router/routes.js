@@ -6,6 +6,7 @@ const routes = {
   '/': HomePage,
   '/new': NewPage,
   '/login': LoginPage
+
 };
 
 export default routes;
