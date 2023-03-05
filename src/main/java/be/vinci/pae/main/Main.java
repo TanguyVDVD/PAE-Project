@@ -26,6 +26,7 @@ public class Main {
   // User's password
   public static final String DATABASE_PASSWORD = Config.getProperty("DatabasePassword");
 
+  // Connection to the database
   public static Connection DB_CONNECTION = null;
 
   static {
