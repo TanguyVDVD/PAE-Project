@@ -34,7 +34,7 @@ public class UserImpl implements User {
    */
   @Override
   public void setId(int id) {
-    this.id=id;
+    this.id = id;
   }
 
   /**
