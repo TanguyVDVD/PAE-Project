@@ -22,14 +22,13 @@ import jakarta.ws.rs.core.Response;
  * UserRessource class.
  */
 @Singleton
-@Path("/auths")
-public class UserRessource {
-
-  @Inject
-  private UserUCC userUCC;
+@Path("/users")
+public class UserResource {
 
   private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
   private final ObjectMapper jsonMapper = new ObjectMapper();
+  @Inject
+  private UserUCC userUCC;
 
   /**
    * Login a user with json object return the user created and the token.
@@ -52,6 +51,11 @@ public class UserRessource {
 
     UserDTO userDTO = userUCC.login(login, password);
 
+    if (userDTO == null) {
+      throw new WebApplicationException("Login or password incorrect",
+          Response.Status.UNAUTHORIZED);
+    }
+
     String token;
     try {
       token = JWT.create().withIssuer("auth0")
@@ -59,15 +63,13 @@ public class UserRessource {
       ObjectNode publicUser = jsonMapper.createObjectNode()
           .put("token", token)
           .put("id", userDTO.getId())
-          .put("email", userDTO.getEmail());
+          .put("helper", userDTO.isHelper());
       return publicUser;
 
     } catch (Exception e) {
       System.out.println("Unable to create token");
       return null;
     }
-
-
   }
 
 }
