@@ -7,6 +7,7 @@ import java.util.Date;
  */
 public class UserImpl implements User {
 
+  private int id;
   private String lastName;
   private String firstName;
   private String phoneNumber;
@@ -15,6 +16,26 @@ public class UserImpl implements User {
   private String photo;
   private Date registerDate;
   private boolean isHelper;
+
+  /**
+   * Return the id of a user.
+   *
+   * @return an int corresponding to the id of a user
+   */
+  @Override
+  public int getId() {
+    return id;
+  }
+
+  /**
+   * set the id of a user.
+   *
+   * @param id the id of a user
+   */
+  @Override
+  public void setId(int id) {
+    this.id=id;
+  }
 
   /**
    * Return the last name of a user.

@@ -9,6 +9,20 @@ import java.util.Date;
 public interface UserDTO {
 
   /**
+   * Return the id of a user.
+   *
+   * @return an int corresponding to the id of a user
+   */
+  int getId();
+
+  /**
+   * set the id of a user.
+   *
+   * @param id the id of a user
+   */
+  void setId(int id);
+
+  /**
    * Return the last name of a user.
    *
    * @return a String corresponding to the last name of a user

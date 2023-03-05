@@ -30,7 +30,7 @@ public class UserUCCImpl implements UserUCC {
     UserDTO user = domainFactory.getUser();
     user.setEmail(email);
     user.setPassword(password);
-    myUserDS.getOneByEmail(email);
+    //myUserDS.getOneByEmail(email);
     return user;
   }
 
