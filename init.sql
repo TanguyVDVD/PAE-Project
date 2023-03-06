@@ -69,13 +69,13 @@ CREATE TABLE pae.users_notifications (
 
 
 INSERT INTO pae.users VALUES (DEFAULT, 'Riez', 'Christophe', '+32498183040', 'riez@ressourcerie.be',
-	'pwdToHash', 'photoPath', '2023-02-01', true);
+	'$2a$10$lbQmo5zRlbAWgMvEkr0TZO2pmc6d3ooZcljKC2CrNxGXn5WqhtHgO', 'photoPath', '2023-02-01', true);
 INSERT INTO pae.users VALUES (DEFAULT, 'Vdv', 'Constantine', '+32498183041', 'constantine@ressourcerie.be',
-	'pwdToHash', 'photoPath', '2023-02-01', true);
+	'$2a$10$lbQmo5zRlbAWgMvEkr0TZO2pmc6d3ooZcljKC2CrNxGXn5WqhtHgO', 'photoPath', '2023-02-01', true);
 INSERT INTO pae.users VALUES (DEFAULT, 'lsh', 'Bernard', '+32498183042', 'bernard@ressourcerie.be',
-	'pwdToHash', 'photoPath', '2023-02-01', true);
+	'$2a$10$lbQmo5zRlbAWgMvEkr0TZO2pmc6d3ooZcljKC2CrNxGXn5WqhtHgO', 'photoPath', '2023-02-01', true);
 INSERT INTO pae.users VALUES (DEFAULT, 'bdh', 'Lise', '+32498183043', 'lise@ressourcerie.be',
-	'pwdToHash', 'photoPath', '2023-02-01', false);
+	'$2a$10$lbQmo5zRlbAWgMvEkr0TZO2pmc6d3ooZcljKC2CrNxGXn5WqhtHgO', 'photoPath', '2023-02-01', false);
 
 INSERT INTO pae.object_types VALUES (DEFAULT,'Meuble');
 INSERT INTO pae.object_types VALUES (DEFAULT,'Table');
