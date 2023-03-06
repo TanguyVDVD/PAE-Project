@@ -4,7 +4,6 @@ import be.vinci.pae.domain.User;
 import be.vinci.pae.domain.UserDTO;
 import be.vinci.pae.services.UserDS;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
 
 /**
  * UserUCCImpl class that implements the UserUCC interface provide the declared class login and
@@ -36,19 +35,7 @@ public class UserUCCImpl implements UserUCC {
       return null;
     }
 
-    return (UserDTO) userDB;
-  }
-
-  /**
-   * Method that allow a user to logout.
-   *
-   * @param userDTO the user to logout
-   * @return the user that has been logged out
-   */
-  @Override
-  @GET
-  public UserDTO logout(UserDTO userDTO) {
-    return userDTO;
+    return userDB;
   }
 
 }

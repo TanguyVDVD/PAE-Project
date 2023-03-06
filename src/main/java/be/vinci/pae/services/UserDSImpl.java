@@ -61,49 +61,91 @@ public class UserDSImpl implements UserDS {
    * Insert a new user in the db.
    *
    * @param userDTO the user to insert in the db
-   * @return true if succeed false if not
+   * @return true if succeeds, else false
    */
   @Override
-  public UserDTO insert(UserDTO userDTO) {
-    return null;
+  public boolean insert(UserDTO userDTO) {
+    return false;
   }
 
   /**
    * Get the user by the email.
    *
    * @param email the user
-   * @return the user correponding to the email
+   * @return the user corresponding to the email
    */
   public UserDTO getOneByEmail(String email) {
-
-    connectDatabase();
-
     UserDTO user = myDomainFactory.getUser();
-    try {
-      PreparedStatement ps = DB_CONNECTION.prepareStatement(
-          "SELECT * FROM pae.users WHERE email = ?");
-      ps.setString(1, email);
-      ResultSet rs = ps.executeQuery();
-      System.out.println("passage");
 
-      if (rs.next()) {
-        user.setId(rs.getInt("id_user"));
-        user.setLastName(rs.getString("last_name"));
-        user.setFirstName(rs.getString("first_name"));
-        user.setPhoneNumber(rs.getString("phone_number"));
-        user.setEmail(rs.getString("email"));
-        user.setPassword(rs.getString("password"));
-        user.setPhoto(rs.getString("photo"));
-        user.setRegisterDate(rs.getDate("register_date"));
-        user.setIsHelper(rs.getBoolean("is_helper"));
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
+    try (PreparedStatement ps = DB_CONNECTION.prepareStatement(
+        "SELECT * FROM pae.users WHERE email = ?;")) {
+      ps.setString(1, email);
+
+      user = setUser(ps, user);
+
+    } catch (SQLException se) {
+      se.printStackTrace();
+    }
+
+    if (user.getEmail() == null) {
       return null;
     }
 
-    if (user.getEmail() == null)
+    return user;
+  }
+
+  /**
+   * Get the user by the email.
+   *
+   * @param id the user
+   * @return the user corresponding to the email
+   */
+  public UserDTO getOneById(int id) {
+    UserDTO user = myDomainFactory.getUser();
+
+    try (PreparedStatement ps = DB_CONNECTION.prepareStatement(
+        "SELECT * FROM pae.users WHERE id_user = ?;")) {
+      ps.setInt(1, id);
+
+      user = setUser(ps, user);
+
+    } catch (SQLException se) {
+      se.printStackTrace();
+    }
+
+    if (user.getId() < 1) {
       return null;
+    }
+    return user;
+  }
+
+  /**
+   * Set up the user.
+   *
+   * @param preparedStatement the PreparedStatement
+   * @param user              the user to set up
+   */
+  public UserDTO setUser(PreparedStatement preparedStatement, UserDTO user) {
+    try (ResultSet resultSet = preparedStatement.executeQuery()) {
+      if (resultSet.getFetchSize() != 1) {
+        return user;
+      }
+
+      while (resultSet.next()) {
+        user.setId(resultSet.getInt("id_user"));
+        user.setLastName(resultSet.getString("last_name"));
+        user.setFirstName(resultSet.getString("first_name"));
+        user.setPhoneNumber(resultSet.getString("phone_number"));
+        user.setEmail(resultSet.getString("email"));
+        user.setPassword(resultSet.getString("password"));
+        user.setPhoto(resultSet.getString("photo"));
+        user.setRegisterDate(resultSet.getDate("register_date"));
+        user.setIsHelper(resultSet.getBoolean("is_helper"));
+      }
+    } catch (SQLException se) {
+      se.printStackTrace();
+    }
+
     return user;
   }
 }
