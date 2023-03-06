@@ -16,12 +16,4 @@ public interface UserUCC {
    */
   UserDTO login(String email, String password);
 
-  /**
-   * Method that allow a user to logout.
-   *
-   * @param userDTO the user to logout
-   * @return the user that has been logged out
-   */
-  UserDTO logout(UserDTO userDTO);
-
 }
