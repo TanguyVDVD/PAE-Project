@@ -6,6 +6,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+/**
+ * DalServicesImpl class that implements DalServices interface Provide the different methods.
+ */
 public class DalServicesImpl implements DalServices {
 
   // Database url
