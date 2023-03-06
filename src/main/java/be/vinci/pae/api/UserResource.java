@@ -19,7 +19,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 /**
- * UserRessource class.
+ * UserResource class.
  */
 @Singleton
 @Path("/users")

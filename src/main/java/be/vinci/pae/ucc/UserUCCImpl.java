@@ -1,6 +1,6 @@
 package be.vinci.pae.ucc;
 
-import be.vinci.pae.domain.DomainFactory;
+import be.vinci.pae.domain.User;
 import be.vinci.pae.domain.UserDTO;
 import be.vinci.pae.services.UserDS;
 import jakarta.inject.Inject;
@@ -10,14 +10,11 @@ import jakarta.ws.rs.GET;
  * UserUCCImpl class that implements the UserUCC interface provide the declared class login and
  * logout.
  */
+
 public class UserUCCImpl implements UserUCC {
 
   @Inject
   private UserDS myUserDS;
-
-  @Inject
-  private DomainFactory domainFactory;
-
 
   /**
    * Method that login a user if the parameters are correct.
@@ -28,11 +25,18 @@ public class UserUCCImpl implements UserUCC {
    */
   @Override
   public UserDTO login(String email, String password) {
-    UserDTO user = domainFactory.getUser();
-    user.setEmail(email);
-    user.setPassword(password);
-    //myUserDS.getOneByEmail(email);
-    return user;
+
+    User userDB = (User) myUserDS.getOneByEmail(email);
+
+    if (userDB == null) {
+      return null;
+    }
+
+    if (!userDB.isPasswordCorrect(password)) {
+      return null;
+    }
+
+    return (UserDTO) userDB;
   }
 
   /**
