@@ -61,20 +61,19 @@ public class UserDSImpl implements UserDS {
    */
   public UserDTO getOneById(int id) {
     UserDTO user = myDomainFactory.getUser();
+    String request = "SELECT * FROM pae.users WHERE email = ?;";
 
-    try (PreparedStatement ps = DB_CONNECTION.prepareStatement(
-        "SELECT * FROM pae.users WHERE id_user = ?;")) {
+    try (PreparedStatement ps = myDalServices.getPreparedStatement(request)) {
       ps.setInt(1, id);
-
       user = setUser(ps, user);
-
     } catch (SQLException se) {
       se.printStackTrace();
     }
 
-    if (user.getId() < 1) {
+    if (user.getEmail() == null) {
       return null;
     }
+
     return user;
   }
 
