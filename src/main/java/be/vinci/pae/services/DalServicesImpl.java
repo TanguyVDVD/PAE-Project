@@ -8,6 +8,7 @@ import java.sql.SQLException;
 
 public class DalServicesImpl implements DalServices {
 
+  // Database url
   public static final String DATABASE_URL;
   // User connecting to the database
   public static final String DATABASE_USER;
