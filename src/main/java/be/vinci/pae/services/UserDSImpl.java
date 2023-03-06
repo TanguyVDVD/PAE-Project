@@ -16,7 +16,7 @@ public class UserDSImpl implements UserDS {
   private DomainFactory myDomainFactory;
 
   @Inject
-  private DalServices myDalServices;
+  private DalServicesImpl myDalServices;
 
   /**
    * Insert a new user in the db.
