@@ -13,7 +13,7 @@ public interface UserDS {
    * @param userDTO the user to insert in the db
    * @return true if succeed false if not
    */
-  UserDTO insert(UserDTO userDTO);
+  boolean insert(UserDTO userDTO);
 
   /**
    * Get the user by the email.
