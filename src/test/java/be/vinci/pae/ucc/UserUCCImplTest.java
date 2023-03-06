@@ -19,8 +19,8 @@ import org.mockito.Mockito;
 class UserUCCImplTest {
 
   static ServiceLocator locator;
-  static private UserDS userDS;
-  static private UserUCC userUCC;
+  private static UserDS userDS;
+  private static UserUCC userUCC;
 
   @BeforeAll
   static void setUp() {
