@@ -127,21 +127,19 @@ public class UserDSImpl implements UserDS {
    */
   public UserDTO setUser(PreparedStatement preparedStatement, UserDTO user) {
     try (ResultSet resultSet = preparedStatement.executeQuery()) {
-      if (resultSet.getFetchSize() != 1) {
+      if (!resultSet.next()) {
         return user;
       }
 
-      while (resultSet.next()) {
-        user.setId(resultSet.getInt("id_user"));
-        user.setLastName(resultSet.getString("last_name"));
-        user.setFirstName(resultSet.getString("first_name"));
-        user.setPhoneNumber(resultSet.getString("phone_number"));
-        user.setEmail(resultSet.getString("email"));
-        user.setPassword(resultSet.getString("password"));
-        user.setPhoto(resultSet.getString("photo"));
-        user.setRegisterDate(resultSet.getDate("register_date"));
-        user.setIsHelper(resultSet.getBoolean("is_helper"));
-      }
+      user.setId(resultSet.getInt("id_user"));
+      user.setLastName(resultSet.getString("last_name"));
+      user.setFirstName(resultSet.getString("first_name"));
+      user.setPhoneNumber(resultSet.getString("phone_number"));
+      user.setEmail(resultSet.getString("email"));
+      user.setPassword(resultSet.getString("password"));
+      user.setPhoto(resultSet.getString("photo"));
+      user.setRegisterDate(resultSet.getDate("register_date"));
+      user.setIsHelper(resultSet.getBoolean("is_helper"));
     } catch (SQLException se) {
       se.printStackTrace();
     }
