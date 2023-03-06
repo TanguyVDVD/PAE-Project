@@ -1,13 +1,28 @@
 ### Login the default user
-POST {{baseUrl}}/auths/login
+POST {{baseUrl}}/users/login
 Content-Type: application/json
 
 {
-  "email":"tanguy@gmail.com",
-  "password":"password"
+  "email":"constantine@ressourcerie.be",
+  "password":"pwdToHash"
 }
 
-> {%
-  client.global.set("tanguyToken", response.body.token);
-%}
+### Login the wrong email user
+POST {{baseUrl}}/users/login
+Content-Type: application/json
+
+{
+  "email":"tanguy@ressourcerie.be",
+  "password":"pwdToHash"
+}
+
+### Login the wrong mdp user
+POST {{baseUrl}}/users/login
+Content-Type: application/json
+
+{
+  "email":"constantine@ressourcerie.be",
+  "password":"pwd"
+}
+
 

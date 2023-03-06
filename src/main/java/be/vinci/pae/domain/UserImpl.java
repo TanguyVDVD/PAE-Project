@@ -1,6 +1,7 @@
 package be.vinci.pae.domain;
 
 import java.util.Date;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  * UserImpl class that implements the UserDTO interface Contains all the attribute of a user.
@@ -203,7 +204,19 @@ public class UserImpl implements User {
    * @return a boolean
    */
   @Override
-  public boolean isPasswordCorrect() {
-    return false;
+  public boolean isPasswordCorrect(String password) {
+    return BCrypt.checkpw(password, this.password);
   }
+
+  /**
+   * Method that hash a password.
+   *
+   * @param password the password to hash
+   * @return the password when it's hash
+   */
+  @Override
+  public String hashPassword(String password) {
+    return BCrypt.hashpw(password, BCrypt.gensalt());
+  }
+
 }
