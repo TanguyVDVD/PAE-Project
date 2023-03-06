@@ -77,9 +77,8 @@ public class UserDSImpl implements UserDS {
   public UserDTO getOneByEmail(String email) {
     UserDTO user = myDomainFactory.getUser();
 
-    try {
-      PreparedStatement ps = DB_CONNECTION.prepareStatement(
-          "SELECT * FROM pae.users WHERE email = ?;");
+    try (PreparedStatement ps = DB_CONNECTION.prepareStatement(
+        "SELECT * FROM pae.users WHERE email = ?;")) {
       ps.setString(1, email);
 
       user = setUser(ps, user);
@@ -104,9 +103,8 @@ public class UserDSImpl implements UserDS {
   public UserDTO getOneById(int id) {
     UserDTO user = myDomainFactory.getUser();
 
-    try {
-      PreparedStatement ps = DB_CONNECTION.prepareStatement(
-          "SELECT * FROM pae.users WHERE id_user = ?;");
+    try (PreparedStatement ps = DB_CONNECTION.prepareStatement(
+        "SELECT * FROM pae.users WHERE id_user = ?;")) {
       ps.setInt(1, id);
 
       user = setUser(ps, user);
@@ -128,9 +126,7 @@ public class UserDSImpl implements UserDS {
    * @param user              the user to set up
    */
   public UserDTO setUser(PreparedStatement preparedStatement, UserDTO user) {
-    try {
-      ResultSet resultSet = preparedStatement.executeQuery();
-
+    try (ResultSet resultSet = preparedStatement.executeQuery()) {
       if (resultSet.getFetchSize() != 1) {
         return user;
       }
