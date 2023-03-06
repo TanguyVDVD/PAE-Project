@@ -1,6 +1,9 @@
 package be.vinci.pae.services;
 
+import static be.vinci.pae.services.UserDSImpl.DB_CONNECTION;
+
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class DalServicesImpl implements DalServices {
 
@@ -20,6 +23,11 @@ public class DalServicesImpl implements DalServices {
    */
   @Override
   public PreparedStatement getPreparedStatement(String request) {
+    try {
+      return DB_CONNECTION.prepareStatement(request);
+    } catch (SQLException se) {
+      se.printStackTrace();
+    }
     return null;
   }
 }
