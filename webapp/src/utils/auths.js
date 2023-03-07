@@ -43,10 +43,35 @@ const isAuthenticated = () => currentUser !== undefined || getAuthenticatedUser(
 
 const getRememberMe = () => sessionStorage.getItem('remember') === 'true';
 
+const refreshAuthenticatedUser = () => {
+  const authenticatedUser = getAuthenticatedUser();
+  if (!authenticatedUser) return;
+
+  const remember = getRememberMe();
+
+  fetch(`/api/users/my`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: authenticatedUser.token,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.error) {
+        clearAuthenticatedUser();
+        return;
+      }
+
+      setAuthenticatedUser({ ...authenticatedUser, ...data }, remember);
+    });
+};
+
 export {
   getAuthenticatedUser,
   setAuthenticatedUser,
   isAuthenticated,
   clearAuthenticatedUser,
   getRememberMe,
+  refreshAuthenticatedUser,
 };
