@@ -8,6 +8,8 @@ import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.user.UserImpl;
 import be.vinci.pae.services.UserDS;
 import be.vinci.pae.services.UserDSImpl;
+import be.vinci.pae.ucc.user.UserUCC;
+import be.vinci.pae.ucc.user.UserUCCImpl;
 import jakarta.inject.Singleton;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;

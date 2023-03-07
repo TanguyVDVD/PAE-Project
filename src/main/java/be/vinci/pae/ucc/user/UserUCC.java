@@ -1,4 +1,4 @@
-package be.vinci.pae.ucc;
+package be.vinci.pae.ucc.user;
 
 import be.vinci.pae.domain.user.UserDTO;
 
