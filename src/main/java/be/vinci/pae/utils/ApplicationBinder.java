@@ -4,8 +4,8 @@ import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.DomainFactoryImpl;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.DALServicesImpl;
-import be.vinci.pae.services.UserDS;
-import be.vinci.pae.services.UserDSImpl;
+import be.vinci.pae.services.UserDAO;
+import be.vinci.pae.services.UserDAOImpl;
 import be.vinci.pae.ucc.user.UserUCC;
 import be.vinci.pae.ucc.user.UserUCCImpl;
 import jakarta.inject.Singleton;
@@ -26,7 +26,7 @@ public class ApplicationBinder extends AbstractBinder {
   protected void configure() {
     bind(DomainFactoryImpl.class).to(DomainFactory.class).in(Singleton.class);
     bind(UserUCCImpl.class).to(UserUCC.class).in(Singleton.class);
-    bind(UserDSImpl.class).to(UserDS.class).in(Singleton.class);
+    bind(UserDAOImpl.class).to(UserDAO.class).in(Singleton.class);
     bind(DALServicesImpl.class).to(DALServices.class).in(Singleton.class);
   }
 }

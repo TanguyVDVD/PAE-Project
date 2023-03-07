@@ -8,9 +8,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * UserDS class that implements UserDs interface Provide the different methods.
+ * UserDAO class that implements UserDs interface Provide the different methods.
  */
-public class UserDSImpl implements UserDS {
+public class UserDAOImpl implements UserDAO {
 
   @Inject
   private DomainFactory myDomainFactory;
