@@ -1,5 +1,10 @@
 package be.vinci.pae.domain;
 
+import be.vinci.pae.domain.object.ObjectDTO;
+import be.vinci.pae.domain.object.ObjectImpl;
+import be.vinci.pae.domain.user.UserDTO;
+import be.vinci.pae.domain.user.UserImpl;
+
 /**
  * Implementation of the DomainFactory interface Provides a new instance of a UserDTO.
  */

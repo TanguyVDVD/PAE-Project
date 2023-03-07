@@ -1,4 +1,4 @@
-package be.vinci.pae.domain;
+package be.vinci.pae.domain.object;
 
 /**
  * Object interface representing an object in the domain.

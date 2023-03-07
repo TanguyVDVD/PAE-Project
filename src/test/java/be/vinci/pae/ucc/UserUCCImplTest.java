@@ -3,9 +3,9 @@ package be.vinci.pae.ucc;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import be.vinci.pae.domain.User;
-import be.vinci.pae.domain.UserDTO;
-import be.vinci.pae.domain.UserImpl;
+import be.vinci.pae.domain.user.User;
+import be.vinci.pae.domain.user.UserDTO;
+import be.vinci.pae.domain.user.UserImpl;
 import be.vinci.pae.services.UserDS;
 import be.vinci.pae.services.UserDSImpl;
 import jakarta.inject.Singleton;

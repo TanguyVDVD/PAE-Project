@@ -1,5 +1,6 @@
-package be.vinci.pae.domain;
+package be.vinci.pae.domain.object;
 
+import be.vinci.pae.domain.user.UserDTO;
 import java.util.Date;
 
 public class ObjectImpl implements Object {

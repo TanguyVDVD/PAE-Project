@@ -1,6 +1,6 @@
 package be.vinci.pae.services;
 
-import be.vinci.pae.domain.UserDTO;
+import be.vinci.pae.domain.user.UserDTO;
 
 /**
  * UserDS interface that provide the method to interact with the db.
