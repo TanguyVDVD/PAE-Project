@@ -14,4 +14,11 @@ public interface DomainFactory {
    */
   UserDTO getUser();
 
+  /**
+   * Returns a new instance of a ObjectDTO.
+   *
+   * @return a UserImpl
+   */
+  ObjectDTO getObject();
+
 }
