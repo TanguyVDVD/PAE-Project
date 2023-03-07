@@ -25,4 +25,19 @@ Content-Type: application/json
   "password":"pwd"
 }
 
+### Login new user
+POST {{baseUrl}}/users/register
+Content-Type: application/json
+
+{
+  "last_name":"pitt",
+  "first_name":"brad",
+  "phone_number":"0456454545",
+  "email":"brad@ressourcerie.be",
+  "password":"pwd",
+  "photo":"photo",
+  "register_date":"2021-05-25",
+  "is_helper":true
+}
+
 

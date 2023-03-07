@@ -1,6 +1,5 @@
 package be.vinci.pae.domain;
 
-import java.util.Date;
 import org.mindrot.jbcrypt.BCrypt;
 
 /**
@@ -15,7 +14,7 @@ public class UserImpl implements User {
   private String email;
   private String password;
   private String photo;
-  private Date registerDate;
+  private String registerDate;
   private boolean isHelper;
 
   /**
@@ -164,7 +163,7 @@ public class UserImpl implements User {
    * @return a date corresponding to the register date of a user
    */
   @Override
-  public Date getRegisterDate() {
+  public String getRegisterDate() {
     return registerDate;
   }
 
@@ -174,7 +173,7 @@ public class UserImpl implements User {
    * @param registerDate the register date of a user
    */
   @Override
-  public void setRegisterDate(Date registerDate) {
+  public void setRegisterDate(String registerDate) {
     this.registerDate = registerDate;
   }
 

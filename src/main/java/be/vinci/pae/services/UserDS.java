@@ -23,4 +23,13 @@ public interface UserDS {
    */
   UserDTO getOneByEmail(String email);
 
+  /**
+   * Returns a UserDTO object corresponding to the specified phone number.
+   *
+   * @param phoneNumber the phone number of the user to retrieve
+   * @return the UserDTO object corresponding to the specified phone number, or null if no user is
+   * found
+   */
+  UserDTO getOneByPhoneNumber(String phoneNumber);
+
 }

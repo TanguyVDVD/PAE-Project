@@ -1,5 +1,6 @@
 package be.vinci.pae.api;
 
+import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.UserDTO;
 import be.vinci.pae.ucc.UserUCC;
 import be.vinci.pae.utils.Config;
@@ -17,7 +18,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.util.Date;
 
 /**
  * UserResource class.
@@ -30,6 +30,9 @@ public class UserResource {
   private final ObjectMapper jsonMapper = new ObjectMapper();
   @Inject
   private UserUCC userUCC;
+
+  @Inject
+  private DomainFactory myDomainFactory;
 
   /**
    * Login a user with json object return the user created and the token.
@@ -57,24 +60,11 @@ public class UserResource {
           Response.Status.UNAUTHORIZED);
     }
 
-    String token;
-    try {
-      token = JWT.create().withIssuer("auth0")
-          .withClaim("user", userDTO.getId()).sign(this.jwtAlgorithm);
-      ObjectNode publicUser = jsonMapper.createObjectNode()
-          .put("token", token)
-          .put("id", userDTO.getId())
-          .put("helper", userDTO.isHelper());
-      return publicUser;
-
-    } catch (Exception e) {
-      System.out.println("Unable to create token");
-      return null;
-    }
+    return createToken(userDTO);
   }
 
   /**
-   * Login a user with json object return the user created and the token.
+   * Register a user with json object return the user created and the token.
    *
    * @param json a json object
    * @return a user when is created
@@ -89,7 +79,7 @@ public class UserResource {
         "phone_number") || !json.hasNonNull("email") || !json.hasNonNull("password")
         || !json.hasNonNull("photo") || !json.hasNonNull("register_date") || !json.hasNonNull(
         "is_helper")) {
-      throw new WebApplicationException("email or password required", Response.Status.BAD_REQUEST);
+      throw new WebApplicationException("All the field are required", Response.Status.BAD_REQUEST);
     }
 
     String lastName = json.get("last_name").asText();
@@ -98,9 +88,47 @@ public class UserResource {
     String email = json.get("email").asText();
     String password = json.get("password").asText();
     String photo = json.get("photo").asText();
-    Date registerDate = jsonMapper.convertValue(json.get("register_date"), Date.class);
-    Boolean isHelper = json.get("is_helper").asBoolean();
-    return null;
+    String registerDate = json.get("register_date").asText();
+    boolean isHelper = json.get("is_helper").asBoolean();
+
+    UserDTO userRegister = myDomainFactory.getUser();
+
+    userRegister.setLastName(lastName);
+    userRegister.setFirstName(firstName);
+    userRegister.setPhoneNumber(phoneNumber);
+    userRegister.setEmail(email);
+    userRegister.setPassword(password);
+    userRegister.setPhoto(photo);
+    userRegister.setRegisterDate(registerDate);
+    userRegister.setIsHelper(isHelper);
+
+    UserDTO userAfterRegister = userUCC.register(userRegister);
+
+    return createToken(userAfterRegister);
+
+  }
+
+  /**
+   * Method that create a token for a user.
+   *
+   * @param userToCreateToken user to create a token with
+   * @return the token or null if there is a problem
+   */
+  public ObjectNode createToken(UserDTO userToCreateToken) {
+    String token;
+    try {
+      token = JWT.create().withIssuer("auth0")
+          .withClaim("user", userToCreateToken.getId()).sign(this.jwtAlgorithm);
+      ObjectNode publicUser = jsonMapper.createObjectNode()
+          .put("token", token)
+          .put("id", userToCreateToken.getId())
+          .put("helper", userToCreateToken.isHelper());
+      return publicUser;
+
+    } catch (Exception e) {
+      System.out.println("Unable to create token");
+      return null;
+    }
   }
 
 }
