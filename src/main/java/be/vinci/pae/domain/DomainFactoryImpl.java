@@ -15,4 +15,14 @@ public class DomainFactoryImpl implements DomainFactory {
     return new UserImpl();
   }
 
+  /**
+   * Returns a new instance of an ObjectDTO.
+   *
+   * @return a ObjectImpl
+   */
+  @Override
+  public ObjectDTO getObject() {
+    return new ObjectImpl();
+  }
+
 }
