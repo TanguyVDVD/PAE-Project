@@ -2,25 +2,9 @@ import routes from './routes';
 
 const Router = () => {
   onFrontendLoad();
-  onNavBarClick();
+  // Since the navbar changes dynamically, onNavBarClick has been moved to the Navbar component
   onHistoryChange();
 };
-
-function onNavBarClick() {
-  const navItems = document.querySelectorAll('.nav-link');
-
-  navItems.forEach((item) => {
-    item.addEventListener('click', (e) => {
-      e.preventDefault();
-      const uri = e.currentTarget?.dataset?.uri;
-      const componentToRender = routes[uri];
-      if (!componentToRender) throw Error(`The ${uri} ressource does not exist.`);
-
-      componentToRender();
-      window.history.pushState({}, '', uri);
-    });
-  });
-}
 
 function onHistoryChange() {
   window.addEventListener('popstate', () => {
