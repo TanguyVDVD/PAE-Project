@@ -3,6 +3,10 @@ package be.vinci.pae.domain.object;
 import be.vinci.pae.domain.user.UserDTO;
 import java.util.Date;
 
+/**
+ * ObjectImpl class that implements the ObjectDTO interface Contains all the attribute of an
+ * object.
+ */
 public class ObjectImpl implements Object {
 
   /**
