@@ -1,8 +1,8 @@
-package be.vinci.pae.ucc;
+package be.vinci.pae.ucc.user;
 
-import be.vinci.pae.domain.User;
-import be.vinci.pae.domain.UserDTO;
-import be.vinci.pae.services.UserDS;
+import be.vinci.pae.domain.user.User;
+import be.vinci.pae.domain.user.UserDTO;
+import be.vinci.pae.services.user.UserDAO;
 import jakarta.inject.Inject;
 
 /**
@@ -13,7 +13,7 @@ import jakarta.inject.Inject;
 public class UserUCCImpl implements UserUCC {
 
   @Inject
-  private UserDS myUserDS;
+  private UserDAO myUserDAO;
 
   /**
    * Method that login a user if the parameters are correct.
@@ -25,7 +25,7 @@ public class UserUCCImpl implements UserUCC {
   @Override
   public UserDTO login(String email, String password) {
 
-    User userDB = (User) myUserDS.getOneByEmail(email);
+    User userDB = (User) myUserDAO.getOneByEmail(email);
 
     if (userDB == null) {
       return null;

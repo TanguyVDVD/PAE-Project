@@ -3,11 +3,13 @@ package be.vinci.pae.ucc;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import be.vinci.pae.domain.User;
-import be.vinci.pae.domain.UserDTO;
-import be.vinci.pae.domain.UserImpl;
-import be.vinci.pae.services.UserDS;
-import be.vinci.pae.services.UserDSImpl;
+import be.vinci.pae.domain.user.User;
+import be.vinci.pae.domain.user.UserDTO;
+import be.vinci.pae.domain.user.UserImpl;
+import be.vinci.pae.services.user.UserDAO;
+import be.vinci.pae.services.user.UserDAOImpl;
+import be.vinci.pae.ucc.user.UserUCC;
+import be.vinci.pae.ucc.user.UserUCCImpl;
 import jakarta.inject.Singleton;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
@@ -19,19 +21,19 @@ import org.mockito.Mockito;
 class UserUCCImplTest {
 
   static ServiceLocator locator;
-  private static UserDS userDS;
+  private static UserDAO userDAO;
   private static UserUCC userUCC;
 
   @BeforeAll
   static void setUp() {
-    userDS = Mockito.mock(UserDSImpl.class);
+    userDAO = Mockito.mock(UserDAOImpl.class);
 
     locator = ServiceLocatorUtilities.bind(new AbstractBinder() {
       @Override
       protected void configure() {
         bind(UserUCCImpl.class).to(UserUCC.class).in(Singleton.class);
 
-        bind(userDS).to(UserDS.class);
+        bind(userDAO).to(UserDAO.class);
       }
     });
 
@@ -41,7 +43,7 @@ class UserUCCImplTest {
   @Test
   void loginWithCorrectEmailAndPassword() {
     User user = Mockito.mock(UserImpl.class);
-    Mockito.when(userDS.getOneByEmail("test@example.com")).thenReturn(user);
+    Mockito.when(userDAO.getOneByEmail("test@example.com")).thenReturn(user);
     Mockito.when(user.isPasswordCorrect("password")).thenReturn(true);
 
     UserDTO userDTO = userUCC.login("test@example.com", "password");
@@ -50,7 +52,7 @@ class UserUCCImplTest {
 
   @Test
   void loginWithIncorrectEmail() {
-    Mockito.when(userDS.getOneByEmail("test@example.com")).thenReturn(null);
+    Mockito.when(userDAO.getOneByEmail("test@example.com")).thenReturn(null);
 
     UserDTO userDTO = userUCC.login("test@example.com", "password");
     assertNull(userDTO);
@@ -59,7 +61,7 @@ class UserUCCImplTest {
   @Test
   void loginWithIncorrectPassword() {
     User user = Mockito.mock(UserImpl.class);
-    Mockito.when(userDS.getOneByEmail("test@example.com")).thenReturn(user);
+    Mockito.when(userDAO.getOneByEmail("test@example.com")).thenReturn(user);
     Mockito.when(user.isPasswordCorrect("password")).thenReturn(false);
 
     UserDTO userDTO = userUCC.login("test@example.com", "password");

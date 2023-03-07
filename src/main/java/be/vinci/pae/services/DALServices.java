@@ -3,9 +3,9 @@ package be.vinci.pae.services;
 import java.sql.PreparedStatement;
 
 /**
- * DalServices interface that provide the method to connect the db and create PreparedStatements.
+ * DALServices interface that provide the method to connect the db and create PreparedStatements.
  */
-public interface DalServices {
+public interface DALServices {
 
   /**
    * Load the PostgresSQL driver and connect to the database.

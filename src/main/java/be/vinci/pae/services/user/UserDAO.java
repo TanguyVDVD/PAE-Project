@@ -1,11 +1,11 @@
-package be.vinci.pae.services;
+package be.vinci.pae.services.user;
 
-import be.vinci.pae.domain.UserDTO;
+import be.vinci.pae.domain.user.UserDTO;
 
 /**
- * UserDS interface that provide the method to interact with the db.
+ * UserDAO interface that provide the method to interact with the db.
  */
-public interface UserDS {
+public interface UserDAO {
 
   /**
    * Insert a new user in the db.

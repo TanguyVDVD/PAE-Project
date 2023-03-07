@@ -1,22 +1,23 @@
-package be.vinci.pae.services;
+package be.vinci.pae.services.user;
 
 import be.vinci.pae.domain.DomainFactory;
-import be.vinci.pae.domain.UserDTO;
+import be.vinci.pae.domain.user.UserDTO;
+import be.vinci.pae.services.DALServices;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * UserDS class that implements UserDs interface Provide the different methods.
+ * UserDAO class that implements UserDs interface Provide the different methods.
  */
-public class UserDSImpl implements UserDS {
+public class UserDAOImpl implements UserDAO {
 
   @Inject
   private DomainFactory myDomainFactory;
 
   @Inject
-  private DalServices myDalServices;
+  private DALServices myDALServices;
 
   /**
    * Insert a new user in the db.
@@ -39,7 +40,7 @@ public class UserDSImpl implements UserDS {
     UserDTO user = myDomainFactory.getUser();
     String request = "SELECT * FROM pae.users WHERE email = ?;";
 
-    try (PreparedStatement ps = myDalServices.getPreparedStatement(request)) {
+    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
       ps.setString(1, email);
       user = setUser(ps, user);
     } catch (SQLException se) {
@@ -63,7 +64,7 @@ public class UserDSImpl implements UserDS {
     UserDTO user = myDomainFactory.getUser();
     String request = "SELECT * FROM pae.users WHERE id_user = ?;";
 
-    try (PreparedStatement ps = myDalServices.getPreparedStatement(request)) {
+    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
       ps.setInt(1, id);
       user = setUser(ps, user);
     } catch (SQLException se) {

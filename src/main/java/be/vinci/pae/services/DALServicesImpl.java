@@ -7,9 +7,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
- * DalServicesImpl class that implements DalServices interface Provide the different methods.
+ * DALServicesImpl class that implements DALServices interface Provide the different methods.
  */
-public class DalServicesImpl implements DalServices {
+public class DALServicesImpl implements DALServices {
 
   // Database url
   public static final String DATABASE_URL;
@@ -29,7 +29,7 @@ public class DalServicesImpl implements DalServices {
     DATABASE_PASSWORD = Config.getProperty("DatabasePassword");
   }
 
-  public DalServicesImpl() {
+  public DALServicesImpl() {
     connectDatabase();
   }
 

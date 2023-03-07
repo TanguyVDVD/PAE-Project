@@ -1,6 +1,6 @@
-package be.vinci.pae.ucc;
+package be.vinci.pae.ucc.user;
 
-import be.vinci.pae.domain.UserDTO;
+import be.vinci.pae.domain.user.UserDTO;
 
 /**
  * UserUCC interface that provide the login and logout mehtod of a user.
