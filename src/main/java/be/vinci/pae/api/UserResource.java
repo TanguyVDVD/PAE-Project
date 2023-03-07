@@ -17,6 +17,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.util.Date;
 
 /**
  * UserResource class.
@@ -70,6 +71,36 @@ public class UserResource {
       System.out.println("Unable to create token");
       return null;
     }
+  }
+
+  /**
+   * Login a user with json object return the user created and the token.
+   *
+   * @param json a json object
+   * @return a user when is created
+   */
+  @Path("register")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @POST
+  public ObjectNode register(JsonNode json) {
+
+    if (!json.hasNonNull("last_name") || !json.hasNonNull("first_name") || !json.hasNonNull(
+        "phone_number") || !json.hasNonNull("email") || !json.hasNonNull("password")
+        || !json.hasNonNull("photo") || !json.hasNonNull("register_date") || !json.hasNonNull(
+        "is_helper")) {
+      throw new WebApplicationException("email or password required", Response.Status.BAD_REQUEST);
+    }
+
+    String lastName = json.get("last_name").asText();
+    String firstName = json.get("first_name").asText();
+    String phoneNumber = json.get("phone_number").asText();
+    String email = json.get("email").asText();
+    String password = json.get("password").asText();
+    String photo = json.get("photo").asText();
+    Date registerDate = jsonMapper.convertValue(json.get("register_date"), Date.class);
+    Boolean isHelper = json.get("is_helper").asBoolean();
+    return null;
   }
 
 }
