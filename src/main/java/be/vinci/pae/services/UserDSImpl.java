@@ -16,7 +16,7 @@ public class UserDSImpl implements UserDS {
   private DomainFactory myDomainFactory;
 
   @Inject
-  private DalServices myDalServices;
+  private DALServices myDALServices;
 
   /**
    * Insert a new user in the db.
@@ -39,7 +39,7 @@ public class UserDSImpl implements UserDS {
     UserDTO user = myDomainFactory.getUser();
     String request = "SELECT * FROM pae.users WHERE email = ?;";
 
-    try (PreparedStatement ps = myDalServices.getPreparedStatement(request)) {
+    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
       ps.setString(1, email);
       user = setUser(ps, user);
     } catch (SQLException se) {
@@ -63,7 +63,7 @@ public class UserDSImpl implements UserDS {
     UserDTO user = myDomainFactory.getUser();
     String request = "SELECT * FROM pae.users WHERE email = ?;";
 
-    try (PreparedStatement ps = myDalServices.getPreparedStatement(request)) {
+    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
       ps.setInt(1, id);
       user = setUser(ps, user);
     } catch (SQLException se) {
