@@ -1,4 +1,4 @@
-package be.vinci.pae.services;
+package be.vinci.pae.services.user;
 
 import be.vinci.pae.domain.user.UserDTO;
 

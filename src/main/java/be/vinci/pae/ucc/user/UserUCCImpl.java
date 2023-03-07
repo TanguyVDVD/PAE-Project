@@ -2,7 +2,7 @@ package be.vinci.pae.ucc.user;
 
 import be.vinci.pae.domain.user.User;
 import be.vinci.pae.domain.user.UserDTO;
-import be.vinci.pae.services.UserDAO;
+import be.vinci.pae.services.user.UserDAO;
 import jakarta.inject.Inject;
 
 /**

@@ -1,7 +1,8 @@
-package be.vinci.pae.services;
+package be.vinci.pae.services.user;
 
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.user.UserDTO;
+import be.vinci.pae.services.DALServices;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
