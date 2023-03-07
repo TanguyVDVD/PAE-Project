@@ -1,7 +1,7 @@
 package be.vinci.pae.api.filters;
 
-import be.vinci.pae.domain.User;
-import be.vinci.pae.services.UserDS;
+import be.vinci.pae.domain.user.User;
+import be.vinci.pae.services.user.UserDAO;
 import be.vinci.pae.utils.Config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -29,7 +29,7 @@ public class AuthorizationRequestFilter implements ContainerRequestFilter {
   private final JWTVerifier jwtVerifier = JWT.require(this.jwtAlgorithm).withIssuer("auth0")
       .build();
   @Inject
-  private UserDS myUserDS;
+  private UserDAO myUserDAO;
 
   @Override
   public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -49,7 +49,7 @@ public class AuthorizationRequestFilter implements ContainerRequestFilter {
             Status.UNAUTHORIZED);
       }
 
-      User authenticatedUser = (User) myUserDS.getOneById(decodedToken.getClaim("user").asInt());
+      User authenticatedUser = (User) myUserDAO.getOneById(decodedToken.getClaim("user").asInt());
       if (authenticatedUser == null) {
         throw new WebApplicationException("You don't have access to this resource",
             Status.FORBIDDEN);
