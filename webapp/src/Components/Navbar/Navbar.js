@@ -105,7 +105,7 @@ const Navbar = () => {
                       height="32"
                       class="rounded-circle me-1"
                     />
-                    <span>${authenticatedUser.firstname} ${authenticatedUser.lastname}</span>
+                    <span>${authenticatedUser.firstName} ${authenticatedUser.lastName}</span>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end shadow">
                     <li><a class="dropdown-item" href="#" data-uri="/profile">Mon profil</a></li>

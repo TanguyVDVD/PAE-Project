@@ -63,7 +63,10 @@ public class UserResource {
       ObjectNode publicUser = jsonMapper.createObjectNode()
           .put("token", token)
           .put("id", userDTO.getId())
-          .put("helper", userDTO.isHelper());
+          .put("firstName", userDTO.getFirstName())
+          .put("lastName", userDTO.getLastName())
+          .put("isHelper", userDTO.isHelper());
+
       return publicUser;
 
     } catch (Exception e) {
