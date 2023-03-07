@@ -1,5 +1,6 @@
 package be.vinci.pae.api;
 
+import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.ucc.user.UserUCC;
 import be.vinci.pae.utils.Config;
@@ -11,12 +12,15 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.glassfish.jersey.server.ContainerRequest;
 
 /**
  * UserResource class.
@@ -63,7 +67,10 @@ public class UserResource {
       ObjectNode publicUser = jsonMapper.createObjectNode()
           .put("token", token)
           .put("id", userDTO.getId())
-          .put("helper", userDTO.isHelper());
+          .put("firstName", userDTO.getFirstName())
+          .put("lastName", userDTO.getLastName())
+          .put("isHelper", userDTO.isHelper());
+
       return publicUser;
 
     } catch (Exception e) {
@@ -72,4 +79,24 @@ public class UserResource {
     }
   }
 
+  /**
+   * Retrieve the logged-in user's information.
+   *
+   * @param request the request
+   * @return the user's information
+   */
+  @GET
+  @Path("/my")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Authorize
+  public ObjectNode getUserInfo(@Context ContainerRequest request) {
+    UserDTO user = (UserDTO) request.getProperty("user");
+    ObjectNode publicUser = jsonMapper.createObjectNode()
+        .put("id", user.getId())
+        .put("firstName", user.getFirstName())
+        .put("lastName", user.getLastName())
+        .put("isHelper", user.isHelper());
+
+    return publicUser;
+  }
 }

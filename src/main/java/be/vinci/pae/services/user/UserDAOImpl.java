@@ -55,14 +55,14 @@ public class UserDAOImpl implements UserDAO {
   }
 
   /**
-   * Get the user by the email.
+   * Get the user by the id.
    *
    * @param id the user
    * @return the user corresponding to the email
    */
   public UserDTO getOneById(int id) {
     UserDTO user = myDomainFactory.getUser();
-    String request = "SELECT * FROM pae.users WHERE email = ?;";
+    String request = "SELECT * FROM pae.users WHERE id_user = ?;";
 
     try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
       ps.setInt(1, id);

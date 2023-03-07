@@ -23,4 +23,12 @@ public interface UserDAO {
    */
   UserDTO getOneByEmail(String email);
 
+  /**
+   * Get the user by the id.
+   *
+   * @param id the user
+   * @return the user correponding to the id
+   */
+  UserDTO getOneById(int id);
+
 }
