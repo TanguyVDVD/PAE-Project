@@ -28,18 +28,11 @@ function renderAdminUsersPage() {
         <i class="bi bi-search"></i>
       </button>
     </div>
-    <table class="table table-striped table-hover mt-3 border border-1" id="users-table">
-      <thead>
-        <tr>
-          <th scope="col">ID</th>
-          <th scope="col">Nom</th>
-          <th scope="col">Prénom</th>
-          <th scope="col">Rôle</th>
-          <th scope="col">&nbsp;</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+    <div id="users-table">
+      <div class="text-center my-5">
+        <div class="spinner-border" role="status"></div>
+      </div>
+    </div>
   `;
 
   main.appendChild(div);
@@ -74,23 +67,38 @@ function fetchUsers() {
     },
   ];
 
-  document.getElementById('users-table').querySelector('tbody').innerHTML = users
-    .map(
-      (user) => `
+  document.getElementById('users-table').innerHTML = `
+    <table class="table table-striped table-hover mt-3 border border-1">
+      <thead>
         <tr>
-          <th scope="row">${user.id}</th>
-          <td>${user.lastName}</td>
-          <td>${user.firstName}</td>
-          <td>${user.isHelper ? 'Aideur' : 'Utilisateur'}</td>
-          <td>
-            <a href="#" class="btn btn-link" role="button">
-              Voir plus
-            </a>
-          </td>
+          <th scope="col">ID</th>
+          <th scope="col">Nom</th>
+          <th scope="col">Prénom</th>
+          <th scope="col">Rôle</th>
+          <th scope="col">&nbsp;</th>
         </tr>
-      `,
-    )
-    .join('');
+      </thead>
+      <tbody>
+        ${users
+          .map(
+            (user) => `
+              <tr>
+                <th scope="row">${user.id}</th>
+                <td>${user.lastName}</td>
+                <td>${user.firstName}</td>
+                <td>${user.isHelper ? 'Aideur' : 'Utilisateur'}</td>
+                <td>
+                  <a href="#" class="btn btn-link" role="button">
+                    Voir plus
+                  </a>
+                </td>
+              </tr>
+            `,
+          )
+          .join('')}
+      </tbody>
+    </table>
+  `;
 }
 
 export default AdminUsersPage;
