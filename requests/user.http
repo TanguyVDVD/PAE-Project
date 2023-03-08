@@ -1,14 +1,27 @@
-### Login the default user
+### Login as an admin
 POST {{baseUrl}}/users/login
 Content-Type: application/json
 
 {
-  "email": "constantine@ressourcerie.be",
+  "email": "riez@ressourcerie.be",
   "password": "pwdToHash"
 }
 
 > {%
-  client.global.set("defaultToken", response.body.token);
+  client.global.set("adminToken", response.body.token);
+%}
+
+### Login as a non admin user
+POST {{baseUrl}}/users/login
+Content-Type: application/json
+
+{
+  "email": "lise@ressourcerie.be",
+  "password": "pwdToHash"
+}
+
+> {%
+  client.global.set("nonAdminToken", response.body.token);
 %}
 
 ### Login the wrong email user
@@ -29,7 +42,17 @@ Content-Type: application/json
   "password": "pwd"
 }
 
+
+
 ### Get the user
 GET {{baseUrl}}/users/my
 Content-Type: application/json
-Authorization: {{defaultToken}}
+Authorization: {{nonAdminToken}}
+
+### Get a list of all users
+GET {{baseUrl}}/users
+Authorization: {{adminToken}}
+
+### Get a list of all users with query
+GET {{baseUrl}}/users?query=riez
+Authorization: {{adminToken}}

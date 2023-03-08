@@ -1,5 +1,6 @@
 package be.vinci.pae.domain.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -13,6 +14,7 @@ public class UserImpl implements User {
   private String firstName;
   private String phoneNumber;
   private String email;
+  @JsonIgnore
   private String password;
   private String photo;
   private Date registerDate;

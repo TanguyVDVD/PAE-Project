@@ -1,6 +1,7 @@
 package be.vinci.pae.api;
 
 import be.vinci.pae.api.filters.Authorize;
+import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.ucc.user.UserUCC;
 import be.vinci.pae.utils.Config;
@@ -8,6 +9,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -16,6 +18,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
@@ -33,6 +36,19 @@ public class UserResource {
   private final ObjectMapper jsonMapper = new ObjectMapper();
   @Inject
   private UserUCC userUCC;
+
+  /**
+   * Get a list of all users.
+   *
+   * @param query query to filter users
+   * @return a list of users
+   */
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public ArrayNode getUsers(@QueryParam("query") String query) {
+    return jsonMapper.valueToTree(userUCC.getUsers(query));
+  }
 
   /**
    * Login a user with json object return the user created and the token.

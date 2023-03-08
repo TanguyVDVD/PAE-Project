@@ -1,6 +1,7 @@
 package be.vinci.pae.services.user;
 
 import be.vinci.pae.domain.user.UserDTO;
+import java.util.List;
 
 /**
  * UserDAO interface that provide the method to interact with the db.
@@ -30,5 +31,13 @@ public interface UserDAO {
    * @return the user correponding to the id
    */
   UserDTO getOneById(int id);
+
+  /**
+   * Get all the users.
+   *
+   * @param query query to filter users
+   * @return the list of users
+   */
+  List<UserDTO> getAll(String query);
 
 }
