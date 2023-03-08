@@ -1,5 +1,6 @@
-// eslint-disable-next-line import/no-cycle
+/* eslint-disable import/no-cycle */
 import Navbar from '../Components/Navbar/Navbar';
+import API from './api';
 
 const STORE_USER = 'user';
 const STORE_REMEMBER = 'remember';
@@ -49,22 +50,11 @@ const refreshAuthenticatedUser = () => {
 
   const remember = getRememberMe();
 
-  fetch(`/api/users/my`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: authenticatedUser.token,
-    },
-  })
-    .then((response) => response.json())
+  API.get('users/my')
     .then((data) => {
-      if (data.error) {
-        clearAuthenticatedUser();
-        return;
-      }
-
       setAuthenticatedUser({ ...authenticatedUser, ...data }, remember);
-    });
+    })
+    .catch(clearAuthenticatedUser);
 };
 
 export {

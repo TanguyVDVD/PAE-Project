@@ -1,6 +1,7 @@
 import { clearPage } from '../../utils/render';
 import { isAuthenticated, setAuthenticatedUser } from '../../utils/auths';
 import Navigate from '../Router/Navigate';
+import API from '../../utils/api';
 
 const RegisterPage = () => {
   if (isAuthenticated()) {
@@ -143,14 +144,8 @@ function renderRegisterForm() {
       formData.append(key, input.type === 'file' ? input.files[0] : input.value);
     });
 
-    fetch('/api/users/register', {
-      method: 'POST',
-      body: formData,
-    })
-      .then((res) => res.json())
+    API.post('users/register', { body: formData })
       .then((data) => {
-        if (data.error) throw new Error(data.error);
-
         setAuthenticatedUser(data);
         Navigate('/');
       })
