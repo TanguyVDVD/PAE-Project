@@ -16,9 +16,10 @@ export default class API {
       },
     });
 
-    const json = await response.json();
+    const json = await response.json().catch(() => ({ error: 'Une erreur est survenue' }));
 
     if (json.error) throw new Error(json.error);
+    if (!response.ok) throw new Error(`Une erreur est survenue`);
 
     return json;
   }
