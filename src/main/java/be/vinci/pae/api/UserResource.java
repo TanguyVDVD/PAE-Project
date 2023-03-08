@@ -23,6 +23,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.util.Date;
 import org.glassfish.jersey.server.ContainerRequest;
 
 /**
@@ -78,8 +79,12 @@ public class UserResource {
 
     String token;
     try {
-      token = JWT.create().withIssuer("auth0")
-          .withClaim("user", userDTO.getId()).sign(this.jwtAlgorithm);
+      token = JWT.create()
+          .withIssuer("auth0")
+          .withClaim("user", userDTO.getId())
+          .withExpiresAt(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 7)))
+          .sign(this.jwtAlgorithm);
+
       ObjectNode publicUser = jsonMapper.createObjectNode()
           .put("token", token)
           .put("id", userDTO.getId())
