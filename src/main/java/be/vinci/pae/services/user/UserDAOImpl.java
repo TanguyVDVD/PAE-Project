@@ -111,13 +111,16 @@ public class UserDAOImpl implements UserDAO {
   /**
    * Get all the users.
    *
+   * @param query query to filter users
    * @return the list of all users
    */
-  public List<UserDTO> getAll() {
-    String request = "SELECT * FROM pae.users ORDER BY id_user";
+  public List<UserDTO> getAll(String query) {
+    String request = "SELECT * FROM pae.users WHERE LOWER(last_name || ' ' || first_name) LIKE CONCAT('%', ?, '%') ORDER BY id_user";
     ArrayList<UserDTO> users = new ArrayList<UserDTO>();
 
     try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+      ps.setString(1, query == null ? "" : query.toLowerCase());
+
       try (ResultSet resultSet = ps.executeQuery()) {
         while (resultSet.next()) {
           UserDTO user = myDomainFactory.getUser();

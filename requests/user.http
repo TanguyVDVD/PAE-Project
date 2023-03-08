@@ -52,3 +52,7 @@ Authorization: {{nonAdminToken}}
 ### Get a list of all users
 GET {{baseUrl}}/users
 Authorization: {{adminToken}}
+
+### Get a list of all users with query
+GET {{baseUrl}}/users?query=riez
+Authorization: {{adminToken}}

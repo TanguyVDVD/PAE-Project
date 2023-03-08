@@ -22,26 +22,37 @@ function renderAdminUsersPage() {
 
   div.innerHTML = `
     <h2>Utilisateurs</h2>
-    <div class="input-group">
+    <form class="input-group">
       <input type="text" class="form-control border-end-0" placeholder="Rechercher..." />
       <button class="btn border" type="submit">
         <i class="bi bi-search"></i>
       </button>
-    </div>
-    <div id="users-table">
-      <div class="text-center my-5">
-        <div class="spinner-border" role="status"></div>
-      </div>
-    </div>
+    </form>
+    <div id="users-table"></div>
   `;
+
+  div.querySelector('form').addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const search = e.target.querySelector('input').value;
+    fetchUsers(search);
+  });
 
   main.appendChild(div);
 }
 
-async function fetchUsers() {
+async function fetchUsers(query = '') {
+  const table = document.getElementById('users-table');
+
+  table.innerHTML = `
+    <div class="text-center my-5">
+      <div class="spinner-border" role="status"></div>
+    </div>
+  `;
+
   const currentUser = getAuthenticatedUser();
 
-  fetch('/api/users', {
+  fetch(`/api/users?query=${encodeURIComponent(query)}`, {
     headers: {
       Authorization: currentUser.token,
     },
@@ -69,7 +80,7 @@ async function fetchUsers() {
                     <td>${user.firstName}</td>
                     <td>${user.helper ? 'Aideur' : 'Utilisateur'}</td>
                     <td>
-                      <a href="#" class="btn btn-link" role="button">
+                      <a href="#" class="btn btn-link" role="button" data-id="${user.id}">
                         Voir plus
                       </a>
                     </td>
@@ -80,6 +91,13 @@ async function fetchUsers() {
           </tbody>
         </table>
       `;
+
+      table.querySelectorAll('a[data-id]').forEach((link) => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          Navigate(`/profile/${e.target.dataset.id}`);
+        });
+      });
     });
 }
 

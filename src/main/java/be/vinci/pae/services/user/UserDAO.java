@@ -35,8 +35,9 @@ public interface UserDAO {
   /**
    * Get all the users.
    *
-   * @return the list of all users
+   * @param query query to filter users
+   * @return the list of users
    */
-  List<UserDTO> getAll();
+  List<UserDTO> getAll(String query);
 
 }

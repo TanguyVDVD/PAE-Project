@@ -20,8 +20,9 @@ public interface UserUCC {
   /**
    * Returns a list of all users.
    *
+   * @param query query to filter users
    * @return a list of all users
    */
-  List<UserDTO> getAllUsers();
+  List<UserDTO> getUsers(String query);
 
 }

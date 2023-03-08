@@ -18,6 +18,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
@@ -39,13 +40,14 @@ public class UserResource {
   /**
    * Get a list of all users.
    *
+   * @param query query to filter users
    * @return a list of users
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public ArrayNode getUsers() {
-    return jsonMapper.valueToTree(userUCC.getAllUsers());
+  public ArrayNode getUsers(@QueryParam("query") String query) {
+    return jsonMapper.valueToTree(userUCC.getUsers(query));
   }
 
   /**

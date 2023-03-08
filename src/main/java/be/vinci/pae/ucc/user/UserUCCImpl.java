@@ -40,8 +40,8 @@ public class UserUCCImpl implements UserUCC {
   }
 
   @Override
-  public List<UserDTO> getAllUsers() {
-    return myUserDAO.getAll();
+  public List<UserDTO> getUsers(String query) {
+    return myUserDAO.getAll(query);
   }
 
 }
