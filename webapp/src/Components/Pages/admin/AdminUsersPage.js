@@ -38,67 +38,49 @@ function renderAdminUsersPage() {
   main.appendChild(div);
 }
 
-function fetchUsers() {
-  // TODO: fetch
-  const users = [
-    {
-      id: 1,
-      lastName: 'Riez',
-      firstName: 'Christophe',
-      isHelper: true,
-    },
-    {
-      id: 2,
-      lastName: 'Vdv',
-      firstName: 'Constantine',
-      isHelper: true,
-    },
-    {
-      id: 3,
-      lastName: 'lsh',
-      firstName: 'Bernard',
-      isHelper: true,
-    },
-    {
-      id: 4,
-      lastName: 'bdh',
-      firstName: 'Lise',
-      isHelper: false,
-    },
-  ];
+async function fetchUsers() {
+  const currentUser = getAuthenticatedUser();
 
-  document.getElementById('users-table').innerHTML = `
-    <table class="table table-striped table-hover mt-3 border border-1">
-      <thead>
-        <tr>
-          <th scope="col">ID</th>
-          <th scope="col">Nom</th>
-          <th scope="col">Prénom</th>
-          <th scope="col">Rôle</th>
-          <th scope="col">&nbsp;</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${users
-          .map(
-            (user) => `
-              <tr>
-                <th scope="row">${user.id}</th>
-                <td>${user.lastName}</td>
-                <td>${user.firstName}</td>
-                <td>${user.isHelper ? 'Aideur' : 'Utilisateur'}</td>
-                <td>
-                  <a href="#" class="btn btn-link" role="button">
-                    Voir plus
-                  </a>
-                </td>
-              </tr>
-            `,
-          )
-          .join('')}
-      </tbody>
-    </table>
-  `;
+  fetch('/api/users', {
+    headers: {
+      Authorization: currentUser.token,
+    },
+  })
+    .then((response) => response.json())
+    .then((users) => {
+      document.getElementById('users-table').innerHTML = `
+        <table class="table table-striped table-hover mt-3 border border-1">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Nom</th>
+              <th scope="col">Prénom</th>
+              <th scope="col">Rôle</th>
+              <th scope="col">&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${users
+              .map(
+                (user) => `
+                  <tr>
+                    <th scope="row">${user.id}</th>
+                    <td>${user.lastName}</td>
+                    <td>${user.firstName}</td>
+                    <td>${user.helper ? 'Aideur' : 'Utilisateur'}</td>
+                    <td>
+                      <a href="#" class="btn btn-link" role="button">
+                        Voir plus
+                      </a>
+                    </td>
+                  </tr>
+                `,
+              )
+              .join('')}
+          </tbody>
+        </table>
+      `;
+    });
 }
 
 export default AdminUsersPage;

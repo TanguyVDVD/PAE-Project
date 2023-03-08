@@ -15,7 +15,6 @@ import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.ext.Provider;
-import java.io.IOException;
 
 /**
  * Filter to check if the user is authorized to access the resource.
@@ -32,13 +31,13 @@ public class AuthorizationRequestFilter implements ContainerRequestFilter {
   private UserDAO myUserDAO;
 
   @Override
-  public void filter(ContainerRequestContext requestContext) throws IOException {
+  public void filter(ContainerRequestContext requestContext) {
     String token = requestContext.getHeaderString("Authorization");
 
     if (token == null) {
-      requestContext.abortWith(Response.status(Status.UNAUTHORIZED)
-          .entity("A token is needed to access this resource").build());
-
+      requestContext.abortWith(
+          Response.status(Status.UNAUTHORIZED).entity("A token is needed to access this resource")
+              .build());
     } else {
       DecodedJWT decodedToken = null;
 

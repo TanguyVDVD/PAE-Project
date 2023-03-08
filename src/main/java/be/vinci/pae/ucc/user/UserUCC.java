@@ -1,9 +1,10 @@
 package be.vinci.pae.ucc.user;
 
 import be.vinci.pae.domain.user.UserDTO;
+import java.util.List;
 
 /**
- * UserUCC interface that provide the login and logout mehtod of a user.
+ * UserUCC interface that provide the various methods for the user.
  */
 public interface UserUCC {
 
@@ -15,5 +16,12 @@ public interface UserUCC {
    * @return the user that has been logged
    */
   UserDTO login(String email, String password);
+
+  /**
+   * Returns a list of all users.
+   *
+   * @return a list of all users
+   */
+  List<UserDTO> getAllUsers();
 
 }

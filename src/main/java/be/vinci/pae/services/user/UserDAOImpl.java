@@ -7,6 +7,8 @@ import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * UserDAO class that implements UserDs interface Provide the different methods.
@@ -104,6 +106,38 @@ public class UserDAOImpl implements UserDAO {
     }
 
     return user;
+  }
+
+  /**
+   * Get all the users.
+   *
+   * @return the list of all users
+   */
+  public List<UserDTO> getAll() {
+    String request = "SELECT * FROM pae.users ORDER BY id_user";
+    ArrayList<UserDTO> users = new ArrayList<UserDTO>();
+
+    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+      try (ResultSet resultSet = ps.executeQuery()) {
+        while (resultSet.next()) {
+          UserDTO user = myDomainFactory.getUser();
+          user.setId(resultSet.getInt("id_user"));
+          user.setLastName(resultSet.getString("last_name"));
+          user.setFirstName(resultSet.getString("first_name"));
+          user.setPhoneNumber(resultSet.getString("phone_number"));
+          user.setEmail(resultSet.getString("email"));
+          user.setPassword(resultSet.getString("password"));
+          user.setPhoto(resultSet.getString("photo"));
+          user.setRegisterDate(resultSet.getDate("register_date"));
+          user.setIsHelper(resultSet.getBoolean("is_helper"));
+          users.add(user);
+        }
+      }
+    } catch (SQLException se) {
+      se.printStackTrace();
+    }
+
+    return users;
   }
 }
 

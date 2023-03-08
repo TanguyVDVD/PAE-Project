@@ -1,6 +1,7 @@
 package be.vinci.pae.api;
 
 import be.vinci.pae.api.filters.Authorize;
+import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.ucc.user.UserUCC;
 import be.vinci.pae.utils.Config;
@@ -8,6 +9,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -33,6 +35,18 @@ public class UserResource {
   private final ObjectMapper jsonMapper = new ObjectMapper();
   @Inject
   private UserUCC userUCC;
+
+  /**
+   * Get a list of all users.
+   *
+   * @return a list of users
+   */
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public ArrayNode getUsers() {
+    return jsonMapper.valueToTree(userUCC.getAllUsers());
+  }
 
   /**
    * Login a user with json object return the user created and the token.

@@ -4,6 +4,7 @@ import be.vinci.pae.domain.user.User;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.services.user.UserDAO;
 import jakarta.inject.Inject;
+import java.util.List;
 
 /**
  * UserUCCImpl class that implements the UserUCC interface provide the declared class login and
@@ -36,6 +37,11 @@ public class UserUCCImpl implements UserUCC {
     }
 
     return userDB;
+  }
+
+  @Override
+  public List<UserDTO> getAllUsers() {
+    return myUserDAO.getAll();
   }
 
 }
