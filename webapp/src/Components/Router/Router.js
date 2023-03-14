@@ -7,21 +7,19 @@ const Router = () => {
 };
 
 function onHistoryChange() {
-  window.addEventListener('popstate', () => {
-    const uri = window.location.pathname;
-    const componentToRender = routes[uri];
-    componentToRender();
-  });
+  window.addEventListener('popstate', renderRoute);
 }
 
 function onFrontendLoad() {
-  window.addEventListener('load', () => {
-    const uri = window.location.pathname;
-    const componentToRender = routes[uri];
-    if (!componentToRender) throw Error(`The ${uri} ressource does not exist.`);
+  window.addEventListener('load', renderRoute);
+}
 
-    componentToRender();
-  });
+function renderRoute() {
+  const uri = window.location.pathname;
+  const componentToRender = routes[uri];
+
+  if (!componentToRender) routes['/404']();
+  else componentToRender();
 }
 
 export default Router;
