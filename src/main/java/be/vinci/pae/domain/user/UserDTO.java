@@ -1,4 +1,4 @@
-package be.vinci.pae.domain;
+package be.vinci.pae.domain.user;
 
 /**
  * UserDTO interface. Representing a data transfer object (DTO) for a user in the domain The

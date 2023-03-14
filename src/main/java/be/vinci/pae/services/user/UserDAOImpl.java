@@ -1,25 +1,29 @@
-package be.vinci.pae.services;
+package be.vinci.pae.services.user;
 
 import be.vinci.pae.domain.DomainFactory;
-import be.vinci.pae.domain.UserDTO;
+import be.vinci.pae.domain.user.UserDTO;
+import be.vinci.pae.services.DALServices;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 
 /**
- * UserDS class that implements UserDs interface Provide the different methods.
+ * UserDAO class that implements UserDs interface Provide the different methods.
  */
-public class UserDSImpl implements UserDS {
+public class UserDAOImpl implements UserDAO {
 
   @Inject
   private DomainFactory myDomainFactory;
 
   @Inject
-  private DalServices myDalServices;
+  private DALServices myDALServices;
 
   /**
    * Insert a new user in the db.
@@ -31,7 +35,7 @@ public class UserDSImpl implements UserDS {
   public boolean insert(UserDTO userDTO) {
     String request = "INSERT INTO" + " pae.users VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-    try (PreparedStatement ps = myDalServices.getPreparedStatement(request)) {
+    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
       ps.setString(1, userDTO.getLastName());
       ps.setString(2, userDTO.getFirstName());
       ps.setString(3, userDTO.getPhoneNumber());
@@ -65,7 +69,7 @@ public class UserDSImpl implements UserDS {
     UserDTO user = myDomainFactory.getUser();
     String request = "SELECT * FROM pae.users WHERE email = ?;";
 
-    try (PreparedStatement ps = myDalServices.getPreparedStatement(request)) {
+    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
       ps.setString(1, email);
       user = setUser(ps, user);
     } catch (SQLException se) {
@@ -84,7 +88,7 @@ public class UserDSImpl implements UserDS {
     UserDTO user = myDomainFactory.getUser();
     String request = "SELECT * FROM pae.users WHERE phone_number = ?;";
 
-    try (PreparedStatement ps = myDalServices.getPreparedStatement(request)) {
+    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
       ps.setString(1, phoneNumber);
       user = setUser(ps, user);
     } catch (SQLException se) {
@@ -99,16 +103,16 @@ public class UserDSImpl implements UserDS {
   }
 
   /**
-   * Get the user by the email.
+   * Get the user by the id.
    *
    * @param id the user
    * @return the user corresponding to the email
    */
   public UserDTO getOneById(int id) {
     UserDTO user = myDomainFactory.getUser();
-    String request = "SELECT * FROM pae.users WHERE email = ?;";
+    String request = "SELECT * FROM pae.users WHERE id_user = ?;";
 
-    try (PreparedStatement ps = myDalServices.getPreparedStatement(request)) {
+    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
       ps.setInt(1, id);
       user = setUser(ps, user);
     } catch (SQLException se) {
@@ -150,5 +154,39 @@ public class UserDSImpl implements UserDS {
     return user;
   }
 
+  /**
+   * Get all the users.
+   *
+   * @param query query to filter users
+   * @return the list of all users
+   */
+  public List<UserDTO> getAll(String query) {
+    String request = "SELECT * FROM pae.users WHERE LOWER(last_name || ' ' || first_name) LIKE CONCAT('%', ?, '%') ORDER BY id_user";
+    ArrayList<UserDTO> users = new ArrayList<UserDTO>();
+
+    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+      ps.setString(1, query == null ? "" : query.toLowerCase());
+
+      try (ResultSet resultSet = ps.executeQuery()) {
+        while (resultSet.next()) {
+          UserDTO user = myDomainFactory.getUser();
+          user.setId(resultSet.getInt("id_user"));
+          user.setLastName(resultSet.getString("last_name"));
+          user.setFirstName(resultSet.getString("first_name"));
+          user.setPhoneNumber(resultSet.getString("phone_number"));
+          user.setEmail(resultSet.getString("email"));
+          user.setPassword(resultSet.getString("password"));
+          user.setPhoto(resultSet.getString("photo"));
+          user.setRegisterDate(String.valueOf(resultSet.getDate("register_date")));
+          user.setIsHelper(resultSet.getBoolean("is_helper"));
+          users.add(user);
+        }
+      }
+    } catch (SQLException se) {
+      se.printStackTrace();
+    }
+
+    return users;
+  }
 }
 

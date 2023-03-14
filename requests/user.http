@@ -1,19 +1,36 @@
-### Login the default user
+### Login as an admin
 POST {{baseUrl}}/users/login
 Content-Type: application/json
 
 {
-  "email":"constantine@ressourcerie.be",
-  "password":"pwdToHash"
+  "email": "riez@ressourcerie.be",
+  "password": "pwdToHash"
 }
+
+> {%
+  client.global.set("adminToken", response.body.token);
+%}
+
+### Login as a non admin user
+POST {{baseUrl}}/users/login
+Content-Type: application/json
+
+{
+  "email": "lise@ressourcerie.be",
+  "password": "pwdToHash"
+}
+
+> {%
+  client.global.set("nonAdminToken", response.body.token);
+%}
 
 ### Login the wrong email user
 POST {{baseUrl}}/users/login
 Content-Type: application/json
 
 {
-  "email":"tanguy@ressourcerie.be",
-  "password":"pwdToHash"
+  "email": "tanguy@ressourcerie.be",
+  "password": "pwdToHash"
 }
 
 ### Login the wrong mdp user
@@ -21,8 +38,8 @@ POST {{baseUrl}}/users/login
 Content-Type: application/json
 
 {
-  "email":"constantine@ressourcerie.be",
-  "password":"pwd"
+  "email": "constantine@ressourcerie.be",
+  "password": "pwd"
 }
 
 ### Login new user
@@ -40,4 +57,42 @@ Content-Type: application/json
   "is_helper":true
 }
 
+### Login new user
+POST {{baseUrl}}/users/register
+Content-Type: application/json
 
+{
+  "last_name":"cruise",
+  "first_name":"tom",
+  "phone_number":"0456454567",
+  "email":"tom@ressourcerie.be",
+  "password":"pwd",
+  "photo":"photo",
+  "register_date":"2021-05-25",
+  "is_helper":false
+}
+
+### Login non admin
+POST {{baseUrl}}/users/login
+Content-Type: application/json
+
+{
+  "email": "tom@ressourcerie.be",
+  "password": "pwd"
+}
+
+
+
+
+### Get the user
+GET {{baseUrl}}/users/my
+Content-Type: application/json
+Authorization: {{nonAdminToken}}
+
+### Get a list of all users
+GET {{baseUrl}}/users
+Authorization: {{adminToken}}
+
+### Get a list of all users with query
+GET {{baseUrl}}/users?query=riez
+Authorization: {{adminToken}}

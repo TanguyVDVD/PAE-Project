@@ -1,23 +1,32 @@
 package be.vinci.pae.api;
 
+
+import be.vinci.pae.api.filters.Authorize;
+import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.domain.DomainFactory;
-import be.vinci.pae.domain.UserDTO;
-import be.vinci.pae.ucc.UserUCC;
+import be.vinci.pae.domain.user.UserDTO;
+import be.vinci.pae.ucc.user.UserUCC;
 import be.vinci.pae.utils.Config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.util.Date;
+import org.glassfish.jersey.server.ContainerRequest;
 
 /**
  * UserResource class.
@@ -33,6 +42,19 @@ public class UserResource {
 
   @Inject
   private DomainFactory myDomainFactory;
+
+  /**
+   * Get a list of all users.
+   *
+   * @param query query to filter users
+   * @return a list of users
+   */
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public ArrayNode getUsers(@QueryParam("query") String query) {
+    return jsonMapper.valueToTree(userUCC.getUsers(query));
+  }
 
   /**
    * Login a user with json object return the user created and the token.
@@ -111,18 +133,26 @@ public class UserResource {
   /**
    * Method that create a token for a user.
    *
-   * @param userToCreateToken user to create a token with
+   * @param userDTO user to create a token with
    * @return the token or null if there is a problem
    */
-  public ObjectNode createToken(UserDTO userToCreateToken) {
+  public ObjectNode createToken(UserDTO userDTO) {
     String token;
     try {
-      token = JWT.create().withIssuer("auth0")
-          .withClaim("user", userToCreateToken.getId()).sign(this.jwtAlgorithm);
+
+      token = JWT.create()
+          .withIssuer("auth0")
+          .withClaim("user", userDTO.getId())
+          .withExpiresAt(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 7)))
+          .sign(this.jwtAlgorithm);
+
       ObjectNode publicUser = jsonMapper.createObjectNode()
           .put("token", token)
-          .put("id", userToCreateToken.getId())
-          .put("helper", userToCreateToken.isHelper());
+          .put("id", userDTO.getId())
+          .put("firstName", userDTO.getFirstName())
+          .put("lastName", userDTO.getLastName())
+          .put("isHelper", userDTO.isHelper());
+
       return publicUser;
 
     } catch (Exception e) {
@@ -131,4 +161,24 @@ public class UserResource {
     }
   }
 
+  /**
+   * Retrieve the logged-in user's information.
+   *
+   * @param request the request
+   * @return the user's information
+   */
+  @GET
+  @Path("/my")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Authorize
+  public ObjectNode getUserInfo(@Context ContainerRequest request) {
+    UserDTO user = (UserDTO) request.getProperty("user");
+    ObjectNode publicUser = jsonMapper.createObjectNode()
+        .put("id", user.getId())
+        .put("firstName", user.getFirstName())
+        .put("lastName", user.getLastName())
+        .put("isHelper", user.isHelper());
+
+    return publicUser;
+  }
 }

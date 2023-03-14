@@ -1,4 +1,4 @@
-package be.vinci.pae.domain;
+package be.vinci.pae.domain.user;
 
 /**
  * User interface representing a user in the domain.

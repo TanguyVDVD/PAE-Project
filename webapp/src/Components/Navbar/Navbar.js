@@ -21,31 +21,31 @@ const Navbar = () => {
   const navbar = `
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand nav-link" href="#" data-uri="/">
           <img src="${logo}" alt="" width="50" height="45" />
         </a>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="#">Accueil</a>
+              <a class="nav-link" href="#" data-uri="/">Accueil</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Proposer un objet</a>
+              <a class="nav-link" href="#" data-uri="/propose">Proposer un objet</a>
             </li>
             ${
               authenticatedUser && authenticatedUser.isHelper
                 ? `
                   <li class="nav-item">
-                    <a class="nav-link" href="#">Propositions</a>
+                    <a class="nav-link" href="#" data-uri="/admin/propositions">Propositions</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="#">Objets</a>
+                    <a class="nav-link" href="#" data-uri="/admin/objects">Objets</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="#">Utilisateurs</a>
+                    <a class="nav-link" href="#" data-uri="/admin/users">Utilisateurs</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="#">Tableau de bord</a>
+                    <a class="nav-link" href="#" data-uri="/admin">Tableau de bord</a>
                   </li>
                 `
                 : ''
@@ -105,7 +105,7 @@ const Navbar = () => {
                       height="32"
                       class="rounded-circle me-1"
                     />
-                    <span>${authenticatedUser.firstname} ${authenticatedUser.lastname}</span>
+                    <span>${authenticatedUser.firstName} ${authenticatedUser.lastName}</span>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end shadow">
                     <li><a class="dropdown-item" href="#" data-uri="/profile">Mon profil</a></li>
@@ -134,7 +134,7 @@ const Navbar = () => {
   `;
   navbarWrapper.innerHTML = navbar;
 
-  navbarWrapper.querySelectorAll('.dropdown-item[data-uri]').forEach((link) => {
+  navbarWrapper.querySelectorAll('[data-uri]').forEach((link) => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
       Navigate(link.dataset.uri);

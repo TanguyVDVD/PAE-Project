@@ -1,0 +1,30 @@
+package be.vinci.pae.ucc.user;
+
+import be.vinci.pae.domain.user.UserDTO;
+import java.util.List;
+
+/**
+ * UserUCC interface that provide the various methods for the user.
+ */
+public interface UserUCC {
+
+  /**
+   * Method that login a user if the parameters are correct.
+   *
+   * @param email    the email of user
+   * @param password the password of user
+   * @return the user that has been logged
+   */
+  UserDTO login(String email, String password);
+
+  UserDTO register(UserDTO userDTO);
+
+  /**
+   * Returns a list of all users.
+   *
+   * @param query query to filter users
+   * @return a list of all users
+   */
+  List<UserDTO> getUsers(String query);
+
+}

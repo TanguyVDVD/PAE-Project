@@ -1,11 +1,13 @@
-package be.vinci.pae.ucc;
+package be.vinci.pae.ucc.user;
 
-import be.vinci.pae.domain.User;
-import be.vinci.pae.domain.UserDTO;
-import be.vinci.pae.services.UserDS;
+import be.vinci.pae.domain.user.User;
+import be.vinci.pae.domain.user.UserDTO;
+import be.vinci.pae.services.user.UserDAO;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
+import java.util.List;
+
 
 /**
  * UserUCCImpl class that implements the UserUCC interface provide the declared class login and
@@ -15,7 +17,7 @@ import jakarta.ws.rs.core.Response;
 public class UserUCCImpl implements UserUCC {
 
   @Inject
-  private UserDS myUserDS;
+  private UserDAO myUserDAO;
 
   /**
    * Method that login a user if the parameters are correct.
@@ -27,7 +29,7 @@ public class UserUCCImpl implements UserUCC {
   @Override
   public UserDTO login(String email, String password) {
 
-    User userDB = (User) myUserDS.getOneByEmail(email);
+    User userDB = (User) myUserDAO.getOneByEmail(email);
 
     if (userDB == null) {
       return null;
@@ -43,7 +45,7 @@ public class UserUCCImpl implements UserUCC {
   @Override
   public UserDTO register(UserDTO userDTO) {
 
-    User userInDB = (User) myUserDS.getOneByPhoneNumber(userDTO.getPhoneNumber());
+    User userInDB = (User) myUserDAO.getOneByPhoneNumber(userDTO.getPhoneNumber());
 
     if (userInDB != null) {
       throw new WebApplicationException("user already exist", Response.Status.BAD_REQUEST);
@@ -54,11 +56,15 @@ public class UserUCCImpl implements UserUCC {
     UserDTO userDtoToInsert = (UserDTO) userTemp;
     System.out.println(userDtoToInsert.getPassword());
 
-    if (!myUserDS.insert(userDtoToInsert)) {
+    if (!myUserDAO.insert(userDtoToInsert)) {
       return null;
     }
 
     return userDtoToInsert;
+  }
+
+  public List<UserDTO> getUsers(String query) {
+    return myUserDAO.getAll(query);
   }
 
 }
