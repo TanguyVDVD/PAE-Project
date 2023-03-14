@@ -1,3 +1,4 @@
+import PageNotFoundPage from '../Pages/_PageNotFoundPage';
 import HomePage from '../Pages/HomePage';
 import LoginPage from '../Pages/LoginPage';
 import RegisterPage from '../Pages/RegisterPage';
@@ -5,6 +6,8 @@ import LogoutPage from '../Pages/LogoutPage';
 import AdminUsersPage from '../Pages/admin/AdminUsersPage';
 
 const routes = {
+  '/404': PageNotFoundPage,
+
   '/': HomePage,
   '/login': LoginPage,
   '/register': RegisterPage,
