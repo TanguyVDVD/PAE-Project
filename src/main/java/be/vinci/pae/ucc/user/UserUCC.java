@@ -17,6 +17,8 @@ public interface UserUCC {
    */
   UserDTO login(String email, String password);
 
+  UserDTO register(UserDTO userDTO);
+
   /**
    * Returns a list of all users.
    *

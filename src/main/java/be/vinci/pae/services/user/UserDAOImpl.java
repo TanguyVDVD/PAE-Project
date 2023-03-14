@@ -7,8 +7,12 @@ import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
 
 /**
  * UserDAO class that implements UserDs interface Provide the different methods.
@@ -29,7 +33,30 @@ public class UserDAOImpl implements UserDAO {
    */
   @Override
   public boolean insert(UserDTO userDTO) {
-    return false;
+    String request = "INSERT INTO" + " pae.users VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?);";
+
+    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+      ps.setString(1, userDTO.getLastName());
+      ps.setString(2, userDTO.getFirstName());
+      ps.setString(3, userDTO.getPhoneNumber());
+      ps.setString(4, userDTO.getEmail());
+      ps.setString(5, userDTO.getPassword());
+      ps.setString(6, userDTO.getPhoto());
+
+      SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+      Date parsed = format.parse("20110210");
+      java.sql.Date sql = new java.sql.Date(parsed.getTime());
+
+      ps.setDate(7, sql);
+      ps.setBoolean(8, userDTO.isHelper());
+      ps.executeUpdate();
+    } catch (SQLException se) {
+      se.printStackTrace();
+      return false;
+    } catch (ParseException e) {
+      throw new RuntimeException(e);
+    }
+    return true;
   }
 
   /**
@@ -50,6 +77,25 @@ public class UserDAOImpl implements UserDAO {
     }
 
     if (user.getEmail() == null) {
+      return null;
+    }
+
+    return user;
+  }
+
+  @Override
+  public UserDTO getOneByPhoneNumber(String phoneNumber) {
+    UserDTO user = myDomainFactory.getUser();
+    String request = "SELECT * FROM pae.users WHERE phone_number = ?;";
+
+    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+      ps.setString(1, phoneNumber);
+      user = setUser(ps, user);
+    } catch (SQLException se) {
+      se.printStackTrace();
+    }
+
+    if (user.getPhoneNumber() == null) {
       return null;
     }
 
@@ -99,7 +145,7 @@ public class UserDAOImpl implements UserDAO {
       user.setEmail(resultSet.getString("email"));
       user.setPassword(resultSet.getString("password"));
       user.setPhoto(resultSet.getString("photo"));
-      user.setRegisterDate(resultSet.getDate("register_date"));
+      user.setRegisterDate(resultSet.getString("register_date"));
       user.setIsHelper(resultSet.getBoolean("is_helper"));
     } catch (SQLException se) {
       se.printStackTrace();
@@ -131,7 +177,7 @@ public class UserDAOImpl implements UserDAO {
           user.setEmail(resultSet.getString("email"));
           user.setPassword(resultSet.getString("password"));
           user.setPhoto(resultSet.getString("photo"));
-          user.setRegisterDate(resultSet.getDate("register_date"));
+          user.setRegisterDate(String.valueOf(resultSet.getDate("register_date")));
           user.setIsHelper(resultSet.getBoolean("is_helper"));
           users.add(user);
         }

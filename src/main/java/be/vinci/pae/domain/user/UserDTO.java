@@ -1,7 +1,5 @@
 package be.vinci.pae.domain.user;
 
-import java.util.Date;
-
 /**
  * UserDTO interface. Representing a data transfer object (DTO) for a user in the domain The
  * interface only contains getter and setter.
@@ -111,14 +109,14 @@ public interface UserDTO {
    *
    * @return a date corresponding to the register date of a user
    */
-  Date getRegisterDate();
+  String getRegisterDate();
 
   /**
    * set the register date of a user.
    *
    * @param registerDate the register date of a user
    */
-  void setRegisterDate(Date registerDate);
+  void setRegisterDate(String registerDate);
 
   /**
    * Return a boolean corresponding if a user is a helper.

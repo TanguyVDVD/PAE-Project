@@ -1,7 +1,9 @@
 package be.vinci.pae.api;
 
+
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
+import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.ucc.user.UserUCC;
 import be.vinci.pae.utils.Config;
@@ -37,6 +39,9 @@ public class UserResource {
   private final ObjectMapper jsonMapper = new ObjectMapper();
   @Inject
   private UserUCC userUCC;
+
+  @Inject
+  private DomainFactory myDomainFactory;
 
   /**
    * Get a list of all users.
@@ -77,8 +82,64 @@ public class UserResource {
           Response.Status.UNAUTHORIZED);
     }
 
+    return createToken(userDTO);
+  }
+
+  /**
+   * Register a user with json object return the user created and the token.
+   *
+   * @param json a json object
+   * @return a user when is created
+   */
+  @Path("register")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @POST
+  public ObjectNode register(JsonNode json) {
+
+    if (!json.hasNonNull("last_name") || !json.hasNonNull("first_name") || !json.hasNonNull(
+        "phone_number") || !json.hasNonNull("email") || !json.hasNonNull("password")
+        || !json.hasNonNull("photo") || !json.hasNonNull("register_date") || !json.hasNonNull(
+        "is_helper")) {
+      throw new WebApplicationException("All the field are required", Response.Status.BAD_REQUEST);
+    }
+
+    String lastName = json.get("last_name").asText();
+    String firstName = json.get("first_name").asText();
+    String phoneNumber = json.get("phone_number").asText();
+    String email = json.get("email").asText();
+    String password = json.get("password").asText();
+    String photo = json.get("photo").asText();
+    String registerDate = json.get("register_date").asText();
+    boolean isHelper = json.get("is_helper").asBoolean();
+
+    UserDTO userRegister = myDomainFactory.getUser();
+
+    userRegister.setLastName(lastName);
+    userRegister.setFirstName(firstName);
+    userRegister.setPhoneNumber(phoneNumber);
+    userRegister.setEmail(email);
+    userRegister.setPassword(password);
+    userRegister.setPhoto(photo);
+    userRegister.setRegisterDate(registerDate);
+    userRegister.setIsHelper(isHelper);
+
+    UserDTO userAfterRegister = userUCC.register(userRegister);
+
+    return createToken(userAfterRegister);
+
+  }
+
+  /**
+   * Method that create a token for a user.
+   *
+   * @param userDTO user to create a token with
+   * @return the token or null if there is a problem
+   */
+  public ObjectNode createToken(UserDTO userDTO) {
     String token;
     try {
+
       token = JWT.create()
           .withIssuer("auth0")
           .withClaim("user", userDTO.getId())
