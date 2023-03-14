@@ -26,9 +26,9 @@ public class DALServicesImpl implements DALServices {
    */
   @Override
   public void connectDatabase() {
-    String DATABASE_URL = Config.getProperty("DatabaseUrl");
-    String DATABASE_USER = Config.getProperty("DatabaseUser");
-    String DATABASE_PASSWORD = Config.getProperty("DatabasePassword");
+    String databaseUrl = Config.getProperty("DatabaseUrl");
+    String databaseUser = Config.getProperty("DatabaseUser");
+    String databasePassword = Config.getProperty("DatabasePassword");
 
     // Load the PostgresSQL driver
     try {
@@ -40,7 +40,7 @@ public class DALServicesImpl implements DALServices {
 
     // Connection to the database
     try {
-      DB_CONNECTION = DriverManager.getConnection(DATABASE_URL, DATABASE_USER, DATABASE_PASSWORD);
+      DB_CONNECTION = DriverManager.getConnection(databaseUrl, databaseUser, databasePassword);
     } catch (SQLException e) {
       System.out.println("Unable to reach the server!");
       System.exit(1);
