@@ -6,6 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * ObjectTypeDAO class that implements ObjectTypeDAO interface Provide the different methods.
+ */
 public class ObjectTypeDAOImpl implements ObjectTypeDAO {
 
   @Inject

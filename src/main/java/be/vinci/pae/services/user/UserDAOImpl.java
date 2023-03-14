@@ -15,7 +15,7 @@ import java.util.List;
 
 
 /**
- * UserDAO class that implements UserDs interface Provide the different methods.
+ * UserDAOImpl class that implements UserDAO interface Provide the different methods.
  */
 public class UserDAOImpl implements UserDAO {
 
