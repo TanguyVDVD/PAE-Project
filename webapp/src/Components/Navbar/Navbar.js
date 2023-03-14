@@ -33,7 +33,7 @@ const Navbar = () => {
               <a class="nav-link" href="#" data-uri="/propose">Proposer un objet</a>
             </li>
             ${
-              authenticatedUser && authenticatedUser.isHelper
+              authenticatedUser && authenticatedUser.helper
                 ? `
                   <li class="nav-item">
                     <a class="nav-link" href="#" data-uri="/admin/propositions">Propositions</a>

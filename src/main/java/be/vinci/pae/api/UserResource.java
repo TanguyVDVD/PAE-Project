@@ -139,21 +139,14 @@ public class UserResource {
   public ObjectNode createToken(UserDTO userDTO) {
     String token;
     try {
-
       token = JWT.create()
           .withIssuer("auth0")
           .withClaim("user", userDTO.getId())
           .withExpiresAt(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 7)))
           .sign(this.jwtAlgorithm);
 
-      ObjectNode publicUser = jsonMapper.createObjectNode()
-          .put("token", token)
-          .put("id", userDTO.getId())
-          .put("firstName", userDTO.getFirstName())
-          .put("lastName", userDTO.getLastName())
-          .put("isHelper", userDTO.isHelper());
-
-      return publicUser;
+      return jsonMapper.convertValue(userDTO, ObjectNode.class)
+          .put("token", token);
 
     } catch (Exception e) {
       System.out.println("Unable to create token");
@@ -172,13 +165,8 @@ public class UserResource {
   @Produces(MediaType.APPLICATION_JSON)
   @Authorize
   public ObjectNode getUserInfo(@Context ContainerRequest request) {
-    UserDTO user = (UserDTO) request.getProperty("user");
-    ObjectNode publicUser = jsonMapper.createObjectNode()
-        .put("id", user.getId())
-        .put("firstName", user.getFirstName())
-        .put("lastName", user.getLastName())
-        .put("isHelper", user.isHelper());
+    UserDTO userDTO = (UserDTO) request.getProperty("user");
 
-    return publicUser;
+    return jsonMapper.convertValue(userDTO, ObjectNode.class);
   }
 }
