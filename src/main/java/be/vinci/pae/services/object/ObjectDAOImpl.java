@@ -3,13 +3,13 @@ package be.vinci.pae.services.object;
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.services.DALServices;
+import be.vinci.pae.services.availability.AvailabilityDAO;
 import be.vinci.pae.services.user.UserDAO;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,6 +25,9 @@ public class ObjectDAOImpl implements ObjectDAO {
 
   @Inject
   private UserDAO myUserDao;
+
+  @Inject
+  private AvailabilityDAO myAvailabilityDao;
 
   /**
    * Map a ResultSet to an ObjectDTO.
@@ -51,7 +54,7 @@ public class ObjectDAOImpl implements ObjectDAO {
       object.setStatus(resultSet.getString("status"));
       object.setReasonForRefusal(resultSet.getString("reason_for_refusal"));
       object.setPhoneNumber(resultSet.getString("phone_number"));
-      object.setPickupDate(getPickupDateById(resultSet.getInt("pickup_date")));
+      object.setPickupDate(myAvailabilityDao.getOneById(resultSet.getInt("pickup_date")));
       object.setUser(myUserDao.getOneById(resultSet.getInt("id_user")));
       object.setObjectType(getObjectTypeById(resultSet.getInt("id_object_type")));
 
@@ -77,30 +80,6 @@ public class ObjectDAOImpl implements ObjectDAO {
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           rs.getString("label");
-        }
-      }
-    } catch (SQLException se) {
-      se.printStackTrace();
-    }
-
-    return null;
-  }
-
-  /**
-   * Get the pickup date by the id.
-   *
-   * @param id of the pickup date
-   * @return the pickup date corresponding to the id
-   */
-  public Date getPickupDateById(int id) {
-    String request = "SELECT date FROM pae.availability WHERE id_availability = ?";
-
-    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
-      ps.setInt(1, id);
-
-      try (ResultSet rs = ps.executeQuery()) {
-        if (rs.next()) {
-          rs.getDate("date");
         }
       }
     } catch (SQLException se) {

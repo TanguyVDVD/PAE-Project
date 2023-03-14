@@ -23,7 +23,6 @@ public class ObjectImpl implements Object {
   private String status;
   private String reasonForRefusal;
   private String phoneNumber;
-
   private Date pickupDate;
   private UserDTO user;
   private String objectType;
