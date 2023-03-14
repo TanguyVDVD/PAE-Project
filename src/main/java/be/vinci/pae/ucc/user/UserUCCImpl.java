@@ -44,10 +44,11 @@ public class UserUCCImpl implements UserUCC {
 
   @Override
   public UserDTO register(UserDTO userDTO) {
+    if (myUserDAO.getOneByEmail(userDTO.getEmail()) != null) {
+      throw new WebApplicationException("Adresse mail déja utilisé", Response.Status.BAD_REQUEST);
+    }
 
-    User userInDB = (User) myUserDAO.getOneByPhoneNumber(userDTO.getPhoneNumber());
-
-    if (userInDB != null) {
+    if (myUserDAO.getOneByPhoneNumber(userDTO.getPhoneNumber()) != null) {
       throw new WebApplicationException("user already exist", Response.Status.BAD_REQUEST);
     }
 
