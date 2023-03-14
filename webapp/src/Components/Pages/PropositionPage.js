@@ -72,48 +72,42 @@ function renderPropositionPage() {
 
                         <h4>Photo de l'objet</h4>
 
-                    <div class="form-group">
-                        <div class="input-group">
-                            <input type="text" id="fileName" class="form-control" readonly ng-model="fileName" ng-click="browse()">
-                            <span class="input-group-btn">
-                            <button type="button" class="btn btn-secondary" ng-click="browse()">Browse</button>
-                            </span>
-                        </div>                
-                        <label for="fileName">Select a file</label>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" id="fileName" class="form-control" readonly ng-model="fileName" ng-click="browse()">
+                                <span class="input-group-btn">
+                                <button type="button" class="btn btn-secondary" ng-click="browse()">Browse</button>
+                                </span>
+                            </div>                
+                            <label for="fileName">Select a file</label>
+                        </div>
                     </div>
 
                 </div>
 
-            </div>
-
-            <div class="form-group">
-                <label for="exampleFormControlTextarea1">Description de l'objet(max. 120 caractères)</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" ></textarea>
-            </div>
-
-            <div class="form-group text-center">
-            <br>
-            <button type="button" class="btn btn-secondary btn-lg btn-block">S'inscrire</button>
-            
-            <button type="button" class="btn btn-secondary btn-lg btn-block">Se connecter</button>
-            </div>
-
-            <br>
-
-            <p class="text-center">ou</p>
-
-            <div class="form-group">
-                <div class="input-group w-auto">
-                <input type="text" class="form-control" placeholder="Numéro de téléphone"/>
-                <button class="btn btn-secondary" type="button" id="button-addon1" data-mdb-ripple-color="dark">
-                    Soumettre anonymement
-                </button>
+                <div class="form-group">
+                    <label for="exampleFormControlTextarea1">Description de l'objet(max. 120 caractères)</label>
+                    <textarea class="form-control" id="exampleFormControlTextarea1" ></textarea>
                 </div>
+
+                <div class="form-group text-center">
+                    <br>
+                    <button type="button" class="btn btn-secondary btn-lg btn-block">S'inscrire</button>
+                    <button type="button" class="btn btn-secondary btn-lg btn-block">Se connecter</button>
+                </div>
+
+                <br>
+
+                <p class="text-center">ou</p>
+
+                <div class="form-group">
+                    <div class="input-group w-auto">
+                        <input type="text" class="form-control" placeholder="Numéro de téléphone"/>
+                        <button class="btn btn-secondary" type="button" id="button-addon1" data-mdb-ripple-color="dark">Soumettre anonymement</button>
+                    </div>
+                </div>
+
             </div>
-
-        </div>
-            
-
         </form>
     
     `
