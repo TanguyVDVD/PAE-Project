@@ -1,6 +1,7 @@
 import { clearPage } from '../../utils/render';
 import { isAuthenticated, setAuthenticatedUser } from '../../utils/auths';
 import Navigate from '../Router/Navigate';
+import API from '../../utils/api';
 
 const RegisterPage = () => {
   if (isAuthenticated()) {
@@ -143,17 +144,8 @@ function renderRegisterForm() {
       password: registerForm.querySelector('#input-password').value,
     };
 
-    fetch('/api/users/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((res) => res.json())
+    API.post('users/register', { body: formData })
       .then((data) => {
-        if (data.error) throw new Error(data.error);
-
         setAuthenticatedUser(data);
         Navigate('/');
       })

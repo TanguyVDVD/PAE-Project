@@ -1,6 +1,7 @@
 import { clearPage } from '../../utils/render';
 import { isAuthenticated, setAuthenticatedUser } from '../../utils/auths';
 import Navigate from '../Router/Navigate';
+import API from '../../utils/api';
 
 const LoginPage = () => {
   if (isAuthenticated()) {
@@ -74,17 +75,8 @@ function renderLoginForm() {
     const password = document.querySelector('#input-password').value;
     const remember = document.querySelector('#input-remember').checked;
 
-    fetch('/api/users/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    })
-      .then((res) => res.json())
+    API.post('users/login', { body: { email, password } })
       .then((data) => {
-        if (data.error) throw new Error(data.error);
-
         setAuthenticatedUser(data, remember);
         Navigate('/');
       })

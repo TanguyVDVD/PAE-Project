@@ -1,6 +1,7 @@
 import Navigate from '../../Router/Navigate';
 import { getAuthenticatedUser } from '../../../utils/auths';
 import { clearPage } from '../../../utils/render';
+import API from '../../../utils/api';
 
 const AdminUsersPage = () => {
   const user = getAuthenticatedUser();
@@ -50,16 +51,8 @@ async function fetchUsers(query = '') {
     </div>
   `;
 
-  const currentUser = getAuthenticatedUser();
-
-  fetch(`/api/users?query=${encodeURIComponent(query)}`, {
-    headers: {
-      Authorization: currentUser.token,
-    },
-  })
-    .then((response) => response.json())
-    .then((users) => {
-      document.getElementById('users-table').innerHTML = `
+  API.get(`users?query=${encodeURIComponent(query)}`).then((users) => {
+    document.getElementById('users-table').innerHTML = `
         <table class="table table-striped table-hover mt-3 border border-1">
           <thead>
             <tr>
@@ -92,13 +85,13 @@ async function fetchUsers(query = '') {
         </table>
       `;
 
-      table.querySelectorAll('a[data-id]').forEach((link) => {
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          Navigate(`/profile/${e.target.dataset.id}`);
-        });
+    table.querySelectorAll('a[data-id]').forEach((link) => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        Navigate(`/profile/${e.target.dataset.id}`);
       });
     });
+  });
 }
 
 export default AdminUsersPage;
