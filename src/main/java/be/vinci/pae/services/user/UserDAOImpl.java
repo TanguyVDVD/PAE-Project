@@ -26,6 +26,32 @@ public class UserDAOImpl implements UserDAO {
   private DALServices myDALServices;
 
   /**
+   * Map a ResultSet to a UserDTO.
+   *
+   * @param resultSet the ResultSet
+   * @return the UserDTO
+   */
+  public UserDTO dtoFromRS(ResultSet resultSet) {
+    UserDTO user = myDomainFactory.getUser();
+
+    try {
+      user.setId(resultSet.getInt("id_user"));
+      user.setLastName(resultSet.getString("last_name"));
+      user.setFirstName(resultSet.getString("first_name"));
+      user.setPhoneNumber(resultSet.getString("phone_number"));
+      user.setEmail(resultSet.getString("email"));
+      user.setPassword(resultSet.getString("password"));
+      user.setPhoto(resultSet.getString("photo"));
+      user.setRegisterDate(resultSet.getString("register_date"));
+      user.setIsHelper(resultSet.getBoolean("is_helper"));
+    } catch (SQLException se) {
+      se.printStackTrace();
+    }
+
+    return user;
+  }
+
+  /**
    * Insert a new user in the db.
    *
    * @param userDTO the user to insert in the db
@@ -66,40 +92,40 @@ public class UserDAOImpl implements UserDAO {
    * @return the user corresponding to the email
    */
   public UserDTO getOneByEmail(String email) {
-    UserDTO user = myDomainFactory.getUser();
-    String request = "SELECT * FROM pae.users WHERE email = ?;";
+    String request = "SELECT * FROM pae.users WHERE email = ?";
 
     try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
       ps.setString(1, email);
-      user = setUser(ps, user);
+
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          return dtoFromRS(rs);
+        }
+      }
     } catch (SQLException se) {
       se.printStackTrace();
     }
 
-    if (user.getEmail() == null) {
-      return null;
-    }
-
-    return user;
+    return null;
   }
 
   @Override
   public UserDTO getOneByPhoneNumber(String phoneNumber) {
-    UserDTO user = myDomainFactory.getUser();
-    String request = "SELECT * FROM pae.users WHERE phone_number = ?;";
+    String request = "SELECT * FROM pae.users WHERE phone_number = ?";
 
     try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
       ps.setString(1, phoneNumber);
-      user = setUser(ps, user);
+
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          return dtoFromRS(rs);
+        }
+      }
     } catch (SQLException se) {
       se.printStackTrace();
     }
 
-    if (user.getPhoneNumber() == null) {
-      return null;
-    }
-
-    return user;
+    return null;
   }
 
   /**
@@ -109,50 +135,21 @@ public class UserDAOImpl implements UserDAO {
    * @return the user corresponding to the email
    */
   public UserDTO getOneById(int id) {
-    UserDTO user = myDomainFactory.getUser();
-    String request = "SELECT * FROM pae.users WHERE id_user = ?;";
+    String request = "SELECT * FROM pae.users WHERE id_user = ?";
 
     try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
       ps.setInt(1, id);
-      user = setUser(ps, user);
-    } catch (SQLException se) {
-      se.printStackTrace();
-    }
 
-    if (user.getEmail() == null) {
-      return null;
-    }
-
-    return user;
-  }
-
-  /**
-   * Set up the user.
-   *
-   * @param preparedStatement the PreparedStatement
-   * @param user              the user to set up
-   * @return the user set up
-   */
-  public UserDTO setUser(PreparedStatement preparedStatement, UserDTO user) {
-    try (ResultSet resultSet = preparedStatement.executeQuery()) {
-      if (!resultSet.next()) {
-        return user;
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          return dtoFromRS(rs);
+        }
       }
-
-      user.setId(resultSet.getInt("id_user"));
-      user.setLastName(resultSet.getString("last_name"));
-      user.setFirstName(resultSet.getString("first_name"));
-      user.setPhoneNumber(resultSet.getString("phone_number"));
-      user.setEmail(resultSet.getString("email"));
-      user.setPassword(resultSet.getString("password"));
-      user.setPhoto(resultSet.getString("photo"));
-      user.setRegisterDate(resultSet.getString("register_date"));
-      user.setIsHelper(resultSet.getBoolean("is_helper"));
     } catch (SQLException se) {
       se.printStackTrace();
     }
 
-    return user;
+    return null;
   }
 
   /**
@@ -164,24 +161,14 @@ public class UserDAOImpl implements UserDAO {
   public List<UserDTO> getAll(String query) {
     String request = "SELECT * FROM pae.users WHERE LOWER(last_name || ' ' || first_name) "
         + "LIKE CONCAT('%', ?, '%') ORDER BY id_user";
-    ArrayList<UserDTO> users = new ArrayList<UserDTO>();
+    ArrayList<UserDTO> users = new ArrayList<>();
 
     try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
       ps.setString(1, query == null ? "" : query.toLowerCase());
 
-      try (ResultSet resultSet = ps.executeQuery()) {
-        while (resultSet.next()) {
-          UserDTO user = myDomainFactory.getUser();
-          user.setId(resultSet.getInt("id_user"));
-          user.setLastName(resultSet.getString("last_name"));
-          user.setFirstName(resultSet.getString("first_name"));
-          user.setPhoneNumber(resultSet.getString("phone_number"));
-          user.setEmail(resultSet.getString("email"));
-          user.setPassword(resultSet.getString("password"));
-          user.setPhoto(resultSet.getString("photo"));
-          user.setRegisterDate(String.valueOf(resultSet.getDate("register_date")));
-          user.setIsHelper(resultSet.getBoolean("is_helper"));
-          users.add(user);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          users.add(dtoFromRS(rs));
         }
       }
     } catch (SQLException se) {
