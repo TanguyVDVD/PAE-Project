@@ -6,7 +6,7 @@ import API from '../../../utils/api';
 const AdminUsersPage = () => {
   const user = getAuthenticatedUser();
 
-  if (!user || !user.isHelper) {
+  if (!user || !user.helper) {
     Navigate('/');
     return;
   }
