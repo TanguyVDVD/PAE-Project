@@ -2,6 +2,10 @@ package be.vinci.pae.domain.availability;
 
 import java.util.Date;
 
+/**
+ * AvailabilityImpl class that implements the AvailabilityDTO interface Contains all the attribute
+ * of an availability.
+ */
 public class AvailabilityImpl implements Availability {
 
   private int id;
