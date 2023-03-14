@@ -31,7 +31,7 @@ public class UserDAOImpl implements UserDAO {
    * @param resultSet the ResultSet
    * @return the UserDTO
    */
-  public UserDTO DTOFromRS(ResultSet resultSet) {
+  public UserDTO dtoFromRS(ResultSet resultSet) {
     UserDTO user = myDomainFactory.getUser();
 
     try {
@@ -92,7 +92,6 @@ public class UserDAOImpl implements UserDAO {
    * @return the user corresponding to the email
    */
   public UserDTO getOneByEmail(String email) {
-    UserDTO user = myDomainFactory.getUser();
     String request = "SELECT * FROM pae.users WHERE email = ?";
 
     try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
@@ -100,7 +99,7 @@ public class UserDAOImpl implements UserDAO {
 
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
-          return DTOFromRS(rs);
+          return dtoFromRS(rs);
         }
       }
     } catch (SQLException se) {
@@ -112,7 +111,6 @@ public class UserDAOImpl implements UserDAO {
 
   @Override
   public UserDTO getOneByPhoneNumber(String phoneNumber) {
-    UserDTO user = myDomainFactory.getUser();
     String request = "SELECT * FROM pae.users WHERE phone_number = ?";
 
     try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
@@ -120,7 +118,7 @@ public class UserDAOImpl implements UserDAO {
 
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
-          return DTOFromRS(rs);
+          return dtoFromRS(rs);
         }
       }
     } catch (SQLException se) {
@@ -144,7 +142,7 @@ public class UserDAOImpl implements UserDAO {
 
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
-          return DTOFromRS(rs);
+          return dtoFromRS(rs);
         }
       }
     } catch (SQLException se) {
@@ -163,14 +161,14 @@ public class UserDAOImpl implements UserDAO {
   public List<UserDTO> getAll(String query) {
     String request = "SELECT * FROM pae.users WHERE LOWER(last_name || ' ' || first_name) "
         + "LIKE CONCAT('%', ?, '%') ORDER BY id_user";
-    ArrayList<UserDTO> users = new ArrayList<UserDTO>();
+    ArrayList<UserDTO> users = new ArrayList<>();
 
     try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
       ps.setString(1, query == null ? "" : query.toLowerCase());
 
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
-          users.add(DTOFromRS(rs));
+          users.add(dtoFromRS(rs));
         }
       }
     } catch (SQLException se) {
