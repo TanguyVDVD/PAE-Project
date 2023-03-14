@@ -12,7 +12,6 @@ import jakarta.inject.Singleton;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
-import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.ext.Provider;
 
@@ -35,22 +34,22 @@ public class AuthorizationRequestFilter implements ContainerRequestFilter {
     String token = requestContext.getHeaderString("Authorization");
 
     if (token == null) {
-      requestContext.abortWith(
-          Response.status(Status.UNAUTHORIZED).entity("A token is needed to access this resource")
-              .build());
+      throw new WebApplicationException("Vous n'avez pas les droits pour accéder à cette ressource",
+          Status.FORBIDDEN);
     } else {
       DecodedJWT decodedToken = null;
 
       try {
         decodedToken = this.jwtVerifier.verify(token);
       } catch (Exception e) {
-        throw new WebApplicationException("Malformed token : " + e.getMessage(),
+        throw new WebApplicationException("Token malformé : " + e.getMessage(),
             Status.UNAUTHORIZED);
       }
 
       User authenticatedUser = (User) myUserDAO.getOneById(decodedToken.getClaim("user").asInt());
       if (authenticatedUser == null) {
-        throw new WebApplicationException("You don't have access to this resource",
+        throw new WebApplicationException(
+            "Vous n'avez pas les droits pour accéder à cette ressource",
             Status.FORBIDDEN);
       }
 

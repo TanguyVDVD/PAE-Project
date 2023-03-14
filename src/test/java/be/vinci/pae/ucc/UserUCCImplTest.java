@@ -1,6 +1,8 @@
 package be.vinci.pae.ucc;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import be.vinci.pae.domain.user.User;
@@ -52,49 +54,52 @@ class UserUCCImplTest {
 
     userUCC = locator.getService(UserUCC.class);
   }
-  
-  @Test
+
   @DisplayName("Login with correct email and password")
+  @Test
   void loginWithCorrectEmailAndPassword() {
     User user = Mockito.mock(UserImpl.class);
     Mockito.when(userDAO.getOneByEmail("test@example.com")).thenReturn(user);
     Mockito.when(user.isPasswordCorrect("password")).thenReturn(true);
 
     UserDTO userDTO = userUCC.login("test@example.com", "password");
-    assertEquals(user, userDTO);
+    assertAll(
+        () -> assertNotNull(userDTO, "Login have not return a user"),
+        () -> assertEquals(user, userDTO, "Login have not return the same user")
+    );
   }
 
-  @Test
   @DisplayName("Login with incorrect email")
+  @Test
   void loginWithIncorrectEmail() {
     Mockito.when(userDAO.getOneByEmail("test@example.com")).thenReturn(null);
 
     UserDTO userDTO = userUCC.login("test@example.com", "password");
-    assertNull(userDTO);
+    assertNull(userDTO, "Login returned a user although the email is incorrect");
   }
 
-  @Test
   @DisplayName("Login with incorrect password")
+  @Test
   void loginWithIncorrectPassword() {
     User user = Mockito.mock(UserImpl.class);
     Mockito.when(userDAO.getOneByEmail("test@example.com")).thenReturn(user);
     Mockito.when(user.isPasswordCorrect("password")).thenReturn(false);
 
     UserDTO userDTO = userUCC.login("test@example.com", "password");
-    assertNull(userDTO);
+    assertNull(userDTO, "Login returned a user although the password is incorrect");
   }
 
-  @Test
   @DisplayName("Login with null email")
+  @Test
   void loginWithNullEmail() {
     UserDTO userDTO = userUCC.login(null, "password");
-    assertNull(userDTO);
+    assertNull(userDTO, "Login returned a user although the email is null");
   }
 
-  @Test
   @DisplayName("Login with null password")
+  @Test
   void loginWithNullPassword() {
     UserDTO userDTO = userUCC.login("test@example.com", null);
-    assertNull(userDTO);
+    assertNull(userDTO, "Login returned a user although the password is null");
   }
 }
