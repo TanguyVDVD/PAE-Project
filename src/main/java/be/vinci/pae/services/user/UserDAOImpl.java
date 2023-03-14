@@ -131,6 +131,7 @@ public class UserDAOImpl implements UserDAO {
    *
    * @param preparedStatement the PreparedStatement
    * @param user              the user to set up
+   * @return the user set up
    */
   public UserDTO setUser(PreparedStatement preparedStatement, UserDTO user) {
     try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -161,7 +162,8 @@ public class UserDAOImpl implements UserDAO {
    * @return the list of all users
    */
   public List<UserDTO> getAll(String query) {
-    String request = "SELECT * FROM pae.users WHERE LOWER(last_name || ' ' || first_name) LIKE CONCAT('%', ?, '%') ORDER BY id_user";
+    String request = "SELECT * FROM pae.users WHERE LOWER(last_name || ' ' || first_name) "
+        + "LIKE CONCAT('%', ?, '%') ORDER BY id_user";
     ArrayList<UserDTO> users = new ArrayList<UserDTO>();
 
     try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {

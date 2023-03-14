@@ -11,24 +11,15 @@ import java.sql.SQLException;
  */
 public class DALServicesImpl implements DALServices {
 
-  // Database url
-  public static final String DATABASE_URL;
-  // User connecting to the database
-  public static final String DATABASE_USER;
-  // User's password
-  public static final String DATABASE_PASSWORD;
+  /**
+   * Connection to the database.
+   */
+  public Connection dbConnection = null;
 
-  // Connection to the database
-  public static Connection DB_CONNECTION = null;
 
-  // Loading properties
-  static {
-    Config.load("dev.properties");
-    DATABASE_URL = Config.getProperty("DatabaseUrl");
-    DATABASE_USER = Config.getProperty("DatabaseUser");
-    DATABASE_PASSWORD = Config.getProperty("DatabasePassword");
-  }
-
+  /**
+   * Constructor of DALServicesImpl.
+   */
   public DALServicesImpl() {
     connectDatabase();
   }
@@ -38,6 +29,10 @@ public class DALServicesImpl implements DALServices {
    */
   @Override
   public void connectDatabase() {
+    String databaseUrl = Config.getProperty("DatabaseUrl");
+    String databaseUser = Config.getProperty("DatabaseUser");
+    String databasePassword = Config.getProperty("DatabasePassword");
+
     // Load the PostgresSQL driver
     try {
       Class.forName("org.postgresql.Driver");
@@ -48,7 +43,7 @@ public class DALServicesImpl implements DALServices {
 
     // Connection to the database
     try {
-      DB_CONNECTION = DriverManager.getConnection(DATABASE_URL, DATABASE_USER, DATABASE_PASSWORD);
+      dbConnection = DriverManager.getConnection(databaseUrl, databaseUser, databasePassword);
     } catch (SQLException e) {
       System.out.println("Unable to reach the server!");
       System.exit(1);
@@ -64,7 +59,7 @@ public class DALServicesImpl implements DALServices {
   @Override
   public PreparedStatement getPreparedStatement(String request) {
     try {
-      return DB_CONNECTION.prepareStatement(request);
+      return dbConnection.prepareStatement(request);
     } catch (SQLException se) {
       se.printStackTrace();
     }
