@@ -19,79 +19,79 @@ import java.util.List;
  */
 public class ObjectDAOImpl implements ObjectDAO {
 
-    @Inject
-    private DomainFactory myDomainFactory;
+  @Inject
+  private DomainFactory myDomainFactory;
 
-    @Inject
-    private DALServices myDALServices;
+  @Inject
+  private DALServices myDALServices;
 
-    @Inject
-    private UserDAO myUserDao;
+  @Inject
+  private UserDAO myUserDao;
 
-    @Inject
-    private AvailabilityDAO myAvailabilityDao;
+  @Inject
+  private AvailabilityDAO myAvailabilityDao;
 
-    @Inject
-    private ObjectTypeDAO myObjectTypeDAO;
+  @Inject
+  private ObjectTypeDAO myObjectTypeDAO;
 
-    /**
-     * Map a ResultSet to an ObjectDTO.
-     *
-     * @param resultSet the ResultSet
-     * @return the ObjectDTO
-     */
-    public ObjectDTO dtoFromRS(ResultSet resultSet) {
-        ObjectDTO object = myDomainFactory.getObject();
+  /**
+   * Map a ResultSet to an ObjectDTO.
+   *
+   * @param resultSet the ResultSet
+   * @return the ObjectDTO
+   */
+  public ObjectDTO dtoFromRS(ResultSet resultSet) {
+    ObjectDTO object = myDomainFactory.getObject();
 
-        try {
-            object.setId(resultSet.getInt("id_object"));
-            object.setDescription(resultSet.getString("description"));
-            object.setPhoto(resultSet.getBoolean("photo"));
-            object.setPhoneNumber(resultSet.getString("phone_number"));
-            object.setVisibility(resultSet.getBoolean("is_visible"));
-            object.setPrice(resultSet.getDouble("price"));
-            object.setState(resultSet.getString("state"));
-            object.setAcceptanceDate(resultSet.getDate("acceptance_date"));
-            object.setDepositDate(resultSet.getDate("deposit_date"));
-            object.setSellingDate(resultSet.getDate("selling_date"));
-            object.setWithdrawalDate(resultSet.getDate("withdrawal_date"));
-            object.setTimeSlot(resultSet.getString("time_slot"));
-            object.setStatus(resultSet.getString("status"));
-            object.setReasonForRefusal(resultSet.getString("reason_for_refusal"));
-            object.setPhoneNumber(resultSet.getString("phone_number"));
-            object.setPickupDate(myAvailabilityDao.getOneById(resultSet.getInt("pickup_date")));
-            object.setUser(myUserDao.getOneById(resultSet.getInt("id_user")));
-            object.setObjectType(myObjectTypeDAO.getOneById(resultSet.getInt("id_object_type")));
+    try {
+      object.setId(resultSet.getInt("id_object"));
+      object.setDescription(resultSet.getString("description"));
+      object.setPhoto(resultSet.getBoolean("photo"));
+      object.setPhoneNumber(resultSet.getString("phone_number"));
+      object.setVisibility(resultSet.getBoolean("is_visible"));
+      object.setPrice(resultSet.getDouble("price"));
+      object.setState(resultSet.getString("state"));
+      object.setAcceptanceDate(resultSet.getDate("acceptance_date"));
+      object.setDepositDate(resultSet.getDate("deposit_date"));
+      object.setSellingDate(resultSet.getDate("selling_date"));
+      object.setWithdrawalDate(resultSet.getDate("withdrawal_date"));
+      object.setTimeSlot(resultSet.getString("time_slot"));
+      object.setStatus(resultSet.getString("status"));
+      object.setReasonForRefusal(resultSet.getString("reason_for_refusal"));
+      object.setPhoneNumber(resultSet.getString("phone_number"));
+      object.setPickupDate(myAvailabilityDao.getOneById(resultSet.getInt("pickup_date")));
+      object.setUser(myUserDao.getOneById(resultSet.getInt("id_user")));
+      object.setObjectType(myObjectTypeDAO.getOneById(resultSet.getInt("id_object_type")));
 
-        } catch (SQLException se) {
-            se.printStackTrace();
-        }
-
-        return object;
+    } catch (SQLException se) {
+      se.printStackTrace();
     }
 
-    /**
-     * Get all objects.
-     *
-     * @param query query to filter objects
-     * @return the list of objects
-     */
-    @Override
-    public List<ObjectDTO> getAll(String query) {
-        String request = "SELECT * FROM pae.objects ORDER BY id_object;";
+    return object;
+  }
 
-        ArrayList<ObjectDTO> objects = new ArrayList<>();
+  /**
+   * Get all objects.
+   *
+   * @param query query to filter objects
+   * @return the list of objects
+   */
+  @Override
+  public List<ObjectDTO> getAll(String query) {
+    String request = "SELECT * FROM pae.objects ORDER BY id_object;";
 
-        try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    objects.add(dtoFromRS(rs));
-                }
-            }
-        } catch (SQLException se) {
-            se.printStackTrace();
+    ArrayList<ObjectDTO> objects = new ArrayList<>();
+
+    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          objects.add(dtoFromRS(rs));
         }
-
-        return objects;
+      }
+    } catch (SQLException se) {
+      se.printStackTrace();
     }
+
+    return objects;
+  }
 }

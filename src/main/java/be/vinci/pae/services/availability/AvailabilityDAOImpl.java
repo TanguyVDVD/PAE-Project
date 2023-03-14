@@ -13,32 +13,32 @@ import java.util.Date;
  */
 public class AvailabilityDAOImpl implements AvailabilityDAO {
 
-    @Inject
-    private DALServices myDALServices;
+  @Inject
+  private DALServices myDALServices;
 
-    /**
-     * Get the availability by the id.
-     *
-     * @param id of the availability
-     * @return the date corresponding to the id
-     */
-    @Override
-    public Date getOneById(int id) {
-        String request = "SELECT date FROM pae.availability WHERE id_availability = ?;";
+  /**
+   * Get the availability by the id.
+   *
+   * @param id of the availability
+   * @return the date corresponding to the id
+   */
+  @Override
+  public Date getOneById(int id) {
+    String request = "SELECT date FROM pae.availability WHERE id_availability = ?;";
 
-        try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
-            ps.setInt(1, id);
+    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+      ps.setInt(1, id);
 
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getDate("date");
-                }
-            }
-        } catch (SQLException se) {
-            se.printStackTrace();
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          return rs.getDate("date");
         }
-
-        return null;
+      }
+    } catch (SQLException se) {
+      se.printStackTrace();
     }
+
+    return null;
+  }
 
 }
