@@ -17,6 +17,12 @@ public interface UserUCC {
    */
   UserDTO login(String email, String password);
 
+  /**
+   * Method that register a user if the parameters are correct.
+   *
+   * @param userDTO the user to register
+   * @return the user that has been registered
+   */
   UserDTO register(UserDTO userDTO);
 
   /**

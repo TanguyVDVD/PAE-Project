@@ -24,6 +24,12 @@ public interface UserDAO {
    */
   UserDTO getOneByEmail(String email);
 
+  /**
+   * Get the user by the phone number.
+   *
+   * @param phoneNumber the user
+   * @return the user correponding to the phone number
+   */
   UserDTO getOneByPhoneNumber(String phoneNumber);
 
   /**
