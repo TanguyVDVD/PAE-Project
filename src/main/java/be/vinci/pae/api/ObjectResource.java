@@ -1,6 +1,6 @@
 package be.vinci.pae.api;
 
-import be.vinci.pae.api.filters.Authorize;
+import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.ucc.object.ObjectUCC;
 import jakarta.inject.Inject;
@@ -13,6 +13,9 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
 
+/**
+ * ObjectResource class.
+ */
 @Singleton
 @Path("/objects")
 public class ObjectResource {
@@ -23,14 +26,20 @@ public class ObjectResource {
   @Inject
   private DomainFactory myDomainFactory;
 
+  /**
+   * Method that update the state of an object.
+   *
+   * @param objectUCCToUpdate the object to update
+   * @param id                the id of the object
+   * @return the object that was just updated
+   */
   @PUT
   @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
-  @Authorize
+  @AuthorizeAdmin
   public ObjectUCC updateObjectState(ObjectUCC objectUCCToUpdate, @PathParam("id") int id) {
     return null;
   }
-
 
 }
