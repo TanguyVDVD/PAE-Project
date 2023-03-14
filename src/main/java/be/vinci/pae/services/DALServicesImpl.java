@@ -17,6 +17,9 @@ public class DALServicesImpl implements DALServices {
   public Connection dbConnection = null;
 
 
+  /**
+   * Constructor of DALServicesImpl.
+   */
   public DALServicesImpl() {
     connectDatabase();
   }
