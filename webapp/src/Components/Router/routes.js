@@ -3,6 +3,7 @@ import LoginPage from '../Pages/LoginPage';
 import RegisterPage from '../Pages/RegisterPage';
 import LogoutPage from '../Pages/LogoutPage';
 import AdminUsersPage from '../Pages/admin/AdminUsersPage';
+import PropositionPage from '../Pages/PropositionPage';
 
 const routes = {
   '/': HomePage,
@@ -10,6 +11,7 @@ const routes = {
   '/register': RegisterPage,
   '/logout': LogoutPage,
   '/admin/users': AdminUsersPage,
+  '/propose': PropositionPage
 };
 
 export default routes;
