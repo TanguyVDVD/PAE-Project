@@ -7,7 +7,6 @@ import be.vinci.pae.services.availability.AvailabilityDAO;
 import be.vinci.pae.services.objecttype.ObjectTypeDAO;
 import be.vinci.pae.services.user.UserDAO;
 import jakarta.inject.Inject;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

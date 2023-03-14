@@ -2,7 +2,6 @@ package be.vinci.pae.services.objecttype;
 
 import be.vinci.pae.services.DALServices;
 import jakarta.inject.Inject;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
