@@ -25,6 +25,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 import java.util.Date;
 import org.glassfish.jersey.server.ContainerRequest;
 
@@ -69,7 +70,8 @@ public class UserResource {
   public ObjectNode login(JsonNode json) {
 
     if (!json.hasNonNull("email") || !json.hasNonNull("password")) {
-      throw new WebApplicationException("email or password required", Response.Status.BAD_REQUEST);
+      throw new WebApplicationException("Adresse mail et mot de passe requis",
+          Status.NOT_FOUND);
     }
 
     String login = json.get("email").asText();
@@ -78,8 +80,8 @@ public class UserResource {
     UserDTO userDTO = userUCC.login(login, password);
 
     if (userDTO == null) {
-      throw new WebApplicationException("Login or password incorrect",
-          Response.Status.UNAUTHORIZED);
+      throw new WebApplicationException("Adresse mail ou mot de passe incorrect",
+          Status.NOT_FOUND);
     }
 
     return createToken(userDTO);
@@ -101,7 +103,7 @@ public class UserResource {
         "phone_number") || !json.hasNonNull("email") || !json.hasNonNull("password")
         || !json.hasNonNull("photo") || !json.hasNonNull("register_date") || !json.hasNonNull(
         "is_helper")) {
-      throw new WebApplicationException("All the field are required", Response.Status.BAD_REQUEST);
+      throw new WebApplicationException("Tous les champs sont requis", Response.Status.BAD_REQUEST);
     }
 
     String lastName = json.get("last_name").asText();
