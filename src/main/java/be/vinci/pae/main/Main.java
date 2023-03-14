@@ -16,7 +16,6 @@ public class Main {
 
   // Base URI the Grizzly HTTP server will listen on
   public static final String BASE_URI;
-  // Database url
 
   // Loading properties
   static {
