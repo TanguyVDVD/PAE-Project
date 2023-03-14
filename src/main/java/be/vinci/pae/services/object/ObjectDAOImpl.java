@@ -38,7 +38,7 @@ public class ObjectDAOImpl implements ObjectDAO {
     try {
       object.setId(resultSet.getInt("id_object"));
       object.setDescription(resultSet.getString("description"));
-      object.setPhoto(resultSet.getString("photo"));
+      object.setPhoto(resultSet.getBoolean("photo"));
       object.setPhoneNumber(resultSet.getString("phone_number"));
       object.setVisibility(resultSet.getBoolean("is_visible"));
       object.setPrice(resultSet.getDouble("price"));

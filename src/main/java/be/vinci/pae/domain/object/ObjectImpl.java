@@ -9,6 +9,25 @@ import java.util.Date;
  */
 public class ObjectImpl implements Object {
 
+  private int id;
+  private String description;
+  private boolean photo;
+  private boolean isVisible;
+  private double price;
+  private String state;
+  private Date acceptanceDate;
+  private Date depositDate;
+  private Date sellingDate;
+  private Date withdrawalDate;
+  private String timeSlot;
+  private String status;
+  private String reasonForRefusal;
+  private String phoneNumber;
+
+  private Date pickupDate;
+  private UserDTO user;
+  private String objectType;
+
   /**
    * Return the id of an object.
    *
@@ -16,7 +35,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public int getId() {
-    return 0;
+    return id;
   }
 
   /**
@@ -26,7 +45,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public void setId(int id) {
-
+    this.id = id;
   }
 
   /**
@@ -36,7 +55,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public String getDescription() {
-    return null;
+    return description;
   }
 
   /**
@@ -46,7 +65,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public void setDescription(String description) {
-
+    this.description = description;
   }
 
   /**
@@ -55,8 +74,8 @@ public class ObjectImpl implements Object {
    * @return a String corresponding to the path of the photo of an object
    */
   @Override
-  public String getPhoto() {
-    return null;
+  public boolean getPhoto() {
+    return photo;
   }
 
   /**
@@ -65,8 +84,8 @@ public class ObjectImpl implements Object {
    * @param photo the path of the photo of an object
    */
   @Override
-  public void setPhoto(String photo) {
-
+  public void setPhoto(boolean photo) {
+    this.photo = photo;
   }
 
   /**
@@ -76,7 +95,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public Boolean isVisible() {
-    return null;
+    return isVisible;
   }
 
   /**
@@ -86,7 +105,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public void setVisibility(boolean visibility) {
-
+    this.isVisible = visibility;
   }
 
   /**
@@ -96,7 +115,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public double getPrice() {
-    return 0;
+    return price;
   }
 
   /**
@@ -106,7 +125,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public void setPrice(double price) {
-
+    this.price = price;
   }
 
   /**
@@ -116,7 +135,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public String getState() {
-    return null;
+    return state;
   }
 
   /**
@@ -126,7 +145,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public void setState(String state) {
-
+    this.state = state;
   }
 
   /**
@@ -136,7 +155,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public Date getAcceptanceDate() {
-    return null;
+    return acceptanceDate;
   }
 
   /**
@@ -146,7 +165,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public void setAcceptanceDate(Date acceptanceDate) {
-
+    this.acceptanceDate = acceptanceDate;
   }
 
   /**
@@ -156,7 +175,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public Date getDepositDate() {
-    return null;
+    return depositDate;
   }
 
   /**
@@ -166,7 +185,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public void setDepositDate(Date depositDate) {
-
+    this.depositDate = depositDate;
   }
 
   /**
@@ -176,7 +195,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public Date getSellingDate() {
-    return null;
+    return sellingDate;
   }
 
   /**
@@ -186,7 +205,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public void setSellingDate(Date sellingDate) {
-
+    this.sellingDate = sellingDate;
   }
 
   /**
@@ -196,7 +215,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public Date getWithdrawalDate() {
-    return null;
+    return withdrawalDate;
   }
 
   /**
@@ -206,7 +225,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public void setWithdrawalDate(Date withdrawalDate) {
-
+    this.withdrawalDate = withdrawalDate;
   }
 
   /**
@@ -216,7 +235,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public String getTimeSlot() {
-    return null;
+    return timeSlot;
   }
 
   /**
@@ -226,7 +245,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public void setTimeSlot(String timeSlot) {
-
+    this.timeSlot = timeSlot;
   }
 
   /**
@@ -236,7 +255,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public String getStatus() {
-    return null;
+    return status;
   }
 
   /**
@@ -246,7 +265,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public void setStatus(String status) {
-
+    this.status = status;
   }
 
   /**
@@ -256,7 +275,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public String getReasonForRefusal() {
-    return null;
+    return reasonForRefusal;
   }
 
   /**
@@ -266,7 +285,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public void setReasonForRefusal(String reasonForRefusal) {
-
+    this.reasonForRefusal = reasonForRefusal;
   }
 
   /**
@@ -276,7 +295,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public String getPhoneNumber() {
-    return null;
+    return phoneNumber;
   }
 
   /**
@@ -286,7 +305,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public void setPhoneNumber(String phoneNumber) {
-
+    this.phoneNumber = phoneNumber;
   }
 
   /**
@@ -296,7 +315,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public Date getPickupDate() {
-    return null;
+    return pickupDate;
   }
 
   /**
@@ -306,7 +325,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public void setPickupDate(Date pickupDate) {
-
+    this.pickupDate = pickupDate;
   }
 
   /**
@@ -316,7 +335,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public UserDTO getUser() {
-    return null;
+    return user;
   }
 
   /**
@@ -326,7 +345,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public void setUser(UserDTO user) {
-
+    this.user = user;
   }
 
   /**
@@ -336,7 +355,7 @@ public class ObjectImpl implements Object {
    */
   @Override
   public String getObjectType() {
-    return null;
+    return objectType;
   }
 
   /**
@@ -346,6 +365,6 @@ public class ObjectImpl implements Object {
    */
   @Override
   public void setObjectType(String objectType) {
-
+    this.objectType = objectType;
   }
 }
