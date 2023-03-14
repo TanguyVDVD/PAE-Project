@@ -4,6 +4,7 @@ import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.availability.AvailabilityDAO;
+import be.vinci.pae.services.objectType.ObjectTypeDAO;
 import be.vinci.pae.services.user.UserDAO;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
@@ -28,6 +29,9 @@ public class ObjectDAOImpl implements ObjectDAO {
 
   @Inject
   private AvailabilityDAO myAvailabilityDao;
+
+  @Inject
+  private ObjectTypeDAO myObjectTypeDAO;
 
   /**
    * Map a ResultSet to an ObjectDTO.
@@ -56,37 +60,13 @@ public class ObjectDAOImpl implements ObjectDAO {
       object.setPhoneNumber(resultSet.getString("phone_number"));
       object.setPickupDate(myAvailabilityDao.getOneById(resultSet.getInt("pickup_date")));
       object.setUser(myUserDao.getOneById(resultSet.getInt("id_user")));
-      object.setObjectType(getObjectTypeById(resultSet.getInt("id_object_type")));
+      object.setObjectType(myObjectTypeDAO.getOneById(resultSet.getInt("id_object_type")));
 
     } catch (SQLException se) {
       se.printStackTrace();
     }
 
     return object;
-  }
-
-  /**
-   * Get the object type by the id.
-   *
-   * @param id of the object type
-   * @return the object type corresponding to the id
-   */
-  public String getObjectTypeById(int id) {
-    String request = "SELECT label FROM pae.object_types WHERE id_object_type = ?";
-
-    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
-      ps.setInt(1, id);
-
-      try (ResultSet rs = ps.executeQuery()) {
-        if (rs.next()) {
-          rs.getString("label");
-        }
-      }
-    } catch (SQLException se) {
-      se.printStackTrace();
-    }
-
-    return null;
   }
 
   /**

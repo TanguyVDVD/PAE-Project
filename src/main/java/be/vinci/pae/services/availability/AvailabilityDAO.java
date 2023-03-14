@@ -11,7 +11,7 @@ public interface AvailabilityDAO {
    * Get the availability by the id.
    *
    * @param id of the availability
-   * @return the user corresponding to the id
+   * @return the date corresponding to the id
    */
   Date getOneById(int id);
 }
