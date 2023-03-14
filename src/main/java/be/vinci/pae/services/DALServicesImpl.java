@@ -11,23 +11,11 @@ import java.sql.SQLException;
  */
 public class DALServicesImpl implements DALServices {
 
-  // Database url
-  public static final String DATABASE_URL;
-  // User connecting to the database
-  public static final String DATABASE_USER;
-  // User's password
-  public static final String DATABASE_PASSWORD;
+  /**
+   * Connection to the database.
+   */
+  public Connection DB_CONNECTION = null;
 
-  // Connection to the database
-  public static Connection DB_CONNECTION = null;
-
-  // Loading properties
-  static {
-    Config.load("dev.properties");
-    DATABASE_URL = Config.getProperty("DatabaseUrl");
-    DATABASE_USER = Config.getProperty("DatabaseUser");
-    DATABASE_PASSWORD = Config.getProperty("DatabasePassword");
-  }
 
   public DALServicesImpl() {
     connectDatabase();
@@ -38,6 +26,10 @@ public class DALServicesImpl implements DALServices {
    */
   @Override
   public void connectDatabase() {
+    String DATABASE_URL = Config.getProperty("DatabaseUrl");
+    String DATABASE_USER = Config.getProperty("DatabaseUser");
+    String DATABASE_PASSWORD = Config.getProperty("DatabasePassword");
+
     // Load the PostgresSQL driver
     try {
       Class.forName("org.postgresql.Driver");
