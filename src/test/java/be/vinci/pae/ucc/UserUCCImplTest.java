@@ -55,9 +55,8 @@ class UserUCCImplTest {
     userUCC = locator.getService(UserUCC.class);
   }
 
-  @DisplayName("Login test with correct email and password")
-  @Test
   @DisplayName("Login with correct email and password")
+  @Test
   void loginWithCorrectEmailAndPassword() {
     User user = Mockito.mock(UserImpl.class);
     Mockito.when(userDAO.getOneByEmail("test@example.com")).thenReturn(user);
@@ -70,9 +69,8 @@ class UserUCCImplTest {
     );
   }
 
-  @DisplayName("Login test with incorrect email")
-  @Test
   @DisplayName("Login with incorrect email")
+  @Test
   void loginWithIncorrectEmail() {
     Mockito.when(userDAO.getOneByEmail("test@example.com")).thenReturn(null);
 
@@ -80,9 +78,8 @@ class UserUCCImplTest {
     assertNull(userDTO, "Login returned a user although the email is incorrect");
   }
 
-  @DisplayName("Login test with incorrect password")
-  @Test
   @DisplayName("Login with incorrect password")
+  @Test
   void loginWithIncorrectPassword() {
     User user = Mockito.mock(UserImpl.class);
     Mockito.when(userDAO.getOneByEmail("test@example.com")).thenReturn(user);
@@ -92,17 +89,15 @@ class UserUCCImplTest {
     assertNull(userDTO, "Login returned a user although the password is incorrect");
   }
 
-  @DisplayName("Login test with null email")
-  @Test
   @DisplayName("Login with null email")
+  @Test
   void loginWithNullEmail() {
     UserDTO userDTO = userUCC.login(null, "password");
     assertNull(userDTO, "Login returned a user although the email is null");
   }
 
-  @DisplayName("Login test with null password")
-  @Test
   @DisplayName("Login with null password")
+  @Test
   void loginWithNullPassword() {
     UserDTO userDTO = userUCC.login("test@example.com", null);
     assertNull(userDTO, "Login returned a user although the password is null");
