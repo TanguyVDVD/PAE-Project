@@ -21,17 +21,29 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+/**
+ * Test class for UserUCCImpl.
+ */
 class UserUCCImplTest {
 
-  static ServiceLocator locator;
+  /**
+   * Mocked userDAO.
+   */
   private static UserDAO userDAO;
+
+  /**
+   * UserUCC to test.
+   */
   private static UserUCC userUCC;
 
+  /**
+   * Set up the test.
+   */
   @BeforeAll
   static void setUp() {
     userDAO = Mockito.mock(UserDAOImpl.class);
 
-    locator = ServiceLocatorUtilities.bind(new AbstractBinder() {
+    ServiceLocator locator = ServiceLocatorUtilities.bind(new AbstractBinder() {
       @Override
       protected void configure() {
         bind(UserUCCImpl.class).to(UserUCC.class).in(Singleton.class);
@@ -45,6 +57,7 @@ class UserUCCImplTest {
 
   @DisplayName("Login test with correct email and password")
   @Test
+  @DisplayName("Login with correct email and password")
   void loginWithCorrectEmailAndPassword() {
     User user = Mockito.mock(UserImpl.class);
     Mockito.when(userDAO.getOneByEmail("test@example.com")).thenReturn(user);
@@ -59,6 +72,7 @@ class UserUCCImplTest {
 
   @DisplayName("Login test with incorrect email")
   @Test
+  @DisplayName("Login with incorrect email")
   void loginWithIncorrectEmail() {
     Mockito.when(userDAO.getOneByEmail("test@example.com")).thenReturn(null);
 
@@ -68,6 +82,7 @@ class UserUCCImplTest {
 
   @DisplayName("Login test with incorrect password")
   @Test
+  @DisplayName("Login with incorrect password")
   void loginWithIncorrectPassword() {
     User user = Mockito.mock(UserImpl.class);
     Mockito.when(userDAO.getOneByEmail("test@example.com")).thenReturn(user);
@@ -79,6 +94,7 @@ class UserUCCImplTest {
 
   @DisplayName("Login test with null email")
   @Test
+  @DisplayName("Login with null email")
   void loginWithNullEmail() {
     UserDTO userDTO = userUCC.login(null, "password");
     assertNull(userDTO, "Login returned a user although the email is null");
@@ -86,6 +102,7 @@ class UserUCCImplTest {
 
   @DisplayName("Login test with null password")
   @Test
+  @DisplayName("Login with null password")
   void loginWithNullPassword() {
     UserDTO userDTO = userUCC.login("test@example.com", null);
     assertNull(userDTO, "Login returned a user although the password is null");
