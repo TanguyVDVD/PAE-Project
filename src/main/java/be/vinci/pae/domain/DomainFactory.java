@@ -3,7 +3,7 @@ package be.vinci.pae.domain;
 
 import be.vinci.pae.domain.availability.AvailabilityDTO;
 import be.vinci.pae.domain.object.ObjectDTO;
-import be.vinci.pae.domain.objectType.ObjectTypeDTO;
+import be.vinci.pae.domain.object_type.ObjectTypeDTO;
 import be.vinci.pae.domain.user.UserDTO;
 
 /**

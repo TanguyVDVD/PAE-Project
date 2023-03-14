@@ -1,4 +1,4 @@
-package be.vinci.pae.ucc.objectType;
+package be.vinci.pae.ucc.object_type;
 
 public class ObjectTypeUCCImpl implements ObjectTypeUCC {
 

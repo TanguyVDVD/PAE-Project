@@ -1,4 +1,4 @@
-package be.vinci.pae.domain.objectType;
+package be.vinci.pae.domain.object_type;
 
 /**
  * ObjectTypeImpl class that implements the ObjectTypeDTO interface Contains all the attribute of an
