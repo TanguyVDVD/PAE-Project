@@ -14,7 +14,7 @@ public class DALServicesImpl implements DALServices {
   /**
    * Connection to the database.
    */
-  public Connection DB_CONNECTION = null;
+  public Connection dbConnection = null;
 
 
   public DALServicesImpl() {
@@ -40,7 +40,7 @@ public class DALServicesImpl implements DALServices {
 
     // Connection to the database
     try {
-      DB_CONNECTION = DriverManager.getConnection(databaseUrl, databaseUser, databasePassword);
+      dbConnection = DriverManager.getConnection(databaseUrl, databaseUser, databasePassword);
     } catch (SQLException e) {
       System.out.println("Unable to reach the server!");
       System.exit(1);
@@ -56,7 +56,7 @@ public class DALServicesImpl implements DALServices {
   @Override
   public PreparedStatement getPreparedStatement(String request) {
     try {
-      return DB_CONNECTION.prepareStatement(request);
+      return dbConnection.prepareStatement(request);
     } catch (SQLException se) {
       se.printStackTrace();
     }
