@@ -1,4 +1,4 @@
-package be.vinci.pae.services.object_type;
+package be.vinci.pae.services.objecttype;
 
 /**
  * ObjectTypeDAO interface that provide the method to interact with the db.

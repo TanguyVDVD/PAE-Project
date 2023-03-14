@@ -4,8 +4,8 @@ import be.vinci.pae.domain.availability.AvailabilityDTO;
 import be.vinci.pae.domain.availability.AvailabilityImpl;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.domain.object.ObjectImpl;
-import be.vinci.pae.domain.object_type.ObjectTypeDTO;
-import be.vinci.pae.domain.object_type.ObjectTypeImpl;
+import be.vinci.pae.domain.objecttype.ObjectTypeDTO;
+import be.vinci.pae.domain.objecttype.ObjectTypeImpl;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.user.UserImpl;
 

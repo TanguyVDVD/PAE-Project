@@ -1,4 +1,4 @@
-package be.vinci.pae.services.object_type;
+package be.vinci.pae.services.objecttype;
 
 import be.vinci.pae.services.DALServices;
 import jakarta.inject.Inject;

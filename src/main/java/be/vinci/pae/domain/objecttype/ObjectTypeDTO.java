@@ -1,4 +1,4 @@
-package be.vinci.pae.domain.object_type;
+package be.vinci.pae.domain.objecttype;
 
 /**
  * ObjectTypeDTO interface. Representing a data transfer object (DTO) for a object type in the
