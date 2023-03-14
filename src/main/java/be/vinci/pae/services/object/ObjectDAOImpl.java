@@ -3,7 +3,13 @@ package be.vinci.pae.services.object;
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.services.DALServices;
+import be.vinci.pae.services.user.UserDAO;
 import jakarta.inject.Inject;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,6 +23,93 @@ public class ObjectDAOImpl implements ObjectDAO {
   @Inject
   private DALServices myDALServices;
 
+  @Inject
+  private UserDAO myUserDao;
+
+  /**
+   * Map a ResultSet to an ObjectDTO.
+   *
+   * @param resultSet the ResultSet
+   * @return the ObjectDTO
+   */
+  public ObjectDTO dtoFromRS(ResultSet resultSet) {
+    ObjectDTO object = myDomainFactory.getObject();
+
+    try {
+      object.setId(resultSet.getInt("id_object"));
+      object.setDescription(resultSet.getString("description"));
+      object.setPhoto(resultSet.getString("photo"));
+      object.setPhoneNumber(resultSet.getString("phone_number"));
+      object.setVisibility(resultSet.getBoolean("is_visible"));
+      object.setPrice(resultSet.getDouble("price"));
+      object.setState(resultSet.getString("state"));
+      object.setAcceptanceDate(resultSet.getDate("acceptance_date"));
+      object.setDepositDate(resultSet.getDate("deposit_date"));
+      object.setSellingDate(resultSet.getDate("selling_date"));
+      object.setWithdrawalDate(resultSet.getDate("withdrawal_date"));
+      object.setTimeSlot(resultSet.getString("time_slot"));
+      object.setStatus(resultSet.getString("status"));
+      object.setReasonForRefusal(resultSet.getString("reason_for_refusal"));
+      object.setPhoneNumber(resultSet.getString("phone_number"));
+      object.setPickupDate(getPickupDateById(resultSet.getInt("pickup_date")));
+      object.setUser(myUserDao.getOneById(resultSet.getInt("id_user")));
+      object.setObjectType(getObjectTypeById(resultSet.getInt("id_object_type")));
+
+    } catch (SQLException se) {
+      se.printStackTrace();
+    }
+
+    return object;
+  }
+
+  /**
+   * Get the object type by the id.
+   *
+   * @param id of the object type
+   * @return the object type corresponding to the id
+   */
+  public String getObjectTypeById(int id) {
+    String request = "SELECT label FROM pae.object_types WHERE id_object_type = ?";
+
+    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+      ps.setInt(1, id);
+
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          rs.getString("label");
+        }
+      }
+    } catch (SQLException se) {
+      se.printStackTrace();
+    }
+
+    return null;
+  }
+
+  /**
+   * Get the pickup date by the id.
+   *
+   * @param id of the pickup date
+   * @return the pickup date corresponding to the id
+   */
+  public Date getPickupDateById(int id) {
+    String request = "SELECT date FROM pae.availability WHERE id_availability = ?";
+
+    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+      ps.setInt(1, id);
+
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          rs.getDate("date");
+        }
+      }
+    } catch (SQLException se) {
+      se.printStackTrace();
+    }
+
+    return null;
+  }
+
   /**
    * Get all objects.
    *
@@ -25,6 +118,22 @@ public class ObjectDAOImpl implements ObjectDAO {
    */
   @Override
   public List<ObjectDTO> getAll(String query) {
-    return null;
+    String request = "SELECT * FROM pae.objects ORDER BY id_object";
+
+    ArrayList<ObjectDTO> objects = new ArrayList<>();
+
+    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+      ps.setString(1, query == null ? "" : query.toLowerCase());
+
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          objects.add(dtoFromRS(rs));
+        }
+      }
+    } catch (SQLException se) {
+      se.printStackTrace();
+    }
+
+    return objects;
   }
 }

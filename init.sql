@@ -42,11 +42,11 @@ CREATE TABLE pae.objects (
     deposit_date DATE,
     selling_date DATE,
     withdrawal_date DATE,
-    time_slot BOOLEAN NOT NULL,
+    time_slot VARCHAR(15) NOT NULL,
     status VARCHAR(15),
     reason_for_refusal VARCHAR(50),
     phone_number VARCHAR(12),
-    proposal_date INTEGER REFERENCES pae.availability NOT NULL,
+    pickup_date INTEGER REFERENCES pae.availability NOT NULL,
     id_user INTEGER REFERENCES pae.users,
     id_object_type INTEGER REFERENCES pae.object_types NOT NULL
 );
@@ -106,7 +106,7 @@ INSERT INTO pae.availability VALUES (DEFAULT, '2023-05-16');
 INSERT INTO pae.availability VALUES (DEFAULT, '2023-05-28');
 INSERT INTO pae.availability VALUES (DEFAULT, '2023-05-29');
 
-INSERT INTO pae.objects VALUES (DEFAULT, 'Description!!!', './path', true, 6, 'en vente', '2023-02-15', '2023-02-16', '2023-02-17', null, true, 'accepte', null, null, 1, 3, 1);
-INSERT INTO pae.objects VALUES (DEFAULT, 'Description!!!', './path', true, 6, 'propose', null, null, null, null, true, 'accepte', null, null, 1, 3, 1);
-INSERT INTO pae.objects VALUES (DEFAULT, 'Description!!!', './path', false, null, 'refuse', null, null, null, null, false, 'refuse', 'trop mauvais etat', '+32412369482', 2, null, 3);
-INSERT INTO pae.objects VALUES (DEFAULT, 'Description!!!', './path', false, 9, 'retire', '2023-02-15', '2023-02-16', '2023-02-17', '2023-03-20', true, 'accepte', null, null, 1, 3, 1);
+INSERT INTO pae.objects VALUES (DEFAULT, 'Description!!!', './path', true, 6, 'en vente', '2023-02-15', '2023-02-16', '2023-02-17', null, 'morning', 'accepte', null, null, 1, 3, 1);
+INSERT INTO pae.objects VALUES (DEFAULT, 'Description!!!', './path', true, 6, 'propose', null, null, null, null, 'morning', 'accepte', null, null, 1, 3, 1);
+INSERT INTO pae.objects VALUES (DEFAULT, 'Description!!!', './path', false, null, 'refuse', null, null, null, null, 'afternoon', 'refuse', 'trop mauvais etat', '+32412369482', 2, null, 3);
+INSERT INTO pae.objects VALUES (DEFAULT, 'Description!!!', './path', false, 9, 'retire', '2023-02-15', '2023-02-16', '2023-02-17', '2023-03-20', 'morning', 'accepte', null, null, 1, 3, 1);

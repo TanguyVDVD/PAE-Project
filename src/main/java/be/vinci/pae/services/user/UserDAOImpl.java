@@ -131,8 +131,8 @@ public class UserDAOImpl implements UserDAO {
   /**
    * Get the user by the id.
    *
-   * @param id the user
-   * @return the user corresponding to the email
+   * @param id of the user
+   * @return the user corresponding to the id
    */
   public UserDTO getOneById(int id) {
     String request = "SELECT * FROM pae.users WHERE id_user = ?";
