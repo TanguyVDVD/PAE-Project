@@ -85,6 +85,7 @@ public class UserDAOImpl implements UserDAO {
    *
    * @param preparedStatement the PreparedStatement
    * @param user              the user to set up
+   * @return the user set up
    */
   public UserDTO setUser(PreparedStatement preparedStatement, UserDTO user) {
     try (ResultSet resultSet = preparedStatement.executeQuery()) {
