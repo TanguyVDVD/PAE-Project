@@ -42,14 +42,14 @@ public interface ObjectDTO {
    *
    * @return a String corresponding to the path of the photo of an object
    */
-  String getPhoto();
+  boolean getPhoto();
 
   /**
    * set the description of an object.
    *
    * @param photo the path of the photo of an object
    */
-  void setPhoto(String photo);
+  void setPhoto(boolean photo);
 
   /**
    * Return the visibility of an object.

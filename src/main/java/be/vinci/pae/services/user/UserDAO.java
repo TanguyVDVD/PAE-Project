@@ -20,7 +20,7 @@ public interface UserDAO {
    * Get the user by the email.
    *
    * @param email the user
-   * @return the user correponding to the email
+   * @return the user corresponding to the email
    */
   UserDTO getOneByEmail(String email);
 
@@ -28,7 +28,7 @@ public interface UserDAO {
    * Get the user by the phone number.
    *
    * @param phoneNumber the user
-   * @return the user correponding to the phone number
+   * @return the user corresponding to the phone number
    */
   UserDTO getOneByPhoneNumber(String phoneNumber);
 
@@ -36,7 +36,7 @@ public interface UserDAO {
    * Get the user by the id.
    *
    * @param id the user
-   * @return the user correponding to the id
+   * @return the user corresponding to the id
    */
   UserDTO getOneById(int id);
 

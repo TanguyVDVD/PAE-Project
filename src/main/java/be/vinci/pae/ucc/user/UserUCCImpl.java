@@ -13,7 +13,6 @@ import java.util.List;
  * UserUCCImpl class that implements the UserUCC interface provide the declared class login and
  * logout.
  */
-
 public class UserUCCImpl implements UserUCC {
 
   @Inject

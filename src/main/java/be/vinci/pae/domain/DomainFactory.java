@@ -1,7 +1,9 @@
 package be.vinci.pae.domain;
 
 
+import be.vinci.pae.domain.availability.AvailabilityDTO;
 import be.vinci.pae.domain.object.ObjectDTO;
+import be.vinci.pae.domain.objecttype.ObjectTypeDTO;
 import be.vinci.pae.domain.user.UserDTO;
 
 /**
@@ -20,8 +22,22 @@ public interface DomainFactory {
   /**
    * Returns a new instance of a ObjectDTO.
    *
-   * @return a UserImpl
+   * @return an ObjectImpl
    */
   ObjectDTO getObject();
+
+  /**
+   * Returns a new instance of a ObjectTypeDTO.
+   *
+   * @return an ObjectTypeImpl
+   */
+  ObjectTypeDTO getObjectType();
+
+  /**
+   * Returns a new instance of an AvailabilityDTO.
+   *
+   * @return a AvailabilityImpl
+   */
+  AvailabilityDTO getAvailability();
 
 }
