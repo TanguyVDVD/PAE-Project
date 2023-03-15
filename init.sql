@@ -102,7 +102,7 @@ INSERT INTO pae.availability VALUES (DEFAULT, '2023-05-16');
 INSERT INTO pae.availability VALUES (DEFAULT, '2023-05-28');
 INSERT INTO pae.availability VALUES (DEFAULT, '2023-05-29');
 
-INSERT INTO pae.objects VALUES (DEFAULT, 'Description!!!', true, true, 6, 'en vente', '2023-02-15', '2023-02-16', '2023-02-17', null, 'morning', 'accepte', null, null, 1, 3, 1);
-INSERT INTO pae.objects VALUES (DEFAULT, 'Description!!!', true, true, 6, 'propose', null, null, null, null, 'morning', 'accepte', null, null, 1, 3, 1);
-INSERT INTO pae.objects VALUES (DEFAULT, 'Description!!!', true, false, null, 'refuse', null, null, null, null, 'afternoon', 'refuse', 'trop mauvais etat', '+32412369482', 2, null, 3);
-INSERT INTO pae.objects VALUES (DEFAULT, 'Description!!!', true, false, 9, 'retire', '2023-02-15', '2023-02-16', '2023-02-17', '2023-03-20', 'morning', 'accepte', null, null, 1, 3, 1);
+INSERT INTO pae.objects VALUES (DEFAULT, 'Description!!!', true, true, 6, 'en vente', '2023-02-15', '2023-02-16', '2023-02-17', null, 'matin', 'accepte', null, null, 1, 3, 1);
+INSERT INTO pae.objects VALUES (DEFAULT, 'Description!!!', true, true, 6, 'propose', null, null, null, null, 'matin', 'accepte', null, null, 1, 3, 1);
+INSERT INTO pae.objects VALUES (DEFAULT, 'Description!!!', true, false, null, 'refuse', null, null, null, null, 'après-midi', 'refuse', 'trop mauvais etat', '+32412369482', 2, null, 3);
+INSERT INTO pae.objects VALUES (DEFAULT, 'Description!!!', true, false, 9, 'retire', '2023-02-15', '2023-02-16', '2023-02-17', '2023-03-20', 'matin', 'accepte', null, null, 1, 3, 1);
