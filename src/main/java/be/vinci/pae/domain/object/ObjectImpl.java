@@ -1,7 +1,6 @@
 package be.vinci.pae.domain.object;
 
 import be.vinci.pae.domain.user.UserDTO;
-import java.util.Date;
 
 /**
  * ObjectImpl class that implements the ObjectDTO interface Contains all the attribute of an
@@ -15,15 +14,15 @@ public class ObjectImpl implements Object {
   private boolean isVisible;
   private double price;
   private String state;
-  private Date acceptanceDate;
-  private Date depositDate;
-  private Date sellingDate;
-  private Date withdrawalDate;
+  private String acceptanceDate;
+  private String depositDate;
+  private String sellingDate;
+  private String withdrawalDate;
   private String timeSlot;
   private String status;
   private String reasonForRefusal;
   private String phoneNumber;
-  private Date pickupDate;
+  private String pickupDate;
   private UserDTO user;
   private String objectType;
 
@@ -150,10 +149,10 @@ public class ObjectImpl implements Object {
   /**
    * Return the acceptance date of an object.
    *
-   * @return a Date corresponding to the acceptance date of the object
+   * @return a String corresponding to the acceptance date of the object
    */
   @Override
-  public Date getAcceptanceDate() {
+  public String getAcceptanceDate() {
     return acceptanceDate;
   }
 
@@ -163,17 +162,17 @@ public class ObjectImpl implements Object {
    * @param acceptanceDate the acceptance date of an object
    */
   @Override
-  public void setAcceptanceDate(Date acceptanceDate) {
+  public void setAcceptanceDate(String acceptanceDate) {
     this.acceptanceDate = acceptanceDate;
   }
 
   /**
    * Return the deposit date of an object.
    *
-   * @return a Date corresponding to the deposit date of the object
+   * @return a String corresponding to the deposit date of the object
    */
   @Override
-  public Date getDepositDate() {
+  public String getDepositDate() {
     return depositDate;
   }
 
@@ -183,17 +182,17 @@ public class ObjectImpl implements Object {
    * @param depositDate the deposit date of an object
    */
   @Override
-  public void setDepositDate(Date depositDate) {
+  public void setDepositDate(String depositDate) {
     this.depositDate = depositDate;
   }
 
   /**
    * Return the selling date of an object.
    *
-   * @return a Date corresponding to the selling date of an object
+   * @return a String corresponding to the selling date of an object
    */
   @Override
-  public Date getSellingDate() {
+  public String getSellingDate() {
     return sellingDate;
   }
 
@@ -203,17 +202,17 @@ public class ObjectImpl implements Object {
    * @param sellingDate the selling date of an object
    */
   @Override
-  public void setSellingDate(Date sellingDate) {
+  public void setSellingDate(String sellingDate) {
     this.sellingDate = sellingDate;
   }
 
   /**
    * Return the withdrawal date of an object.
    *
-   * @return a Date corresponding to the withdrawal date of an object
+   * @return a String corresponding to the withdrawal date of an object
    */
   @Override
-  public Date getWithdrawalDate() {
+  public String getWithdrawalDate() {
     return withdrawalDate;
   }
 
@@ -223,7 +222,7 @@ public class ObjectImpl implements Object {
    * @param withdrawalDate the withdrawal date of an object
    */
   @Override
-  public void setWithdrawalDate(Date withdrawalDate) {
+  public void setWithdrawalDate(String withdrawalDate) {
     this.withdrawalDate = withdrawalDate;
   }
 
@@ -313,7 +312,7 @@ public class ObjectImpl implements Object {
    * @return a date corresponding to the pickup date of an object
    */
   @Override
-  public Date getPickupDate() {
+  public String getPickupDate() {
     return pickupDate;
   }
 
@@ -323,7 +322,7 @@ public class ObjectImpl implements Object {
    * @param pickupDate the pickup date of an object
    */
   @Override
-  public void setPickupDate(Date pickupDate) {
+  public void setPickupDate(String pickupDate) {
     this.pickupDate = pickupDate;
   }
 

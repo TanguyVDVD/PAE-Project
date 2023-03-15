@@ -1,7 +1,6 @@
 package be.vinci.pae.domain.object;
 
 import be.vinci.pae.domain.user.UserDTO;
-import java.util.Date;
 
 /**
  * ObjectDTO interface. Representing a data transfer object (DTO) for a object in the domain The
@@ -96,58 +95,58 @@ public interface ObjectDTO {
   /**
    * Return the acceptance date of an object.
    *
-   * @return a Date corresponding to the acceptance date of the object
+   * @return a String corresponding to the acceptance date of the object
    */
-  Date getAcceptanceDate();
+  String getAcceptanceDate();
 
   /**
    * set the acceptance date of an object.
    *
    * @param acceptanceDate the acceptance date of an object
    */
-  void setAcceptanceDate(Date acceptanceDate);
+  void setAcceptanceDate(String acceptanceDate);
 
   /**
    * Return the deposit date of an object.
    *
-   * @return a Date corresponding to the deposit date of the object
+   * @return a String corresponding to the deposit date of the object
    */
-  Date getDepositDate();
+  String getDepositDate();
 
   /**
    * set the deposit date of an object.
    *
    * @param depositDate the deposit date of an object
    */
-  void setDepositDate(Date depositDate);
+  void setDepositDate(String depositDate);
 
   /**
    * Return the selling date of an object.
    *
-   * @return a Date corresponding to the selling date of an object
+   * @return a String corresponding to the selling date of an object
    */
-  Date getSellingDate();
+  String getSellingDate();
 
   /**
    * set the selling date of an object.
    *
    * @param sellingDate the selling date of an object
    */
-  void setSellingDate(Date sellingDate);
+  void setSellingDate(String sellingDate);
 
   /**
    * Return the withdrawal date of an object.
    *
-   * @return a Date corresponding to the withdrawal date of an object
+   * @return a String corresponding to the withdrawal date of an object
    */
-  Date getWithdrawalDate();
+  String getWithdrawalDate();
 
   /**
    * set the withdrawal date of an object.
    *
    * @param withdrawalDate the withdrawal date of an object
    */
-  void setWithdrawalDate(Date withdrawalDate);
+  void setWithdrawalDate(String withdrawalDate);
 
   /**
    * Return the time slot of an object.
@@ -208,16 +207,16 @@ public interface ObjectDTO {
   /**
    * Return the pickup date of an object.
    *
-   * @return a date corresponding to the pickup date of an object
+   * @return a String corresponding to the pickup date of an object
    */
-  Date getPickupDate();
+  String getPickupDate();
 
   /**
    * set the pickup date of an object.
    *
    * @param pickupDate the pickup date of an object
    */
-  void setPickupDate(Date pickupDate);
+  void setPickupDate(String pickupDate);
 
   /**
    * Return the user of an object.

@@ -50,15 +50,21 @@ public class ObjectDAOImpl implements ObjectDAO {
       object.setVisibility(resultSet.getBoolean("is_visible"));
       object.setPrice(resultSet.getDouble("price"));
       object.setState(resultSet.getString("state"));
-      object.setAcceptanceDate(resultSet.getDate("acceptance_date"));
-      object.setDepositDate(resultSet.getDate("deposit_date"));
-      object.setSellingDate(resultSet.getDate("selling_date"));
-      object.setWithdrawalDate(resultSet.getDate("withdrawal_date"));
+      object.setAcceptanceDate(resultSet.getDate("acceptance_date") == null ? ""
+          : resultSet.getDate("acceptance_date").toString());
+      object.setDepositDate(resultSet.getDate("deposit_date") == null ? ""
+          : resultSet.getDate("deposit_date").toString());
+      object.setSellingDate(resultSet.getDate("selling_date") == null ? ""
+          : resultSet.getDate("selling_date").toString());
+      object.setWithdrawalDate(resultSet.getDate("withdrawal_date") == null ? ""
+          : resultSet.getDate("withdrawal_date").toString());
       object.setTimeSlot(resultSet.getString("time_slot"));
       object.setStatus(resultSet.getString("status"));
       object.setReasonForRefusal(resultSet.getString("reason_for_refusal"));
       object.setPhoneNumber(resultSet.getString("phone_number"));
-      object.setPickupDate(myAvailabilityDao.getOneById(resultSet.getInt("pickup_date")));
+      object.setPickupDate(
+          myAvailabilityDao.getOneById(resultSet.getInt("pickup_date")) == null ? ""
+              : myAvailabilityDao.getOneById(resultSet.getInt("pickup_date")).toString());
       object.setUser(myUserDao.getOneById(resultSet.getInt("id_user")));
       object.setObjectType(myObjectTypeDAO.getOneById(resultSet.getInt("id_object_type")));
 
