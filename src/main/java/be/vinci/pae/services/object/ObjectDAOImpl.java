@@ -83,11 +83,15 @@ public class ObjectDAOImpl implements ObjectDAO {
    */
   @Override
   public List<ObjectDTO> getAll(String query) {
-    String request = "SELECT * FROM pae.objects ORDER BY id_object;";
+    String request = "SELECT * FROM pae.objects o, pae.object_types ot "
+        + "WHERE o.id_object_type = ot.id_object_type AND LOWER(o.description || ' ' || ot.label) "
+        + "LIKE CONCAT('%', ?, '%') ORDER BY id_object;";
 
     ArrayList<ObjectDTO> objects = new ArrayList<>();
 
     try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+      ps.setString(1, query == null ? "" : query.toLowerCase());
+
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           objects.add(dtoFromRS(rs));
