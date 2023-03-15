@@ -37,6 +37,7 @@ public class ObjectResource {
    * @return a list of objects
    */
   @GET
+  @AuthorizeAdmin
   @Produces(MediaType.APPLICATION_JSON)
   public ArrayNode getObjects(@QueryParam("query") String query) {
     return jsonMapper.valueToTree(objectUCC.getObjects(query));
