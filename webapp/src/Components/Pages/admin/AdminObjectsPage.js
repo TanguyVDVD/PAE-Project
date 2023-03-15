@@ -65,8 +65,8 @@ async function fetchObjects(query = '') {
                                     <span>${object.description}</span>
                                 </div>
                              
-                                <p class="text-justify text-truncate para mb-0">${object.pickupDate}</p>
-                                <p class="text-justify text-truncate para mb-0">${object.timeSlot}</p>
+                                <p class="text-justify text-truncate para mb-0">Récupéré le ${object.pickupDate}</p>
+                                <p class="text-justify text-truncate para mb-0">le ${object.timeSlot}</p>
                             </div>
                             
                         <div class="align-items-center align-content-center col-md-3 border-left mt-1">
