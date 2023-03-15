@@ -65,8 +65,7 @@ async function fetchObjects(query = '') {
                                     <span>${object.description}</span>
                                 </div>
                              
-                                <p class="text-justify text-truncate para mb-0">Récupéré le ${object.pickupDate}</p>
-                                <p class="text-justify text-truncate para mb-0">le ${object.timeSlot}</p>
+                                <p class="text-justify text-truncate para mb-0">Récupéré le ${object.pickupDate} ${object.timeSlot}</p>
                             </div>
                             
                         <div class="align-items-center align-content-center col-md-3 border-left mt-1">
@@ -78,7 +77,7 @@ async function fetchObjects(query = '') {
                             
                             <div class="d-flex flex-column mt-4">
                                 <button class="btn btn-primary btn-sm" type="button">Modifier</button>
-                                <button class="btn btn-outline-primary btn-sm mt-2" type="button">${object.user}</button>
+                                <button class="btn btn-outline-primary btn-sm mt-2" type="button">${object.user.firstName}</button>
                             </div>
                         </div>
                     </div>
