@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
   "email": "riez@ressourcerie.be",
-  "password": "pwdToHash"
+  "password": "password"
 }
 
 > {%
@@ -17,7 +17,7 @@ Content-Type: application/json
 
 {
   "email": "lise@ressourcerie.be",
-  "password": "pwdToHash"
+  "password": "password"
 }
 
 > {%
@@ -30,7 +30,7 @@ Content-Type: application/json
 
 {
   "email": "tanguy@ressourcerie.be",
-  "password": "pwdToHash"
+  "password": "password"
 }
 
 ### Login the wrong mdp user
