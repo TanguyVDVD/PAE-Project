@@ -45,57 +45,40 @@ function renderAdminObjectsPage() {
 async function fetchObjects(query = '') {
   const list = document.getElementById('objects-list');
 
-  list.innerHTML = `
-    <div class="text-center my-5">
-      <div class="spinner-border" role="status"></div>
-    </div>
-  `;
-
   API.get(`objects?query=${encodeURIComponent(query)}`).then((objects) => {
     document.getElementById('objects-list').innerHTML = `
-        <div class="container d-flex justify-content-center mt-50 mb-50">
-            <div class="row">
+        <div class="container mt-5 mb-5">
+            <div class="d-flex justify-content-center row">
                 <div class="col-md-10">
                     ${objects.map((object) => `
-                    <div class="card card-body mt-3">
-                  
-                        <div class="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
-                    
-                            <div class="mr-2 mb-3 mb-lg-0">
-                                <img src="https://images.pexels.com/photos/1866149/pexels-photo-1866149.jpeg?cs=srgb&dl=pexels-martin-p%C3%A9chy-1866149.jpg&fm=jpg" width="150" height="150" alt="">
+                        <div class="row p-2 bg-white border rounded">
+                            <div class="col-md-3 mt-1">
+                                <img 
+                                    class="img-fluid img-responsive rounded product-image" 
+                                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqsL6QorN-b6YhpcfTl9YJEzWB2xSkhFkN4Q&usqp=CAU"
+                                >
                             </div>
-
-                            <div class="media-body">
-                                <h6 class="media-title font-weight-semibold">
-                                    <a href="#" data-abc="true">${object.description}</a>
-                                </h6>
-        
-                                <h4 class="media-title font-weight-semibold">
-                                    <a href="#" data-abc="true">${object.objectType}</a>
-                                </h4>
-        
-                                <p class="mb-3">256 GB ROM | 15.49 cm (6.1 inch) Display 12MP Rear Camera | 15MP Front Camera A12 Bionic Chip Processor | Gorilla Glass with high quality display </p>
-        
-                                <ul class="list-inline list-inline-dotted mb-0">
-                                    <li class="list-inline-item">All items from <a href="#" data-abc="true">Mobile junction</a></li>
-                                    <li class="list-inline-item">Add to <a href="#" data-abc="true">wishlist</a></li>
-                                </ul>
-                            </div>
-
-                            <div class="mt-3 mt-lg-0 ml-lg-3 text-center">
-                                <h3 class="mb-0 font-weight-semibold">$612.99</h3>
-    
-                                <div>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
+                            <div class="col-md-6 mt-1">
+                                <h5>${object.objectType}</h5>
+                               
+                                <div class="mt-1 mb-1 spec-1">
+                                    <span>${object.description}</span>
                                 </div>
-    
-                                <div class="text-muted">2349 reviews</div>
-    
-                                <button type="button" class="btn btn-warning mt-4 text-white"><i class="icon-cart-add mr-2"></i> Add to cart</button>
+                             
+                                <p class="text-justify text-truncate para mb-0">${object.pickupDate}</p>
+                                <p class="text-justify text-truncate para mb-0">${object.timeSlot}</p>
+                            </div>
+                            
+                        <div class="align-items-center align-content-center col-md-3 border-left mt-1">
+                            <div class="d-flex flex-row align-items-center">
+                                <h4 class="mr-1">${object.price} €</h4>
+                            </div>
+                            
+                            <h6 class="text-success">${object.state}</h6>
+                            
+                            <div class="d-flex flex-column mt-4">
+                                <button class="btn btn-primary btn-sm" type="button">Modifier</button>
+                                <button class="btn btn-outline-primary btn-sm mt-2" type="button">${object.user}</button>
                             </div>
                         </div>
                     </div>
