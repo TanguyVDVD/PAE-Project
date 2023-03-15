@@ -32,10 +32,10 @@ function renderAdminObjectsPage() {
     <div id="objects-list"></div>
   `;
 
-  div.querySelector('form').addEventListener('submit', (e) => {
+  div.querySelector('form').addEventListener('keyup', (e) => {
     e.preventDefault();
 
-    const search = e.target.querySelector('input').value;
+    const search = e.target.value;
     fetchObjects(search);
   });
 
