@@ -56,7 +56,7 @@ async function fetchObjects(query = '') {
                                 <img 
                                     class="img-fluid img-responsive rounded product-image" 
                                     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqsL6QorN-b6YhpcfTl9YJEzWB2xSkhFkN4Q&usqp=CAU"
-                                >
+                                    alt="${object.objectType}">
                             </div>
                             <div class="col-md-6 mt-1">
                                 <h5>${object.objectType}</h5>
@@ -64,27 +64,28 @@ async function fetchObjects(query = '') {
                                 <div class="mt-1 mb-1 spec-1">
                                     <span>${object.description}</span>
                                 </div>
-                             
+                                
                                 <p class="text-justify text-truncate para mb-0">Récupéré le ${object.pickupDate} ${object.timeSlot}</p>
+                                
                                 <p class="text-justify text-truncate para mb-0">
                                     Proposé par 
-                                    ${object.user === null ? object.phoneNumber : object.user.lastName.concat(" ", object.user.firstName)}
+                                    ${object.user === null ? object.phoneNumber : 
+                                    object.user.lastName.concat(" ", object.user.firstName)}
                                 </p>
-                               
                             </div>
                             
-                        <div class="align-items-center align-content-center col-md-3 border-left mt-1">
-                            <div class="d-flex flex-row align-items-center">
-                                <h4 class="mr-1">${object.price} €</h4>
-                            </div>
-                            
-                            <h6 class="text-success">${object.state}</h6>
-                            
-                            <div class="d-flex flex-column mt-4">
-                                <button class="btn btn-primary btn-sm" type="button">Modifier</button>
+                            <div class="align-items-center align-content-center col-md-3 border-left mt-1">
+                                <div class="d-flex flex-row align-items-center">
+                                    <h4 class="mr-1">${object.price} €</h4>
+                                </div>
+                                
+                                <h6 class="text-success">${object.state}</h6>
+                                
+                                <div class="d-flex flex-column mt-4">
+                                    <button class="btn btn-primary btn-sm" type="button">Modifier</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
                 `,).join('')}
                 </div>                     
             </div>
