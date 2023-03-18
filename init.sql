@@ -68,10 +68,10 @@ CREATE TABLE pae.users_notifications (
 --------------- SEED ------------------
 
 
-INSERT INTO pae.users VALUES (DEFAULT, 'Riez', 'Christophe', '+32498183040', 'riez@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', 'photoPath', '2023-02-01', true);
-INSERT INTO pae.users VALUES (DEFAULT, 'Vdv', 'Constantine', '+32498183041', 'constantine@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', 'photoPath', '2023-02-01', true);
-INSERT INTO pae.users VALUES (DEFAULT, 'lsh', 'Bernard', '+32498183042', 'bernard@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', 'photoPath', '2023-02-01', true);
-INSERT INTO pae.users VALUES (DEFAULT, 'bdh', 'Lise', '+32498183043', 'lise@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', 'photoPath', '2023-02-01', false);
+INSERT INTO pae.users VALUES (DEFAULT, 'Riez', 'Christophe', '0498183040', 'riez@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', 'photoPath', '2023-02-01', true);
+INSERT INTO pae.users VALUES (DEFAULT, 'Vdv', 'Constantine', '0498183041', 'constantine@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', 'photoPath', '2023-02-01', true);
+INSERT INTO pae.users VALUES (DEFAULT, 'lsh', 'Bernard', '0498183042', 'bernard@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', 'photoPath', '2023-02-01', true);
+INSERT INTO pae.users VALUES (DEFAULT, 'bdh', 'Lise', '0498183043', 'lise@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', 'photoPath', '2023-02-01', false);
 
 INSERT INTO pae.object_types VALUES (DEFAULT,'Meuble');
 INSERT INTO pae.object_types VALUES (DEFAULT,'Table');

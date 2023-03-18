@@ -65,13 +65,10 @@ async function fetchObjects(query = '') {
                                     <span>${object.description}</span>
                                 </div>
                                 
-                                <p class="text-justify text-truncate para mb-0">Récupéré le ${object.pickupDate} ${object.timeSlot}</p>
+                                <p>Récupéré le ${object.pickupDate} ${object.timeSlot}</p>
                                 
-                                <p class="text-justify text-truncate para mb-0">
-                                    Proposé par 
-                                    ${object.user === null ? object.phoneNumber : 
-                                    object.user.lastName.concat(" ", object.user.firstName)}
-                                </p>
+                                <div class="divUser">
+                                </div>
                             </div>
                             
                             <div class="align-items-center align-content-center col-md-3 border-left mt-1">
@@ -92,13 +89,36 @@ async function fetchObjects(query = '') {
         </div>
       `;
 
+    setUserOrPhoneNumber("divUser", objects);
+
     list.querySelectorAll('a[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
-        Navigate(`/object/${e.target.dataset.id}`);
+        Navigate(`/user/${e.target.dataset.id}`);
       });
     });
   });
+}
+
+function setUserOrPhoneNumber(className, objects){
+  const elements = document.getElementsByClassName(className);
+  for (let i = 0; i < elements.length; i += 1) {
+    if (objects[i].user === null){
+      elements.item(i).innerHTML = `
+        <p>Proposé anonymement par ${objects[i].phoneNumber}</p>
+      `
+    }
+    else {
+      elements.item(i).innerHTML = `
+        <p>
+        Proposé par
+        <a href="#" class="btn-link" role="button" data-id="${objects[i].user.id}">
+            ${objects[i].user.firstName} ${objects[i].user.lastName}
+        </a>
+        </p>
+      `
+    }
+  }
 }
 
 export default AdminObjectsPage;
