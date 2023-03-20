@@ -91,18 +91,18 @@ public interface UserDTO {
   void setPassword(String password);
 
   /**
-   * Return the photo link of a user.
+   * Return if a user has a photo.
    *
-   * @return a String corresponding to the link of the photo
+   * @return a boolean corresponding to the state of the photo
    */
-  String getPhoto();
+  boolean getPhoto();
 
   /**
-   * set the new photo link of a user.
+   * Set whether a user has a photo.
    *
-   * @param photo the new photo link of a user
+   * @param hasPhoto the state of the photo
    */
-  void setPhoto(String photo);
+  void setPhoto(boolean hasPhoto);
 
   /**
    * Return the register date of a user.

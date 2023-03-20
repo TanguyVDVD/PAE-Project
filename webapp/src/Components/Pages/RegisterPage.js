@@ -136,13 +136,13 @@ function renderRegisterForm() {
 
     renderError();
 
-    const formData = {
-      lastname: registerForm.querySelector('#input-lastname').value,
-      firstname: registerForm.querySelector('#input-firstname').value,
-      email: registerForm.querySelector('#input-email').value,
-      phone: registerForm.querySelector('#input-phone').value,
-      password: registerForm.querySelector('#input-password').value,
-    };
+    const formData = new FormData();
+
+    ['lastname', 'firstname', 'email', 'phone', 'password', 'photo'].forEach((key) => {
+      const input = registerForm.querySelector(`#input-${key}`);
+
+      formData.append(key, input.type === 'file' ? input.files[0] : input.value);
+    });
 
     API.post('users/register', { body: formData })
       .then((data) => {

@@ -1,6 +1,8 @@
 package be.vinci.pae.ucc.user;
 
 import be.vinci.pae.domain.user.UserDTO;
+import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -32,5 +34,23 @@ public interface UserUCC {
    * @return a list of all users
    */
   List<UserDTO> getUsers(String query);
+
+  /**
+   * Get the profile picture of a user.
+   *
+   * @param id id of the user
+   * @return the profile picture of the user
+   */
+  File getProfilePicture(int id);
+
+  /**
+   * Update the profile picture of a user.
+   *
+   * @param id    id of the user
+   * @param photo the photo to set
+   * @return whether the update was successful
+   */
+  boolean updateProfilePicture(int id, InputStream photo);
+
 
 }

@@ -3,9 +3,14 @@ package be.vinci.pae.ucc.user;
 import be.vinci.pae.domain.user.User;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.services.user.UserDAO;
+import be.vinci.pae.utils.Config;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 
@@ -48,23 +53,57 @@ public class UserUCCImpl implements UserUCC {
     }
 
     if (myUserDAO.getOneByPhoneNumber(userDTO.getPhoneNumber()) != null) {
-      throw new WebApplicationException("user already exist", Response.Status.BAD_REQUEST);
+      throw new WebApplicationException("Numéro de GSM déjà utilisé", Response.Status.BAD_REQUEST);
     }
 
     User userTemp = (User) userDTO;
     userTemp.setPassword(userTemp.hashPassword(userTemp.getPassword()));
-    UserDTO userDtoToInsert = (UserDTO) userTemp;
-    System.out.println(userDtoToInsert.getPassword());
 
-    if (!myUserDAO.insert(userDtoToInsert)) {
+    int id = myUserDAO.insert(userTemp);
+
+    if (id == -1) {
       return null;
     }
 
-    return userDtoToInsert;
+    userTemp.setId(id);
+
+    return userTemp;
   }
 
   public List<UserDTO> getUsers(String query) {
     return myUserDAO.getAll(query);
   }
 
+  @Override
+  public File getProfilePicture(int id) {
+    String blobPath = Config.getProperty("BlobPath");
+
+    File file = new File(blobPath, "user-" + id + ".jpg");
+
+    return file.exists() ? file : null;
+  }
+
+  @Override
+  public boolean updateProfilePicture(int id, InputStream photo) {
+    // TODO: process the photo
+
+    try {
+      String blobPath = Config.getProperty("BlobPath");
+
+      // Create the blob directory if it doesn't exist
+      Files.createDirectories(Paths.get(blobPath));
+
+      Files.copy(photo,
+          Paths.get(blobPath,
+              ("user-" + id + ".jpg")));
+    } catch (Exception e) {
+      e.printStackTrace();
+
+      return false;
+    }
+
+    // TODO: Update the user in the database
+
+    return true;
+  }
 }

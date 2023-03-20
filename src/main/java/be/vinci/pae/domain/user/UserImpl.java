@@ -16,7 +16,7 @@ public class UserImpl implements User {
   private String email;
   @JsonIgnore
   private String password;
-  private String photo;
+  private boolean photo;
   private String registerDate;
   private boolean isHelper;
 
@@ -141,23 +141,23 @@ public class UserImpl implements User {
   }
 
   /**
-   * Return the photo link of a user.
+   * Return if a user has a photo.
    *
-   * @return a String corresponding to the link of the photo
+   * @return a boolean corresponding to the state of the photo
    */
   @Override
-  public String getPhoto() {
+  public boolean getPhoto() {
     return photo;
   }
 
   /**
-   * set the new photo link of a user.
+   * Set whether a user has a photo.
    *
-   * @param photo the new photo link of a user
+   * @param hasPhoto the state of the photo
    */
   @Override
-  public void setPhoto(String photo) {
-    this.photo = photo;
+  public void setPhoto(boolean hasPhoto) {
+    this.photo = hasPhoto;
   }
 
   /**
