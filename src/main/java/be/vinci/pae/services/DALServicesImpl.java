@@ -29,26 +29,14 @@ public class DALServicesImpl implements DALServices {
    */
   @Override
   public void connectDatabase() {
-    /*
-    String databaseUrl = Config.getProperty("DatabaseUrl");
-    String databaseUser = Config.getProperty("DatabaseUser");
-    String databasePassword = Config.getProperty("DatabasePassword");
-*/
+
     try (BasicDataSource ds = new BasicDataSource()) {
 
       ds.setUrl(Config.getProperty("DatabaseUrl"));
       ds.setUsername(Config.getProperty("DatabaseUser"));
       ds.setPassword(Config.getProperty("DatabasePassword"));
       ds.setDriverClassName("org.postgresql.Driver");
-/*
-    // Load the PostgresSQL driver
-    try {
-      Class.forName("org.postgresql.Driver");
-    } catch (ClassNotFoundException e) {
-      System.out.println("Missing PostgreSQL driver!");
-      System.exit(1);
-    }
-*/
+
       // Connection to the database
       try {
         dbConnection = ds.getConnection();
