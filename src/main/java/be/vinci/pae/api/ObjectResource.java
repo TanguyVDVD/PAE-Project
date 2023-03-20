@@ -80,7 +80,7 @@ public class ObjectResource {
   @AuthorizeAdmin
   public ObjectNode updateObjectStatus(JsonNode json, @PathParam("id") int id) {
     String status = json.get("status").asText();
-    if (id <= 0 || status.isBlank() || (!status.equals("rejeté") && !status.equals("accepté"))) {
+    if (id <= 0 || status.isBlank() || !status.equals("rejeté") && !status.equals("accepté")) {
       throw new WebApplicationException("Mauvais statut (accepté ou refusé) ou id",
           (Response.Status.BAD_REQUEST));
     }
