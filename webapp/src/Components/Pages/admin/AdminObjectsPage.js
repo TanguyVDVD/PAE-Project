@@ -148,9 +148,14 @@ function setPriceColor(className, objects){
           <h6 class="text-danger">${object.state}</h6>
       `
     }
-    else {
+    else if (object.state === "proposé"){
       element.innerHTML = `
           <h6 class="text-primary">${object.state}</h6>
+      `
+    }
+    else {
+      element.innerHTML = `
+          <h6 class="text-success">${object.state}</h6>
       `
     }
   }
