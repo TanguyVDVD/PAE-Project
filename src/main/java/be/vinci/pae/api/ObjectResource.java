@@ -91,7 +91,7 @@ public class ObjectResource {
     }
 
     if (objectDTO == null) {
-      throw new WebApplicationException("Objet déjà accepté ou refusé",
+      throw new WebApplicationException("Impossible de changer le statut de l'objet en db",
           Status.NOT_MODIFIED);
     }
 

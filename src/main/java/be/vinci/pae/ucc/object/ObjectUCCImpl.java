@@ -32,6 +32,6 @@ public class ObjectUCCImpl implements ObjectUCC {
    */
   @Override
   public ObjectDTO accept(int id) {
-    return myObjectDAO.getAll(query);
+    return myObjectDAO.setStatusToAccepted(id);
   }
 }

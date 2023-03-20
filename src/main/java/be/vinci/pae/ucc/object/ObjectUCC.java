@@ -23,4 +23,6 @@ public interface ObjectUCC {
    * @return the object updated
    */
   ObjectDTO accept(int id);
+
+  ObjectDTO reject(int id);
 }

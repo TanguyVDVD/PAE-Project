@@ -15,4 +15,12 @@ public interface ObjectDAO {
    * @return the list of objects
    */
   List<ObjectDTO> getAll(String query);
+
+  /**
+   * Set the status of an object to accepted.
+   *
+   * @param id the id of the object
+   * @return the modified object
+   */
+  ObjectDTO setStatusToAccepted(int id);
 }
