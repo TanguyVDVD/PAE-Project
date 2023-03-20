@@ -141,7 +141,7 @@ public class ObjectDAOImpl implements ObjectDAO {
 
     try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
       ps.setInt(1, id);
-      ps.executeQuery();
+      ps.executeUpdate();
     } catch (SQLException se) {
       se.printStackTrace();
     }
