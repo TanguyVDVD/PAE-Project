@@ -93,9 +93,7 @@ public class UserUCCImpl implements UserUCC {
       // Create the blob directory if it doesn't exist
       Files.createDirectories(Paths.get(blobPath));
 
-      Files.copy(photo,
-          Paths.get(blobPath,
-              ("user-" + id + ".jpg")));
+      Files.copy(photo, Paths.get(blobPath, "user-" + id + ".jpg"));
     } catch (Exception e) {
       e.printStackTrace();
 
