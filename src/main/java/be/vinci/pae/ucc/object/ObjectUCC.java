@@ -24,5 +24,11 @@ public interface ObjectUCC {
    */
   ObjectDTO accept(int id);
 
+  /**
+   * Reject an offer.
+   *
+   * @param id the id of the object to reject
+   * @return the object updated
+   */
   ObjectDTO reject(int id);
 }

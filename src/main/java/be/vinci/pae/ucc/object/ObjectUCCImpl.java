@@ -36,8 +36,10 @@ public class ObjectUCCImpl implements ObjectUCC {
   }
 
   /**
-   * @param id
-   * @return
+   * Reject an offer.
+   *
+   * @param id the id of the object to reject
+   * @return the object updated
    */
   @Override
   public ObjectDTO reject(int id) {
