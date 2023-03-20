@@ -34,4 +34,13 @@ public class ObjectUCCImpl implements ObjectUCC {
   public ObjectDTO accept(int id) {
     return myObjectDAO.setStatusToAccepted(id);
   }
+
+  /**
+   * @param id
+   * @return
+   */
+  @Override
+  public ObjectDTO reject(int id) {
+    return null;
+  }
 }
