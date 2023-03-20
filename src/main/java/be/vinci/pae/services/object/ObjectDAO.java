@@ -17,6 +17,14 @@ public interface ObjectDAO {
   List<ObjectDTO> getAll(String query);
 
   /**
+   * Get the object by the id.
+   *
+   * @param id the id of the object
+   * @return the object corresponding to the id
+   */
+  ObjectDTO getOneById(int id);
+
+  /**
    * Set the status of an object to accepted.
    *
    * @param id the id of the object

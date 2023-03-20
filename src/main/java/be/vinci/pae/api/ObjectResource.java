@@ -4,8 +4,10 @@ import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.ucc.object.ObjectUCC;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -67,16 +69,17 @@ public class ObjectResource {
   /**
    * Method that update the status of an object (accepted or rejected).
    *
-   * @param status the new status to update
-   * @param id     the id of the object
+   * @param json the new status to update as a json
+   * @param id   the id of the object
    * @return the object that was just updated
    */
   @PATCH
-  @Path("status/{id}")
+  @Path("/status/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public ObjectUCC updateObjectStatus(String status, @PathParam("id") int id) {
+  public ObjectNode updateObjectStatus(JsonNode json, @PathParam("id") int id) {
+    String status = json.get("status").asText();
     if (id <= 0 || status.isBlank() || (!status.equals("rejeté") && !status.equals("accepté"))) {
       throw new WebApplicationException("Mauvais statut (accepté ou refusé) ou id",
           (Response.Status.BAD_REQUEST));
@@ -95,6 +98,6 @@ public class ObjectResource {
           Status.NOT_MODIFIED);
     }
 
-    return null;
+    return jsonMapper.convertValue(objectDTO, ObjectNode.class);
   }
 }

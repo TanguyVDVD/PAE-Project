@@ -105,19 +105,17 @@ public class ObjectDAOImpl implements ObjectDAO {
   }
 
   /**
-   * Set the status of an object to accepted.
+   * Get the object by the id.
    *
    * @param id the id of the object
-   * @return the modified object
+   * @return the object corresponding to the id
    */
   @Override
-  public ObjectDTO setStatusToAccepted(int id) {
-    String request = "UPDATE pae.objects SET status = 'accepté' WHERE id_object = ?;"
-        + "SELECT * FROM pae.objects WHERE id_object = ?;";
-    
+  public ObjectDTO getOneById(int id) {
+    String request = "SELECT * FROM pae.objects WHERE id_object = ?";
+
     try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
       ps.setInt(1, id);
-      ps.setInt(2, id);
 
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
@@ -126,6 +124,31 @@ public class ObjectDAOImpl implements ObjectDAO {
       }
     } catch (SQLException se) {
       se.printStackTrace();
+    }
+
+    return null;
+  }
+
+  /**
+   * Set the status of an object to accepted.
+   *
+   * @param id the id of the object
+   * @return the modified object
+   */
+  @Override
+  public ObjectDTO setStatusToAccepted(int id) {
+    String request = "UPDATE pae.objects SET status = 'accepté' WHERE id_object = ?;";
+
+    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+      ps.setInt(1, id);
+      ps.executeQuery();
+    } catch (SQLException se) {
+      se.printStackTrace();
+    }
+
+    ObjectDTO object = getOneById(id);
+    if (object.getStatus().equals("accepté")) {
+      return object;
     }
 
     return null;
