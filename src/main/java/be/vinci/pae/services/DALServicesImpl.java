@@ -2,9 +2,9 @@ package be.vinci.pae.services;
 
 import be.vinci.pae.utils.Config;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import org.apache.commons.dbcp2.BasicDataSource;
 
 /**
  * DALServicesImpl class that implements DALServices interface Provide the different methods.
@@ -23,16 +23,24 @@ public class DALServicesImpl implements DALServices {
   public DALServicesImpl() {
     connectDatabase();
   }
-
+  
   /**
    * Load the PostgresSQL driver and connect to the database.
    */
   @Override
   public void connectDatabase() {
+    /*
     String databaseUrl = Config.getProperty("DatabaseUrl");
     String databaseUser = Config.getProperty("DatabaseUser");
     String databasePassword = Config.getProperty("DatabasePassword");
+*/
+    try (BasicDataSource ds = new BasicDataSource()) {
 
+      ds.setUrl(Config.getProperty("DatabaseUrl"));
+      ds.setUsername(Config.getProperty("DatabaseUser"));
+      ds.setPassword(Config.getProperty("DatabasePassword"));
+      ds.setDriverClassName("org.postgresql.Driver");
+/*
     // Load the PostgresSQL driver
     try {
       Class.forName("org.postgresql.Driver");
@@ -40,13 +48,16 @@ public class DALServicesImpl implements DALServices {
       System.out.println("Missing PostgreSQL driver!");
       System.exit(1);
     }
-
-    // Connection to the database
-    try {
-      dbConnection = DriverManager.getConnection(databaseUrl, databaseUser, databasePassword);
+*/
+      // Connection to the database
+      try {
+        dbConnection = ds.getConnection();
+      } catch (SQLException e) {
+        System.out.println("Unable to reach the server!");
+        System.exit(1);
+      }
     } catch (SQLException e) {
-      System.out.println("Unable to reach the server!");
-      System.exit(1);
+      throw new RuntimeException(e);
     }
   }
 
