@@ -29,9 +29,9 @@ public class DALServicesImpl implements DALServices {
    */
   @Override
   public void connectDatabase() {
-
+    //creation of BasicDataSource
     try (BasicDataSource ds = new BasicDataSource()) {
-
+      //Setup of property
       ds.setUrl(Config.getProperty("DatabaseUrl"));
       ds.setUsername(Config.getProperty("DatabaseUser"));
       ds.setPassword(Config.getProperty("DatabasePassword"));
