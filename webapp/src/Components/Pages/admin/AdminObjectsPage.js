@@ -67,7 +67,7 @@ async function fetchObjects(query = '') {
                                 
                                 <p>Récupéré le ${object.pickupDate} ${object.timeSlot}</p>
                                 
-                                <div class="divUser">
+                                <div class="div-user">
                                 </div>
                             </div>
                             
@@ -76,10 +76,10 @@ async function fetchObjects(query = '') {
                                     <h4 class="mr-1">${object.price} €</h4>
                                 </div>
                                 
-                                <h6 class="text-success">${object.state}</h6>
-                                
-                                <div class="d-flex flex-column mt-4">
-                                    <button class="btn btn-primary btn-sm" type="button">Modifier</button>
+                                <div class="div-state">
+                                </div>
+                                                                
+                                <div class="d-flex flex-column mt-4 div-button">
                                 </div>
                             </div>
                         </div>
@@ -89,12 +89,26 @@ async function fetchObjects(query = '') {
         </div>
       `;
 
-    setUserOrPhoneNumber("divUser", objects);
+    setUserOrPhoneNumber("div-user", objects);
+    setPriceColor("div-state", objects);
+    setButton("div-button", objects);
 
     list.querySelectorAll('a[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
         Navigate(`/user/${e.target.dataset.id}`);
+      });
+    });
+
+    list.querySelectorAll('button[data-id]').forEach((link) => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (e.currentTarget.classList.contains("button-modify")){
+          Navigate(`/object/${e.target.dataset.id}`);
+        }
+        else if (e.currentTarget.classList.contains("button-respond")) {
+          Navigate(`/proposition/${e.target.dataset.id}`);
+        }
       });
     });
   });
@@ -103,19 +117,61 @@ async function fetchObjects(query = '') {
 function setUserOrPhoneNumber(className, objects){
   const elements = document.getElementsByClassName(className);
   for (let i = 0; i < elements.length; i += 1) {
-    if (objects[i].user === null){
-      elements.item(i).innerHTML = `
-        <p>Proposé anonymement par ${objects[i].phoneNumber}</p>
+    const object = objects[i];
+    const element = elements.item(i);
+    if (object.user === null){
+      element.innerHTML = `
+          <p>Proposé anonymement par ${object.phoneNumber}</p>
       `
     }
     else {
-      elements.item(i).innerHTML = `
-        <p>
-        Proposé par
-        <a href="#" class="btn-link" role="button" data-id="${objects[i].user.id}">
-            ${objects[i].user.firstName} ${objects[i].user.lastName}
-        </a>
-        </p>
+      element.innerHTML = `
+          <p>
+          Proposé par
+              <a href="#" class="btn-link" role="button" data-id="${object.user.id}">
+                  ${object.user.firstName} ${object.user.lastName}
+              </a>
+          </p>
+      `
+    }
+  }
+}
+
+function setPriceColor(className, objects){
+  const elements = document.getElementsByClassName(className);
+  for (let i = 0; i < elements.length; i += 1) {
+    const object = objects[i];
+    const element = elements.item(i);
+
+    if (object.state === "refusé"){
+      element.innerHTML = `
+          <h6 class="text-danger">${object.state}</h6>
+      `
+    }
+    else {
+      element.innerHTML = `
+          <h6 class="text-primary">${object.state}</h6>
+      `
+    }
+  }
+}
+
+function setButton(className, objects){
+  const elements = document.getElementsByClassName(className);
+  for (let i = 0; i < elements.length; i += 1) {
+    const object = objects[i];
+    const element = elements.item(i);
+    if (object.state === "refusé"){
+      element.innerHTML = ``
+    }
+    else if (object.state === "proposé"){
+      element.innerHTML = `
+          <button class="btn btn-outline-primary btn-sm button-respond" type="button" data-id="${object.id}">Répondre</button>
+      `
+    }
+    else {
+      element.innerHTML = `
+          <button class="btn btn-primary btn-sm button-modify" type="button" data-id="${object.id}">Modifier</button>
       `
     }
   }
