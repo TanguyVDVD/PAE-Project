@@ -22,14 +22,14 @@ public class ObjectTypeDAOImpl implements ObjectTypeDAO {
    */
   @Override
   public String getOneById(int id) {
-    String request = "SELECT label FROM pae.object_types WHERE id_object_type = ?";
+    String request = "SELECT label FROM pae.object_types WHERE id_object_type = ?;";
 
     try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
       ps.setInt(1, id);
 
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
-          rs.getString("label");
+          return rs.getString("label");
         }
       }
     } catch (SQLException se) {

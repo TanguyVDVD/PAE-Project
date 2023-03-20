@@ -32,10 +32,10 @@ function renderAdminUsersPage() {
     <div id="users-table"></div>
   `;
 
-  div.querySelector('form').addEventListener('submit', (e) => {
+  div.querySelector('form').addEventListener('keyup', (e) => {
     e.preventDefault();
 
-    const search = e.target.querySelector('input').value;
+    const search = e.target.value;
     fetchUsers(search);
   });
 

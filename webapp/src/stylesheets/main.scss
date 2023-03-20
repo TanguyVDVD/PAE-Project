@@ -16,6 +16,10 @@ $bootstrap-icons-font-dir: '~bootstrap-icons/font/fonts';
 // Writing your own styles should be the last resort.
 // Please try your best to use the existing Bootstrap classes first.
 
+body {
+  padding-top: 50px;
+}
+
 .card-object {
   width: 200px;
   height: 100%;

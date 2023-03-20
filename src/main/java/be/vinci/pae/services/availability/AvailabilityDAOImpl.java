@@ -23,14 +23,14 @@ public class AvailabilityDAOImpl implements AvailabilityDAO {
    */
   @Override
   public Date getOneById(int id) {
-    String request = "SELECT date FROM pae.availability WHERE id_availability = ?";
+    String request = "SELECT date FROM pae.availability WHERE id_availability = ?;";
 
     try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
       ps.setInt(1, id);
 
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
-          rs.getDate("date");
+          return rs.getDate("date");
         }
       }
     } catch (SQLException se) {

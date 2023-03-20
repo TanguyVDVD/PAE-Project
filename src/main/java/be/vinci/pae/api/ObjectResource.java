@@ -3,13 +3,17 @@ package be.vinci.pae.api;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.ucc.object.ObjectUCC;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 
 
@@ -20,11 +24,24 @@ import jakarta.ws.rs.core.MediaType;
 @Path("/objects")
 public class ObjectResource {
 
+  private final ObjectMapper jsonMapper = new ObjectMapper();
   @Inject
   private ObjectUCC objectUCC;
-
   @Inject
   private DomainFactory myDomainFactory;
+
+  /**
+   * Get a list of all objects.
+   *
+   * @param query query to filter objects
+   * @return a list of objects
+   */
+  @GET
+  @AuthorizeAdmin
+  @Produces(MediaType.APPLICATION_JSON)
+  public ArrayNode getObjects(@QueryParam("query") String query) {
+    return jsonMapper.valueToTree(objectUCC.getObjects(query));
+  }
 
   /**
    * Method that update the state of an object.
