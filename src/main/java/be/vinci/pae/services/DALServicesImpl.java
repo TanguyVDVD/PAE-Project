@@ -23,7 +23,7 @@ public class DALServicesImpl implements DALServices {
   public DALServicesImpl() {
     connectDatabase();
   }
-  
+
   /**
    * Load the PostgresSQL driver and connect to the database.
    */
@@ -57,7 +57,8 @@ public class DALServicesImpl implements DALServices {
         System.exit(1);
       }
     } catch (SQLException e) {
-      throw new RuntimeException(e);
+      System.out.println("Impossible to create DataSource");
+      System.exit(1);
     }
   }
 
