@@ -12,9 +12,9 @@ public interface UserDAO {
    * Insert a new user in the db.
    *
    * @param userDTO the user to insert in the db
-   * @return true if succeed false if not
+   * @return id of the new user if succeeded, -1 if not
    */
-  boolean insert(UserDTO userDTO);
+  int insert(UserDTO userDTO);
 
   /**
    * Get the user by the email.

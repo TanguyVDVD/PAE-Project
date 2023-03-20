@@ -1,6 +1,5 @@
 package be.vinci.pae.api;
 
-
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.domain.DomainFactory;
@@ -19,6 +18,7 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.WebApplicationException;
@@ -26,7 +26,11 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.io.File;
+import java.io.InputStream;
 import java.util.Date;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.server.ContainerRequest;
 
 /**
@@ -70,8 +74,7 @@ public class UserResource {
   public ObjectNode login(JsonNode json) {
 
     if (!json.hasNonNull("email") || !json.hasNonNull("password")) {
-      throw new WebApplicationException("Adresse mail et mot de passe requis",
-          Status.NOT_FOUND);
+      throw new WebApplicationException("Adresse mail et mot de passe requis", Status.NOT_FOUND);
     }
 
     String login = json.get("email").asText();
@@ -80,8 +83,7 @@ public class UserResource {
     UserDTO userDTO = userUCC.login(login, password);
 
     if (userDTO == null) {
-      throw new WebApplicationException("Adresse mail ou mot de passe incorrect",
-          Status.NOT_FOUND);
+      throw new WebApplicationException("Adresse mail ou mot de passe incorrect", Status.NOT_FOUND);
     }
 
     return createToken(userDTO);
@@ -90,46 +92,46 @@ public class UserResource {
   /**
    * Register a user with json object return the user created and the token.
    *
-   * @param json a json object
+   * @param lastName    the last name of the user
+   * @param firstName   the first name of the user
+   * @param email       the email of the user
+   * @param phone       the phone number of the user
+   * @param password    the password of the user
+   * @param photo       the photo of the user
+   * @param photoDetail the detail of the photo
    * @return a user when is created
    */
   @Path("register")
-  @Consumes(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
   @POST
-  public ObjectNode register(JsonNode json) {
-
-    if (!json.hasNonNull("last_name") || !json.hasNonNull("first_name") || !json.hasNonNull(
-        "phone_number") || !json.hasNonNull("email") || !json.hasNonNull("password")
-        || !json.hasNonNull("photo") || !json.hasNonNull("register_date") || !json.hasNonNull(
-        "is_helper")) {
-      throw new WebApplicationException("Tous les champs sont requis", Response.Status.BAD_REQUEST);
+  public ObjectNode register(@FormDataParam("lastname") String lastName,
+      @FormDataParam("firstname") String firstName, @FormDataParam("email") String email,
+      @FormDataParam("phone") String phone, @FormDataParam("password") String password,
+      @FormDataParam("photo") InputStream photo,
+      @FormDataParam("photo") FormDataContentDisposition photoDetail) {
+    if (lastName == null || firstName == null || email == null || phone == null
+        || password == null) {
+      throw new WebApplicationException("Paramètres manquants", Response.Status.BAD_REQUEST);
     }
-
-    String lastName = json.get("last_name").asText();
-    String firstName = json.get("first_name").asText();
-    String phoneNumber = json.get("phone_number").asText();
-    String email = json.get("email").asText();
-    String password = json.get("password").asText();
-    String photo = json.get("photo").asText();
-    String registerDate = json.get("register_date").asText();
-    boolean isHelper = json.get("is_helper").asBoolean();
 
     UserDTO userRegister = myDomainFactory.getUser();
 
     userRegister.setLastName(lastName);
     userRegister.setFirstName(firstName);
-    userRegister.setPhoneNumber(phoneNumber);
     userRegister.setEmail(email);
+    userRegister.setPhoneNumber(phone);
     userRegister.setPassword(password);
-    userRegister.setPhoto(photo);
-    userRegister.setRegisterDate(registerDate);
-    userRegister.setIsHelper(isHelper);
+    userRegister.setPhoto(photoDetail != null && photoDetail.getFileName() != null);
+    userRegister.setRegisterDate(new java.sql.Date(System.currentTimeMillis()).toString());
 
     UserDTO userAfterRegister = userUCC.register(userRegister);
 
-    return createToken(userAfterRegister);
+    if (userAfterRegister.getPhoto()) {
+      userUCC.updateProfilePicture(userAfterRegister.getId(), photo);
+    }
 
+    return createToken(userAfterRegister);
   }
 
   /**
@@ -141,14 +143,11 @@ public class UserResource {
   public ObjectNode createToken(UserDTO userDTO) {
     String token;
     try {
-      token = JWT.create()
-          .withIssuer("auth0")
-          .withClaim("user", userDTO.getId())
+      token = JWT.create().withIssuer("auth0").withClaim("user", userDTO.getId())
           .withExpiresAt(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 7)))
           .sign(this.jwtAlgorithm);
 
-      return jsonMapper.convertValue(userDTO, ObjectNode.class)
-          .put("token", token);
+      return jsonMapper.convertValue(userDTO, ObjectNode.class).put("token", token);
 
     } catch (Exception e) {
       System.out.println("Unable to create token");
@@ -170,5 +169,25 @@ public class UserResource {
     UserDTO userDTO = (UserDTO) request.getProperty("user");
 
     return jsonMapper.convertValue(userDTO, ObjectNode.class);
+  }
+
+  /**
+   * Get a user's profile picture.
+   *
+   * @param id the user's id
+   * @return the user's profile picture
+   */
+  @GET
+  @Path("/{id}/photo")
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  public Response getProfilePicture(@PathParam("id") int id) {
+    File f = userUCC.getProfilePicture(id);
+
+    if (f == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    return Response.ok(f, MediaType.APPLICATION_OCTET_STREAM)
+        .header("Content-Disposition", "attachment; filename=\"" + f.getName() + "\"").build();
   }
 }

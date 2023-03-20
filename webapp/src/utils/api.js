@@ -4,17 +4,29 @@ import { getAuthenticatedUser } from './auths';
 const API_URL = '/api';
 
 export default class API {
+  static getEndpoint(endpoint) {
+    return `${API_URL}/${endpoint}`;
+  }
+
   static async #call(endpoint, options = {}) {
     const currentUser = getAuthenticatedUser();
 
-    const response = await fetch(`${API_URL}/${endpoint}`, {
+    const opt = {
       ...options,
       headers: {
         'Content-Type': 'application/json',
         Authorization: currentUser ? currentUser.token : '',
         ...options.headers,
       },
-    });
+    };
+
+    // If the body is a FormData object, we don't want to set the Content-Type header
+    // so the browser will automatically set the correct boundary.
+    if (opt.body instanceof FormData) {
+      delete opt.headers['Content-Type'];
+    }
+
+    const response = await fetch(API.getEndpoint(endpoint), opt);
 
     const json = await response.json().catch(() => ({ error: 'Une erreur est survenue' }));
 

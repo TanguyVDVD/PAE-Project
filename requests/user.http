@@ -42,35 +42,61 @@ Content-Type: application/json
   "password": "pwd"
 }
 
-### Login new user
+### Register new user
 POST {{baseUrl}}/users/register
-Content-Type: application/json
+Content-Type: multipart/form-data; boundary=boundary
 
-{
-  "last_name":"pitt",
-  "first_name":"brad",
-  "phone_number":"0456454545",
-  "email":"brad@ressourcerie.be",
-  "password":"pwd",
-  "photo":"photo",
-  "register_date":"2021-05-25",
-  "is_helper":true
-}
+--boundary
+Content-Disposition: form-data; name="lastname"
 
-### Login new user
+pitt
+--boundary
+Content-Disposition: form-data; name="firstname"
+
+brad
+
+--boundary
+Content-Disposition: form-data; name="phone"
+
+0456454545
+
+--boundary
+Content-Disposition: form-data; name="email"
+
+brad@ressourcerie.be
+
+--boundary
+Content-Disposition: form-data; name="password"
+
+pwd
+
+### Register new user
 POST {{baseUrl}}/users/register
-Content-Type: application/json
+Content-Type: multipart/form-data; boundary=boundary
 
-{
-  "last_name":"cruise",
-  "first_name":"tom",
-  "phone_number":"0456454567",
-  "email":"tom@ressourcerie.be",
-  "password":"pwd",
-  "photo":"photo",
-  "register_date":"2021-05-25",
-  "is_helper":false
-}
+--boundary
+Content-Disposition: form-data; name="lastname"
+
+cruise
+--boundary
+Content-Disposition: form-data; name="firstname"
+
+tom
+
+--boundary
+Content-Disposition: form-data; name="phone"
+
+0456454567
+
+--boundary
+Content-Disposition: form-data; name="email"
+
+tom@ressourcerie.be
+
+--boundary
+Content-Disposition: form-data; name="password"
+
+pwd
 
 ### Login non admin
 POST {{baseUrl}}/users/login
@@ -80,8 +106,6 @@ Content-Type: application/json
   "email": "tom@ressourcerie.be",
   "password": "pwd"
 }
-
-
 
 
 ### Get the user
