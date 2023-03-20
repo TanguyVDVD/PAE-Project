@@ -23,4 +23,26 @@ public class ObjectUCCImpl implements ObjectUCC {
   public List<ObjectDTO> getObjects(String query) {
     return myObjectDAO.getAll(query);
   }
+
+  /**
+   * Accept an offer.
+   *
+   * @param id the id of the object to accept
+   * @return the object updated
+   */
+  @Override
+  public ObjectDTO accept(int id) {
+    return myObjectDAO.setStatusToAccepted(id);
+  }
+
+  /**
+   * Reject an offer.
+   *
+   * @param id the id of the object to reject
+   * @return the object updated
+   */
+  @Override
+  public ObjectDTO reject(int id) {
+    return null;
+  }
 }

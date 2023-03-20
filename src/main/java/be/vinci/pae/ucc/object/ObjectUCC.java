@@ -15,4 +15,20 @@ public interface ObjectUCC {
    * @return a list of all objects
    */
   List<ObjectDTO> getObjects(String query);
+
+  /**
+   * Accept an offer.
+   *
+   * @param id the id of the object to accept
+   * @return the object updated
+   */
+  ObjectDTO accept(int id);
+
+  /**
+   * Reject an offer.
+   *
+   * @param id the id of the object to reject
+   * @return the object updated
+   */
+  ObjectDTO reject(int id);
 }

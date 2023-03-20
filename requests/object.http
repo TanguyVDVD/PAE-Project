@@ -14,3 +14,12 @@ Content-Type: application/json
 ### Get a list of all objects
 GET {{baseUrl}}/objects
 Authorization: {{adminToken}}
+
+### Accept an offer
+PATCH {{baseUrl}}/objects/status/1
+Content-Type: application/json
+Authorization: {{adminToken}}
+
+{
+  "status": "accepté"
+}
