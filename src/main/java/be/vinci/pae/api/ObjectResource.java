@@ -82,7 +82,13 @@ public class ObjectResource {
           (Response.Status.BAD_REQUEST));
     }
 
-    ObjectDTO objectDTO = objectUCC.setStatus(id, status);
+    ObjectDTO objectDTO;
+
+    if (status.equals("accepté")) {
+      objectDTO = objectUCC.accept(id);
+    } else {
+      objectDTO = objectUCC.reject(id);
+    }
 
     if (objectDTO == null) {
       throw new WebApplicationException("Objet déjà accepté ou refusé",

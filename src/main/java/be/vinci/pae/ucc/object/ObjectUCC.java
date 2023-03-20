@@ -19,9 +19,8 @@ public interface ObjectUCC {
   /**
    * Accept an offer.
    *
-   * @param id     the id of the object to accept
-   * @param status the new status of the object (accepted or rejected)
+   * @param id the id of the object to accept
    * @return the object updated
    */
-  ObjectDTO setStatus(int id, String status);
+  ObjectDTO accept(int id);
 }

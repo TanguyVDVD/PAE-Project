@@ -27,14 +27,11 @@ public class ObjectUCCImpl implements ObjectUCC {
   /**
    * Accept an offer.
    *
-   * @param id     the id of the object to accept
-   * @param status the new status of the object (accepted or rejected)
+   * @param id the id of the object to accept
    * @return the object updated
    */
   @Override
-  public ObjectDTO setStatus(int id, String status) {
-    return myObjectDAO.setStatus(id, status);
+  public ObjectDTO accept(int id) {
+    return myObjectDAO.getAll(query);
   }
-
-
 }
