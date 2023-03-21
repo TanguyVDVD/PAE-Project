@@ -165,7 +165,8 @@ public class ObjectDAOImpl implements ObjectDAO {
    */
   @Override
   public ObjectDTO setStatusToRejected(int id, String reasonForRefusal) {
-    String request = "UPDATE pae.objects SET status = 'refusé' AND reason_for_refusal = ? WHERE id_object = ?;";
+    String request =
+        "UPDATE pae.objects SET status = 'refusé' AND reason_for_refusal = ? WHERE id_object = ?;";
 
     try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
       ps.setString(1, reasonForRefusal);
