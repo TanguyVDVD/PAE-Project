@@ -23,3 +23,22 @@ Authorization: {{adminToken}}
 {
   "status": "accepté"
 }
+
+### Reject an offer without reason for refusal
+PATCH {{baseUrl}}/objects/status/1
+Content-Type: application/json
+Authorization: {{adminToken}}
+
+{
+  "status": "refusé"
+}
+
+### Reject an offer without reason for refusal
+PATCH {{baseUrl}}/objects/status/1
+Content-Type: application/json
+Authorization: {{adminToken}}
+
+{
+  "status": "refusé",
+  "reasonForRefusal": "Meuble en trop mauvais état"
+}
