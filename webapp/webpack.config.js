@@ -34,7 +34,7 @@ module.exports = {
     proxy: {
       '/api': {
         target: 'http://127.0.0.1:3000',
-        pathRewrite: {'^/api': ''},
+        pathRewrite: { '^/api': '' },
       },
     },
   },
@@ -71,7 +71,7 @@ module.exports = {
       // default condition: a file with size less than 8kb will be treated as a inline
       // module type and resource module type otherwise
       {
-        test: /\.(png|jpg|gif|svg|mp3|mpe?g)$/,
+        test: /\.(png|jpg|gif|svg|mp3|mpe?g|webp)$/,
         type: 'asset/resource',
       },
 

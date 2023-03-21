@@ -9,26 +9,29 @@ CREATE SCHEMA pae;
 ----------- CREATE TABLES --------------
 
 
-CREATE TABLE pae.users (
-                           id_user SERIAL PRIMARY KEY,
-                           last_name VARCHAR(50) NOT NULL,
-                           first_name VARCHAR(50) NOT NULL,
-                           phone_number VARCHAR(12) NOT NULL,
-                           email VARCHAR(100) NOT NULL,
-                           password VARCHAR(100) NOT NULL,
-                           photo VARCHAR(100) NOT NULL,
-                           register_date DATE NOT NULL,
-                           is_helper BOOLEAN NOT NULL
+CREATE TABLE pae.users
+(
+    id_user       SERIAL PRIMARY KEY,
+    last_name     VARCHAR(50)  NOT NULL,
+    first_name    VARCHAR(50)  NOT NULL,
+    phone_number  VARCHAR(12)  NOT NULL,
+    email         VARCHAR(100) NOT NULL,
+    password      VARCHAR(100) NOT NULL,
+    photo         BOOLEAN      NOT NULL,
+    register_date DATE         NOT NULL,
+    is_helper     BOOLEAN      NOT NULL
 );
 
-CREATE TABLE pae.object_types (
-                                  id_object_type SERIAL PRIMARY KEY,
-                                  label VARCHAR(25)
+CREATE TABLE pae.object_types
+(
+    id_object_type SERIAL PRIMARY KEY,
+    label          VARCHAR(25)
 );
 
-CREATE TABLE pae.availability (
-                                  id_availability SERIAL PRIMARY KEY,
-                                  date DATE NOT NULL
+CREATE TABLE pae.availability
+(
+    id_availability SERIAL PRIMARY KEY,
+    date            DATE NOT NULL
 );
 
 CREATE TABLE pae.objects (
@@ -52,17 +55,19 @@ CREATE TABLE pae.objects (
                              id_object_type INTEGER REFERENCES pae.object_types NOT NULL
 );
 
-CREATE TABLE pae.notifications (
-                                   id_notification SERIAL PRIMARY KEY,
-                                   notification_text VARCHAR(50) NOT NULL ,
-                                   id_object INTEGER REFERENCES pae.objects NOT NULL
+CREATE TABLE pae.notifications
+(
+    id_notification   SERIAL PRIMARY KEY,
+    notification_text VARCHAR(50)                    NOT NULL,
+    id_object         INTEGER REFERENCES pae.objects NOT NULL
 );
 
-CREATE TABLE pae.users_notifications (
-                                         read BOOLEAN NOT NULL ,
-                                         id_notification INTEGER REFERENCES pae.notifications NOT NULL ,
-                                         id_user INTEGER REFERENCES pae.users NOT NULL ,
-                                         PRIMARY KEY(id_notification, id_user)
+CREATE TABLE pae.users_notifications
+(
+    read            BOOLEAN                              NOT NULL,
+    id_notification INTEGER REFERENCES pae.notifications NOT NULL,
+    id_user         INTEGER REFERENCES pae.users         NOT NULL,
+    PRIMARY KEY (id_notification, id_user)
 );
 
 
