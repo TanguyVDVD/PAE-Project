@@ -58,6 +58,8 @@ public class ObjectDAOImpl implements ObjectDAO {
           : resultSet.getDate("selling_date").toString());
       object.setWithdrawalDate(resultSet.getDate("withdrawal_date") == null ? ""
           : resultSet.getDate("withdrawal_date").toString());
+      object.setWithdrawalDate(resultSet.getDate("workshop_date") == null ? ""
+          : resultSet.getDate("workshop_date").toString());
       object.setTimeSlot(resultSet.getString("time_slot"));
       object.setStatus(resultSet.getString("status"));
       object.setReasonForRefusal(resultSet.getString("reason_for_refusal"));
