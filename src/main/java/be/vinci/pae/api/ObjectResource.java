@@ -90,7 +90,8 @@ public class ObjectResource {
     if (status.equals("accepté")) {
       objectDTO = objectUCC.accept(id);
     } else {
-      objectDTO = objectUCC.reject(id);
+      String reasonForRefusal = json.get("reasonForRefusal").asText("");
+      objectDTO = objectUCC.reject(id, reasonForRefusal);
     }
 
     if (objectDTO == null) {
