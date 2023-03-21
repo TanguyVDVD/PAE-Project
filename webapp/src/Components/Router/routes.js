@@ -3,9 +3,10 @@ import HomePage from '../Pages/HomePage';
 import LoginPage from '../Pages/LoginPage';
 import RegisterPage from '../Pages/RegisterPage';
 import LogoutPage from '../Pages/LogoutPage';
+import UserPage from '../Pages/UserPage';
 import AdminUsersPage from '../Pages/admin/AdminUsersPage';
 import PropositionPage from '../Pages/PropositionPage';
-import AdminObjectsPage from "../Pages/admin/AdminObjectsPage";
+import AdminObjectsPage from '../Pages/admin/AdminObjectsPage';
 
 const routes = {
   '/404': PageNotFoundPage,
@@ -14,9 +15,10 @@ const routes = {
   '/login': LoginPage,
   '/register': RegisterPage,
   '/logout': LogoutPage,
+  '/user/:id': UserPage,
   '/admin/objects': AdminObjectsPage,
   '/admin/users': AdminUsersPage,
-  '/propose': PropositionPage
+  '/propose': PropositionPage,
 };
 
 export default routes;
