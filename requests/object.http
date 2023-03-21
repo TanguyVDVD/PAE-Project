@@ -33,7 +33,27 @@ Authorization: {{adminToken}}
   "status": "refusé"
 }
 
-### Reject an offer without reason for refusal
+### Reject an offer with a reason for refusal null
+PATCH {{baseUrl}}/objects/status/1
+Content-Type: application/json
+Authorization: {{adminToken}}
+
+{
+  "status": "refusé",
+  "reasonForRefusal": null
+}
+
+### Reject an offer with an empty reason for refusal
+PATCH {{baseUrl}}/objects/status/1
+Content-Type: application/json
+Authorization: {{adminToken}}
+
+{
+  "status": "refusé",
+  "reasonForRefusal": ""
+}
+
+### Reject an offer with a reason for refusal
 PATCH {{baseUrl}}/objects/status/1
 Content-Type: application/json
 Authorization: {{adminToken}}
