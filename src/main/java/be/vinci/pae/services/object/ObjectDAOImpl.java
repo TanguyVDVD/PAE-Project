@@ -157,8 +157,16 @@ public class ObjectDAOImpl implements ObjectDAO {
     return null;
   }
 
+  /**
+   * Change the state of the object with the given ID to sold with the date.
+   *
+   * @param id   the ID of the object to update
+   * @param date the date of the sale
+   * @return an ObjectDTO representing the updated object
+   */
   public ObjectDTO setStateToSold(int id, String date) {
-    String request = "UPDATE pae.objects SET state = 'vendu', selling_date = ? WHERE id_object = ?;";
+    String request = "UPDATE pae.objects SET state = 'vendu', "
+        + "selling_date = ? WHERE id_object = ?;";
 
     try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
 
@@ -176,6 +184,6 @@ public class ObjectDAOImpl implements ObjectDAO {
     }
 
     return getOneById(id);
-    
+
   }
 }

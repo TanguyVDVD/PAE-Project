@@ -67,7 +67,7 @@ public class ObjectResource {
     String state = json.get("state").asText();
     String date = json.get("date").asText();
     System.out.println("voici la ddate" + date);
-    boolean isVisible = json.get("is_visible").asBoolean();
+    //boolean isVisible = json.get("is_visible").asBoolean();
 
     if (id <= 0 || state == null || !state.equals("déposé à  l'atelier") && !state.equals(
         "déposé en magasin") && !state.equals("mis en vente") && !state.equals("vendu")) {
