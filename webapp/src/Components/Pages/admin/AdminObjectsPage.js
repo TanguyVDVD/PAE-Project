@@ -74,12 +74,12 @@ async function fetchObjects(query = '') {
                             </div>
                             
                             <div class="align-items-center align-content-center col-md-3 border-left mt-1">
-                                <div class="d-flex flex-row align-items-center div-price-time-remaining">
-                                </div>
-                                
                                 <div class="div-state">
                                 </div>
-                                                                
+                                
+                                <div class="d-flex flex-row align-items-center div-price-time-remaining">
+                                </div>
+                                                     
                                 <div class="d-flex flex-column mt-4 div-button">
                                 </div>
                             </div>
@@ -179,12 +179,12 @@ function setPriceOrTimeRemaining(className, objects){
 
       if (timeRemaining <= 3){
         element.innerHTML = `
-          <h6 class="text-danger">${timeRemaining} jours restants pour répondre !</h6>
+          <p class="text-danger">${timeRemaining} jours restants pour répondre !</p>
       `
       }
       else {
         element.innerHTML = `
-          <h6 class="text-primary">${timeRemaining} jours restants pour répondre</h6>
+          <p class="text-primary">${timeRemaining} jours restants pour répondre</p>
       `
       }
     }
@@ -211,7 +211,9 @@ function setStateColor(className, objects){
       `
     }
     else if (object.state === "proposé"){
-      element.innerHTML = ``
+      element.innerHTML = `
+          <h6 class="text-primary">${object.state}</h6>
+      `
     }
     else {
       element.innerHTML = `
