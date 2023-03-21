@@ -115,11 +115,11 @@ class UserUCCImplTest {
     user.setLastName("Cruise");
     user.setPassword("psw");
     user.setIsHelper(false);
-    user.setPhoto("sdf");
+    user.setPhoto(false);
     user.setRegisterDate("dfs");
     Mockito.when(userDAO.getOneByPhoneNumber("0499456789")).thenReturn(null);
     Mockito.when(userDAO.getOneByEmail("email@ressourcerie.com")).thenReturn(null);
-    Mockito.when(userDAO.insert(user)).thenReturn(true);
+    Mockito.when(userDAO.insert(user)).thenReturn(1);
     UserDTO userDTO = userUCC.register(user);
     assertEquals(user, userDTO);
   }
