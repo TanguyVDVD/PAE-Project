@@ -115,7 +115,9 @@ const Navbar = () => {
                       <span>${authenticatedUser.firstName} ${authenticatedUser.lastName}</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow">
-                      <li><a class="dropdown-item" href="#" data-uri="/profile">Mon profil</a></li>
+                      <li><a class="dropdown-item" href="#" data-uri="/user/${
+                        authenticatedUser.id
+                      }">Mon profil</a></li>
                       <li>
                         <a class="dropdown-item" href="#" data-uri="/logout">Se déconnecter</a>
                       </li>

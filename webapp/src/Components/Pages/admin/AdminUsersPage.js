@@ -88,7 +88,7 @@ async function fetchUsers(query = '') {
     table.querySelectorAll('a[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
-        Navigate(`/profile/${e.target.dataset.id}`);
+        Navigate(`/user/${e.target.dataset.id}`);
       });
     });
   });
