@@ -75,6 +75,11 @@ public class UserUCCImpl implements UserUCC {
   }
 
   @Override
+  public UserDTO getUserById(int id) {
+    return myUserDAO.getOneById(id);
+  }
+
+  @Override
   public File getProfilePicture(int id) {
     String blobPath = Config.getProperty("BlobPath");
 

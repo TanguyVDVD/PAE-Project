@@ -156,6 +156,20 @@ public class UserResource {
   }
 
   /**
+   * Retrieve a user's information.
+   *
+   * @param id the user's id
+   * @return the user's information
+   */
+  @GET
+  @Path("/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public UserDTO getUserInfo(@PathParam("id") int id) {
+    return userUCC.getUserById(id);
+  }
+
+  /**
    * Retrieve the logged-in user's information.
    *
    * @param request the request
