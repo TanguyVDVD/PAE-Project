@@ -2,6 +2,7 @@ import Navigate from '../../Router/Navigate';
 import { getAuthenticatedUser } from '../../../utils/auths';
 import { clearPage } from '../../../utils/render';
 import API from '../../../utils/api';
+import {subtractDates, dateStringtoGoodFormat} from "../../../utils/dates";
 
 const AdminObjectsPage = () => {
   const user = getAuthenticatedUser();
@@ -65,15 +66,15 @@ async function fetchObjects(query = '') {
                                     <span>${object.description}</span>
                                 </div>
                                 
-                                <p>Récupéré le ${object.pickupDate} ${object.timeSlot}</p>
+                                <div class="div-pickup-date">
+                                </div>
                                 
                                 <div class="div-user">
                                 </div>
                             </div>
                             
                             <div class="align-items-center align-content-center col-md-3 border-left mt-1">
-                                <div class="d-flex flex-row align-items-center">
-                                    <h4 class="mr-1">${object.price} €</h4>
+                                <div class="d-flex flex-row align-items-center div-price-time-remaining">
                                 </div>
                                 
                                 <div class="div-state">
@@ -89,8 +90,10 @@ async function fetchObjects(query = '') {
         </div>
       `;
 
+    setPickupDate("div-pickup-date", objects);
     setUserOrPhoneNumber("div-user", objects);
-    setPriceColor("div-state", objects);
+    setPriceOrTimeRemaining("div-price-time-remaining", objects)
+    setStateColor("div-state", objects);
     setButton("div-button", objects);
 
     list.querySelectorAll('a[data-id]').forEach((link) => {
@@ -112,6 +115,31 @@ async function fetchObjects(query = '') {
       });
     });
   });
+}
+
+function setPickupDate(className, objects){
+  const elements = document.getElementsByClassName(className);
+  for (let i = 0; i < elements.length; i += 1) {
+    const object = objects[i];
+    const element = elements.item(i);
+    if (object.state === "proposé" || object.state === "accepté" || object.state === "refusé"){
+      element.innerHTML = `
+          <p>
+              À récupérer le ${dateStringtoGoodFormat(object.pickupDate)} ${object.timeSlot === "matin" ? 
+              " au ".concat(object.timeSlot) : " l'".concat(object.timeSlot)}
+          </p>
+
+      `
+    }
+    else {
+      element.innerHTML = `
+          <p>
+              Récupéré le ${dateStringtoGoodFormat(object.pickupDate)} ${object.timeSlot === "matin" ?
+          " au ".concat(object.timeSlot) : " l'".concat(object.timeSlot)}
+          </p>
+      `
+    }
+  }
 }
 
 function setUserOrPhoneNumber(className, objects){
@@ -137,7 +165,41 @@ function setUserOrPhoneNumber(className, objects){
   }
 }
 
-function setPriceColor(className, objects){
+function setPriceOrTimeRemaining(className, objects){
+  const elements = document.getElementsByClassName(className);
+  for (let i = 0; i < elements.length; i += 1) {
+    const object = objects[i];
+    const element = elements.item(i);
+
+    if (object.state === "proposé"){
+      const pickupDate = new Date(object.pickupDate);
+      const todaySDate = new Date();
+
+      const timeRemaining = subtractDates(pickupDate, todaySDate);
+
+      if (timeRemaining <= 3){
+        element.innerHTML = `
+          <h6 class="text-danger">${timeRemaining} jours restants pour répondre !</h6>
+      `
+      }
+      else {
+        element.innerHTML = `
+          <h6 class="text-primary">${timeRemaining} jours restants pour répondre</h6>
+      `
+      }
+    }
+    else if (object.status === "refusé"){
+      element.innerHTML = ``
+    }
+    else {
+      element.innerHTML = `
+          <h4 class="mr-1">${object.price} €</h4>
+      `
+    }
+  }
+}
+
+function setStateColor(className, objects){
   const elements = document.getElementsByClassName(className);
   for (let i = 0; i < elements.length; i += 1) {
     const object = objects[i];
@@ -149,9 +211,7 @@ function setPriceColor(className, objects){
       `
     }
     else if (object.state === "proposé"){
-      element.innerHTML = `
-          <h6 class="text-primary">${object.state}</h6>
-      `
+      element.innerHTML = ``
     }
     else {
       element.innerHTML = `
