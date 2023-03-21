@@ -13,7 +13,6 @@ import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PATCH;
-import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -22,6 +21,8 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 
 /**
@@ -53,17 +54,48 @@ public class ObjectResource {
   /**
    * Method that update the state of an object.
    *
-   * @param objectUCCToUpdate the object to update
-   * @param id                the id of the object
+   * @param json the json
+   * @param id   the id of the object
    * @return the object that was just updated
    */
-  @PUT
-  @Path("/{id}")
+  @PATCH
+  @Path("/state/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public ObjectUCC updateObjectState(ObjectUCC objectUCCToUpdate, @PathParam("id") int id) {
-    return null;
+  public ObjectNode updateObjectState(JsonNode json, @PathParam("id") int id) {
+    String state = json.get("state").asText();
+    String date = json.get("date").asText();
+    System.out.println("voici la ddate" + date);
+    boolean isVisible = json.get("is_visible").asBoolean();
+
+    if (id <= 0 || state == null || !state.equals("déposé à  l'atelier") && !state.equals(
+        "déposé en magasin") && !state.equals("mis en vente") && !state.equals("vendu")) {
+      throw new WebApplicationException("Changement d'état incorrect",
+          Response.Status.BAD_REQUEST);
+    }
+
+    if (date == null) {
+      date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+    }
+
+    ObjectDTO objectDTO = null;
+    System.out.println();
+
+    if (state.equals("déposé à  l'atelier")) {
+      objectDTO = objectUCC.setStatuDroppedInTheWorkhop(id, date);
+    }
+    if (state.equals("déposé en magasin")) {
+      objectDTO = objectUCC.setStatuDroppedInTheShop(id, date);
+    }
+    if (state.equals("mis en vente")) {
+      objectDTO = objectUCC.setStatuForSale(id, date);
+    }
+    if (state.equals("vendu")) {
+      objectDTO = objectUCC.setStatuSold(id, date);
+    }
+
+    return jsonMapper.convertValue(objectDTO, ObjectNode.class);
   }
 
   /**

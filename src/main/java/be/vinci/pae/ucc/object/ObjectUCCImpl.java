@@ -45,4 +45,53 @@ public class ObjectUCCImpl implements ObjectUCC {
   public ObjectDTO reject(int id) {
     return null;
   }
+
+  /**
+   * Updates the status of the object with the specified ID to dropped In The Workshop with the
+   * date.
+   *
+   * @param id   the ID of the object whose status should be updated
+   * @param date the date on which the object was dropped in the workshop
+   * @return an ObjectDTO object containing the updated information of the object
+   */
+  @Override
+  public ObjectDTO setStatuDroppedInTheWorkhop(int id, String date) {
+    return null;
+  }
+
+  /**
+   * Updates the status of the object with the specified ID to dropped In The Shop with the date.
+   *
+   * @param id   the ID of the object whose status should be updated
+   * @param date the date on which the object was dropped in the shop
+   * @return an ObjectDTO object containing the updated information of the object
+   */
+  @Override
+  public ObjectDTO setStatuDroppedInTheShop(int id, String date) {
+    return null;
+  }
+
+  /**
+   * Updates the status of the object with the specified ID to For Sale with the date.
+   *
+   * @param id   the ID of the object whose status should be updated
+   * @param date the date on which the object was put up for sale
+   * @return an ObjectDTO object containing the updated information of the object
+   */
+  @Override
+  public ObjectDTO setStatuForSale(int id, String date) {
+    return null;
+  }
+
+  /**
+   * Updates the status of the object with the specified ID to Sold with the date.
+   *
+   * @param id   the ID of the object whose status should be updated
+   * @param date the date on which the object was sold
+   * @return an ObjectDTO object containing the updated information of the object
+   */
+  @Override
+  public ObjectDTO setStatuSold(int id, String date) {
+    return myObjectDAO.setStateToSold(id, date);
+  }
 }

@@ -31,4 +31,6 @@ public interface ObjectDAO {
    * @return the modified object
    */
   ObjectDTO setStatusToAccepted(int id);
+
+  ObjectDTO setStateToSold(int id, String date);
 }

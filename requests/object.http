@@ -23,3 +23,15 @@ Authorization: {{adminToken}}
 {
   "status": "accepté"
 }
+
+
+### Set a object to sold
+PATCH {{baseUrl}}/objects/state/1
+Content-Type: application/json
+Authorization: {{adminToken}}
+
+{
+  "state": "vendu",
+  "date": "2021-05-25",
+  "is_visible": true
+}

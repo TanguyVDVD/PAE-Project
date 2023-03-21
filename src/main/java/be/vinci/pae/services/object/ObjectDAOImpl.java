@@ -10,7 +10,10 @@ import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -152,5 +155,27 @@ public class ObjectDAOImpl implements ObjectDAO {
     }
 
     return null;
+  }
+
+  public ObjectDTO setStateToSold(int id, String date) {
+    String request = "UPDATE pae.objects SET state = 'vendu', selling_date = ? WHERE id_object = ?;";
+
+    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+
+      SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+      Date parsed = format.parse(date);
+      java.sql.Date sql = new java.sql.Date(parsed.getTime());
+
+      ps.setDate(1, sql);
+      ps.setInt(2, id);
+      ps.executeUpdate();
+    } catch (SQLException se) {
+      se.printStackTrace();
+    } catch (ParseException e) {
+      throw new RuntimeException(e);
+    }
+
+    return getOneById(id);
+    
   }
 }
