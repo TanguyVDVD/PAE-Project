@@ -42,10 +42,10 @@ CREATE TABLE pae.objects (
                              price FLOAT,
                              state VARCHAR(15),
                              acceptance_date DATE,
+                             workshop_date DATE,
                              deposit_date DATE,
                              selling_date DATE,
                              withdrawal_date DATE,
-                             workshop_date DATE,
                              time_slot VARCHAR(15) NOT NULL,
                              status VARCHAR(15),
                              reason_for_refusal VARCHAR(50),
@@ -74,10 +74,10 @@ CREATE TABLE pae.users_notifications
 --------------- SEED ------------------
 
 
-INSERT INTO pae.users VALUES (DEFAULT, 'Riez', 'Christophe', '0498183040', 'riez@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', 'photoPath', '2023-02-01', true);
-INSERT INTO pae.users VALUES (DEFAULT, 'Vdv', 'Constantine', '0498183041', 'constantine@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', 'photoPath', '2023-02-01', true);
-INSERT INTO pae.users VALUES (DEFAULT, 'lsh', 'Bernard', '0498183042', 'bernard@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', 'photoPath', '2023-02-01', true);
-INSERT INTO pae.users VALUES (DEFAULT, 'bdh', 'Lise', '0498183043', 'lise@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', 'photoPath', '2023-02-01', false);
+INSERT INTO pae.users VALUES (DEFAULT, 'Riez', 'Christophe', '0498183040', 'riez@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', false, '2023-02-01', true);
+INSERT INTO pae.users VALUES (DEFAULT, 'Vdv', 'Constantine', '0498183041', 'constantine@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', false, '2023-02-01', true);
+INSERT INTO pae.users VALUES (DEFAULT, 'lsh', 'Bernard', '0498183042', 'bernard@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', false, '2023-02-01', true);
+INSERT INTO pae.users VALUES (DEFAULT, 'bdh', 'Lise', '0498183043', 'lise@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', false, '2023-02-01', false);
 
 INSERT INTO pae.object_types VALUES (DEFAULT,'Meuble');
 INSERT INTO pae.object_types VALUES (DEFAULT,'Table');
@@ -111,4 +111,4 @@ INSERT INTO pae.availability VALUES (DEFAULT, '2023-05-29');
 INSERT INTO pae.objects VALUES (DEFAULT, 'Canapé bon état', true, true, 6, 'en vente', '2023-02-15', '2023-02-16', '2023-02-17', null, null, 'matin', 'accepté', null, null, 1, 3, 1);
 INSERT INTO pae.objects VALUES (DEFAULT, 'Garde robe', true, true, 6, 'proposé', null, null, null, null, null, 'matin', 'accepté', null, null, 1, 3, 1);
 INSERT INTO pae.objects VALUES (DEFAULT, 'Chaise cuisine', true, false, null, 'refusé', null, null, null, null, null, 'après-midi', 'refusé', 'trop mauvais etat', '+32412369482', 2, null, 3);
-INSERT INTO pae.objects VALUES (DEFAULT, 'Table de cuisine', true, false, 9, 'vendu', '2023-02-15', '2023-02-16', '2023-02-17', '2023-03-20', null, 'matin', 'accepté', null, null, 1, 3, 1);
+INSERT INTO pae.objects VALUES (DEFAULT, 'Table de cuisine', true, false, 9, 'vendu', '2023-02-15', '2023-02-17', '2023-02-18', '2023-03-20', null, 'matin', 'accepté', null, null, 1, 3, 1);
