@@ -13,6 +13,7 @@ import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PATCH;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -22,7 +23,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 
 /**
@@ -58,40 +58,51 @@ public class ObjectResource {
    * @param id   the id of the object
    * @return the object that was just updated
    */
-  @PATCH
-  @Path("/state/{id}")
+  @PUT
+  @Path("/updateObject/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public ObjectNode updateObjectState(JsonNode json, @PathParam("id") int id) {
-    String state = json.get("state").asText();
-    String date = json.get("date").asText();
-    System.out.println("voici la ddate" + date);
-    //boolean isVisible = json.get("is_visible").asBoolean();
+  public ObjectNode updateObject(ObjectDTO objectDTO, @PathParam("id") int id) {
 
-    if (id <= 0 || state == null || !state.equals("déposé à  l'atelier") && !state.equals(
-        "déposé en magasin") && !state.equals("mis en vente") && !state.equals("vendu")) {
+    if (id <= 0 || !json.hasNonNull("state")) {
       throw new WebApplicationException("Changement d'état incorrect",
           Response.Status.BAD_REQUEST);
     }
 
-    if (date == null) {
-      date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+    String date;
+
+    if (json.hasNonNull("date")) {
+      date = LocalDate.now().toString();
+    } else {
+      date = json.get("date").asText();
+    }
+
+    String state = json.get("state").asText();
+    //boolean isVisible = json.get("is_visible").asBoolean();
+
+    if (!state.equals("en atelier") && !state.equals(
+        "en magasin") && !state.equals("mis en vente") && !state.equals("vendu") && !state.equals(
+        "retiré")) {
+      throw new WebApplicationException("Changement d'état incorrect",
+          Response.Status.BAD_REQUEST);
     }
 
     ObjectDTO objectDTO = null;
-    System.out.println();
 
-    if (state.equals("déposé à  l'atelier")) {
+    if (state.equals("en atelier")) {
       objectDTO = objectUCC.setStatuDroppedInTheWorkhop(id, date);
     }
-    if (state.equals("déposé en magasin")) {
+    if (state.equals("en magasin")) {
       objectDTO = objectUCC.setStatuDroppedInTheShop(id, date);
     }
     if (state.equals("mis en vente")) {
       objectDTO = objectUCC.setStatuForSale(id, date);
     }
     if (state.equals("vendu")) {
+      objectDTO = objectUCC.setStatuSold(id, date);
+    }
+    if (state.equals("retiré")) {
       objectDTO = objectUCC.setStatuSold(id, date);
     }
 

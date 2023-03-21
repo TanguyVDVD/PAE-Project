@@ -32,6 +32,6 @@ Authorization: {{adminToken}}
 
 {
   "state": "vendu",
-  "date": "2021-05-25",
+  "date": null,
   "is_visible": true
 }
