@@ -155,4 +155,31 @@ public class ObjectDAOImpl implements ObjectDAO {
 
     return null;
   }
+
+  /**
+   * Set the status of an object to rejected.
+   *
+   * @param id               the id of the object
+   * @param reasonForRefusal the reason for refusal
+   * @return the modified object
+   */
+  @Override
+  public ObjectDTO setStatusToRejected(int id, String reasonForRefusal) {
+    String request = "UPDATE pae.objects SET status = 'refusé' AND reason_for_refusal = ? WHERE id_object = ?;";
+
+    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+      ps.setString(1, reasonForRefusal);
+      ps.setInt(2, id);
+      ps.executeUpdate();
+    } catch (SQLException se) {
+      se.printStackTrace();
+    }
+
+    ObjectDTO object = getOneById(id);
+    if (object.getStatus().equals("refusé")) {
+      return object;
+    }
+
+    return null;
+  }
 }
