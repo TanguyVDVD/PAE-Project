@@ -27,8 +27,9 @@ public interface ObjectUCC {
   /**
    * Reject an offer.
    *
-   * @param id the id of the object to reject
+   * @param id               the id of the object to reject
+   * @param reasonForRefusal the reason for refusal
    * @return the object updated
    */
-  ObjectDTO reject(int id);
+  ObjectDTO reject(int id, String reasonForRefusal);
 }

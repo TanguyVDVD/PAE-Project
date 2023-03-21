@@ -38,11 +38,12 @@ public class ObjectUCCImpl implements ObjectUCC {
   /**
    * Reject an offer.
    *
-   * @param id the id of the object to reject
+   * @param id               the id of the object to reject
+   * @param reasonForRefusal the reason for refusal
    * @return the object updated
    */
   @Override
-  public ObjectDTO reject(int id) {
-    return null;
+  public ObjectDTO reject(int id, String reasonForRefusal) {
+    return myObjectDAO.setStatusToRejected(id, reasonForRefusal);
   }
 }
