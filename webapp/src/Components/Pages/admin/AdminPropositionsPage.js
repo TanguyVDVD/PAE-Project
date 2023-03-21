@@ -13,7 +13,7 @@ const AdminPropositionsPage = () => {
 
   clearPage();
   renderAdminObjectsPage();
-  fetchObjects();
+  fetchPropositions();
 };
 
 function renderAdminObjectsPage() {
@@ -22,64 +22,61 @@ function renderAdminObjectsPage() {
   div.className = 'container my-5';
 
   div.innerHTML = `
-    <h2>Objets</h2>
+    <h2>Propositions</h2>
     <form class="input-group">
       <input type="text" class="form-control border-end-0" placeholder="Rechercher..." />
       <button class="btn border" type="submit">
         <i class="bi bi-search"></i>
       </button>
     </form>
-    <div id="objects-list"></div>
+    <div id="propositions-list"></div>
   `;
 
   div.querySelector('form').addEventListener('keyup', (e) => {
     e.preventDefault();
 
     const search = e.target.value;
-    fetchObjects(search);
+    fetchPropositions(search);
   });
 
   main.appendChild(div);
 }
 
-async function fetchObjects(query = '') {
-  const list = document.getElementById('objects-list');
+async function fetchPropositions(query = '') {
+  const list = document.getElementById('propositions-list');
 
-  API.get(`objects?query=${encodeURIComponent(query)}`).then((objects) => {
-    document.getElementById('objects-list').innerHTML = `
+  API.get(`objects?query=${encodeURIComponent(query)}`).then((propositions) => {
+    document.getElementById('propositions-list').innerHTML = `
         <div class="container mt-5 mb-5">
             <div class="d-flex justify-content-center row">
                 <div class="col-md-10">
-                    ${objects.map((object) => `
+                    ${propositions.map((proposition) => `
                         <div class="row p-2 bg-white border rounded">
                             <div class="col-md-3 mt-1">
                                 <img 
                                     class="img-fluid img-responsive rounded product-image" 
                                     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqsL6QorN-b6YhpcfTl9YJEzWB2xSkhFkN4Q&usqp=CAU"
-                                    alt="${object.objectType}">
+                                    alt="${proposition.objectType}">
                             </div>
                             <div class="col-md-6 mt-1">
-                                <h5>${object.objectType}</h5>
+                                <h5>${proposition.objectType}</h5>
                                
                                 <div class="mt-1 mb-1 spec-1">
-                                    <span>${object.description}</span>
+                                    <span>${proposition.description}</span>
                                 </div>
                                 
-                                <p>Récupéré le ${object.pickupDate} ${object.timeSlot}</p>
+                                <p>À récupérer le ${proposition.pickupDate} ${proposition.timeSlot}</p>
                                 
                                 <div class="div-user">
                                 </div>
                             </div>
                             
-                            <div class="align-items-center align-content-center col-md-3 border-left mt-1">
-                                <div class="d-flex flex-row align-items-center">
-                                    <h4 class="mr-1">${object.price} €</h4>
-                                </div>
-                                
-                                <div class="div-state">
+                            <div class="align-items-center align-content-center col-md-3 border-left mt-1">                                
+                                <div class="div-remaining-time">
                                 </div>
                                                                 
                                 <div class="d-flex flex-column mt-4 div-button">
+                                    <button class="btn btn-outline-primary btn-sm button-respond" type="button" data-id="${proposition.id}">Répondre</button>
                                 </div>
                             </div>
                         </div>
@@ -89,9 +86,8 @@ async function fetchObjects(query = '') {
         </div>
       `;
 
-    setUserOrPhoneNumber("div-user", objects);
-    setPriceColor("div-state", objects);
-    setButton("div-button", objects);
+    setUserOrPhoneNumber("div-user", propositions);
+    setRemainingTime("div-remaining-time", propositions);
 
     list.querySelectorAll('a[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
@@ -103,33 +99,28 @@ async function fetchObjects(query = '') {
     list.querySelectorAll('button[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
-        if (e.currentTarget.classList.contains("button-modify")){
-          Navigate(`/object/${e.target.dataset.id}`);
-        }
-        else if (e.currentTarget.classList.contains("button-respond")) {
-          Navigate(`/proposition/${e.target.dataset.id}`);
-        }
+        Navigate(`/object/${e.target.dataset.id}`);
       });
     });
   });
 }
 
-function setUserOrPhoneNumber(className, objects){
+function setUserOrPhoneNumber(className, propositions){
   const elements = document.getElementsByClassName(className);
   for (let i = 0; i < elements.length; i += 1) {
-    const object = objects[i];
+    const proposition = propositions[i];
     const element = elements.item(i);
-    if (object.user === null){
+    if (proposition.user === null){
       element.innerHTML = `
-          <p>Proposé anonymement par ${object.phoneNumber}</p>
+          <p>Proposé anonymement par ${proposition.phoneNumber}</p>
       `
     }
     else {
       element.innerHTML = `
           <p>
           Proposé par
-              <a href="#" class="btn-link" role="button" data-id="${object.user.id}">
-                  ${object.user.firstName} ${object.user.lastName}
+              <a href="#" class="btn-link" role="button" data-id="${proposition.user.id}">
+                  ${proposition.user.firstName} ${proposition.user.lastName}
               </a>
           </p>
       `
@@ -137,49 +128,35 @@ function setUserOrPhoneNumber(className, objects){
   }
 }
 
-function setPriceColor(className, objects){
+function setRemainingTime(className, propositions){
   const elements = document.getElementsByClassName(className);
   for (let i = 0; i < elements.length; i += 1) {
-    const object = objects[i];
+    const proposition = propositions[i];
     const element = elements.item(i);
 
-    if (object.state === "refusé"){
+    const pickupDate = new Date(proposition.pickupDate);
+    const todaySDate = new Date();
+
+    const timeRemaining = subtractDates(pickupDate, todaySDate);
+
+    if (timeRemaining <= 3){
       element.innerHTML = `
-          <h6 class="text-danger">${object.state}</h6>
-      `
-    }
-    else if (object.state === "proposé"){
-      element.innerHTML = `
-          <h6 class="text-primary">${object.state}</h6>
+          <h6 class="text-danger">${timeRemaining} jours restants pour répondre !</h6>
       `
     }
     else {
       element.innerHTML = `
-          <h6 class="text-success">${object.state}</h6>
+          <h6 class="text-primary">${timeRemaining} jours restants pour répondre</h6>
       `
     }
   }
 }
 
-function setButton(className, objects){
-  const elements = document.getElementsByClassName(className);
-  for (let i = 0; i < elements.length; i += 1) {
-    const object = objects[i];
-    const element = elements.item(i);
-    if (object.state === "refusé"){
-      element.innerHTML = ``
-    }
-    else if (object.state === "proposé"){
-      element.innerHTML = `
-          <button class="btn btn-outline-primary btn-sm button-respond" type="button" data-id="${object.id}">Répondre</button>
-      `
-    }
-    else {
-      element.innerHTML = `
-          <button class="btn btn-primary btn-sm button-modify" type="button" data-id="${object.id}">Modifier</button>
-      `
-    }
-  }
+function subtractDates(date1, date2){
+  date1.setHours(12,0,0,0)
+  date2.setHours(12,0,0,0)
+  const diffTime = Math.abs(date2.getTime() - date1.getTime());
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 }
 
-export default AdminObjectsPage;
+export default AdminPropositionsPage;
