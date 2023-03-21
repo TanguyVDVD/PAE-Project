@@ -2,6 +2,7 @@ import Navigate from '../../Router/Navigate';
 import { getAuthenticatedUser } from '../../../utils/auths';
 import { clearPage } from '../../../utils/render';
 import API from '../../../utils/api';
+import {dateStringtoGoodFormat, subtractDates} from "../../../utils/dates";
 
 const AdminPropositionsPage = () => {
   const user = getAuthenticatedUser();
@@ -65,7 +66,10 @@ async function fetchPropositions(query = '') {
                                     <span>${proposition.description}</span>
                                 </div>
                                 
-                                <p>À récupérer le ${proposition.pickupDate} ${proposition.timeSlot}</p>
+                                <p>
+                                    À récupérer le ${dateStringtoGoodFormat(proposition.pickupDate)} ${proposition.timeSlot === "matin" ?
+                                    " au ".concat(proposition.timeSlot) : " l'".concat(proposition.timeSlot)}
+                                </p>
                                 
                                 <div class="div-user">
                                 </div>
@@ -150,13 +154,6 @@ function setRemainingTime(className, propositions){
       `
     }
   }
-}
-
-function subtractDates(date1, date2){
-  date1.setHours(12,0,0,0)
-  date2.setHours(12,0,0,0)
-  const diffTime = Math.abs(date2.getTime() - date1.getTime());
-  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 }
 
 export default AdminPropositionsPage;
