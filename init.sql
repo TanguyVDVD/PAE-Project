@@ -42,6 +42,7 @@ CREATE TABLE pae.objects (
                              deposit_date DATE,
                              selling_date DATE,
                              withdrawal_date DATE,
+                             workshop_date DATE,
                              time_slot VARCHAR(15) NOT NULL,
                              status VARCHAR(15),
                              reason_for_refusal VARCHAR(50),
@@ -102,7 +103,7 @@ INSERT INTO pae.availability VALUES (DEFAULT, '2023-05-16');
 INSERT INTO pae.availability VALUES (DEFAULT, '2023-05-28');
 INSERT INTO pae.availability VALUES (DEFAULT, '2023-05-29');
 
-INSERT INTO pae.objects VALUES (DEFAULT, 'Canapé bon état', true, true, 6, 'en vente', '2023-02-15', '2023-02-16', '2023-02-17', null, 'matin', 'accepté', null, null, 1, 3, 1);
-INSERT INTO pae.objects VALUES (DEFAULT, 'Garde robe', true, true, 6, 'proposé', null, null, null, null, 'matin', 'accepté', null, null, 1, 3, 1);
-INSERT INTO pae.objects VALUES (DEFAULT, 'Chaise cuisine', true, false, null, 'refusé', null, null, null, null, 'après-midi', 'refusé', 'trop mauvais etat', '+32412369482', 2, null, 3);
-INSERT INTO pae.objects VALUES (DEFAULT, 'Table de cuisine', true, false, 9, 'vendu', '2023-02-15', '2023-02-16', '2023-02-17', '2023-03-20', 'matin', 'accepté', null, null, 1, 3, 1);
+INSERT INTO pae.objects VALUES (DEFAULT, 'Canapé bon état', true, true, 6, 'en vente', '2023-02-15', '2023-02-16', '2023-02-17', null, null, 'matin', 'accepté', null, null, 1, 3, 1);
+INSERT INTO pae.objects VALUES (DEFAULT, 'Garde robe', true, true, 6, 'proposé', null, null, null, null, null, 'matin', 'accepté', null, null, 1, 3, 1);
+INSERT INTO pae.objects VALUES (DEFAULT, 'Chaise cuisine', true, false, null, 'refusé', null, null, null, null, null, 'après-midi', 'refusé', 'trop mauvais etat', '+32412369482', 2, null, 3);
+INSERT INTO pae.objects VALUES (DEFAULT, 'Table de cuisine', true, false, 9, 'vendu', '2023-02-15', '2023-02-16', '2023-02-17', '2023-03-20', null, 'matin', 'accepté', null, null, 1, 3, 1);

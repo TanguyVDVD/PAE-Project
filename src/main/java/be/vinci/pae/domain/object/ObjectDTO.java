@@ -245,4 +245,19 @@ public interface ObjectDTO {
    * @param objectType the type of the object
    */
   void setObjectType(String objectType);
+
+  /**
+   * Return the date an object was dropped in the workshop.
+   *
+   * @return a String corresponding to the workshop deposit date
+   */
+  String getWorkshopDate();
+
+  /**
+   * Set the date an object was dropped in the workshop.
+   *
+   * @param workshopDate the date to set
+   */
+  void setWorkshopDate(String workshopDate);
+
 }

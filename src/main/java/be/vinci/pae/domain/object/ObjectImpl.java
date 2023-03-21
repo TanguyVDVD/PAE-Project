@@ -25,6 +25,7 @@ public class ObjectImpl implements Object {
   private String pickupDate;
   private UserDTO user;
   private String objectType;
+  private String workshopDate;
 
   /**
    * Return the id of an object.
@@ -364,5 +365,25 @@ public class ObjectImpl implements Object {
   @Override
   public void setObjectType(String objectType) {
     this.objectType = objectType;
+  }
+
+  /**
+   * Return the date an object was dropped in the workshop.
+   *
+   * @return a String corresponding to the workshop deposit date
+   */
+  @Override
+  public String getWorkshopDate() {
+    return workshopDate;
+  }
+
+  /**
+   * Set the date an object was dropped in the workshop.
+   *
+   * @param workshopDate the date to set
+   */
+  @Override
+  public void setWorkshopDate(String workshopDate) {
+    this.workshopDate = workshopDate;
   }
 }
