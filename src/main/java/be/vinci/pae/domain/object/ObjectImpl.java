@@ -16,7 +16,10 @@ public class ObjectImpl implements Object {
   private boolean isVisible;
   private double price;
   private String state;
+  private String proposalDate;
   private String acceptanceDate;
+  private String refusalDate;
+  private String workshopDate;
   private String depositDate;
   private String sellingDate;
   private String withdrawalDate;
@@ -27,7 +30,6 @@ public class ObjectImpl implements Object {
   private String pickupDate;
   private UserDTO user;
   private String objectType;
-  private String workshopDate;
 
   /**
    * Return the id of an object.
@@ -150,6 +152,26 @@ public class ObjectImpl implements Object {
   }
 
   /**
+   * Return the proposal date of an object.
+   *
+   * @return a String corresponding to the proposal date of the object
+   */
+  @Override
+  public String getProposalDate() {
+    return proposalDate;
+  }
+
+  /**
+   * set the acceptance date of an object.
+   *
+   * @param proposalDate the acceptance date of an object
+   */
+  @Override
+  public void setProposalDate(String proposalDate) {
+    this.proposalDate = proposalDate;
+  }
+
+  /**
    * Return the acceptance date of an object.
    *
    * @return a String corresponding to the acceptance date of the object
@@ -169,6 +191,46 @@ public class ObjectImpl implements Object {
     this.acceptanceDate = acceptanceDate;
   }
 
+  /**
+   * Return the refusal date of an object.
+   *
+   * @return a String corresponding to the refusal date of the object
+   */
+  @Override
+  public String getRefusalDate() {
+    return refusalDate;
+  }
+
+  /**
+   * set the refusal date of an object.
+   *
+   * @param refusalDate the refusal date of an object
+   */
+  @Override
+  public void setRefusalDate(String refusalDate) {
+    this.refusalDate = refusalDate;
+  }
+
+  /**
+   * Return the date an object was dropped in the workshop.
+   *
+   * @return a String corresponding to the workshop deposit date
+   */
+  @Override
+  public String getWorkshopDate() {
+    return workshopDate;
+  }
+
+  /**
+   * Set the date an object was dropped in the workshop.
+   *
+   * @param workshopDate the date to set
+   */
+  @Override
+  public void setWorkshopDate(String workshopDate) {
+    this.workshopDate = workshopDate;
+  }
+  
   /**
    * Return the deposit date of an object.
    *
@@ -367,26 +429,6 @@ public class ObjectImpl implements Object {
   @Override
   public void setObjectType(String objectType) {
     this.objectType = objectType;
-  }
-
-  /**
-   * Return the date an object was dropped in the workshop.
-   *
-   * @return a String corresponding to the workshop deposit date
-   */
-  @Override
-  public String getWorkshopDate() {
-    return workshopDate;
-  }
-
-  /**
-   * Set the date an object was dropped in the workshop.
-   *
-   * @param workshopDate the date to set
-   */
-  @Override
-  public void setWorkshopDate(String workshopDate) {
-    this.workshopDate = workshopDate;
   }
 
   /**

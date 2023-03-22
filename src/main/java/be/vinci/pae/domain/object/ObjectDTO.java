@@ -93,6 +93,20 @@ public interface ObjectDTO {
   void setState(String state);
 
   /**
+   * Return the proposal date of an object.
+   *
+   * @return a String corresponding to the proposal date of the object
+   */
+  String getProposalDate();
+
+  /**
+   * set the acceptance date of an object.
+   *
+   * @param proposalDate the acceptance date of an object
+   */
+  void setProposalDate(String proposalDate);
+
+  /**
    * Return the acceptance date of an object.
    *
    * @return a String corresponding to the acceptance date of the object
@@ -105,6 +119,20 @@ public interface ObjectDTO {
    * @param acceptanceDate the acceptance date of an object
    */
   void setAcceptanceDate(String acceptanceDate);
+
+  /**
+   * Return the refusal date of an object.
+   *
+   * @return a String corresponding to the refusal date of the object
+   */
+  String getRefusalDate();
+
+  /**
+   * set the refusal date of an object.
+   *
+   * @param refusalDate the refusal date of an object
+   */
+  void setRefusalDate(String refusalDate);
 
   /**
    * Return the deposit date of an object.
