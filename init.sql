@@ -1,4 +1,4 @@
-------------- VERSION 1.0 --------------
+------------- VERSION 1.1 --------------
 
 -------------- INIT DB -----------------
 
@@ -38,10 +38,12 @@ CREATE TABLE pae.objects (
                              id_object SERIAL PRIMARY KEY,
                              description VARCHAR(120) NOT NULL,
                              photo BOOLEAN NOT NULL,
-                             is_visible BOOLEAN NOT NULL ,
+                             is_visible BOOLEAN NOT NULL,
                              price FLOAT,
                              state VARCHAR(15),
+                             proposal_date DATE NOT NULL,
                              acceptance_date DATE,
+                             refusal_date DATE,
                              workshop_date DATE,
                              deposit_date DATE,
                              selling_date DATE,
@@ -108,7 +110,9 @@ INSERT INTO pae.availability VALUES (DEFAULT, '2023-05-16');
 INSERT INTO pae.availability VALUES (DEFAULT, '2023-05-28');
 INSERT INTO pae.availability VALUES (DEFAULT, '2023-05-29');
 
-INSERT INTO pae.objects VALUES (DEFAULT, 'Canapé bon état', true, true, 6, 'en vente', '2023-02-15', '2023-02-16', '2023-02-17', null, null, 'matin', 'accepté', null, null, 1, 3, 1);
-INSERT INTO pae.objects VALUES (DEFAULT, 'Garde robe', true, true, 6, 'proposé', null, null, null, null, null, 'matin', 'accepté', null, null, 1, 3, 1);
-INSERT INTO pae.objects VALUES (DEFAULT, 'Chaise cuisine', true, false, null, 'refusé', null, null, null, null, null, 'après-midi', 'refusé', 'trop mauvais etat', '+32412369482', 2, null, 3);
-INSERT INTO pae.objects VALUES (DEFAULT, 'Table de cuisine', true, false, 9, 'vendu', '2023-02-15', '2023-02-17', '2023-02-18', '2023-03-20', null, 'matin', 'accepté', null, null, 1, 3, 1);
+INSERT INTO pae.objects VALUES (DEFAULT, 'Garde robe', true, true, null, 'proposé', '2023-02-15', null, null, null, null, null, null, 'matin', null, null, null, 1, 3, 1);
+INSERT INTO pae.objects VALUES (DEFAULT, 'Étagère en chêne massif', true, true, null, 'proposé', '2023-03-21', null, null, null, null, null, null, 'après-midi', null, null, null, 1, 3, 1);
+INSERT INTO pae.objects VALUES (DEFAULT, 'Canapé bon état', true, true, 6, 'en vente', '2023-02-15', '2023-02-16',null, null, '2023-02-17', null, null, 'matin', 'accepté', null, null, 1, 3, 1);
+INSERT INTO pae.objects VALUES (DEFAULT, 'Chaise cuisine', true, false, null, 'refusé', '2023-02-24', null, '2023-02-27', null, null, null, null, 'après-midi', 'refusé', 'trop mauvais etat', '+32412369482', 2, null, 3);
+INSERT INTO pae.objects VALUES (DEFAULT, 'Table de cuisine', true, false, 9, 'vendu', '2023-02-15', '2023-02-17', null, null, '2023-02-18', '2023-03-20', null, 'matin', 'accepté', null, null, 1, 3, 1);
+

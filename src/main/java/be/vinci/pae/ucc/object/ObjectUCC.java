@@ -17,7 +17,7 @@ public interface ObjectUCC {
   List<ObjectDTO> getObjects(String query);
 
   /**
-   * Accept an offer.
+   * Accept a proposal.
    *
    * @param id the id of the object to accept
    * @return the object updated
@@ -25,10 +25,11 @@ public interface ObjectUCC {
   ObjectDTO accept(int id);
 
   /**
-   * Reject an offer.
+   * Refuse a proposal.
    *
-   * @param id the id of the object to reject
+   * @param id               the id of the object to refuse
+   * @param reasonForRefusal the reason for refusal
    * @return the object updated
    */
-  ObjectDTO reject(int id);
+  ObjectDTO refuse(int id, String reasonForRefusal);
 }

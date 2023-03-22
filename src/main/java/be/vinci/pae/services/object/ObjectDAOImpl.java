@@ -7,6 +7,7 @@ import be.vinci.pae.services.availability.AvailabilityDAO;
 import be.vinci.pae.services.objecttype.ObjectTypeDAO;
 import be.vinci.pae.services.user.UserDAO;
 import jakarta.inject.Inject;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -47,11 +48,17 @@ public class ObjectDAOImpl implements ObjectDAO {
       object.setDescription(resultSet.getString("description"));
       object.setPhoto(resultSet.getBoolean("photo"));
       object.setPhoneNumber(resultSet.getString("phone_number"));
-      object.setVisibility(resultSet.getBoolean("is_visible"));
+      object.setIsVisible(resultSet.getBoolean("is_visible"));
       object.setPrice(resultSet.getDouble("price"));
       object.setState(resultSet.getString("state"));
+      object.setProposalDate(resultSet.getDate("proposal_date") == null ? ""
+          : resultSet.getDate("proposal_date").toString());
       object.setAcceptanceDate(resultSet.getDate("acceptance_date") == null ? ""
           : resultSet.getDate("acceptance_date").toString());
+      object.setRefusalDate(resultSet.getDate("refusal_date") == null ? ""
+          : resultSet.getDate("refusal_date").toString());
+      object.setWorkshopDate(resultSet.getDate("workshop_date") == null ? ""
+          : resultSet.getDate("workshop_date").toString());
       object.setDepositDate(resultSet.getDate("deposit_date") == null ? ""
           : resultSet.getDate("deposit_date").toString());
       object.setSellingDate(resultSet.getDate("selling_date") == null ? ""
@@ -150,6 +157,36 @@ public class ObjectDAOImpl implements ObjectDAO {
 
     ObjectDTO object = getOneById(id);
     if (object.getStatus().equals("accepté")) {
+      return object;
+    }
+
+    return null;
+  }
+
+  /**
+   * Set the status of an object to refused.
+   *
+   * @param id               the id of the object
+   * @param reasonForRefusal the reason for refusal
+   * @param refusalDate      the refusal date
+   * @return the modified object
+   */
+  @Override
+  public ObjectDTO setStatusToRefused(int id, String reasonForRefusal, Date refusalDate) {
+    String request = "UPDATE pae.objects SET status = 'refusé', refusal_date = ?, "
+        + "reason_for_refusal = ?, state = 'refusé' WHERE id_object = ?;";
+
+    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+      ps.setDate(1, refusalDate);
+      ps.setString(2, reasonForRefusal);
+      ps.setInt(3, id);
+      ps.executeUpdate();
+    } catch (SQLException se) {
+      se.printStackTrace();
+    }
+
+    ObjectDTO object = getOneById(id);
+    if (object.getStatus().equals("refusé")) {
       return object;
     }
 
