@@ -15,6 +15,9 @@ Content-Type: application/json
 GET {{baseUrl}}/objects
 Authorization: {{adminToken}}
 
+### Get an object
+GET {{baseUrl}}/objects/1
+
 ### Accept an offer
 PATCH {{baseUrl}}/objects/status/1
 Content-Type: application/json
