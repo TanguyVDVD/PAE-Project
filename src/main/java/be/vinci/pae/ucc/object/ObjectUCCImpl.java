@@ -31,6 +31,17 @@ public class ObjectUCCImpl implements ObjectUCC {
   }
 
   /**
+   * Returns an object corresponding to the id.
+   *
+   * @param id the id of the object to filter objects
+   * @return an object
+   */
+  @Override
+  public ObjectDTO getOne(int id) {
+    return myObjectDAO.getOneById(id);
+  }
+
+  /**
    * Accept an offer.
    *
    * @param id the id of the object to accept

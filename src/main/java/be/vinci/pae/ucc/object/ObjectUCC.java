@@ -17,6 +17,14 @@ public interface ObjectUCC {
   List<ObjectDTO> getObjects(String query);
 
   /**
+   * Returns an object corresponding to the id.
+   *
+   * @param id the id of the object to filter objects
+   * @return an object
+   */
+  ObjectDTO getOne(int id);
+
+  /**
    * Accept a proposal.
    *
    * @param id the id of the object to accept
