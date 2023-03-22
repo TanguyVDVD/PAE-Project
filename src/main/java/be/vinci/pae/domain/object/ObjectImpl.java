@@ -1,6 +1,8 @@
 package be.vinci.pae.domain.object;
 
 import be.vinci.pae.domain.user.UserDTO;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * ObjectImpl class that implements the ObjectDTO interface Contains all the attribute of an
@@ -385,5 +387,15 @@ public class ObjectImpl implements Object {
   @Override
   public void setWorkshopDate(String workshopDate) {
     this.workshopDate = workshopDate;
+  }
+
+  /**
+   * Method that gives the current date.
+   */
+  @Override
+  public String getCurrentDate() {
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    LocalDateTime now = LocalDateTime.now();
+    return dtf.format(now);
   }
 }

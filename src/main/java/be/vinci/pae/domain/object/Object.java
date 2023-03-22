@@ -5,4 +5,8 @@ package be.vinci.pae.domain.object;
  */
 public interface Object extends ObjectDTO {
 
+  /**
+   * Method that gives the current date.
+   */
+  String getCurrentDate();
 }
