@@ -50,8 +50,14 @@ public class ObjectDAOImpl implements ObjectDAO {
       object.setIsVisible(resultSet.getBoolean("is_visible"));
       object.setPrice(resultSet.getDouble("price"));
       object.setState(resultSet.getString("state"));
+      object.setProposalDate(resultSet.getDate("proposal_date") == null ? ""
+          : resultSet.getDate("proposal_date").toString());
       object.setAcceptanceDate(resultSet.getDate("acceptance_date") == null ? ""
           : resultSet.getDate("acceptance_date").toString());
+      object.setRefusalDate(resultSet.getDate("refusal_date") == null ? ""
+          : resultSet.getDate("refusal_date").toString());
+      object.setWorkshopDate(resultSet.getDate("workshop_date") == null ? ""
+          : resultSet.getDate("workshop_date").toString());
       object.setDepositDate(resultSet.getDate("deposit_date") == null ? ""
           : resultSet.getDate("deposit_date").toString());
       object.setSellingDate(resultSet.getDate("selling_date") == null ? ""
