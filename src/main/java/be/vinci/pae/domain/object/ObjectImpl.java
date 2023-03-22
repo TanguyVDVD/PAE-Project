@@ -445,12 +445,11 @@ public class ObjectImpl implements Object {
   /**
    * Check if the object is already accepted or rejected.
    *
-   * @param id     the id of the object
    * @param status the status of the object
    * @return true if the status of the object is already defined, else false
    */
   @Override
-  public boolean isStatusAlreadyDefined(int id, String status) {
+  public boolean isStatusAlreadyDefined(String status) {
     if (status == null) {
       return false;
     }
