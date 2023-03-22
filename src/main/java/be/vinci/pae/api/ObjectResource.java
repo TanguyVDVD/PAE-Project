@@ -51,6 +51,28 @@ public class ObjectResource {
   }
 
   /**
+   * Get an object corresponding to the id.
+   *
+   * @param id the id of the object
+   * @return an object
+   */
+  @GET
+  @Path("/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public ObjectDTO getOne(@PathParam("id") int id) {
+    if (id <= 0) {
+      throw new WebApplicationException("Mauvais statut (accepté ou refusé) ou id",
+          Response.Status.BAD_REQUEST);
+    }
+    ObjectDTO objectDTO = objectUCC.getOne(id);
+    if (objectDTO == null) {
+      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+          .entity("Impossible de trouver les informations de l'objet").type("text/plain").build());
+    }
+    return objectDTO;
+  }
+
+  /**
    * Method that update the state of an object.
    *
    * @param objectUCCToUpdate the object to update
