@@ -1,6 +1,8 @@
 package be.vinci.pae.domain.object;
 
 import be.vinci.pae.domain.user.UserDTO;
+import java.sql.Date;
+import java.time.LocalDate;
 
 /**
  * ObjectImpl class that implements the ObjectDTO interface Contains all the attribute of an
@@ -14,7 +16,10 @@ public class ObjectImpl implements Object {
   private boolean isVisible;
   private double price;
   private String state;
+  private String proposalDate;
   private String acceptanceDate;
+  private String refusalDate;
+  private String workshopDate;
   private String depositDate;
   private String sellingDate;
   private String withdrawalDate;
@@ -25,7 +30,6 @@ public class ObjectImpl implements Object {
   private String pickupDate;
   private UserDTO user;
   private String objectType;
-  private String workshopDate;
 
   /**
    * Return the id of an object.
@@ -93,18 +97,18 @@ public class ObjectImpl implements Object {
    * @return true if the object is visible, else false
    */
   @Override
-  public Boolean isVisible() {
+  public Boolean getisVisible() {
     return isVisible;
   }
 
   /**
    * set the visibility of an object.
    *
-   * @param visibility the visibility of an object
+   * @param isVisible the visibility of an object
    */
   @Override
-  public void setVisibility(boolean visibility) {
-    this.isVisible = visibility;
+  public void setIsVisible(boolean isVisible) {
+    this.isVisible = isVisible;
   }
 
   /**
@@ -148,6 +152,26 @@ public class ObjectImpl implements Object {
   }
 
   /**
+   * Return the proposal date of an object.
+   *
+   * @return a String corresponding to the proposal date of the object
+   */
+  @Override
+  public String getProposalDate() {
+    return proposalDate;
+  }
+
+  /**
+   * set the acceptance date of an object.
+   *
+   * @param proposalDate the acceptance date of an object
+   */
+  @Override
+  public void setProposalDate(String proposalDate) {
+    this.proposalDate = proposalDate;
+  }
+
+  /**
    * Return the acceptance date of an object.
    *
    * @return a String corresponding to the acceptance date of the object
@@ -165,6 +189,46 @@ public class ObjectImpl implements Object {
   @Override
   public void setAcceptanceDate(String acceptanceDate) {
     this.acceptanceDate = acceptanceDate;
+  }
+
+  /**
+   * Return the refusal date of an object.
+   *
+   * @return a String corresponding to the refusal date of the object
+   */
+  @Override
+  public String getRefusalDate() {
+    return refusalDate;
+  }
+
+  /**
+   * set the refusal date of an object.
+   *
+   * @param refusalDate the refusal date of an object
+   */
+  @Override
+  public void setRefusalDate(String refusalDate) {
+    this.refusalDate = refusalDate;
+  }
+
+  /**
+   * Return the date an object was dropped in the workshop.
+   *
+   * @return a String corresponding to the workshop deposit date
+   */
+  @Override
+  public String getWorkshopDate() {
+    return workshopDate;
+  }
+
+  /**
+   * Set the date an object was dropped in the workshop.
+   *
+   * @param workshopDate the date to set
+   */
+  @Override
+  public void setWorkshopDate(String workshopDate) {
+    this.workshopDate = workshopDate;
   }
 
   /**
@@ -367,23 +431,28 @@ public class ObjectImpl implements Object {
     this.objectType = objectType;
   }
 
+
   /**
-   * Return the date an object was dropped in the workshop.
+   * Give the current date.
    *
-   * @return a String corresponding to the workshop deposit date
+   * @return today's date (sql)
    */
   @Override
-  public String getWorkshopDate() {
-    return workshopDate;
+  public Date getCurrentDate() {
+    return Date.valueOf(LocalDate.now());
   }
 
   /**
-   * Set the date an object was dropped in the workshop.
+   * Check if the object is already accepted or rejected.
    *
-   * @param workshopDate the date to set
+   * @param status the status of the object
+   * @return true if the status of the object is already defined, else false
    */
   @Override
-  public void setWorkshopDate(String workshopDate) {
-    this.workshopDate = workshopDate;
+  public boolean isStatusAlreadyDefined(String status) {
+    if (status == null) {
+      return false;
+    }
+    return status.equals("accepté") || status.equals("refusé");
   }
 }

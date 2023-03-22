@@ -61,7 +61,7 @@ public class ObjectResource {
   @Produces(MediaType.APPLICATION_JSON)
   public ObjectDTO getOne(@PathParam("id") int id) {
     if (id <= 0) {
-      throw new WebApplicationException("Mauvais statut (accepté ou refusé) ou id",
+      throw new WebApplicationException("Mauvais id indiqué",
           Response.Status.BAD_REQUEST);
     }
     ObjectDTO objectDTO = objectUCC.getOne(id);
@@ -102,7 +102,7 @@ public class ObjectResource {
   @AuthorizeAdmin
   public ObjectNode updateObjectStatus(JsonNode json, @PathParam("id") int id) {
     String status = json.get("status").asText();
-    if (id <= 0 || status.isBlank() || !status.equals("rejeté") && !status.equals("accepté")) {
+    if (id <= 0 || status.isBlank() || !status.equals("refusé") && !status.equals("accepté")) {
       throw new WebApplicationException("Mauvais statut (accepté ou refusé) ou id",
           Response.Status.BAD_REQUEST);
     }
@@ -112,7 +112,11 @@ public class ObjectResource {
     if (status.equals("accepté")) {
       objectDTO = objectUCC.accept(id);
     } else {
-      objectDTO = objectUCC.reject(id);
+      String reasonForRefusal = "";
+      if (json.get("reasonForRefusal") != null) {
+        reasonForRefusal = json.get("reasonForRefusal").asText("");
+      }
+      objectDTO = objectUCC.refuse(id, reasonForRefusal);
     }
 
     if (objectDTO == null) {
