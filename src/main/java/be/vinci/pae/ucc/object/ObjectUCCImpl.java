@@ -42,14 +42,14 @@ public class ObjectUCCImpl implements ObjectUCC {
   }
 
   /**
-   * Reject an offer.
+   * Refuse a proposal.
    *
-   * @param id               the id of the object to reject
+   * @param id               the id of the object to refuse
    * @param reasonForRefusal the reason for refusal
    * @return the object updated
    */
   @Override
-  public ObjectDTO reject(int id, String reasonForRefusal) {
+  public ObjectDTO refuse(int id, String reasonForRefusal) {
     Object object = (Object) myDomainFactory.getObject();
     String status = myObjectDAO.getOneById(id).getStatus();
 
@@ -58,6 +58,6 @@ public class ObjectUCCImpl implements ObjectUCC {
     }
 
     Date refusalDate = object.getCurrentDate();
-    return myObjectDAO.setStatusToRejected(id, reasonForRefusal, refusalDate);
+    return myObjectDAO.setStatusToRefused(id, reasonForRefusal, refusalDate);
   }
 }

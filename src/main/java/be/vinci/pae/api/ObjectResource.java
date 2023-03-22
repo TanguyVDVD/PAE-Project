@@ -94,7 +94,7 @@ public class ObjectResource {
       if (json.get("reasonForRefusal") != null) {
         reasonForRefusal = json.get("reasonForRefusal").asText("");
       }
-      objectDTO = objectUCC.reject(id, reasonForRefusal);
+      objectDTO = objectUCC.refuse(id, reasonForRefusal);
     }
 
     if (objectDTO == null) {

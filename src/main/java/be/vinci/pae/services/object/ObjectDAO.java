@@ -34,12 +34,12 @@ public interface ObjectDAO {
   ObjectDTO setStatusToAccepted(int id);
 
   /**
-   * Set the status of an object to rejected.
+   * Set the status of an object to refused.
    *
    * @param id               the id of the object
    * @param reasonForRefusal the reason for refusal
    * @param refusalDate      the refusal date
    * @return the modified object
    */
-  ObjectDTO setStatusToRejected(int id, String reasonForRefusal, Date refusalDate);
+  ObjectDTO setStatusToRefused(int id, String reasonForRefusal, Date refusalDate);
 }

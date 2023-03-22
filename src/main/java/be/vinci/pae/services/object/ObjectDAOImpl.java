@@ -164,7 +164,7 @@ public class ObjectDAOImpl implements ObjectDAO {
   }
 
   /**
-   * Set the status of an object to rejected.
+   * Set the status of an object to refused.
    *
    * @param id               the id of the object
    * @param reasonForRefusal the reason for refusal
@@ -172,7 +172,7 @@ public class ObjectDAOImpl implements ObjectDAO {
    * @return the modified object
    */
   @Override
-  public ObjectDTO setStatusToRejected(int id, String reasonForRefusal, Date refusalDate) {
+  public ObjectDTO setStatusToRefused(int id, String reasonForRefusal, Date refusalDate) {
     String request = "UPDATE pae.objects SET status = 'refusé', refusal_date = ?, "
         + "reason_for_refusal = ?, state = 'refusé' WHERE id_object = ?;";
 
