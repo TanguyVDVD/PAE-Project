@@ -8,7 +8,7 @@ import java.sql.Date;
 public interface Object extends ObjectDTO {
 
   /**
-   * Give the current date
+   * Give the current date.
    *
    * @return today's date (sql)
    */

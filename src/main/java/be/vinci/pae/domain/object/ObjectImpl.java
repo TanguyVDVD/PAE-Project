@@ -433,7 +433,7 @@ public class ObjectImpl implements Object {
 
 
   /**
-   * Give the current date
+   * Give the current date.
    *
    * @return today's date (sql)
    */
