@@ -141,15 +141,18 @@ public class ObjectDAOImpl implements ObjectDAO {
   /**
    * Set the status of an object to accepted.
    *
-   * @param id the id of the object
+   * @param id             the id of the object
+   * @param acceptanceDate the acceptance date of the object
    * @return the modified object
    */
   @Override
-  public ObjectDTO setStatusToAccepted(int id) {
-    String request = "UPDATE pae.objects SET status = 'accepté' WHERE id_object = ?;";
+  public ObjectDTO setStatusToAccepted(int id, Date acceptanceDate) {
+    String request =
+        "UPDATE pae.objects SET status = 'accepté', acceptance_date = ? WHERE id_object = ?;";
 
     try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
-      ps.setInt(1, id);
+      ps.setDate(1, acceptanceDate);
+      ps.setInt(2, id);
       ps.executeUpdate();
     } catch (SQLException se) {
       se.printStackTrace();

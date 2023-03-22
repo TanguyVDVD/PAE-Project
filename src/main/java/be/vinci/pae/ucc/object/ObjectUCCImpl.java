@@ -38,7 +38,15 @@ public class ObjectUCCImpl implements ObjectUCC {
    */
   @Override
   public ObjectDTO accept(int id) {
-    return myObjectDAO.setStatusToAccepted(id);
+    Object object = (Object) myDomainFactory.getObject();
+    String status = myObjectDAO.getOneById(id).getStatus();
+
+    if (object.isStatusAlreadyDefined(id, status)) {
+      return null;
+    }
+
+    Date acceptanceDate = object.getCurrentDate();
+    return myObjectDAO.setStatusToAccepted(id, acceptanceDate);
   }
 
   /**

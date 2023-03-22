@@ -28,17 +28,18 @@ public interface ObjectDAO {
   /**
    * Set the status of an object to accepted.
    *
-   * @param id the id of the object
+   * @param id             the id of the object
+   * @param acceptanceDate the acceptance date of the object
    * @return the modified object
    */
-  ObjectDTO setStatusToAccepted(int id);
+  ObjectDTO setStatusToAccepted(int id, Date acceptanceDate);
 
   /**
    * Set the status of an object to refused.
    *
    * @param id               the id of the object
    * @param reasonForRefusal the reason for refusal
-   * @param refusalDate      the refusal date
+   * @param refusalDate      the refusal date of the object
    * @return the modified object
    */
   ObjectDTO setStatusToRefused(int id, String reasonForRefusal, Date refusalDate);
