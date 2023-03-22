@@ -51,8 +51,9 @@ public class ObjectUCCImpl implements ObjectUCC {
   @Override
   public ObjectDTO reject(int id, String reasonForRefusal) {
     Object object = (Object) myDomainFactory.getObject();
+    String status = myObjectDAO.getOneById(id).getStatus();
 
-    if (object.isStatusAlreadyDefined(id)) {
+    if (object.isStatusAlreadyDefined(id, status)) {
       return null;
     }
 

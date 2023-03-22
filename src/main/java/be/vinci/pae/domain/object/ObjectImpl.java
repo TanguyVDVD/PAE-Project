@@ -1,8 +1,6 @@
 package be.vinci.pae.domain.object;
 
 import be.vinci.pae.domain.user.UserDTO;
-import be.vinci.pae.services.object.ObjectDAO;
-import jakarta.inject.Inject;
 import java.sql.Date;
 import java.time.LocalDate;
 
@@ -11,9 +9,6 @@ import java.time.LocalDate;
  * object.
  */
 public class ObjectImpl implements Object {
-
-  @Inject
-  private ObjectDAO myObjectDAO;
 
   private int id;
   private String description;
@@ -450,12 +445,15 @@ public class ObjectImpl implements Object {
   /**
    * Check if the object is already accepted or rejected.
    *
-   * @param id the id of the object
+   * @param id     the id of the object
+   * @param status the status of the object
    * @return true if the status of the object is already defined, else false
    */
   @Override
-  public boolean isStatusAlreadyDefined(int id) {
-    ObjectDTO object = myObjectDAO.getOneById(id);
-    return !object.getStatus().isBlank();
+  public boolean isStatusAlreadyDefined(int id, String status) {
+    if (status == null) {
+      return false;
+    }
+    return status.equals("accepté") || status.equals("refusé");
   }
 }
