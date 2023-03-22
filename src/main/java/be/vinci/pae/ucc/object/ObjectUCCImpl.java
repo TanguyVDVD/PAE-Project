@@ -1,5 +1,7 @@
 package be.vinci.pae.ucc.object;
 
+import be.vinci.pae.domain.DomainFactory;
+import be.vinci.pae.domain.object.Object;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.services.object.ObjectDAO;
 import jakarta.inject.Inject;
@@ -12,6 +14,9 @@ public class ObjectUCCImpl implements ObjectUCC {
 
   @Inject
   private ObjectDAO myObjectDAO;
+
+  @Inject
+  private DomainFactory myDomainFactory;
 
   /**
    * Returns a list of all objects.
@@ -44,6 +49,8 @@ public class ObjectUCCImpl implements ObjectUCC {
    */
   @Override
   public ObjectDTO reject(int id, String reasonForRefusal) {
-    return myObjectDAO.setStatusToRejected(id, reasonForRefusal);
+    Object object = (Object) myDomainFactory.getObject();
+    String refusalDate = object.getCurrentDate();
+    return myObjectDAO.setStatusToRejected(id, reasonForRefusal, refusalDate);
   }
 }
