@@ -46,7 +46,7 @@ public class ObjectUCCImpl implements ObjectUCC {
     }
 
     Date acceptanceDate = object.getCurrentDate();
-    return myObjectDAO.setStatusToRefused(id, acceptanceDate);
+    return myObjectDAO.setStatusToAccepted(id, acceptanceDate);
   }
 
   /**
