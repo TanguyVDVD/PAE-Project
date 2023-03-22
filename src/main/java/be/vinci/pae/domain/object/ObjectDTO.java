@@ -55,14 +55,14 @@ public interface ObjectDTO {
    *
    * @return true if the object is visible, else false
    */
-  Boolean isVisible();
+  Boolean getisVisible();
 
   /**
    * set the visibility of an object.
    *
-   * @param visibility the visibility of an object
+   * @param isVisible the visibility of an object
    */
-  void setVisibility(boolean visibility);
+  void setIsVisible(boolean isVisible);
 
   /**
    * Return the price of an object.

@@ -95,18 +95,18 @@ public class ObjectImpl implements Object {
    * @return true if the object is visible, else false
    */
   @Override
-  public Boolean isVisible() {
+  public Boolean getisVisible() {
     return isVisible;
   }
 
   /**
    * set the visibility of an object.
    *
-   * @param visibility the visibility of an object
+   * @param isVisible the visibility of an object
    */
   @Override
-  public void setVisibility(boolean visibility) {
-    this.isVisible = visibility;
+  public void setIsVisible(boolean isVisible) {
+    this.isVisible = isVisible;
   }
 
   /**
