@@ -37,7 +37,8 @@ public interface ObjectDAO {
    *
    * @param id               the id of the object
    * @param reasonForRefusal the reason for refusal
+   * @param refusalDate      the refusal date
    * @return the modified object
    */
-  ObjectDTO setStatusToRejected(int id, String reasonForRefusal);
+  ObjectDTO setStatusToRejected(int id, String reasonForRefusal, String refusalDate);
 }
