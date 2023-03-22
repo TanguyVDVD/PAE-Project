@@ -7,6 +7,7 @@ import be.vinci.pae.services.availability.AvailabilityDAO;
 import be.vinci.pae.services.objecttype.ObjectTypeDAO;
 import be.vinci.pae.services.user.UserDAO;
 import jakarta.inject.Inject;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -171,13 +172,13 @@ public class ObjectDAOImpl implements ObjectDAO {
    * @return the modified object
    */
   @Override
-  public ObjectDTO setStatusToRejected(int id, String reasonForRefusal, String refusalDate) {
+  public ObjectDTO setStatusToRejected(int id, String reasonForRefusal, Date refusalDate) {
     String request =
-        "UPDATE pae.objects SET status = 'refusé', refusal_date = ?, reason_for_refusal = ? WHERE id_object = ?;";
+        "UPDATE pae.objects SET status = 'refusé', refusal_date = ? , reason_for_refusal = ? WHERE id_object = ?;";
 
     try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
-      ps.setString(1, reasonForRefusal);
-      ps.setString(2, refusalDate);
+      ps.setDate(1, refusalDate);
+      ps.setString(2, reasonForRefusal);
       ps.setInt(3, id);
       ps.executeUpdate();
     } catch (SQLException se) {

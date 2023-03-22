@@ -1,8 +1,8 @@
 package be.vinci.pae.domain.object;
 
 import be.vinci.pae.domain.user.UserDTO;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.sql.Date;
+import java.time.LocalDate;
 
 /**
  * ObjectImpl class that implements the ObjectDTO interface Contains all the attribute of an
@@ -230,7 +230,7 @@ public class ObjectImpl implements Object {
   public void setWorkshopDate(String workshopDate) {
     this.workshopDate = workshopDate;
   }
-  
+
   /**
    * Return the deposit date of an object.
    *
@@ -431,13 +431,14 @@ public class ObjectImpl implements Object {
     this.objectType = objectType;
   }
 
+
   /**
-   * Method that gives the current date.
+   * Give the current date
+   *
+   * @return today's date (sql)
    */
   @Override
-  public String getCurrentDate() {
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    LocalDateTime now = LocalDateTime.now();
-    return dtf.format(now);
+  public Date getCurrentDate() {
+    return Date.valueOf(LocalDate.now());
   }
 }

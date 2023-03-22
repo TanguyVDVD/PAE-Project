@@ -1,6 +1,7 @@
 package be.vinci.pae.services.object;
 
 import be.vinci.pae.domain.object.ObjectDTO;
+import java.sql.Date;
 import java.util.List;
 
 /**
@@ -40,5 +41,5 @@ public interface ObjectDAO {
    * @param refusalDate      the refusal date
    * @return the modified object
    */
-  ObjectDTO setStatusToRejected(int id, String reasonForRefusal, String refusalDate);
+  ObjectDTO setStatusToRejected(int id, String reasonForRefusal, Date refusalDate);
 }

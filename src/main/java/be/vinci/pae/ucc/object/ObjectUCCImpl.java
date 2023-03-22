@@ -5,6 +5,7 @@ import be.vinci.pae.domain.object.Object;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.services.object.ObjectDAO;
 import jakarta.inject.Inject;
+import java.sql.Date;
 import java.util.List;
 
 /**
@@ -50,7 +51,7 @@ public class ObjectUCCImpl implements ObjectUCC {
   @Override
   public ObjectDTO reject(int id, String reasonForRefusal) {
     Object object = (Object) myDomainFactory.getObject();
-    String refusalDate = object.getCurrentDate();
+    Date refusalDate = object.getCurrentDate();
     return myObjectDAO.setStatusToRejected(id, reasonForRefusal, refusalDate);
   }
 }
