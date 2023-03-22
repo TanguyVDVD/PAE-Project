@@ -14,4 +14,12 @@ public interface Object extends ObjectDTO {
    */
   Date getCurrentDate();
 
+  /**
+   * Check if the object is already accepted or rejected.
+   *
+   * @param id the id of the object
+   * @return true if the status of the object is already defined, else false
+   */
+  boolean isStatusAlreadyDefined(int id);
+
 }
