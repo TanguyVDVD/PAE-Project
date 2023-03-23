@@ -87,19 +87,16 @@ public class UserUCCImpl implements UserUCC {
       return null;
     }
 
-    if (userDTO.getEmail() != null && !userDTO.getEmail().equals(userDB.getEmail())) {
-      if (myUserDAO.getOneByEmail(userDTO.getEmail()) != null) {
-        throw new WebApplicationException("Adresse mail déja utilisé",
-            Response.Status.BAD_REQUEST);
-      }
+    String email = userDTO.getEmail();
+    if (email != null && !email.equals(userDB.getEmail())
+        && myUserDAO.getOneByEmail(email) != null) {
+      throw new WebApplicationException("Adresse mail déja utilisé", Response.Status.BAD_REQUEST);
     }
 
-    if (userDTO.getPhoneNumber() != null && !userDTO.getPhoneNumber()
-        .equals(userDB.getPhoneNumber())) {
-      if (myUserDAO.getOneByPhoneNumber(userDTO.getPhoneNumber()) != null) {
-        throw new WebApplicationException("Numéro de GSM déjà utilisé",
-            Response.Status.BAD_REQUEST);
-      }
+    String phoneNumber = userDTO.getPhoneNumber();
+    if (phoneNumber != null && !phoneNumber.equals(userDB.getPhoneNumber())
+        && myUserDAO.getOneByPhoneNumber(phoneNumber) != null) {
+      throw new WebApplicationException("Numéro de GSM déjà utilisé", Response.Status.BAD_REQUEST);
     }
 
     if (userDTO.getPassword() != null) {

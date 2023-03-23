@@ -242,7 +242,7 @@ public class UserResource {
   @Path("/my")
   @Produces(MediaType.APPLICATION_JSON)
   @Authorize
-  public ObjectNode getUserInfo(@Context ContainerRequest request) {
+  public ObjectNode getOwnInfo(@Context ContainerRequest request) {
     UserDTO userDTO = (UserDTO) request.getProperty("user");
 
     return jsonMapper.convertValue(userDTO, ObjectNode.class);
