@@ -80,6 +80,40 @@ public class UserUCCImpl implements UserUCC {
   }
 
   @Override
+  public UserDTO updateUser(UserDTO userDTO) {
+    User userDB = (User) myUserDAO.getOneById(userDTO.getId());
+
+    if (userDB == null) {
+      return null;
+    }
+
+    if (userDTO.getEmail() != null && !userDTO.getEmail().equals(userDB.getEmail())) {
+      if (myUserDAO.getOneByEmail(userDTO.getEmail()) != null) {
+        throw new WebApplicationException("Adresse mail déja utilisé",
+            Response.Status.BAD_REQUEST);
+      }
+    }
+
+    if (userDTO.getPhoneNumber() != null && !userDTO.getPhoneNumber()
+        .equals(userDB.getPhoneNumber())) {
+      if (myUserDAO.getOneByPhoneNumber(userDTO.getPhoneNumber()) != null) {
+        throw new WebApplicationException("Numéro de GSM déjà utilisé",
+            Response.Status.BAD_REQUEST);
+      }
+    }
+
+    if (userDTO.getPassword() != null) {
+      userDTO.setPassword(userDB.hashPassword(userDTO.getPassword()));
+    }
+
+    if (!myUserDAO.update(userDTO)) {
+      return null;
+    }
+
+    return myUserDAO.getOneById(userDTO.getId());
+  }
+
+  @Override
   public File getProfilePicture(int id) {
     String blobPath = Config.getProperty("BlobPath");
 

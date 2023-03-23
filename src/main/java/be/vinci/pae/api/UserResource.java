@@ -16,6 +16,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -167,6 +168,68 @@ public class UserResource {
   @AuthorizeAdmin
   public UserDTO getUserInfo(@PathParam("id") int id) {
     return userUCC.getUserById(id);
+  }
+
+  /**
+   * Update a user's information.
+   *
+   * @param request the request
+   * @param id      the user's id
+   * @param data    information to update
+   * @return the user's information
+   */
+  @PATCH
+  @Path("/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Authorize
+  public UserDTO updateUserInfo(@Context ContainerRequest request, @PathParam("id") int id,
+      JsonNode data) {
+    UserDTO authorizedUser = (UserDTO) request.getProperty("user");
+
+    // Create a new DTO to only keep changes
+    UserDTO userDTO = myDomainFactory.getUser();
+
+    userDTO.setId(id);
+
+    if (authorizedUser.getId() == id) {
+      // Only the user themselves can change their own information
+      if (data.hasNonNull("firstName")) {
+        userDTO.setFirstName(data.get("firstName").asText());
+      }
+
+      if (data.hasNonNull("lastName")) {
+        userDTO.setLastName(data.get("lastName").asText());
+      }
+
+      if (data.hasNonNull("email")) {
+        userDTO.setEmail(data.get("email").asText());
+      }
+
+      if (data.hasNonNull("phoneNumber")) {
+        userDTO.setPhoneNumber(data.get("phoneNumber").asText());
+      }
+
+      if (data.hasNonNull("password")) {
+        userDTO.setPassword(data.get("password").asText());
+      }
+    } else if (authorizedUser.getId() == 1) {
+      // Only the admin can change the helper status
+      if (data.hasNonNull("helper")) {
+        userDTO.setIsHelper(data.get("helper").asBoolean());
+      }
+    } else {
+      // The user is not the admin and is not the user themselves
+      throw new WebApplicationException("Vous n'avez pas les droits pour modifier cet utilisateur",
+          Status.UNAUTHORIZED);
+    }
+
+    UserDTO userAfterUpdate = userUCC.updateUser(userDTO);
+
+    if (userAfterUpdate == null) {
+      throw new WebApplicationException("Utilisateur non trouvé", Status.NOT_FOUND);
+    }
+
+    return userAfterUpdate;
   }
 
   /**

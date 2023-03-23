@@ -95,14 +95,14 @@ public interface UserDTO {
    *
    * @return a boolean corresponding to the state of the photo
    */
-  boolean getPhoto();
+  Boolean getPhoto();
 
   /**
    * Set whether a user has a photo.
    *
    * @param hasPhoto the state of the photo
    */
-  void setPhoto(boolean hasPhoto);
+  void setPhoto(Boolean hasPhoto);
 
   /**
    * Return the register date of a user.
@@ -123,12 +123,12 @@ public interface UserDTO {
    *
    * @return true if the user is a helper false if he is not
    */
-  boolean isHelper();
+  Boolean isHelper();
 
   /**
    * set the boolean value corresponding if the user is a helper.
    *
    * @param isHelper the value
    */
-  void setIsHelper(boolean isHelper);
+  void setIsHelper(Boolean isHelper);
 }

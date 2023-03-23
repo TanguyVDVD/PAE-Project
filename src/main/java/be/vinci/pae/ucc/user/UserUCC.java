@@ -44,6 +44,14 @@ public interface UserUCC {
   UserDTO getUserById(int id);
 
   /**
+   * Update a user.
+   *
+   * @param userDTO the user to update
+   * @return the updated user
+   */
+  UserDTO updateUser(UserDTO userDTO);
+
+  /**
    * Get the profile picture of a user.
    *
    * @param id id of the user
@@ -59,6 +67,4 @@ public interface UserUCC {
    * @return whether the update was successful
    */
   boolean updateProfilePicture(int id, InputStream photo);
-
-
 }

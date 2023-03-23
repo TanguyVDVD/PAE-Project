@@ -48,4 +48,11 @@ public interface UserDAO {
    */
   List<UserDTO> getAll(String query);
 
+  /**
+   * Update a user.
+   *
+   * @param userDTO the user to update
+   * @return true if succeeded, false if not
+   */
+  boolean update(UserDTO userDTO);
 }
