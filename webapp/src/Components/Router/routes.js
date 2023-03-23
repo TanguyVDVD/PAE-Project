@@ -6,6 +6,7 @@ import LogoutPage from '../Pages/LogoutPage';
 import AdminUsersPage from '../Pages/admin/AdminUsersPage';
 import PropositionPage from '../Pages/PropositionPage';
 import AdminObjectsPage from "../Pages/admin/AdminObjectsPage";
+import ObjectPage from '../Pages/ObjectPage';
 
 const routes = {
   '/404': PageNotFoundPage,
@@ -16,7 +17,8 @@ const routes = {
   '/logout': LogoutPage,
   '/admin/objects': AdminObjectsPage,
   '/admin/users': AdminUsersPage,
-  '/propose': PropositionPage
+  '/propose': PropositionPage,
+  '/object': ObjectPage
 };
 
 export default routes;
