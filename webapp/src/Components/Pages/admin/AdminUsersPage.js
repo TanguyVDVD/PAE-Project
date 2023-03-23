@@ -71,7 +71,7 @@ async function fetchUsers(query = '') {
                     <th scope="row">${user.id}</th>
                     <td>${user.lastName}</td>
                     <td>${user.firstName}</td>
-                    <td>${user.helper ? 'Aideur' : 'Utilisateur'}</td>
+                    <td>${user.helper ? 'Aidant' : 'Utilisateur'}</td>
                     <td>
                       <a href="#" class="btn btn-link" role="button" data-id="${user.id}">
                         Voir plus
