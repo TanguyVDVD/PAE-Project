@@ -1,8 +1,11 @@
 package be.vinci.pae.ucc.object;
 
+import be.vinci.pae.domain.DomainFactory;
+import be.vinci.pae.domain.object.Object;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.services.object.ObjectDAO;
 import jakarta.inject.Inject;
+import java.sql.Date;
 import java.util.List;
 
 /**
@@ -12,6 +15,9 @@ public class ObjectUCCImpl implements ObjectUCC {
 
   @Inject
   private ObjectDAO myObjectDAO;
+
+  @Inject
+  private DomainFactory myDomainFactory;
 
   /**
    * Returns a list of all objects.
@@ -25,6 +31,17 @@ public class ObjectUCCImpl implements ObjectUCC {
   }
 
   /**
+   * Returns an object corresponding to the id.
+   *
+   * @param id the id of the object to filter objects
+   * @return an object
+   */
+  @Override
+  public ObjectDTO getOne(int id) {
+    return myObjectDAO.getOneById(id);
+  }
+
+  /**
    * Accept an offer.
    *
    * @param id the id of the object to accept
@@ -32,17 +49,34 @@ public class ObjectUCCImpl implements ObjectUCC {
    */
   @Override
   public ObjectDTO accept(int id) {
-    return myObjectDAO.setStatusToAccepted(id);
+    Object object = (Object) myDomainFactory.getObject();
+    String status = myObjectDAO.getOneById(id).getStatus();
+
+    if (object.isStatusAlreadyDefined(status)) {
+      return null;
+    }
+
+    Date acceptanceDate = object.getCurrentDate();
+    return myObjectDAO.setStatusToAccepted(id, acceptanceDate);
   }
 
   /**
-   * Reject an offer.
+   * Refuse a proposal.
    *
-   * @param id the id of the object to reject
+   * @param id               the id of the object to refuse
+   * @param reasonForRefusal the reason for refusal
    * @return the object updated
    */
   @Override
-  public ObjectDTO reject(int id) {
-    return null;
+  public ObjectDTO refuse(int id, String reasonForRefusal) {
+    Object object = (Object) myDomainFactory.getObject();
+    String status = myObjectDAO.getOneById(id).getStatus();
+
+    if (object.isStatusAlreadyDefined(status)) {
+      return null;
+    }
+
+    Date refusalDate = object.getCurrentDate();
+    return myObjectDAO.setStatusToRefused(id, reasonForRefusal, refusalDate);
   }
 }

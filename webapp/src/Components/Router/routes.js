@@ -7,15 +7,16 @@ import UserPage from '../Pages/UserPage';
 import AdminUsersPage from '../Pages/admin/AdminUsersPage';
 import PropositionPage from '../Pages/PropositionPage';
 import AdminObjectsPage from '../Pages/admin/AdminObjectsPage';
+import AdminPropositionsPage from "../Pages/admin/AdminPropositionsPage";
 
 const routes = {
   '/404': PageNotFoundPage,
-
   '/': HomePage,
   '/login': LoginPage,
   '/register': RegisterPage,
   '/logout': LogoutPage,
   '/user/:id': UserPage,
+  '/admin/propositions': AdminPropositionsPage,
   '/admin/objects': AdminObjectsPage,
   '/admin/users': AdminUsersPage,
   '/propose': PropositionPage,

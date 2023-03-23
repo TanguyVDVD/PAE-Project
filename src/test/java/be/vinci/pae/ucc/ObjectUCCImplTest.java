@@ -12,5 +12,7 @@ class ObjectUCCImplTest {
    */
   @BeforeEach
   void setUp() {
+
   }
+
 }
