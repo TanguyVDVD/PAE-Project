@@ -1,12 +1,11 @@
 import Navigate from '../Router/Navigate';
 import API from '../../utils/api';
-import { getAuthenticatedUser } from '../../utils/auths';
-import { clearPage } from '../../utils/render';
-import { formatDate, formatPhoneNumber } from '../../utils/format';
+import {getAuthenticatedUser} from '../../utils/auths';
+import {clearPage, renderError} from '../../utils/render';
+import {formatDate, formatPhoneNumber} from '../../utils/format';
 
 import noProfilePicture from '../../img/no_profile_picture.webp';
 
-// eslint-disable-next-line no-unused-vars
 const UserPage = (params) => {
   const id = parseInt(params.id, 10);
 
@@ -28,18 +27,13 @@ const UserPage = (params) => {
 
   // Use the my endpoint if the user is looking at their own profile
   API.get(`users/${authenticatedUser.id === id ? 'my' : id}`)
-    .then((user) => {
-      renderUserPage(user);
-      fetchObjects(user);
-    })
-    .catch((error) => {
-      // TODO: placeholder for error handling
-      main.innerHTML = `
-      <div class="alert alert-danger" role="alert">
-        ${error.message}
-      </div>
-    `;
-    });
+  .then((user) => {
+    renderUserPage(user);
+    fetchObjects(user);
+  })
+  .catch((error) => {
+    renderError(error.message);
+  });
 };
 
 // TODO: remove this
@@ -63,49 +57,54 @@ function renderUserPage(user) {
     <div class="d-flex gap-3 flex-column flex-md-row align-items-center">
       <div>
         <img
-          src="${user.photo ? API.getEndpoint(`users/${user.id}/photo`) : noProfilePicture}"
-          onerror="this.src='${noProfilePicture}'"
-          alt="user avatar"
-          class="rounded-circle object-fit-cover"
+            src="${user.photo ? API.getEndpoint(`users/${user.id}/photo`)
+                : noProfilePicture}"
+            onerror="this.src='${noProfilePicture}'"
+            alt="user avatar"
+            class="rounded-circle object-fit-cover"
         />
       </div>
-      <div class="d-flex gap-3 flex-column align-items-center align-items-md-start">
-        <div class="d-flex gap-2 justify-content-center align-items-baseline flex-wrap">
+      <div
+          class="d-flex gap-3 flex-column align-items-center align-items-md-start">
+        <div
+            class="d-flex gap-2 justify-content-center align-items-baseline flex-wrap">
           <h1 class="m-0">${user.firstName} ${user.lastName}</h1>
 
           ${authenticatedUser.id === user.id
-            ? html`
+              ? html`
                 <a href="#">
                   Modifier mes données
                 </a>
               `
-            : ''}
+              : ''}
         </div>
-        <div class="d-flex gap-3 flex-wrap justify-content-center justify-content-md-start">
+        <div
+            class="d-flex gap-3 flex-wrap justify-content-center justify-content-md-start">
           <div><a href="mailto:${user.email}">${user.email}</a></div>
           <div>${formatDate(user.registerDate)}</div>
           <div>
             <a href="tel:+32${user.phoneNumber.substring(1)}"
-              >${formatPhoneNumber(user.phoneNumber)}</a
+            >${formatPhoneNumber(user.phoneNumber)}</a
             >
           </div>
         </div>
-        ${authenticatedUser.helper
-          ? html`
+        ${authenticatedUser.id === 1 && authenticatedUser.id !== user.id
+            ? html`
               <div>
                 <div class="form-check form-switch">
                   <input
-                    class="form-check-input"
-                    type="checkbox"
-                    role="switch"
-                    id="helper-switch"
-                    ${user.helper ? 'checked' : ''}
+                      class="form-check-input"
+                      type="checkbox"
+                      role="switch"
+                      id="helper-switch"
+                      ${user.helper ? 'checked' : ''}
                   />
-                  <label class="form-check-label" for="helper-switch">Aideur</label>
+                  <label class="form-check-label"
+                         for="helper-switch">Aidant</label>
                 </div>
               </div>
             `
-          : ''}
+            : ''}
       </div>
     </div>
 
@@ -117,6 +116,25 @@ function renderUserPage(user) {
       </div>
     </div>
   `;
+
+  const helperSwitch = userPage.querySelector('#helper-switch');
+  if (helperSwitch) {
+    helperSwitch.addEventListener('change', (e) => {
+      e.target.disabled = true;
+      e.target.checked = !e.target.checked;
+
+      API.patch(`users/${user.id}`, {body: {helper: !e.target.checked}})
+      .then((updatedUser) => {
+        e.target.checked = updatedUser.helper;
+      })
+      .catch((error) => {
+        renderError(error.message);
+      })
+      .finally(() => {
+        e.target.disabled = false;
+      });
+    });
+  }
 
   main.replaceChildren(userPage);
 }
@@ -178,11 +196,12 @@ async function fetchObjects() {
     objects.className = 'row row-cols-1 row-cols-md-2 row-cols-lg-4 g-5 text-center';
 
     objects.innerHTML = placeholderObjects
-      .map(
+    .map(
         (object) => html`
           <div class="col">
             <div class="card card-object" data-id="${object.id}" role="button">
-              <img src="${object.image}" class="card-img-top" alt="Photo : ${object.name}" />
+              <img src="${object.image}" class="card-img-top"
+                   alt="Photo : ${object.name}"/>
               <div class="card-title fw-bold m-0">${object.type}</div>
               <div class="card-body pt-0">
                 ${object.name}
@@ -190,8 +209,8 @@ async function fetchObjects() {
             </div>
           </div>
         `,
-      )
-      .join('');
+    )
+    .join('');
   }, 3000);
 }
 
