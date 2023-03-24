@@ -38,7 +38,7 @@ public class ObjectUCCImpl implements ObjectUCC {
    */
   @Override
   public java.lang.Object getOffers(String query) {
-    return myObjectDAO.getoffers(query);
+    return myObjectDAO.getOffers(query);
   }
 
   /**
