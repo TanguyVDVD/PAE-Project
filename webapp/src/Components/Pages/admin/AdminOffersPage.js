@@ -4,7 +4,7 @@ import { clearPage } from '../../../utils/render';
 import API from '../../../utils/api';
 import {dateStringtoGoodFormat, subtractDates} from "../../../utils/dates";
 
-const AdminPropositionsPage = () => {
+const AdminOffersPage = () => {
   const user = getAuthenticatedUser();
 
   if (!user || !user.helper) {
@@ -14,7 +14,7 @@ const AdminPropositionsPage = () => {
 
   clearPage();
   renderAdminObjectsPage();
-  fetchPropositions();
+  fetchOffers();
 };
 
 function renderAdminObjectsPage() {
@@ -30,45 +30,45 @@ function renderAdminObjectsPage() {
         <i class="bi bi-search"></i>
       </button>
     </form>
-    <div id="propositions-list"></div>
+    <div id="offers-list"></div>
   `;
 
   div.querySelector('form').addEventListener('keyup', (e) => {
     e.preventDefault();
 
     const search = e.target.value;
-    fetchPropositions(search);
+    fetchOffers(search);
   });
 
   main.appendChild(div);
 }
 
-async function fetchPropositions(query = '') {
-  const list = document.getElementById('propositions-list');
+async function fetchOffers(query = '') {
+  const list = document.getElementById('offers-list');
 
-  API.get(`objects?query=${encodeURIComponent(query)}`).then((propositions) => {
-    document.getElementById('propositions-list').innerHTML = `
+  API.get(`objects/offers?query=${encodeURIComponent(query)}`).then((offers) => {
+    document.getElementById('offers-list').innerHTML = `
         <div class="container mt-5 mb-5">
             <div class="d-flex justify-content-center row">
                 <div class="col-md-10">
-                    ${propositions.map((proposition) => `
+                    ${offers.map((offer) => `
                         <div class="row p-2 bg-white border rounded">
                             <div class="col-md-3 mt-1">
                                 <img 
                                     class="img-fluid img-responsive rounded product-image" 
                                     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqsL6QorN-b6YhpcfTl9YJEzWB2xSkhFkN4Q&usqp=CAU"
-                                    alt="${proposition.objectType}">
+                                    alt="${offer.objectType}">
                             </div>
                             <div class="col-md-6 mt-1">
-                                <h5>${proposition.objectType}</h5>
+                                <h5>${offer.objectType}</h5>
                                
                                 <div class="mt-1 mb-1 spec-1">
-                                    <span>${proposition.description}</span>
+                                    <span>${offer.description}</span>
                                 </div>
                                 
                                 <p>
-                                    À récupérer le ${dateStringtoGoodFormat(proposition.pickupDate)} ${proposition.timeSlot === "matin" ?
-                                    " au ".concat(proposition.timeSlot) : " l'".concat(proposition.timeSlot)}
+                                    À récupérer le ${dateStringtoGoodFormat(offer.pickupDate)} ${offer.timeSlot === "matin" ?
+                                    " au ".concat(offer.timeSlot) : " l'".concat(offer.timeSlot)}
                                 </p>
                                 
                                 <div class="div-user">
@@ -80,7 +80,7 @@ async function fetchPropositions(query = '') {
                                 </div>
                                                                 
                                 <div class="d-flex flex-column mt-4 div-button">
-                                    <button class="btn btn-outline-primary btn-sm button-respond" type="button" data-id="${proposition.id}">Répondre</button>
+                                    <button class="btn btn-outline-primary btn-sm button-respond" type="button" data-id="${offer.id}">Répondre</button>
                                 </div>
                             </div>
                         </div>
@@ -90,8 +90,8 @@ async function fetchPropositions(query = '') {
         </div>
       `;
 
-    setUserOrPhoneNumber("div-user", propositions);
-    setRemainingTime("div-remaining-time", propositions);
+    setUserOrPhoneNumber("div-user", offers);
+    setRemainingTime("div-remaining-time", offers);
 
     list.querySelectorAll('a[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
@@ -109,22 +109,22 @@ async function fetchPropositions(query = '') {
   });
 }
 
-function setUserOrPhoneNumber(className, propositions){
+function setUserOrPhoneNumber(className, offers){
   const elements = document.getElementsByClassName(className);
   for (let i = 0; i < elements.length; i += 1) {
-    const proposition = propositions[i];
+    const offer = offers[i];
     const element = elements.item(i);
-    if (proposition.user === null){
+    if (offer.user === null){
       element.innerHTML = `
-          <p>Proposé anonymement par ${proposition.phoneNumber}</p>
+          <p>Proposé anonymement par ${offer.phoneNumber}</p>
       `
     }
     else {
       element.innerHTML = `
           <p>
           Proposé par
-              <a href="#" class="btn-link" role="button" data-id="${proposition.user.id}">
-                  ${proposition.user.firstName} ${proposition.user.lastName}
+              <a href="#" class="btn-link" role="button" data-id="${offer.user.id}">
+                  ${offer.user.firstName} ${offer.user.lastName}
               </a>
           </p>
       `
@@ -132,13 +132,13 @@ function setUserOrPhoneNumber(className, propositions){
   }
 }
 
-function setRemainingTime(className, propositions){
+function setRemainingTime(className, offers){
   const elements = document.getElementsByClassName(className);
   for (let i = 0; i < elements.length; i += 1) {
-    const proposition = propositions[i];
+    const offer = offers[i];
     const element = elements.item(i);
 
-    const pickupDate = new Date(proposition.pickupDate);
+    const pickupDate = new Date(offer.pickupDate);
     const todaySDate = new Date();
 
     const timeRemaining = subtractDates(pickupDate, todaySDate);
@@ -156,4 +156,4 @@ function setRemainingTime(className, propositions){
   }
 }
 
-export default AdminPropositionsPage;
+export default AdminOffersPage;

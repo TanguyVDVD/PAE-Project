@@ -51,8 +51,8 @@ public class ObjectDAOImpl implements ObjectDAO {
       object.setIsVisible(resultSet.getBoolean("is_visible"));
       object.setPrice(resultSet.getDouble("price"));
       object.setState(resultSet.getString("state"));
-      object.setProposalDate(resultSet.getDate("proposal_date") == null ? ""
-          : resultSet.getDate("proposal_date").toString());
+      object.setOfferDate(resultSet.getDate("offer_date") == null ? ""
+          : resultSet.getDate("offer_date").toString());
       object.setAcceptanceDate(resultSet.getDate("acceptance_date") == null ? ""
           : resultSet.getDate("acceptance_date").toString());
       object.setRefusalDate(resultSet.getDate("refusal_date") == null ? ""
@@ -94,6 +94,36 @@ public class ObjectDAOImpl implements ObjectDAO {
   public List<ObjectDTO> getAll(String query) {
     String request = "SELECT * FROM pae.objects o, pae.object_types ot "
         + "WHERE o.id_object_type = ot.id_object_type AND LOWER(o.description || ' ' || ot.label) "
+        + "LIKE CONCAT('%', ?, '%') ORDER BY id_object;";
+
+    ArrayList<ObjectDTO> objects = new ArrayList<>();
+
+    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+      ps.setString(1, query == null ? "" : query.toLowerCase());
+
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          objects.add(dtoFromRS(rs));
+        }
+      }
+    } catch (SQLException se) {
+      se.printStackTrace();
+    }
+
+    return objects;
+  }
+
+  /**
+   * Get all offers.
+   *
+   * @param query query to filter offers
+   * @return the list of offers
+   */
+  @Override
+  public Object getOffers(String query) {
+    String request = "SELECT * FROM pae.objects o, pae.object_types ot "
+        + "WHERE o.id_object_type = ot.id_object_type AND o.state = 'proposé' "
+        + "AND LOWER(o.description || ' ' || ot.label) "
         + "LIKE CONCAT('%', ?, '%') ORDER BY id_object;";
 
     ArrayList<ObjectDTO> objects = new ArrayList<>();

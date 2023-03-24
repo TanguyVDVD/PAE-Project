@@ -16,7 +16,7 @@ public class ObjectImpl implements Object {
   private boolean isVisible;
   private double price;
   private String state;
-  private String proposalDate;
+  private String offerDate;
   private String acceptanceDate;
   private String refusalDate;
   private String workshopDate;
@@ -152,23 +152,23 @@ public class ObjectImpl implements Object {
   }
 
   /**
-   * Return the proposal date of an object.
+   * Return the offer date of an object.
    *
-   * @return a String corresponding to the proposal date of the object
+   * @return a String corresponding to the offer date of the object
    */
   @Override
-  public String getProposalDate() {
-    return proposalDate;
+  public String getOfferDate() {
+    return offerDate;
   }
 
   /**
    * set the acceptance date of an object.
    *
-   * @param proposalDate the acceptance date of an object
+   * @param offerDate the acceptance date of an object
    */
   @Override
-  public void setProposalDate(String proposalDate) {
-    this.proposalDate = proposalDate;
+  public void setOfferDate(String offerDate) {
+    this.offerDate = offerDate;
   }
 
   /**

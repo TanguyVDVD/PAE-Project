@@ -41,7 +41,7 @@ CREATE TABLE pae.objects (
                              is_visible BOOLEAN NOT NULL,
                              price FLOAT,
                              state VARCHAR(15),
-                             proposal_date DATE NOT NULL,
+                             offer_date DATE NOT NULL,
                              acceptance_date DATE,
                              refusal_date DATE,
                              workshop_date DATE,

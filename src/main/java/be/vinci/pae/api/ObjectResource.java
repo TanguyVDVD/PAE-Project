@@ -51,6 +51,20 @@ public class ObjectResource {
   }
 
   /**
+   * Get a list of all offers.
+   *
+   * @param query query to filter offers
+   * @return a list of offers
+   */
+  @GET
+  @Path("/offers")
+  @AuthorizeAdmin
+  @Produces(MediaType.APPLICATION_JSON)
+  public ArrayNode getoffers(@QueryParam("query") String query) {
+    return jsonMapper.valueToTree(objectUCC.getOffers(query));
+  }
+
+  /**
    * Get an object corresponding to the id.
    *
    * @param id the id of the object
