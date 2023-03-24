@@ -114,6 +114,36 @@ public class ObjectDAOImpl implements ObjectDAO {
   }
 
   /**
+   * Get all proposals.
+   *
+   * @param query query to filter proposals
+   * @return the list of proposals
+   */
+  @Override
+  public Object getProposals(String query) {
+    String request = "SELECT * FROM pae.objects o, pae.object_types ot "
+        + "WHERE o.id_object_type = ot.id_object_type AND o.status = 'proposé' "
+        + "AND LOWER(o.description || ' ' || ot.label) "
+        + "LIKE CONCAT('%', ?, '%') ORDER BY id_object;";
+
+    ArrayList<ObjectDTO> objects = new ArrayList<>();
+
+    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+      ps.setString(1, query == null ? "" : query.toLowerCase());
+
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          objects.add(dtoFromRS(rs));
+        }
+      }
+    } catch (SQLException se) {
+      se.printStackTrace();
+    }
+
+    return objects;
+  }
+
+  /**
    * Get the object by the id.
    *
    * @param id the id of the object
