@@ -4,7 +4,7 @@ import { clearPage } from '../../../utils/render';
 import API from '../../../utils/api';
 import {dateStringtoGoodFormat, subtractDates} from "../../../utils/dates";
 
-const AdminPropositionsPage = () => {
+const AdminProposalsPage = () => {
   const user = getAuthenticatedUser();
 
   if (!user || !user.helper) {
@@ -14,7 +14,7 @@ const AdminPropositionsPage = () => {
 
   clearPage();
   renderAdminObjectsPage();
-  fetchPropositions();
+  fetchProposals();
 };
 
 function renderAdminObjectsPage() {
@@ -37,38 +37,38 @@ function renderAdminObjectsPage() {
     e.preventDefault();
 
     const search = e.target.value;
-    fetchPropositions(search);
+    fetchProposals(search);
   });
 
   main.appendChild(div);
 }
 
-async function fetchPropositions(query = '') {
+async function fetchProposals(query = '') {
   const list = document.getElementById('propositions-list');
 
-  API.get(`objects?query=${encodeURIComponent(query)}`).then((propositions) => {
-    document.getElementById('propositions-list').innerHTML = `
+  API.get(`objects/proposals?query=${encodeURIComponent(query)}`).then((proposals) => {
+    document.getElementById('proposals-list').innerHTML = `
         <div class="container mt-5 mb-5">
             <div class="d-flex justify-content-center row">
                 <div class="col-md-10">
-                    ${propositions.map((proposition) => `
+                    ${proposals.map((proposal) => `
                         <div class="row p-2 bg-white border rounded">
                             <div class="col-md-3 mt-1">
                                 <img 
                                     class="img-fluid img-responsive rounded product-image" 
                                     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqsL6QorN-b6YhpcfTl9YJEzWB2xSkhFkN4Q&usqp=CAU"
-                                    alt="${proposition.objectType}">
+                                    alt="${proposal.objectType}">
                             </div>
                             <div class="col-md-6 mt-1">
-                                <h5>${proposition.objectType}</h5>
+                                <h5>${proposal.objectType}</h5>
                                
                                 <div class="mt-1 mb-1 spec-1">
-                                    <span>${proposition.description}</span>
+                                    <span>${proposal.description}</span>
                                 </div>
                                 
                                 <p>
-                                    À récupérer le ${dateStringtoGoodFormat(proposition.pickupDate)} ${proposition.timeSlot === "matin" ?
-                                    " au ".concat(proposition.timeSlot) : " l'".concat(proposition.timeSlot)}
+                                    À récupérer le ${dateStringtoGoodFormat(proposal.pickupDate)} ${proposal.timeSlot === "matin" ?
+                                    " au ".concat(proposal.timeSlot) : " l'".concat(proposal.timeSlot)}
                                 </p>
                                 
                                 <div class="div-user">
@@ -80,7 +80,7 @@ async function fetchPropositions(query = '') {
                                 </div>
                                                                 
                                 <div class="d-flex flex-column mt-4 div-button">
-                                    <button class="btn btn-outline-primary btn-sm button-respond" type="button" data-id="${proposition.id}">Répondre</button>
+                                    <button class="btn btn-outline-primary btn-sm button-respond" type="button" data-id="${proposal.id}">Répondre</button>
                                 </div>
                             </div>
                         </div>
@@ -90,8 +90,8 @@ async function fetchPropositions(query = '') {
         </div>
       `;
 
-    setUserOrPhoneNumber("div-user", propositions);
-    setRemainingTime("div-remaining-time", propositions);
+    setUserOrPhoneNumber("div-user", proposals);
+    setRemainingTime("div-remaining-time", proposals);
 
     list.querySelectorAll('a[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
@@ -156,4 +156,4 @@ function setRemainingTime(className, propositions){
   }
 }
 
-export default AdminPropositionsPage;
+export default AdminProposalsPage;
