@@ -30,7 +30,7 @@ function renderAdminObjectsPage() {
         <i class="bi bi-search"></i>
       </button>
     </form>
-    <div id="propositions-list"></div>
+    <div id="offers-list"></div>
   `;
 
   div.querySelector('form').addEventListener('keyup', (e) => {
@@ -44,7 +44,7 @@ function renderAdminObjectsPage() {
 }
 
 async function fetchOffers(query = '') {
-  const list = document.getElementById('propositions-list');
+  const list = document.getElementById('offers-list');
 
   API.get(`objects/offers?query=${encodeURIComponent(query)}`).then((offers) => {
     document.getElementById('offers-list').innerHTML = `
@@ -109,22 +109,22 @@ async function fetchOffers(query = '') {
   });
 }
 
-function setUserOrPhoneNumber(className, propositions){
+function setUserOrPhoneNumber(className, offers){
   const elements = document.getElementsByClassName(className);
   for (let i = 0; i < elements.length; i += 1) {
-    const proposition = propositions[i];
+    const offer = offers[i];
     const element = elements.item(i);
-    if (proposition.user === null){
+    if (offer.user === null){
       element.innerHTML = `
-          <p>Proposé anonymement par ${proposition.phoneNumber}</p>
+          <p>Proposé anonymement par ${offer.phoneNumber}</p>
       `
     }
     else {
       element.innerHTML = `
           <p>
           Proposé par
-              <a href="#" class="btn-link" role="button" data-id="${proposition.user.id}">
-                  ${proposition.user.firstName} ${proposition.user.lastName}
+              <a href="#" class="btn-link" role="button" data-id="${offer.user.id}">
+                  ${offer.user.firstName} ${offer.user.lastName}
               </a>
           </p>
       `
@@ -132,13 +132,13 @@ function setUserOrPhoneNumber(className, propositions){
   }
 }
 
-function setRemainingTime(className, propositions){
+function setRemainingTime(className, offers){
   const elements = document.getElementsByClassName(className);
   for (let i = 0; i < elements.length; i += 1) {
-    const proposition = propositions[i];
+    const offer = offers[i];
     const element = elements.item(i);
 
-    const pickupDate = new Date(proposition.pickupDate);
+    const pickupDate = new Date(offer.pickupDate);
     const todaySDate = new Date();
 
     const timeRemaining = subtractDates(pickupDate, todaySDate);

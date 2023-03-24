@@ -14,7 +14,7 @@ const routes = {
   '/login': LoginPage,
   '/register': RegisterPage,
   '/logout': LogoutPage,
-  '/admin/propositions': AdminOffersPage,
+  '/admin/offers': AdminOffersPage,
   '/admin/objects': AdminObjectsPage,
   '/admin/users': AdminUsersPage,
   '/propose': PropositionPage
