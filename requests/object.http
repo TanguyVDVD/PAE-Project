@@ -15,14 +15,14 @@ Content-Type: application/json
 GET {{baseUrl}}/objects
 Authorization: {{adminToken}}
 
-### Get a list of all proposals
-GET {{baseUrl}}/objects/proposals
+### Get a list of all offers
+GET {{baseUrl}}/objects/offers
 Authorization: {{adminToken}}
 
 ### Get an object
 GET {{baseUrl}}/objects/1
 
-### Accept a proposal
+### Accept a offer
 PATCH {{baseUrl}}/objects/status/2
 Content-Type: application/json
 Authorization: {{adminToken}}
@@ -31,7 +31,7 @@ Authorization: {{adminToken}}
   "status": "accepté"
 }
 
-### Refuse a proposal without reason for refusal
+### Refuse a offer without reason for refusal
 PATCH {{baseUrl}}/objects/status/1
 Content-Type: application/json
 Authorization: {{adminToken}}
@@ -40,7 +40,7 @@ Authorization: {{adminToken}}
   "status": "refusé"
 }
 
-### Refuse a proposal with a reason for refusal null
+### Refuse a offer with a reason for refusal null
 PATCH {{baseUrl}}/objects/status/1
 Content-Type: application/json
 Authorization: {{adminToken}}
@@ -50,7 +50,7 @@ Authorization: {{adminToken}}
   "reasonForRefusal": null
 }
 
-### Refuse a proposal with an empty reason for refusal
+### Refuse a offer with an empty reason for refusal
 PATCH {{baseUrl}}/objects/status/1
 Content-Type: application/json
 Authorization: {{adminToken}}
@@ -60,7 +60,7 @@ Authorization: {{adminToken}}
   "reasonForRefusal": ""
 }
 
-### Refuse a proposal with a reason for refusal
+### Refuse a offer with a reason for refusal
 PATCH {{baseUrl}}/objects/status/1
 Content-Type: application/json
 Authorization: {{adminToken}}
