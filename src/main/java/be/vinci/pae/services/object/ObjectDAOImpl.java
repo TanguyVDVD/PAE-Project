@@ -122,7 +122,7 @@ public class ObjectDAOImpl implements ObjectDAO {
   @Override
   public Object getProposals(String query) {
     String request = "SELECT * FROM pae.objects o, pae.object_types ot "
-        + "WHERE o.id_object_type = ot.id_object_type AND o.status = 'proposé' "
+        + "WHERE o.id_object_type = ot.id_object_type AND o.state = 'proposé' "
         + "AND LOWER(o.description || ' ' || ot.label) "
         + "LIKE CONCAT('%', ?, '%') ORDER BY id_object;";
 
