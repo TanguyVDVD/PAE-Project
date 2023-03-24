@@ -18,12 +18,12 @@ public interface ObjectDAO {
   List<ObjectDTO> getAll(String query);
 
   /**
-   * Get all proposals.
+   * Get all offers.
    *
-   * @param query query to filter proposals
-   * @return the list of proposals
+   * @param query query to filter offers
+   * @return the list of offers
    */
-  Object getProposals(String query);
+  Object getOffers(String query);
 
   /**
    * Get the object by the id.

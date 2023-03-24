@@ -4,7 +4,7 @@ import { clearPage } from '../../../utils/render';
 import API from '../../../utils/api';
 import {dateStringtoGoodFormat, subtractDates} from "../../../utils/dates";
 
-const AdminProposalsPage = () => {
+const AdminOffersPage = () => {
   const user = getAuthenticatedUser();
 
   if (!user || !user.helper) {
@@ -14,7 +14,7 @@ const AdminProposalsPage = () => {
 
   clearPage();
   renderAdminObjectsPage();
-  fetchProposals();
+  fetchOffers();
 };
 
 function renderAdminObjectsPage() {
@@ -37,38 +37,38 @@ function renderAdminObjectsPage() {
     e.preventDefault();
 
     const search = e.target.value;
-    fetchProposals(search);
+    fetchOffers(search);
   });
 
   main.appendChild(div);
 }
 
-async function fetchProposals(query = '') {
+async function fetchOffers(query = '') {
   const list = document.getElementById('propositions-list');
 
-  API.get(`objects/proposals?query=${encodeURIComponent(query)}`).then((proposals) => {
-    document.getElementById('proposals-list').innerHTML = `
+  API.get(`objects/offers?query=${encodeURIComponent(query)}`).then((offers) => {
+    document.getElementById('offers-list').innerHTML = `
         <div class="container mt-5 mb-5">
             <div class="d-flex justify-content-center row">
                 <div class="col-md-10">
-                    ${proposals.map((proposal) => `
+                    ${offers.map((offer) => `
                         <div class="row p-2 bg-white border rounded">
                             <div class="col-md-3 mt-1">
                                 <img 
                                     class="img-fluid img-responsive rounded product-image" 
                                     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqsL6QorN-b6YhpcfTl9YJEzWB2xSkhFkN4Q&usqp=CAU"
-                                    alt="${proposal.objectType}">
+                                    alt="${offer.objectType}">
                             </div>
                             <div class="col-md-6 mt-1">
-                                <h5>${proposal.objectType}</h5>
+                                <h5>${offer.objectType}</h5>
                                
                                 <div class="mt-1 mb-1 spec-1">
-                                    <span>${proposal.description}</span>
+                                    <span>${offer.description}</span>
                                 </div>
                                 
                                 <p>
-                                    À récupérer le ${dateStringtoGoodFormat(proposal.pickupDate)} ${proposal.timeSlot === "matin" ?
-                                    " au ".concat(proposal.timeSlot) : " l'".concat(proposal.timeSlot)}
+                                    À récupérer le ${dateStringtoGoodFormat(offer.pickupDate)} ${offer.timeSlot === "matin" ?
+                                    " au ".concat(offer.timeSlot) : " l'".concat(offer.timeSlot)}
                                 </p>
                                 
                                 <div class="div-user">
@@ -80,7 +80,7 @@ async function fetchProposals(query = '') {
                                 </div>
                                                                 
                                 <div class="d-flex flex-column mt-4 div-button">
-                                    <button class="btn btn-outline-primary btn-sm button-respond" type="button" data-id="${proposal.id}">Répondre</button>
+                                    <button class="btn btn-outline-primary btn-sm button-respond" type="button" data-id="${offer.id}">Répondre</button>
                                 </div>
                             </div>
                         </div>
@@ -90,8 +90,8 @@ async function fetchProposals(query = '') {
         </div>
       `;
 
-    setUserOrPhoneNumber("div-user", proposals);
-    setRemainingTime("div-remaining-time", proposals);
+    setUserOrPhoneNumber("div-user", offers);
+    setRemainingTime("div-remaining-time", offers);
 
     list.querySelectorAll('a[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
@@ -156,4 +156,4 @@ function setRemainingTime(className, propositions){
   }
 }
 
-export default AdminProposalsPage;
+export default AdminOffersPage;

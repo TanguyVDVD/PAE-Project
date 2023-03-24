@@ -93,18 +93,18 @@ public interface ObjectDTO {
   void setState(String state);
 
   /**
-   * Return the proposal date of an object.
+   * Return the offer date of an object.
    *
-   * @return a String corresponding to the proposal date of the object
+   * @return a String corresponding to the offer date of the object
    */
-  String getProposalDate();
+  String getOfferDate();
 
   /**
    * set the acceptance date of an object.
    *
-   * @param proposalDate the acceptance date of an object
+   * @param offerDate the acceptance date of an object
    */
-  void setProposalDate(String proposalDate);
+  void setOfferDate(String offerDate);
 
   /**
    * Return the acceptance date of an object.

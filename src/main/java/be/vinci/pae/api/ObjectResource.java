@@ -51,17 +51,17 @@ public class ObjectResource {
   }
 
   /**
-   * Get a list of all proposals.
+   * Get a list of all offers.
    *
-   * @param query query to filter proposals
-   * @return a list of proposals
+   * @param query query to filter offers
+   * @return a list of offers
    */
   @GET
-  @Path("/proposals")
+  @Path("/offers")
   @AuthorizeAdmin
   @Produces(MediaType.APPLICATION_JSON)
-  public ArrayNode getProposals(@QueryParam("query") String query) {
-    return jsonMapper.valueToTree(objectUCC.getProposals(query));
+  public ArrayNode getoffers(@QueryParam("query") String query) {
+    return jsonMapper.valueToTree(objectUCC.getOffers(query));
   }
 
   /**

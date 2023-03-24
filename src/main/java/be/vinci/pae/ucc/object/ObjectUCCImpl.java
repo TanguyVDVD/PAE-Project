@@ -31,14 +31,14 @@ public class ObjectUCCImpl implements ObjectUCC {
   }
 
   /**
-   * Returns a list of all proposals.
+   * Returns a list of all offers.
    *
-   * @param query query to filter proposals
-   * @return a list of all proposals
+   * @param query query to filter offers
+   * @return a list of all offers
    */
   @Override
-  public java.lang.Object getProposals(String query) {
-    return myObjectDAO.getProposals(query);
+  public java.lang.Object getOffers(String query) {
+    return myObjectDAO.getoffers(query);
   }
 
   /**
@@ -72,7 +72,7 @@ public class ObjectUCCImpl implements ObjectUCC {
   }
 
   /**
-   * Refuse a proposal.
+   * Refuse an offer.
    *
    * @param id               the id of the object to refuse
    * @param reasonForRefusal the reason for refusal
