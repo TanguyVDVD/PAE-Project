@@ -1,4 +1,6 @@
 import { clearPage } from '../../utils/render';
+import { getAuthenticatedUser } from '../../utils/auths';
+
 
 const ObjectPage = () => {
     clearPage();
@@ -7,6 +9,9 @@ const ObjectPage = () => {
 
 function renderObjectPage() {
     const main = document.querySelector('main');
+
+    const authenticatedUser = getAuthenticatedUser();
+
     const div = document.createElement('div');
 
     div.className='container p-5'
@@ -20,23 +25,48 @@ function renderObjectPage() {
               </div>
 
               <div class="col-md-6">
+              ${
+                authenticatedUser && authenticatedUser.helper
+                  ? `
                 <form action="">
                     <div class="small mb-1">changer l'image
                       <input type="button" value="parcourir" onclick="" display="inline-block" />
                     </div>
+                    `
+                    : ''
+              }
 
                     <h1 class="display-12 fw-bolder">Type de l'object 
-                      <a href="">
-                        <img src="https://cdn-icons-png.flaticon.com/512/1014/1014883.png " alt="" width="20px">
-                      </a> 
+
+                  ${
+                      authenticatedUser && authenticatedUser.helper
+                      ? `
+                          <a href="" id="modifyButtonType">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1014/1014883.png " alt="" width="20px">
+                          </a> 
+                          `
+                          : ''
+                        }
+
                     </h1>
 
                     <p class="lead">
                       Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium at dolorem quidem modi. Nam sequi consequatur obcaecati excepturi alias magni, accusamus eius blanditiis delectus ipsam minima ea iste laborum vero?
-                        <a href="">
+                       
+                      ${
+                        authenticatedUser && authenticatedUser.helper
+                          ? `
+                        <a href="" id="modifyButtonDescription">
                           <img src="https://cdn-icons-png.flaticon.com/512/1014/1014883.png " alt="" width="10px">
                         </a>
+                        `
+                        : ''
+                      }
+                      
                     </p>
+                    ${
+                      authenticatedUser && authenticatedUser.helper
+                        ? `
 
                     <p class="lead"> Proposé par :</p>
                     <p class="lead"> Date de la proposition :</p>
@@ -54,21 +84,33 @@ function renderObjectPage() {
                     <p class="lead"> Date de changement du nouvel état :
                         <input type="text" id="date_prop" placeholder="date" />
                     </p>
+                    `
+                    : ''
+                  }
+
+                  ${
+                    authenticatedUser && authenticatedUser.helper
+                      ? `
+                      <p class="lead"> 
+                      <input type="text" id="prix" placeholder="nouveau prix" />
+                      </p>
+                      `
+                      : ''
+                    }
 
                     <p class="lead"> 
-                      <div class="fs-5 mb-5">
                         Prix: <span>10.00€</span>
-                      </div>
                     </p>
-
+                    
+                    ${
+                      authenticatedUser && authenticatedUser.helper
+                        ? `
                     <p class="lead"> Visible :    
-                      <div>
-                          <input type="radio" id="oui" name="oui" value="oui">
-                          <label for="oui">oui</label>
+                      <input type="radio" id="oui" name="oui" value="oui">
+                      <label for="oui">oui</label>
 
-                          <input type="radio" id="non" name="non" value="non">
-                          <label for="non">non</label>
-                      </div>
+                      <input type="radio" id="non" name="non" value="non">
+                      <label for="non">non</label>
                     </p>
 
                     <br> 
@@ -76,7 +118,7 @@ function renderObjectPage() {
                     <button type="button" class="btn btn-secondary btn-lg btn-block">Sauvegarder</button>
                   </form>
                 </div>
-
+                    
                 <center>
                   <br>
                   <a href="#" class="accept">Accepter l'objet <span class="fa fa-check"></span></a>
@@ -86,10 +128,17 @@ function renderObjectPage() {
                   <textarea id="refuse"></textarea>
                   <a href="#" class="deny">Refuser l'objet <span class="fa fa-close"></span></a>
                 </center>
+                `
+                : ''
+              }
             </div>
         </div>
     </section>
     `
+
+  
+
+
     main.appendChild(div);
 
 }
