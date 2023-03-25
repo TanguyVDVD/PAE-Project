@@ -1,7 +1,7 @@
 package be.vinci.pae.services;
 
 /**
- * DALServices interface that provide the method to connect the db and create PreparedStatements.
+ * DALServices interface that provide the method to connect the db.
  */
 public interface DALServices {
 
