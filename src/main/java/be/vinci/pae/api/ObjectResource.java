@@ -115,16 +115,11 @@ public class ObjectResource {
       changeDate = json.get("date").asText();
     }
 
-    String typeObject = json.get("type").asText();
-    String descriptionObject = json.get("description").asText();
     String stateObject = json.get("state").asText();
-    boolean isVisibleObject = json.get("is_visible").asBoolean();
 
-    if (stateObject.equals("mis en vente")) {
-      if (!json.hasNonNull("price")) {
-        throw new WebApplicationException("Un prix doit être entré",
-            Status.NOT_FOUND);
-      }
+    if (stateObject.equals("mis en vente") && !json.hasNonNull("price")) {
+      throw new WebApplicationException("Un prix doit être entré",
+          Status.NOT_FOUND);
     }
 
     int priceObject = json.get("price").asInt();
@@ -133,6 +128,10 @@ public class ObjectResource {
       throw new WebApplicationException("Le prix doit être compris entre 1 et 10€",
           Status.NOT_FOUND);
     }
+
+    String typeObject = json.get("type").asText();
+    String descriptionObject = json.get("description").asText();
+    boolean isVisibleObject = json.get("is_visible").asBoolean();
 
     ObjectDTO objectUpdated = myDomainFactory.getObject();
 

@@ -131,7 +131,7 @@ public class ObjectUCCImpl implements ObjectUCC {
     objectFromDB.setDescription(objectDTO.getDescription());
     objectFromDB.setPrice(objectDTO.getPrice());
     objectFromDB.setState(objectDTO.getState());
-    objectFromDB.setIsVisible((objectDTO.getisVisible()));
+    objectFromDB.setIsVisible(objectDTO.getisVisible());
 
     return myObjectDAO.updateObject(objectFromDB.getId(), objectFromDB);
   }

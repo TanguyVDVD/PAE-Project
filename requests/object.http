@@ -48,7 +48,7 @@ Authorization: {{adminToken}}
 }
 
 ### Set a object on sale with a price
-PUT {{baseUrl}}/objects/update_object/1
+PUT {{baseUrl}}/objects/update_object/3
 Content-Type: application/json
 Authorization: {{adminToken}}
 

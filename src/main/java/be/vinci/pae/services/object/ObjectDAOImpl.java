@@ -251,13 +251,13 @@ public class ObjectDAOImpl implements ObjectDAO {
    * Transform a string date into an sql date.
    *
    * @param date the date to set on sql date
-   * @return an sql date
-   * @throws ParseException
+   * @return a sql date
+   * @throws ParseException if there is a parse error
    */
-  java.sql.Date setStringDateToSQLDate(String date) throws ParseException {
+  Date setStringDateToSQLDate(String date) throws ParseException {
     SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
     java.util.Date parsed = format.parse(date);
-    java.sql.Date sqlDate = new java.sql.Date(parsed.getTime());
+    Date sqlDate = new Date(parsed.getTime());
     return sqlDate;
   }
 

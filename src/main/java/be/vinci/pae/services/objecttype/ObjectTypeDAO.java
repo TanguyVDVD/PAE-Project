@@ -13,5 +13,5 @@ public interface ObjectTypeDAO {
    */
   String getOneById(int id);
 
-  public int getIdByString(String state);
+  int getIdByString(String state);
 }
