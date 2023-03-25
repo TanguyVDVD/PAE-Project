@@ -1,6 +1,7 @@
 package be.vinci.pae.ucc.object;
 
 import be.vinci.pae.domain.object.ObjectDTO;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -57,6 +58,6 @@ public interface ObjectUCC {
    * @param date      the date the state has been updated
    * @return null if there is an error or the object updated
    */
-  ObjectDTO update(int id, ObjectDTO objectDTO, String date);
+  ObjectDTO update(int id, ObjectDTO objectDTO, LocalDate date);
 
 }

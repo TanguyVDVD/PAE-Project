@@ -2,6 +2,7 @@ package be.vinci.pae.domain.user;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.time.LocalDate;
 import org.mindrot.jbcrypt.BCrypt;
 
 /**
@@ -17,7 +18,7 @@ public class UserImpl implements User {
   @JsonIgnore
   private String password;
   private Boolean photo;
-  private String registerDate;
+  private LocalDate registerDate;
   private Boolean isHelper;
 
   /**
@@ -166,7 +167,7 @@ public class UserImpl implements User {
    * @return a date corresponding to the register date of a user
    */
   @Override
-  public String getRegisterDate() {
+  public LocalDate getRegisterDate() {
     return registerDate;
   }
 
@@ -176,7 +177,7 @@ public class UserImpl implements User {
    * @param registerDate the register date of a user
    */
   @Override
-  public void setRegisterDate(String registerDate) {
+  public void setRegisterDate(LocalDate registerDate) {
     this.registerDate = registerDate;
   }
 

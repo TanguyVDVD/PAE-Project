@@ -2,6 +2,7 @@ package be.vinci.pae.domain.object;
 
 import be.vinci.pae.domain.user.UserDTO;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import java.time.LocalDate;
 
 /**
  * ObjectDTO interface. Representing a data transfer object (DTO) for a object in the domain The
@@ -99,84 +100,84 @@ public interface ObjectDTO {
    *
    * @return a String corresponding to the offer date of the object
    */
-  String getOfferDate();
+  LocalDate getOfferDate();
 
   /**
    * set the acceptance date of an object.
    *
    * @param offerDate the acceptance date of an object
    */
-  void setOfferDate(String offerDate);
+  void setOfferDate(LocalDate offerDate);
 
   /**
    * Return the acceptance date of an object.
    *
    * @return a String corresponding to the acceptance date of the object
    */
-  String getAcceptanceDate();
+  LocalDate getAcceptanceDate();
 
   /**
    * set the acceptance date of an object.
    *
    * @param acceptanceDate the acceptance date of an object
    */
-  void setAcceptanceDate(String acceptanceDate);
+  void setAcceptanceDate(LocalDate acceptanceDate);
 
   /**
    * Return the refusal date of an object.
    *
    * @return a String corresponding to the refusal date of the object
    */
-  String getRefusalDate();
+  LocalDate getRefusalDate();
 
   /**
    * set the refusal date of an object.
    *
    * @param refusalDate the refusal date of an object
    */
-  void setRefusalDate(String refusalDate);
+  void setRefusalDate(LocalDate refusalDate);
 
   /**
    * Return the deposit date of an object.
    *
-   * @return a String corresponding to the deposit date of the object
+   * @return a LocalDate corresponding to the deposit date of the object
    */
-  String getDepositDate();
+  LocalDate getDepositDate();
 
   /**
    * set the deposit date of an object.
    *
    * @param depositDate the deposit date of an object
    */
-  void setDepositDate(String depositDate);
+  void setDepositDate(LocalDate depositDate);
 
   /**
    * Return the selling date of an object.
    *
-   * @return a String corresponding to the selling date of an object
+   * @return a LocalDate corresponding to the selling date of an object
    */
-  String getSellingDate();
+  LocalDate getSellingDate();
 
   /**
    * set the selling date of an object.
    *
    * @param sellingDate the selling date of an object
    */
-  void setSellingDate(String sellingDate);
+  void setSellingDate(LocalDate sellingDate);
 
   /**
    * Return the withdrawal date of an object.
    *
    * @return a String corresponding to the withdrawal date of an object
    */
-  String getWithdrawalDate();
+  LocalDate getWithdrawalDate();
 
   /**
    * set the withdrawal date of an object.
    *
    * @param withdrawalDate the withdrawal date of an object
    */
-  void setWithdrawalDate(String withdrawalDate);
+  void setWithdrawalDate(LocalDate withdrawalDate);
 
   /**
    * Return the time slot of an object.
@@ -237,16 +238,16 @@ public interface ObjectDTO {
   /**
    * Return the receipt date of an object.
    *
-   * @return a String corresponding to the receipt date of an object
+   * @return a LocalDate corresponding to the receipt date of an object
    */
-  String getReceiptDate();
+  LocalDate getReceiptDate();
 
   /**
    * set the receipt date of an object.
    *
    * @param receiptDate the receipt date of an object
    */
-  void setReceiptDate(String receiptDate);
+  void setReceiptDate(LocalDate receiptDate);
 
   /**
    * Return the user of an object.
@@ -276,22 +277,32 @@ public interface ObjectDTO {
    */
   void setObjectType(String objectType);
 
-  String getOnSaleDate();
+  /**
+   * Return the sale date of an object.
+   *
+   * @return a LocalDate corresponding to the sale date of an object
+   */
+  LocalDate getOnSaleDate();
 
-  void setOnSaleDate(String date);
+  /**
+   * Set the sale date of an object.
+   *
+   * @param date the date to set
+   */
+  void setOnSaleDate(LocalDate date);
 
   /**
    * Return the date an object was dropped in the workshop.
    *
-   * @return a String corresponding to the workshop deposit date
+   * @return a LocalDate corresponding to the workshop deposit date
    */
-  String getWorkshopDate();
+  LocalDate getWorkshopDate();
 
   /**
    * Set the date an object was dropped in the workshop.
    *
    * @param workshopDate the date to set
    */
-  void setWorkshopDate(String workshopDate);
+  void setWorkshopDate(LocalDate workshopDate);
 
 }

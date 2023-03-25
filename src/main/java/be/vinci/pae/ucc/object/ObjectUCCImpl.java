@@ -5,7 +5,7 @@ import be.vinci.pae.domain.object.Object;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.services.object.ObjectDAO;
 import jakarta.inject.Inject;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -68,8 +68,7 @@ public class ObjectUCCImpl implements ObjectUCC {
       return null;
     }
 
-    Date acceptanceDate = object.getCurrentDate();
-    return myObjectDAO.setStatusToAccepted(id, acceptanceDate);
+    return myObjectDAO.setStatusToAccepted(id, LocalDate.now());
   }
 
   /**
@@ -88,8 +87,7 @@ public class ObjectUCCImpl implements ObjectUCC {
       return null;
     }
 
-    Date refusalDate = object.getCurrentDate();
-    return myObjectDAO.setStatusToRefused(id, reasonForRefusal, refusalDate);
+    return myObjectDAO.setStatusToRefused(id, reasonForRefusal, LocalDate.now());
   }
 
   /**
@@ -101,8 +99,7 @@ public class ObjectUCCImpl implements ObjectUCC {
    * @return null if there is an error or the object updated
    */
   @Override
-  public ObjectDTO update(int id, ObjectDTO objectDTO, String date) {
-
+  public ObjectDTO update(int id, ObjectDTO objectDTO, LocalDate date) {
     ObjectDTO objectFromDB = myObjectDAO.getOneById(id);
 
     if (!objectFromDB.getStatus().equals("accepté")) {

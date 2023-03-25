@@ -111,6 +111,11 @@
       <groupId>commons-validator</groupId>
       <version>1.7</version>
     </dependency>
+    <dependency>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <version>2.14.2</version>
+    </dependency>
   </dependencies>
   <dependencyManagement>
     <dependencies>

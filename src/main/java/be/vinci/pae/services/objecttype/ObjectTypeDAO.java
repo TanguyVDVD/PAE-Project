@@ -13,5 +13,11 @@ public interface ObjectTypeDAO {
    */
   String getOneById(int id);
 
+  /**
+   * Get the object type id by the String.
+   *
+   * @param state of the object type
+   * @return the object type id corresponding to the String
+   */
   int getIdByString(String state);
 }
