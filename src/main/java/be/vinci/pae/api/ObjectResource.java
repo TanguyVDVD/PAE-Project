@@ -4,6 +4,7 @@ import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.ucc.object.ObjectUCC;
+import be.vinci.pae.utils.MyObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -32,7 +33,7 @@ import java.time.LocalDate;
 @Path("/objects")
 public class ObjectResource {
 
-  private final ObjectMapper jsonMapper = new ObjectMapper();
+  private final ObjectMapper jsonMapper = MyObjectMapper.getJsonMapper();
   @Inject
   private ObjectUCC objectUCC;
   @Inject
@@ -100,19 +101,23 @@ public class ObjectResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public ObjectNode updateObject(JsonNode json, @PathParam("id") int id) {
-
     if (!json.hasNonNull("type") || !json.hasNonNull("description") || !json.hasNonNull(
         "state") || !json.hasNonNull("is_visible")) {
-      throw new WebApplicationException("Tout les champs ne sont pas rempli",
-          Status.NOT_FOUND);
+      throw new WebApplicationException("Tous les champs ne sont pas remplis",
+          Status.BAD_REQUEST);
     }
 
-    String changeDate;
+    LocalDate changeDate;
 
     if (!json.hasNonNull("date")) {
-      changeDate = LocalDate.now().toString();
+      changeDate = LocalDate.now();
     } else {
-      changeDate = json.get("date").asText();
+      try {
+        changeDate = LocalDate.parse(json.get("date").asText());
+      } catch (Exception e) {
+        throw new WebApplicationException("La date n'est pas au bon format",
+            Status.BAD_REQUEST);
+      }
     }
 
     String stateObject = json.get("state").asText();

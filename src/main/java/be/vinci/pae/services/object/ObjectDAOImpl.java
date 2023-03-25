@@ -7,12 +7,10 @@ import be.vinci.pae.services.availability.AvailabilityDAO;
 import be.vinci.pae.services.objecttype.ObjectTypeDAO;
 import be.vinci.pae.services.user.UserDAO;
 import jakarta.inject.Inject;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,31 +51,31 @@ public class ObjectDAOImpl implements ObjectDAO {
       object.setIsVisible(resultSet.getBoolean("is_visible"));
       object.setPrice(resultSet.getDouble("price"));
       object.setState(resultSet.getString("state"));
-      object.setOfferDate(resultSet.getDate("offer_date") == null ? ""
-          : resultSet.getDate("offer_date").toString());
-      object.setAcceptanceDate(resultSet.getDate("acceptance_date") == null ? ""
-          : resultSet.getDate("acceptance_date").toString());
-      object.setRefusalDate(resultSet.getDate("refusal_date") == null ? ""
-          : resultSet.getDate("refusal_date").toString());
-      object.setWorkshopDate(resultSet.getDate("workshop_date") == null ? ""
-          : resultSet.getDate("workshop_date").toString());
-      object.setDepositDate(resultSet.getDate("deposit_date") == null ? ""
-          : resultSet.getDate("deposit_date").toString());
-      object.setSellingDate(resultSet.getDate("selling_date") == null ? ""
-          : resultSet.getDate("selling_date").toString());
-      object.setWithdrawalDate(resultSet.getDate("withdrawal_date") == null ? ""
-          : resultSet.getDate("withdrawal_date").toString());
-      object.setOnSaleDate(resultSet.getDate("on_sale_date") == null ? ""
-          : resultSet.getDate("on_sale_date").toString());
-      object.setWorkshopDate(resultSet.getDate("workshop_date") == null ? ""
-          : resultSet.getDate("workshop_date").toString());
+      object.setOfferDate(resultSet.getDate("offer_date") == null ? null
+          : resultSet.getDate("offer_date").toLocalDate());
+      object.setAcceptanceDate(resultSet.getDate("acceptance_date") == null ? null
+          : resultSet.getDate("acceptance_date").toLocalDate());
+      object.setRefusalDate(resultSet.getDate("refusal_date") == null ? null
+          : resultSet.getDate("refusal_date").toLocalDate());
+      object.setWorkshopDate(resultSet.getDate("workshop_date") == null ? null
+          : resultSet.getDate("workshop_date").toLocalDate());
+      object.setDepositDate(resultSet.getDate("deposit_date") == null ? null
+          : resultSet.getDate("deposit_date").toLocalDate());
+      object.setSellingDate(resultSet.getDate("selling_date") == null ? null
+          : resultSet.getDate("selling_date").toLocalDate());
+      object.setWithdrawalDate(resultSet.getDate("withdrawal_date") == null ? null
+          : resultSet.getDate("withdrawal_date").toLocalDate());
+      object.setOnSaleDate(resultSet.getDate("on_sale_date") == null ? null
+          : resultSet.getDate("on_sale_date").toLocalDate());
+      object.setWorkshopDate(resultSet.getDate("workshop_date") == null ? null
+          : resultSet.getDate("workshop_date").toLocalDate());
       object.setTimeSlot(resultSet.getString("time_slot"));
       object.setStatus(resultSet.getString("status"));
       object.setReasonForRefusal(resultSet.getString("reason_for_refusal"));
       object.setPhoneNumber(resultSet.getString("phone_number"));
       object.setReceiptDate(
-          myAvailabilityDao.getOneById(resultSet.getInt("receipt_date")) == null ? ""
-              : myAvailabilityDao.getOneById(resultSet.getInt("receipt_date")).toString());
+          myAvailabilityDao.getOneById(resultSet.getInt("receipt_date")) == null ? null
+              : myAvailabilityDao.getOneById(resultSet.getInt("receipt_date")));
       object.setUser(myUserDao.getOneById(resultSet.getInt("id_user")));
       object.setObjectType(myObjectTypeDAO.getOneById(resultSet.getInt("id_object_type")));
 
@@ -180,12 +178,12 @@ public class ObjectDAOImpl implements ObjectDAO {
    * @return the modified object
    */
   @Override
-  public ObjectDTO setStatusToAccepted(int id, Date acceptanceDate) {
+  public ObjectDTO setStatusToAccepted(int id, LocalDate acceptanceDate) {
     String request =
         "UPDATE pae.objects SET status = 'accepté', acceptance_date = ? WHERE id_object = ?;";
 
     try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
-      ps.setDate(1, acceptanceDate);
+      ps.setDate(1, java.sql.Date.valueOf(acceptanceDate));
       ps.setInt(2, id);
       ps.executeUpdate();
     } catch (SQLException se) {
@@ -225,40 +223,24 @@ public class ObjectDAOImpl implements ObjectDAO {
       ps.setBoolean(3, objectDTO.getisVisible());
       ps.setString(4, objectDTO.getState());
       ps.setDouble(5, objectDTO.getPrice());
-      ps.setDate(6, objectDTO.getWorkshopDate().equals("") ? null
-          : setStringDateToSQLDate(objectDTO.getWorkshopDate()));
-      ps.setDate(7, objectDTO.getDepositDate().equals("") ? null
-          : setStringDateToSQLDate(objectDTO.getDepositDate()));
-      ps.setDate(8, objectDTO.getOnSaleDate().equals("") ? null
-          : setStringDateToSQLDate(objectDTO.getOnSaleDate()));
-      ps.setDate(9, objectDTO.getSellingDate().equals("") ? null
-          : setStringDateToSQLDate(objectDTO.getSellingDate()));
-      ps.setDate(10, objectDTO.getWithdrawalDate().equals("") ? null
-          : setStringDateToSQLDate(objectDTO.getWithdrawalDate()));
+      ps.setDate(6, objectDTO.getWorkshopDate() == null ? null
+          : java.sql.Date.valueOf(objectDTO.getWorkshopDate()));
+      ps.setDate(7, objectDTO.getDepositDate() == null ? null
+          : java.sql.Date.valueOf(objectDTO.getDepositDate()));
+      ps.setDate(8, objectDTO.getOnSaleDate() == null ? null
+          : java.sql.Date.valueOf(objectDTO.getOnSaleDate()));
+      ps.setDate(9, objectDTO.getSellingDate() == null ? null
+          : java.sql.Date.valueOf(objectDTO.getSellingDate()));
+      ps.setDate(10, objectDTO.getWithdrawalDate() == null ? null
+          : java.sql.Date.valueOf(objectDTO.getWithdrawalDate()));
       ps.setInt(11, id);
       ps.executeUpdate();
     } catch (SQLException se) {
       se.printStackTrace();
       return null;
-    } catch (ParseException e) {
-      throw new RuntimeException(e);
     }
 
     return objectDTO;
-  }
-
-  /**
-   * Transform a string date into an sql date.
-   *
-   * @param date the date to set on sql date
-   * @return a sql date
-   * @throws ParseException if there is a parse error
-   */
-  Date setStringDateToSQLDate(String date) throws ParseException {
-    SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-    java.util.Date parsed = format.parse(date);
-    Date sqlDate = new Date(parsed.getTime());
-    return sqlDate;
   }
 
   /**
@@ -270,12 +252,12 @@ public class ObjectDAOImpl implements ObjectDAO {
    * @return the modified object
    */
   @Override
-  public ObjectDTO setStatusToRefused(int id, String reasonForRefusal, Date refusalDate) {
+  public ObjectDTO setStatusToRefused(int id, String reasonForRefusal, LocalDate refusalDate) {
     String request = "UPDATE pae.objects SET status = 'refusé', refusal_date = ?, "
         + "reason_for_refusal = ?, state = 'refusé' WHERE id_object = ?;";
 
     try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
-      ps.setDate(1, refusalDate);
+      ps.setDate(1, java.sql.Date.valueOf(refusalDate));
       ps.setString(2, reasonForRefusal);
       ps.setInt(3, id);
       ps.executeUpdate();

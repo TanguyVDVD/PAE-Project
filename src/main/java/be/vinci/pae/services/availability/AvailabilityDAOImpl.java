@@ -5,7 +5,7 @@ import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * AvailabilityDAO class that implements AvailabilityDAO interface Provide the different methods.
@@ -22,7 +22,7 @@ public class AvailabilityDAOImpl implements AvailabilityDAO {
    * @return the date corresponding to the id
    */
   @Override
-  public Date getOneById(int id) {
+  public LocalDate getOneById(int id) {
     String request = "SELECT date FROM pae.availability WHERE id_availability = ?;";
 
     try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
@@ -30,7 +30,7 @@ public class AvailabilityDAOImpl implements AvailabilityDAO {
 
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
-          return rs.getDate("date");
+          return rs.getDate("date").toLocalDate();
         }
       }
     } catch (SQLException se) {

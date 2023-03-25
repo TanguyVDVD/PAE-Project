@@ -1,7 +1,6 @@
 package be.vinci.pae.domain.object;
 
 import be.vinci.pae.domain.user.UserDTO;
-import java.sql.Date;
 import java.time.LocalDate;
 
 /**
@@ -16,19 +15,19 @@ public class ObjectImpl implements Object {
   private boolean isVisible;
   private double price;
   private String state;
-  private String offerDate;
-  private String acceptanceDate;
-  private String refusalDate;
-  private String workshopDate;
-  private String depositDate;
-  private String sellingDate;
-  private String withdrawalDate;
-  private String onSaleDate;
+  private LocalDate offerDate;
+  private LocalDate acceptanceDate;
+  private LocalDate refusalDate;
+  private LocalDate workshopDate;
+  private LocalDate depositDate;
+  private LocalDate sellingDate;
+  private LocalDate withdrawalDate;
+  private LocalDate onSaleDate;
   private String timeSlot;
   private String status;
   private String reasonForRefusal;
   private String phoneNumber;
-  private String receiptDate;
+  private LocalDate receiptDate;
   private UserDTO user;
   private String objectType;
 
@@ -158,7 +157,7 @@ public class ObjectImpl implements Object {
    * @return a String corresponding to the offer date of the object
    */
   @Override
-  public String getOfferDate() {
+  public LocalDate getOfferDate() {
     return offerDate;
   }
 
@@ -168,7 +167,7 @@ public class ObjectImpl implements Object {
    * @param offerDate the acceptance date of an object
    */
   @Override
-  public void setOfferDate(String offerDate) {
+  public void setOfferDate(LocalDate offerDate) {
     this.offerDate = offerDate;
   }
 
@@ -178,7 +177,7 @@ public class ObjectImpl implements Object {
    * @return a String corresponding to the acceptance date of the object
    */
   @Override
-  public String getAcceptanceDate() {
+  public LocalDate getAcceptanceDate() {
     return acceptanceDate;
   }
 
@@ -188,17 +187,17 @@ public class ObjectImpl implements Object {
    * @param acceptanceDate the acceptance date of an object
    */
   @Override
-  public void setAcceptanceDate(String acceptanceDate) {
+  public void setAcceptanceDate(LocalDate acceptanceDate) {
     this.acceptanceDate = acceptanceDate;
   }
 
   /**
    * Return the refusal date of an object.
    *
-   * @return a String corresponding to the refusal date of the object
+   * @return a LocalDate corresponding to the refusal date of the object
    */
   @Override
-  public String getRefusalDate() {
+  public LocalDate getRefusalDate() {
     return refusalDate;
   }
 
@@ -208,7 +207,7 @@ public class ObjectImpl implements Object {
    * @param refusalDate the refusal date of an object
    */
   @Override
-  public void setRefusalDate(String refusalDate) {
+  public void setRefusalDate(LocalDate refusalDate) {
     this.refusalDate = refusalDate;
   }
 
@@ -218,7 +217,7 @@ public class ObjectImpl implements Object {
    * @return a String corresponding to the workshop deposit date
    */
   @Override
-  public String getWorkshopDate() {
+  public LocalDate getWorkshopDate() {
     return workshopDate;
   }
 
@@ -228,7 +227,7 @@ public class ObjectImpl implements Object {
    * @param workshopDate the date to set
    */
   @Override
-  public void setWorkshopDate(String workshopDate) {
+  public void setWorkshopDate(LocalDate workshopDate) {
     this.workshopDate = workshopDate;
   }
 
@@ -238,7 +237,7 @@ public class ObjectImpl implements Object {
    * @return a String corresponding to the deposit date of the object
    */
   @Override
-  public String getDepositDate() {
+  public LocalDate getDepositDate() {
     return depositDate;
   }
 
@@ -248,7 +247,7 @@ public class ObjectImpl implements Object {
    * @param depositDate the deposit date of an object
    */
   @Override
-  public void setDepositDate(String depositDate) {
+  public void setDepositDate(LocalDate depositDate) {
     this.depositDate = depositDate;
   }
 
@@ -258,7 +257,7 @@ public class ObjectImpl implements Object {
    * @return a String corresponding to the selling date of an object
    */
   @Override
-  public String getSellingDate() {
+  public LocalDate getSellingDate() {
     return sellingDate;
   }
 
@@ -268,7 +267,7 @@ public class ObjectImpl implements Object {
    * @param sellingDate the selling date of an object
    */
   @Override
-  public void setSellingDate(String sellingDate) {
+  public void setSellingDate(LocalDate sellingDate) {
     this.sellingDate = sellingDate;
   }
 
@@ -278,7 +277,7 @@ public class ObjectImpl implements Object {
    * @return a String corresponding to the withdrawal date of an object
    */
   @Override
-  public String getWithdrawalDate() {
+  public LocalDate getWithdrawalDate() {
     return withdrawalDate;
   }
 
@@ -288,7 +287,7 @@ public class ObjectImpl implements Object {
    * @param withdrawalDate the withdrawal date of an object
    */
   @Override
-  public void setWithdrawalDate(String withdrawalDate) {
+  public void setWithdrawalDate(LocalDate withdrawalDate) {
     this.withdrawalDate = withdrawalDate;
   }
 
@@ -378,7 +377,7 @@ public class ObjectImpl implements Object {
    * @return a date corresponding to the receipt date of an object
    */
   @Override
-  public String getReceiptDate() {
+  public LocalDate getReceiptDate() {
     return receiptDate;
   }
 
@@ -388,7 +387,7 @@ public class ObjectImpl implements Object {
    * @param receiptDate the receipt date of an object
    */
   @Override
-  public void setReceiptDate(String receiptDate) {
+  public void setReceiptDate(LocalDate receiptDate) {
     this.receiptDate = receiptDate;
   }
 
@@ -434,23 +433,13 @@ public class ObjectImpl implements Object {
 
 
   @Override
-  public String getOnSaleDate() {
+  public LocalDate getOnSaleDate() {
     return onSaleDate;
   }
 
   @Override
-  public void setOnSaleDate(String date) {
+  public void setOnSaleDate(LocalDate date) {
     this.onSaleDate = date;
-  }
-
-  /**
-   * Give the current date.
-   *
-   * @return today's date (sql)
-   */
-  @Override
-  public Date getCurrentDate() {
-    return Date.valueOf(LocalDate.now());
   }
 
   /**
