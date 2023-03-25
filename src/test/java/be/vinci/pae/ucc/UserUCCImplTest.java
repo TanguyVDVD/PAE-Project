@@ -32,8 +32,6 @@ class UserUCCImplTest {
    */
   private static UserDAO userDAO;
 
-  private static DALServices myDalServices;
-
   /**
    * UserUCC to test.
    */
@@ -44,8 +42,10 @@ class UserUCCImplTest {
    */
   @BeforeAll
   static void setUp() {
+
     userDAO = Mockito.mock(UserDAOImpl.class);
-    myDalServices = Mockito.mock(DALServices.class);
+
+    DALServices myDalServices = Mockito.mock(DALServices.class);
 
     ServiceLocator locator = ServiceLocatorUtilities.bind(new AbstractBinder() {
       @Override
@@ -54,7 +54,6 @@ class UserUCCImplTest {
 
         bind(userDAO).to(UserDAO.class);
         bind(myDalServices).to(DALServices.class);
-
       }
     });
 
