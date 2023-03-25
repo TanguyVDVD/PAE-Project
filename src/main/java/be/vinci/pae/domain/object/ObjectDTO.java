@@ -1,11 +1,13 @@
 package be.vinci.pae.domain.object;
 
 import be.vinci.pae.domain.user.UserDTO;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * ObjectDTO interface. Representing a data transfer object (DTO) for a object in the domain The
  * interface only contains getter and setter.
  */
+@JsonDeserialize(as = ObjectImpl.class)
 public interface ObjectDTO {
 
   /**
@@ -273,6 +275,10 @@ public interface ObjectDTO {
    * @param objectType the type of the object
    */
   void setObjectType(String objectType);
+
+  String getOnSaleDate();
+
+  void setOnSaleDate(String date);
 
   /**
    * Return the date an object was dropped in the workshop.

@@ -23,6 +23,7 @@ public class ObjectImpl implements Object {
   private String depositDate;
   private String sellingDate;
   private String withdrawalDate;
+  private String onSaleDate;
   private String timeSlot;
   private String status;
   private String reasonForRefusal;
@@ -431,6 +432,16 @@ public class ObjectImpl implements Object {
     this.objectType = objectType;
   }
 
+
+  @Override
+  public String getOnSaleDate() {
+    return onSaleDate;
+  }
+
+  @Override
+  public void setOnSaleDate(String date) {
+    this.onSaleDate = date;
+  }
 
   /**
    * Give the current date.

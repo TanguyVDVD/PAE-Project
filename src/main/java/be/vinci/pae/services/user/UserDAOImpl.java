@@ -70,7 +70,7 @@ public class UserDAOImpl implements UserDAO {
       ps.setBoolean(6, userDTO.getPhoto());
 
       SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-      Date parsed = format.parse("20110210");
+      Date parsed = format.parse(userDTO.getRegisterDate());
       java.sql.Date sql = new java.sql.Date(parsed.getTime());
 
       ps.setDate(7, sql);

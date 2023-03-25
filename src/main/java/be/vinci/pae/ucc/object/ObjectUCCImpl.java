@@ -19,6 +19,7 @@ public class ObjectUCCImpl implements ObjectUCC {
   @Inject
   private DomainFactory myDomainFactory;
 
+
   /**
    * Returns a list of all objects.
    *
@@ -90,4 +91,50 @@ public class ObjectUCCImpl implements ObjectUCC {
     Date refusalDate = object.getCurrentDate();
     return myObjectDAO.setStatusToRefused(id, reasonForRefusal, refusalDate);
   }
+
+  /**
+   * Update the iformation and the state of an object.
+   *
+   * @param id        the id of the object
+   * @param objectDTO the object
+   * @param date      the date the state has been updated
+   * @return null if there is an error or the object updated
+   */
+  @Override
+  public ObjectDTO update(int id, ObjectDTO objectDTO, String date) {
+
+    ObjectDTO objectFromDB = myObjectDAO.getOneById(id);
+
+    if (!objectFromDB.getStatus().equals("accepté")) {
+      return null;
+    }
+
+    if (!objectDTO.getState().equals(objectFromDB.getState())) {
+      if (objectDTO.getState().equals("en atelier")) {
+        objectFromDB.setWorkshopDate(date);
+      }
+      if (objectDTO.getState().equals("en magasin")) {
+        objectFromDB.setDepositDate(date);
+      }
+      if (objectDTO.getState().equals("mis en vente")) {
+        objectFromDB.setOnSaleDate(date);
+      }
+      if (objectDTO.getState().equals("vendu")) {
+        objectFromDB.setSellingDate(date);
+      }
+      if (objectDTO.getState().equals("retiré")) {
+        objectFromDB.setWithdrawalDate(date);
+      }
+    }
+
+    objectFromDB.setObjectType(objectDTO.getObjectType());
+    objectFromDB.setDescription(objectDTO.getDescription());
+    objectFromDB.setPrice(objectDTO.getPrice());
+    objectFromDB.setState(objectDTO.getState());
+    objectFromDB.setIsVisible(objectDTO.getisVisible());
+
+    return myObjectDAO.updateObject(objectFromDB.getId(), objectFromDB);
+  }
+
+
 }
