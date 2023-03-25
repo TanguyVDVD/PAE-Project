@@ -8,7 +8,7 @@ const ObjectPage = (params) => {
 
   clearPage();
 
-  API.get(`object/${id}`)
+  API.get(`objects/${id}`)
   .then((object) => {
     renderObjectPage(object);
   })
