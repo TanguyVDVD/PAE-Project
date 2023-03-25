@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import be.vinci.pae.domain.user.User;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.user.UserImpl;
+import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.user.UserDAO;
 import be.vinci.pae.services.user.UserDAOImpl;
 import be.vinci.pae.ucc.user.UserUCC;
@@ -31,6 +32,8 @@ class UserUCCImplTest {
    */
   private static UserDAO userDAO;
 
+  private static DALServices myDalServices;
+
   /**
    * UserUCC to test.
    */
@@ -42,6 +45,7 @@ class UserUCCImplTest {
   @BeforeAll
   static void setUp() {
     userDAO = Mockito.mock(UserDAOImpl.class);
+    myDalServices = Mockito.mock(DALServices.class);
 
     ServiceLocator locator = ServiceLocatorUtilities.bind(new AbstractBinder() {
       @Override
@@ -49,6 +53,8 @@ class UserUCCImplTest {
         bind(UserUCCImpl.class).to(UserUCC.class).in(Singleton.class);
 
         bind(userDAO).to(UserDAO.class);
+        bind(myDalServices).to(DALServices.class);
+
       }
     });
 
@@ -58,6 +64,7 @@ class UserUCCImplTest {
   @DisplayName("Login with correct email and password")
   @Test
   void loginWithCorrectEmailAndPassword() {
+
     User user = Mockito.mock(UserImpl.class);
     Mockito.when(userDAO.getOneByEmail("test@example.com")).thenReturn(user);
     Mockito.when(user.isPasswordCorrect("password")).thenReturn(true);
@@ -67,6 +74,7 @@ class UserUCCImplTest {
         () -> assertNotNull(userDTO, "Login have not return a user"),
         () -> assertEquals(user, userDTO, "Login have not return the same user")
     );
+
   }
 
   @DisplayName("Login with incorrect email")
