@@ -8,7 +8,7 @@ import be.vinci.pae.services.object.ObjectDAO;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response.Status;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -107,14 +107,14 @@ public class ObjectUCCImpl implements ObjectUCC {
         return null;
       }
 
-      Date acceptanceDate = object.getCurrentDate();
-      return myObjectDAO.setStatusToAccepted(id, acceptanceDate);
+      return myObjectDAO.setStatusToAccepted(id, LocalDate.now());
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
     } finally {
       myDalServices.commitTransaction();
       throw new WebApplicationException("Error accepting object", Status.BAD_REQUEST);
     }
+
   }
 
   /**
@@ -138,14 +138,14 @@ public class ObjectUCCImpl implements ObjectUCC {
         return null;
       }
 
-      Date refusalDate = object.getCurrentDate();
-      return myObjectDAO.setStatusToRefused(id, reasonForRefusal, refusalDate);
+      return myObjectDAO.setStatusToRefused(id, reasonForRefusal, LocalDate.now());
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
     } finally {
       myDalServices.commitTransaction();
       throw new WebApplicationException("Error refusing an object", Status.BAD_REQUEST);
     }
+
   }
 
   /**
@@ -157,7 +157,8 @@ public class ObjectUCCImpl implements ObjectUCC {
    * @return null if there is an error or the object updated
    */
   @Override
-  public ObjectDTO update(int id, ObjectDTO objectDTO, String date) {
+
+  public ObjectDTO update(int id, ObjectDTO objectDTO, LocalDate date) {
 
     myDalServices.startTransaction();
 

@@ -6,6 +6,7 @@ import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.ucc.user.UserUCC;
 import be.vinci.pae.utils.Config;
+import be.vinci.pae.utils.MyObjectMapper;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -29,6 +30,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import java.io.File;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.util.Date;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -42,7 +44,7 @@ import org.glassfish.jersey.server.ContainerRequest;
 public class UserResource {
 
   private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
-  private final ObjectMapper jsonMapper = new ObjectMapper();
+  private final ObjectMapper jsonMapper = MyObjectMapper.getJsonMapper();
   @Inject
   private UserUCC userUCC;
 
@@ -129,7 +131,8 @@ public class UserResource {
     userRegister.setPhoneNumber(phone);
     userRegister.setPassword(password);
     userRegister.setPhoto(photoDetail != null && photoDetail.getFileName() != null);
-    userRegister.setRegisterDate(new java.sql.Date(System.currentTimeMillis()).toString());
+    userRegister.setRegisterDate(LocalDate.now());
+    userRegister.setIsHelper(false);
 
     UserDTO userAfterRegister = userUCC.register(userRegister);
 
@@ -156,6 +159,7 @@ public class UserResource {
       return jsonMapper.convertValue(userDTO, ObjectNode.class).put("token", token);
 
     } catch (Exception e) {
+      System.out.println(e.getMessage());
       System.out.println("Unable to create token");
       return null;
     }

@@ -1,6 +1,6 @@
 package be.vinci.pae.domain.availability;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * AvailabilityImpl class that implements the AvailabilityDTO interface Contains all the attribute
@@ -9,7 +9,7 @@ import java.util.Date;
 public class AvailabilityImpl implements Availability {
 
   private int id;
-  private Date date;
+  private LocalDate date;
 
   /**
    * Return the id of an availability.
@@ -37,7 +37,7 @@ public class AvailabilityImpl implements Availability {
    * @return a Date corresponding to the date of an availability
    */
   @Override
-  public Date getDate() {
+  public LocalDate getDate() {
     return date;
   }
 
@@ -47,7 +47,7 @@ public class AvailabilityImpl implements Availability {
    * @param date the description of an availability
    */
   @Override
-  public void setDate(Date date) {
+  public void setDate(LocalDate date) {
     this.date = date;
   }
 }
