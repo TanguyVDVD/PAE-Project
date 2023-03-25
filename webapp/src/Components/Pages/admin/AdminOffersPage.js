@@ -67,7 +67,7 @@ async function fetchOffers(query = '') {
                                 </div>
                                 
                                 <p>
-                                    À récupérer le ${dateStringtoGoodFormat(offer.pickupDate)} ${offer.timeSlot === "matin" ?
+                                    À récupérer le ${dateStringtoGoodFormat(offer.receiptDate)} ${offer.timeSlot === "matin" ?
                                     " au ".concat(offer.timeSlot) : " l'".concat(offer.timeSlot)}
                                 </p>
                                 
@@ -138,10 +138,10 @@ function setRemainingTime(className, offers){
     const offer = offers[i];
     const element = elements.item(i);
 
-    const pickupDate = new Date(offer.pickupDate);
+    const receiptDate = new Date(offer.receiptDate);
     const todaySDate = new Date();
 
-    const timeRemaining = subtractDates(pickupDate, todaySDate);
+    const timeRemaining = subtractDates(receiptDate, todaySDate);
 
     if (timeRemaining <= 3){
       element.innerHTML = `
