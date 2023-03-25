@@ -233,18 +233,18 @@ public interface ObjectDTO {
   void setPhoneNumber(String phoneNumber);
 
   /**
-   * Return the pickup date of an object.
+   * Return the receipt date of an object.
    *
-   * @return a String corresponding to the pickup date of an object
+   * @return a String corresponding to the receipt date of an object
    */
-  String getPickupDate();
+  String getReceiptDate();
 
   /**
-   * set the pickup date of an object.
+   * set the receipt date of an object.
    *
-   * @param pickupDate the pickup date of an object
+   * @param receiptDate the receipt date of an object
    */
-  void setPickupDate(String pickupDate);
+  void setReceiptDate(String receiptDate);
 
   /**
    * Return the user of an object.
