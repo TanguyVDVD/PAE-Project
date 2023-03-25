@@ -27,7 +27,7 @@ public class ObjectImpl implements Object {
   private String status;
   private String reasonForRefusal;
   private String phoneNumber;
-  private String pickupDate;
+  private String receiptDate;
   private UserDTO user;
   private String objectType;
 
@@ -372,23 +372,23 @@ public class ObjectImpl implements Object {
   }
 
   /**
-   * Return the pickup date of an object.
+   * Return the receipt date of an object.
    *
-   * @return a date corresponding to the pickup date of an object
+   * @return a date corresponding to the receipt date of an object
    */
   @Override
-  public String getPickupDate() {
-    return pickupDate;
+  public String getReceiptDate() {
+    return receiptDate;
   }
 
   /**
-   * set the pickup date of an object.
+   * set the receipt date of an object.
    *
-   * @param pickupDate the pickup date of an object
+   * @param receiptDate the receipt date of an object
    */
   @Override
-  public void setPickupDate(String pickupDate) {
-    this.pickupDate = pickupDate;
+  public void setReceiptDate(String receiptDate) {
+    this.receiptDate = receiptDate;
   }
 
   /**
