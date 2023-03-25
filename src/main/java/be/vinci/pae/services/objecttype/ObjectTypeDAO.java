@@ -6,6 +6,13 @@ package be.vinci.pae.services.objecttype;
 public interface ObjectTypeDAO {
 
   /**
+   * Get all object types.
+   *
+   * @return the list of object types
+   */
+  Object getAll();
+
+  /**
    * Get the object type by the id.
    *
    * @param id of the object type
@@ -13,5 +20,11 @@ public interface ObjectTypeDAO {
    */
   String getOneById(int id);
 
-  int getIdByString(String state);
+  /**
+   * Get the object type id by the label.
+   *
+   * @param label the label of the object type
+   * @return the id corresponding to the label
+   */
+  int getIdByLabel(String label);
 }

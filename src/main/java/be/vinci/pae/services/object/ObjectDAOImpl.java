@@ -221,7 +221,7 @@ public class ObjectDAOImpl implements ObjectDAO {
 
     try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
       ps.setString(1, objectDTO.getDescription());
-      ps.setInt(2, myObjectTypeDAO.getIdByString(objectDTO.getObjectType()));
+      ps.setInt(2, myObjectTypeDAO.getIdByLabel(objectDTO.getObjectType()));
       ps.setBoolean(3, objectDTO.getisVisible());
       ps.setString(4, objectDTO.getState());
       ps.setDouble(5, objectDTO.getPrice());
