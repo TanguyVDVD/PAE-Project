@@ -4,7 +4,7 @@ import LoginPage from '../Pages/LoginPage';
 import RegisterPage from '../Pages/RegisterPage';
 import LogoutPage from '../Pages/LogoutPage';
 import AdminUsersPage from '../Pages/admin/AdminUsersPage';
-import PropositionPage from '../Pages/PropositionPage';
+import OfferPage from '../Pages/OfferPage';
 import AdminObjectsPage from "../Pages/admin/AdminObjectsPage";
 import AdminOffersPage from "../Pages/admin/AdminOffersPage";
 
@@ -17,7 +17,7 @@ const routes = {
   '/admin/offers': AdminOffersPage,
   '/admin/objects': AdminObjectsPage,
   '/admin/users': AdminUsersPage,
-  '/propose': PropositionPage
+  '/propose': OfferPage
 };
 
 export default routes;

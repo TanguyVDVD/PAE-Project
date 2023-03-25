@@ -1,12 +1,12 @@
 
 import { clearPage } from '../../utils/render';
 
-const PropositionPage = () => {
+const OfferPage = () => {
     clearPage();
-    renderPropositionPage();
+    renderOfferPage();
   };
 
-function renderPropositionPage() {
+function renderOfferPage() {
     const main = document.querySelector('main');
     const form = document.createElement('div');
 
@@ -115,4 +115,4 @@ function renderPropositionPage() {
 
 }
 
-export default PropositionPage;
+export default OfferPage;

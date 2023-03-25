@@ -66,7 +66,7 @@ async function fetchObjects(query = '') {
                                     <span>${object.description}</span>
                                 </div>
                                 
-                                <div class="div-pickup-date">
+                                <div class="div-receipt-date">
                                 </div>
                                 
                                 <div class="div-user">
@@ -90,7 +90,7 @@ async function fetchObjects(query = '') {
         </div>
       `;
 
-    setPickupDate("div-pickup-date", objects);
+    setReceiptDate("div-receipt-date", objects);
     setUserOrPhoneNumber("div-user", objects);
     setPriceOrTimeRemaining("div-price-time-remaining", objects)
     setStateColor("div-state", objects);
@@ -117,7 +117,7 @@ async function fetchObjects(query = '') {
   });
 }
 
-function setPickupDate(className, objects){
+function setReceiptDate(className, objects){
   const elements = document.getElementsByClassName(className);
   for (let i = 0; i < elements.length; i += 1) {
     const object = objects[i];
@@ -125,7 +125,7 @@ function setPickupDate(className, objects){
     if (object.state === "proposé" || object.state === "accepté" || object.state === "refusé"){
       element.innerHTML = `
           <p>
-              À récupérer le ${dateStringtoGoodFormat(object.pickupDate)} ${object.timeSlot === "matin" ? 
+              À récupérer le ${dateStringtoGoodFormat(object.receiptDate)} ${object.timeSlot === "matin" ? 
               " au ".concat(object.timeSlot) : " l'".concat(object.timeSlot)}
           </p>
 
@@ -134,7 +134,7 @@ function setPickupDate(className, objects){
     else {
       element.innerHTML = `
           <p>
-              Récupéré le ${dateStringtoGoodFormat(object.pickupDate)} ${object.timeSlot === "matin" ?
+              Récupéré le ${dateStringtoGoodFormat(object.receiptDate)} ${object.timeSlot === "matin" ?
           " au ".concat(object.timeSlot) : " l'".concat(object.timeSlot)}
           </p>
       `
@@ -172,10 +172,10 @@ function setPriceOrTimeRemaining(className, objects){
     const element = elements.item(i);
 
     if (object.state === "proposé"){
-      const pickupDate = new Date(object.pickupDate);
+      const receiptDate = new Date(object.receiptDate);
       const todaySDate = new Date();
 
-      const timeRemaining = subtractDates(pickupDate, todaySDate);
+      const timeRemaining = subtractDates(receiptDate, todaySDate);
 
       if (timeRemaining <= 3){
         element.innerHTML = `

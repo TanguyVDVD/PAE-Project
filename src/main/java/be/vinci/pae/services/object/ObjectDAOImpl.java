@@ -75,7 +75,7 @@ public class ObjectDAOImpl implements ObjectDAO {
       object.setStatus(resultSet.getString("status"));
       object.setReasonForRefusal(resultSet.getString("reason_for_refusal"));
       object.setPhoneNumber(resultSet.getString("phone_number"));
-      object.setPickupDate(
+      object.setReceiptDate(
           myAvailabilityDao.getOneById(resultSet.getInt("receipt_date")) == null ? ""
               : myAvailabilityDao.getOneById(resultSet.getInt("receipt_date")).toString());
       object.setUser(myUserDao.getOneById(resultSet.getInt("id_user")));
