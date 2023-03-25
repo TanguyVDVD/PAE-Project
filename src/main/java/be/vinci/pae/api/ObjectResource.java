@@ -129,6 +129,11 @@ public class ObjectResource {
 
     int priceObject = json.get("price").asInt();
 
+    if (priceObject > 10 || priceObject <= 0) {
+      throw new WebApplicationException("Le prix doit être compris entre 1 et 10€",
+          Status.NOT_FOUND);
+    }
+
     ObjectDTO objectUpdated = myDomainFactory.getObject();
 
     objectUpdated.setObjectType(typeObject);

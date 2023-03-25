@@ -92,11 +92,22 @@ public class ObjectUCCImpl implements ObjectUCC {
     return myObjectDAO.setStatusToRefused(id, reasonForRefusal, refusalDate);
   }
 
+  /**
+   * Update the iformation and the state of an object.
+   *
+   * @param id        the id of the object
+   * @param objectDTO the object
+   * @param date      the date the state has been updated
+   * @return null if there is an error or the object updated
+   */
   @Override
   public ObjectDTO update(int id, ObjectDTO objectDTO, String date) {
 
     ObjectDTO objectFromDB = myObjectDAO.getOneById(id);
-    System.out.println(objectFromDB.getDescription());
+
+    if (!objectFromDB.getStatus().equals("accepté")) {
+      return null;
+    }
 
     if (!objectDTO.getState().equals(objectFromDB.getState())) {
       if (objectDTO.getState().equals("en atelier")) {

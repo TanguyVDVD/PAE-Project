@@ -45,8 +45,21 @@ Authorization: {{adminToken}}
   "state": "en atelier",
   "date": null,
   "is_visible": true
+}
 
-  "status": "refusé"
+### Set a object on sale with a price
+PUT {{baseUrl}}/objects/update_object/1
+Content-Type: application/json
+Authorization: {{adminToken}}
+
+{
+
+  "description": "Garde Robe",
+  "type": "Meuble",
+  "price": 9,
+  "state": "mis en vente",
+  "date": null,
+  "is_visible": true
 }
 
 ### Refuse a offer without reason for refusal

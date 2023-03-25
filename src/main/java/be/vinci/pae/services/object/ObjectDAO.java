@@ -53,5 +53,12 @@ public interface ObjectDAO {
    */
   ObjectDTO setStatusToRefused(int id, String reasonForRefusal, Date refusalDate);
 
+  /**
+   * Update the object in the db.
+   *
+   * @param id        the id of the object
+   * @param objectDTO the object to update
+   * @return null if there is an error then the object
+   */
   ObjectDTO updateObject(int id, ObjectDTO objectDTO);
 }

@@ -49,6 +49,14 @@ public interface ObjectUCC {
    */
   ObjectDTO refuse(int id, String reasonForRefusal);
 
+  /**
+   * Update the iformation and the state of an object.
+   *
+   * @param id        the id of the object
+   * @param objectDTO the object
+   * @param date      the date the state has been updated
+   * @return null if there is an error or the object updated
+   */
   ObjectDTO update(int id, ObjectDTO objectDTO, String date);
 
 }
