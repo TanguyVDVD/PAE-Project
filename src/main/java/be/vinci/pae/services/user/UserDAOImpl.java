@@ -195,7 +195,6 @@ public class UserDAOImpl implements UserDAO {
    */
   @Override
   public boolean update(UserDTO userDTO) {
-    
     // Only update the fields that are not null
     Map<String, Object> fields = new HashMap<>();
     if (userDTO.getLastName() != null) {

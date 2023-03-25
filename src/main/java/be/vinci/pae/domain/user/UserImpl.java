@@ -209,16 +209,4 @@ public class UserImpl implements User {
   public boolean isPasswordCorrect(String password) {
     return BCrypt.checkpw(password, this.password);
   }
-
-  /**
-   * Method that hash a password.
-   *
-   * @param password the password to hash
-   * @return the password when it's hash
-   */
-  @Override
-  public String hashPassword(String password) {
-    return BCrypt.hashpw(password, BCrypt.gensalt());
-  }
-
 }

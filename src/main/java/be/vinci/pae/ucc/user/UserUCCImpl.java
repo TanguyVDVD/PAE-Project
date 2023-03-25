@@ -48,6 +48,20 @@ public class UserUCCImpl implements UserUCC {
 
   @Override
   public UserDTO register(UserDTO userDTO) {
+    // Check email format
+    if (!User.emailIsValid(userDTO.getEmail())) {
+      throw new WebApplicationException("Adresse mail invalide", Response.Status.BAD_REQUEST);
+    }
+
+    // Check phone number format
+    String phone = User.formatPhoneNumber(userDTO.getPhoneNumber());
+    if (phone == null) {
+      throw new WebApplicationException("Numéro de téléphone invalide",
+          Response.Status.BAD_REQUEST);
+    }
+    userDTO.setPhoneNumber(phone);
+
+    // Check if email or phone number already exists
     if (myUserDAO.getOneByEmail(userDTO.getEmail()) != null) {
       throw new WebApplicationException("Adresse mail déja utilisé", Response.Status.BAD_REQUEST);
     }
@@ -57,7 +71,7 @@ public class UserUCCImpl implements UserUCC {
     }
 
     User userTemp = (User) userDTO;
-    userTemp.setPassword(userTemp.hashPassword(userTemp.getPassword()));
+    userTemp.setPassword(User.hashPassword(userTemp.getPassword()));
 
     int id = myUserDAO.insert(userTemp);
 
@@ -83,30 +97,53 @@ public class UserUCCImpl implements UserUCC {
   public UserDTO updateUser(UserDTO userDTO) {
     User userDB = (User) myUserDAO.getOneById(userDTO.getId());
 
+    // Check if user exists
     if (userDB == null) {
       return null;
     }
 
+    // Check if email is valid and not already used
     String email = userDTO.getEmail();
-    if (email != null && !email.equals(userDB.getEmail())
-        && myUserDAO.getOneByEmail(email) != null) {
-      throw new WebApplicationException("Adresse mail déja utilisé", Response.Status.BAD_REQUEST);
+    if (email != null && !email.equals(userDB.getEmail())) {
+      if (!User.emailIsValid(email)) {
+        throw new WebApplicationException("Adresse mail invalide", Response.Status.BAD_REQUEST);
+      }
+
+      if (myUserDAO.getOneByEmail(email) != null) {
+        throw new WebApplicationException("Adresse mail déja utilisé", Response.Status.BAD_REQUEST);
+      }
     }
 
+    // Check if phone number is valid and not already used
     String phoneNumber = userDTO.getPhoneNumber();
-    if (phoneNumber != null && !phoneNumber.equals(userDB.getPhoneNumber())
-        && myUserDAO.getOneByPhoneNumber(phoneNumber) != null) {
-      throw new WebApplicationException("Numéro de GSM déjà utilisé", Response.Status.BAD_REQUEST);
+    if (phoneNumber != null) {
+      String formattedPhoneNumber = User.formatPhoneNumber(phoneNumber);
+
+      if (formattedPhoneNumber == null) {
+        throw new WebApplicationException("Numéro de GSM invalide", Response.Status.BAD_REQUEST);
+      }
+
+      if (!formattedPhoneNumber.equals(userDB.getPhoneNumber())) {
+        if (myUserDAO.getOneByPhoneNumber(formattedPhoneNumber) != null) {
+          throw new WebApplicationException("Numéro de GSM déjà utilisé",
+              Response.Status.BAD_REQUEST);
+        }
+
+        userDTO.setPhoneNumber(formattedPhoneNumber);
+      }
     }
 
+    // Hash password if it has been changed
     if (userDTO.getPassword() != null) {
-      userDTO.setPassword(userDB.hashPassword(userDTO.getPassword()));
+      userDTO.setPassword(User.hashPassword(userDTO.getPassword()));
     }
 
+    // Update the user
     if (!myUserDAO.update(userDTO)) {
       return null;
     }
 
+    // Return the updated user
     return myUserDAO.getOneById(userDTO.getId());
   }
 

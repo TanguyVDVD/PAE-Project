@@ -30,7 +30,6 @@ import jakarta.ws.rs.core.Response.Status;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Date;
-import org.apache.commons.validator.routines.EmailValidator;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.server.ContainerRequest;
@@ -120,23 +119,6 @@ public class UserResource {
       if (input == null || input.isBlank()) {
         throw new WebApplicationException("Paramètres manquants", Response.Status.BAD_REQUEST);
       }
-    }
-
-    // Check email format
-    EmailValidator emailValidator = EmailValidator.getInstance();
-    if (!emailValidator.isValid(email)) {
-      throw new WebApplicationException("Adresse mail invalide", Response.Status.BAD_REQUEST);
-    }
-
-    // Check phone number format
-    phone = phone.replaceAll("[^0-9]", "");
-    if (!phone.startsWith("0")) {
-      phone = "0" + phone;
-    }
-
-    if (!phone.matches("^0[0-9]{7,9}$")) {
-      throw new WebApplicationException("Numéro de téléphone invalide",
-          Response.Status.BAD_REQUEST);
     }
 
     UserDTO userRegister = myDomainFactory.getUser();
