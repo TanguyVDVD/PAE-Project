@@ -71,7 +71,7 @@ async function fetchUsers(query = '') {
                     <th scope="row">${user.id}</th>
                     <td>${user.lastName}</td>
                     <td>${user.firstName}</td>
-                    <td>${user.helper ? 'Aideur' : 'Utilisateur'}</td>
+                    <td>${user.helper ? 'Aidant' : 'Utilisateur'}</td>
                     <td>
                       <a href="#" class="btn btn-link" role="button" data-id="${user.id}">
                         Voir plus
@@ -88,7 +88,7 @@ async function fetchUsers(query = '') {
     table.querySelectorAll('a[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
-        Navigate(`/profile/${e.target.dataset.id}`);
+        Navigate(`/user/${e.target.dataset.id}`);
       });
     });
   });

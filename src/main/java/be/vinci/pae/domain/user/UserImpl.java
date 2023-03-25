@@ -16,9 +16,9 @@ public class UserImpl implements User {
   private String email;
   @JsonIgnore
   private String password;
-  private boolean photo;
+  private Boolean photo;
   private String registerDate;
-  private boolean isHelper;
+  private Boolean isHelper;
 
   /**
    * Return the id of a user.
@@ -146,7 +146,7 @@ public class UserImpl implements User {
    * @return a boolean corresponding to the state of the photo
    */
   @Override
-  public boolean getPhoto() {
+  public Boolean getPhoto() {
     return photo;
   }
 
@@ -156,7 +156,7 @@ public class UserImpl implements User {
    * @param hasPhoto the state of the photo
    */
   @Override
-  public void setPhoto(boolean hasPhoto) {
+  public void setPhoto(Boolean hasPhoto) {
     this.photo = hasPhoto;
   }
 
@@ -186,7 +186,7 @@ public class UserImpl implements User {
    * @return true if the user is a helper false if he is not
    */
   @Override
-  public boolean isHelper() {
+  public Boolean isHelper() {
     return isHelper;
   }
 
@@ -196,7 +196,7 @@ public class UserImpl implements User {
    * @param isHelper the value
    */
   @Override
-  public void setIsHelper(boolean isHelper) {
+  public void setIsHelper(Boolean isHelper) {
     this.isHelper = isHelper;
   }
 
@@ -209,16 +209,4 @@ public class UserImpl implements User {
   public boolean isPasswordCorrect(String password) {
     return BCrypt.checkpw(password, this.password);
   }
-
-  /**
-   * Method that hash a password.
-   *
-   * @param password the password to hash
-   * @return the password when it's hash
-   */
-  @Override
-  public String hashPassword(String password) {
-    return BCrypt.hashpw(password, BCrypt.gensalt());
-  }
-
 }

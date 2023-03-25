@@ -11,7 +11,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 /**
@@ -182,6 +185,65 @@ public class UserDAOImpl implements UserDAO {
     }
 
     return users;
+  }
+
+  /**
+   * Update a user.
+   *
+   * @param userDTO the user to update
+   * @return true if succeeded, false if not
+   */
+  @Override
+  public boolean update(UserDTO userDTO) {
+    // Only update the fields that are not null
+    Map<String, Object> fields = new HashMap<>();
+    if (userDTO.getLastName() != null) {
+      fields.put("last_name", userDTO.getLastName());
+    }
+    if (userDTO.getFirstName() != null) {
+      fields.put("first_name", userDTO.getFirstName());
+    }
+    if (userDTO.getPhoneNumber() != null) {
+      fields.put("phone_number", userDTO.getPhoneNumber());
+    }
+    if (userDTO.getEmail() != null) {
+      fields.put("email", userDTO.getEmail());
+    }
+    if (userDTO.getPassword() != null) {
+      fields.put("password", userDTO.getPassword());
+    }
+    if (userDTO.getPhoto() != null) {
+      fields.put("photo", userDTO.getPhoto());
+    }
+    if (userDTO.getRegisterDate() != null) {
+      fields.put("register_date", userDTO.getRegisterDate());
+    }
+    if (userDTO.isHelper() != null) {
+      fields.put("is_helper", userDTO.isHelper());
+    }
+
+    if (fields.isEmpty()) {
+      return false;
+    }
+
+    String request = "UPDATE pae.users SET " + fields.keySet().stream()
+        .map(key -> key + " = ?").collect(Collectors.joining(", ")) + " WHERE id_user = ?";
+
+    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+      int i = 1;
+      for (Object value : fields.values()) {
+        ps.setObject(i++, value);
+      }
+      ps.setInt(i, userDTO.getId());
+
+      ps.executeUpdate();
+
+      return true;
+    } catch (SQLException se) {
+      se.printStackTrace();
+    }
+
+    return false;
   }
 }
 

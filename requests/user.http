@@ -120,3 +120,21 @@ Authorization: {{adminToken}}
 ### Get a list of all users with query
 GET {{baseUrl}}/users?query=riez
 Authorization: {{adminToken}}
+
+### Update a user's own info as the user
+PATCH {{baseUrl}}/users/4
+Authorization: {{nonAdminToken}}
+Content-Type: application/json
+
+{
+  "firstName": "Bart"
+}
+
+### Update a user's helper status as an admin
+PATCH {{baseUrl}}/users/4
+Authorization: {{adminToken}}
+Content-Type: application/json
+
+{
+  "helper": true
+}
