@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import be.vinci.pae.domain.user.User;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.user.UserImpl;
+import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.user.UserDAO;
 import be.vinci.pae.services.user.UserDAOImpl;
 import be.vinci.pae.ucc.user.UserUCC;
@@ -42,13 +43,15 @@ class UserUCCImplTest {
   @BeforeAll
   static void setUp() {
     userDAO = Mockito.mock(UserDAOImpl.class);
+    DALServices myDalServices = Mockito.mock(DALServices.class);
 
     ServiceLocator locator = ServiceLocatorUtilities.bind(new AbstractBinder() {
       @Override
       protected void configure() {
         bind(UserUCCImpl.class).to(UserUCC.class).in(Singleton.class);
-
+        
         bind(userDAO).to(UserDAO.class);
+        bind(myDalServices).to(DALServices.class);
       }
     });
 
