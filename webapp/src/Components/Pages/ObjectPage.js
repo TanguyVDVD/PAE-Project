@@ -1,4 +1,4 @@
-import {clearPage, renderError} from '../../utils/render';
+import {clearPage} from '../../utils/render';
 import { getAuthenticatedUser } from '../../utils/auths';
 import API from "../../utils/api";
 
@@ -12,9 +12,6 @@ const ObjectPage = (params) => {
   .then((object) => {
     renderObjectPage(object);
   })
-  .catch((error) => {
-    renderError(error.message);
-  });
 
   renderObjectPage(object);
 };
@@ -48,7 +45,7 @@ function renderObjectPage(object) {
                     : ''
               }
 
-                    <h1 class="display-12 fw-bolder">Type de l'object 
+                    <h1 class="display-12 fw-bolder">${object.objectType}
 
                   ${
                       authenticatedUser && authenticatedUser.helper
