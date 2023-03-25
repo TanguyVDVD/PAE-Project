@@ -7,6 +7,8 @@ import AdminUsersPage from '../Pages/admin/AdminUsersPage';
 import OfferPage from '../Pages/OfferPage';
 import AdminObjectsPage from "../Pages/admin/AdminObjectsPage";
 import AdminOffersPage from "../Pages/admin/AdminOffersPage";
+import ObjectPage from "../Pages/ObjectPage";
+import UserPage from "../Pages/UserPage";
 
 const routes = {
   '/404': PageNotFoundPage,
