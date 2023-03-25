@@ -12,8 +12,6 @@ const ObjectPage = (params) => {
   .then((object) => {
     renderObjectPage(object);
   })
-
-  renderObjectPage(object);
 };
 
 function renderObjectPage(object) {
@@ -144,9 +142,6 @@ function renderObjectPage(object) {
         </div>
     </section>
     `
-
-  
-
 
     main.appendChild(div);
 
