@@ -2,7 +2,8 @@ import { clearPage } from '../../utils/render';
 import { getAuthenticatedUser } from '../../utils/auths';
 
 
-const ObjectPage = () => {
+const ObjectPage = (params) => {
+  const id = parseInt(params.id, 10);
     clearPage();
     renderObjectPage();
   };
