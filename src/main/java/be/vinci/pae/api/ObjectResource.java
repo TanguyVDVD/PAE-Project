@@ -22,6 +22,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.time.LocalDate;
 
 
 /**
@@ -89,17 +90,60 @@ public class ObjectResource {
   /**
    * Method that update the state of an object.
    *
-   * @param objectUCCToUpdate the object to update
-   * @param id                the id of the object
+   * @param json the json
+   * @param id   the id of the object
    * @return the object that was just updated
    */
   @PUT
-  @Path("/{id}")
+  @Path("/update_object/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public ObjectUCC updateObjectState(ObjectUCC objectUCCToUpdate, @PathParam("id") int id) {
-    return null;
+  public ObjectNode updateObject(JsonNode json, @PathParam("id") int id) {
+
+    if (!json.hasNonNull("type") || !json.hasNonNull("description") || !json.hasNonNull(
+        "state") || !json.hasNonNull("is_visible")) {
+      throw new WebApplicationException("Tout les champs ne sont pas rempli",
+          Status.NOT_FOUND);
+    }
+
+    String changeDate;
+
+    if (!json.hasNonNull("date")) {
+      changeDate = LocalDate.now().toString();
+    } else {
+      changeDate = json.get("date").asText();
+    }
+
+    String stateObject = json.get("state").asText();
+
+    if (stateObject.equals("mis en vente") && !json.hasNonNull("price")) {
+      throw new WebApplicationException("Un prix doit être entré",
+          Status.NOT_FOUND);
+    }
+
+    int priceObject = json.get("price").asInt();
+
+    if (priceObject > 10 || priceObject <= 0) {
+      throw new WebApplicationException("Le prix doit être compris entre 1 et 10€",
+          Status.NOT_FOUND);
+    }
+
+    String typeObject = json.get("type").asText();
+    String descriptionObject = json.get("description").asText();
+    boolean isVisibleObject = json.get("is_visible").asBoolean();
+
+    ObjectDTO objectUpdated = myDomainFactory.getObject();
+
+    objectUpdated.setObjectType(typeObject);
+    objectUpdated.setDescription(descriptionObject);
+    objectUpdated.setState(stateObject);
+    objectUpdated.setIsVisible(isVisibleObject);
+    objectUpdated.setPrice(priceObject);
+
+    ObjectDTO objectDTOAfterUpdate = objectUCC.update(id, objectUpdated, changeDate);
+
+    return jsonMapper.convertValue(objectDTOAfterUpdate, ObjectNode.class);
   }
 
   /**

@@ -16,6 +16,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -29,7 +30,6 @@ import jakarta.ws.rs.core.Response.Status;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Date;
-import org.apache.commons.validator.routines.EmailValidator;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.server.ContainerRequest;
@@ -121,23 +121,6 @@ public class UserResource {
       }
     }
 
-    // Check email format
-    EmailValidator emailValidator = EmailValidator.getInstance();
-    if (!emailValidator.isValid(email)) {
-      throw new WebApplicationException("Adresse mail invalide", Response.Status.BAD_REQUEST);
-    }
-
-    // Check phone number format
-    phone = phone.replaceAll("[^0-9]", "");
-    if (!phone.startsWith("0")) {
-      phone = "0" + phone;
-    }
-
-    if (!phone.matches("^0[0-9]{7,9}$")) {
-      throw new WebApplicationException("Numéro de téléphone invalide",
-          Response.Status.BAD_REQUEST);
-    }
-
     UserDTO userRegister = myDomainFactory.getUser();
 
     userRegister.setLastName(lastName);
@@ -179,6 +162,82 @@ public class UserResource {
   }
 
   /**
+   * Retrieve a user's information.
+   *
+   * @param id the user's id
+   * @return the user's information
+   */
+  @GET
+  @Path("/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public UserDTO getUserInfo(@PathParam("id") int id) {
+    return userUCC.getUserById(id);
+  }
+
+  /**
+   * Update a user's information.
+   *
+   * @param request the request
+   * @param id      the user's id
+   * @param data    information to update
+   * @return the user's information
+   */
+  @PATCH
+  @Path("/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Authorize
+  public UserDTO updateUserInfo(@Context ContainerRequest request, @PathParam("id") int id,
+      JsonNode data) {
+    UserDTO authorizedUser = (UserDTO) request.getProperty("user");
+
+    // Create a new DTO to only keep changes
+    UserDTO userDTO = myDomainFactory.getUser();
+
+    userDTO.setId(id);
+
+    if (authorizedUser.getId() == id) {
+      // Only the user themselves can change their own information
+      if (data.hasNonNull("firstName")) {
+        userDTO.setFirstName(data.get("firstName").asText());
+      }
+
+      if (data.hasNonNull("lastName")) {
+        userDTO.setLastName(data.get("lastName").asText());
+      }
+
+      if (data.hasNonNull("email")) {
+        userDTO.setEmail(data.get("email").asText());
+      }
+
+      if (data.hasNonNull("phoneNumber")) {
+        userDTO.setPhoneNumber(data.get("phoneNumber").asText());
+      }
+
+      if (data.hasNonNull("password")) {
+        userDTO.setPassword(data.get("password").asText());
+      }
+    } else if (authorizedUser.getId() == 1) {
+      // Only the admin can change the helper status
+      if (data.hasNonNull("helper")) {
+        userDTO.setIsHelper(data.get("helper").asBoolean());
+      }
+    } else {
+      // The user is not the admin and is not the user themselves
+      throw new WebApplicationException("Vous n'avez pas les droits pour modifier cet utilisateur",
+          Status.UNAUTHORIZED);
+    }
+
+    UserDTO userAfterUpdate = userUCC.updateUser(userDTO);
+
+    if (userAfterUpdate == null) {
+      throw new WebApplicationException("Utilisateur non trouvé", Status.NOT_FOUND);
+    }
+
+    return userAfterUpdate;
+  }
+
+  /**
    * Retrieve the logged-in user's information.
    *
    * @param request the request
@@ -188,7 +247,7 @@ public class UserResource {
   @Path("/my")
   @Produces(MediaType.APPLICATION_JSON)
   @Authorize
-  public ObjectNode getUserInfo(@Context ContainerRequest request) {
+  public ObjectNode getOwnInfo(@Context ContainerRequest request) {
     UserDTO userDTO = (UserDTO) request.getProperty("user");
 
     return jsonMapper.convertValue(userDTO, ObjectNode.class);

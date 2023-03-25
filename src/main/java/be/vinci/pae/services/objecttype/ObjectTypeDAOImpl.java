@@ -38,4 +38,28 @@ public class ObjectTypeDAOImpl implements ObjectTypeDAO {
 
     return null;
   }
+
+  /**
+   * Return the id corresponding to the type label.
+   *
+   * @param type the type label
+   * @return the id corresponding
+   */
+  public int getIdByString(String type) {
+    String request = "SELECT id_object_type FROM pae.object_types WHERE label = ?;";
+
+    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+      ps.setString(1, type);
+
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          return rs.getInt("id_object_type");
+        }
+      }
+    } catch (SQLException se) {
+      se.printStackTrace();
+    }
+
+    return 0;
+  }
 }

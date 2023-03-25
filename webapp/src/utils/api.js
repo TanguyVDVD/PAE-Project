@@ -55,4 +55,30 @@ export default class API {
       method: 'POST',
     });
   }
+
+  static put(endpoint, options = {}) {
+    const body =
+      options.body && typeof options.body === 'object' && !(options.body instanceof FormData)
+        ? JSON.stringify(options.body)
+        : options.body;
+
+    return API.#call(endpoint, {
+      ...options,
+      body,
+      method: 'PUT',
+    });
+  }
+
+  static patch(endpoint, options = {}) {
+    const body =
+      options.body && typeof options.body === 'object' && !(options.body instanceof FormData)
+        ? JSON.stringify(options.body)
+        : options.body;
+
+    return API.#call(endpoint, {
+      ...options,
+      body,
+      method: 'PATCH',
+    });
+  }
 }

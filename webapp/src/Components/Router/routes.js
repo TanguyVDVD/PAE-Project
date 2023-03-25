@@ -7,16 +7,16 @@ import AdminUsersPage from '../Pages/admin/AdminUsersPage';
 import OfferPage from '../Pages/OfferPage';
 import AdminObjectsPage from "../Pages/admin/AdminObjectsPage";
 import AdminOffersPage from "../Pages/admin/AdminOffersPage";
-import ObjectPage from "../Pages/ObjectPage";
 
 const routes = {
   '/404': PageNotFoundPage,
   '/': HomePage,
   '/propose': OfferPage,
-  '/object/:id': ObjectPage,
   '/admin/offers': AdminOffersPage,
   '/admin/objects': AdminObjectsPage,
   '/admin/users': AdminUsersPage,
+  '/object/:id': ObjectPage,
+  '/user/:id': UserPage,
   '/login': LoginPage,
   '/register': RegisterPage,
   '/logout': LogoutPage
