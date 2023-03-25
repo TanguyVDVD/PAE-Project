@@ -6,6 +6,8 @@ import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.object.ObjectDAO;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response.Status;
 import java.sql.Date;
 import java.util.List;
 
@@ -32,16 +34,16 @@ public class ObjectUCCImpl implements ObjectUCC {
    */
   @Override
   public List<ObjectDTO> getObjects(String query) {
-    List<ObjectDTO> listAllObjects = null;
+
     myDalServices.startTransaction();
     try {
-      listAllObjects = myObjectDAO.getAll(query);
+      return myObjectDAO.getAll(query);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
     } finally {
       myDalServices.commitTransaction();
+      throw new WebApplicationException("Error getting list all objects", Status.BAD_REQUEST);
     }
-    return listAllObjects;
   }
 
   /**
@@ -53,17 +55,16 @@ public class ObjectUCCImpl implements ObjectUCC {
   @Override
   public java.lang.Object getOffers(String query) {
 
-    java.lang.Object object = null;
-
     myDalServices.startTransaction();
     try {
-      object = myObjectDAO.getOffers(query);
+      return myObjectDAO.getOffers(query);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
     } finally {
       myDalServices.commitTransaction();
+      throw new WebApplicationException("Error getting list all offers", Status.BAD_REQUEST);
     }
-    return object;
+
   }
 
   /**
@@ -75,18 +76,17 @@ public class ObjectUCCImpl implements ObjectUCC {
   @Override
   public ObjectDTO getOne(int id) {
 
-    ObjectDTO objectDTO = null;
-
     myDalServices.startTransaction();
 
     try {
-      objectDTO = myObjectDAO.getOneById(id);
+      return myObjectDAO.getOneById(id);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
     } finally {
       myDalServices.commitTransaction();
+      throw new WebApplicationException("Error getting an object by id", Status.BAD_REQUEST);
     }
-    return objectDTO;
+
   }
 
   /**
@@ -97,7 +97,6 @@ public class ObjectUCCImpl implements ObjectUCC {
    */
   @Override
   public ObjectDTO accept(int id) {
-    ObjectDTO objectDTO = null;
 
     myDalServices.startTransaction();
     try {
@@ -109,13 +108,13 @@ public class ObjectUCCImpl implements ObjectUCC {
       }
 
       Date acceptanceDate = object.getCurrentDate();
-      objectDTO = myObjectDAO.setStatusToAccepted(id, acceptanceDate);
+      return myObjectDAO.setStatusToAccepted(id, acceptanceDate);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
     } finally {
       myDalServices.commitTransaction();
+      throw new WebApplicationException("Error accepting object", Status.BAD_REQUEST);
     }
-    return objectDTO;
   }
 
   /**
@@ -127,8 +126,6 @@ public class ObjectUCCImpl implements ObjectUCC {
    */
   @Override
   public ObjectDTO refuse(int id, String reasonForRefusal) {
-
-    ObjectDTO objectDTO = null;
 
     myDalServices.startTransaction();
 
@@ -142,13 +139,13 @@ public class ObjectUCCImpl implements ObjectUCC {
       }
 
       Date refusalDate = object.getCurrentDate();
-      objectDTO = myObjectDAO.setStatusToRefused(id, reasonForRefusal, refusalDate);
+      return myObjectDAO.setStatusToRefused(id, reasonForRefusal, refusalDate);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
     } finally {
       myDalServices.commitTransaction();
+      throw new WebApplicationException("Error refusing an object", Status.BAD_REQUEST);
     }
-    return objectDTO;
   }
 
   /**
@@ -161,8 +158,6 @@ public class ObjectUCCImpl implements ObjectUCC {
    */
   @Override
   public ObjectDTO update(int id, ObjectDTO objectDTO, String date) {
-
-    ObjectDTO objectDTOToReturn = null;
 
     myDalServices.startTransaction();
 
@@ -197,14 +192,14 @@ public class ObjectUCCImpl implements ObjectUCC {
       objectFromDB.setState(objectDTO.getState());
       objectFromDB.setIsVisible(objectDTO.getisVisible());
 
-      objectDTOToReturn = myObjectDAO.updateObject(objectFromDB.getId(), objectFromDB);
+      return myObjectDAO.updateObject(objectFromDB.getId(), objectFromDB);
 
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
     } finally {
       myDalServices.commitTransaction();
+      throw new WebApplicationException("Error update an object", Status.BAD_REQUEST);
     }
-    return objectDTOToReturn;
   }
 
 

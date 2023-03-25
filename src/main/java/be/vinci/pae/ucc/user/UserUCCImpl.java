@@ -39,7 +39,7 @@ public class UserUCCImpl implements UserUCC {
   public UserDTO login(String email, String password) {
 
     myDalServices.startTransaction();
-    
+
     try {
 
       User userDB = (User) myUserDAO.getOneByEmail(email);
@@ -117,34 +117,34 @@ public class UserUCCImpl implements UserUCC {
   public List<UserDTO> getUsers(String query) {
 
     myDalServices.startTransaction();
-    List<UserDTO> listAllUsers = null;
 
     try {
-      listAllUsers = myUserDAO.getAll(query);
+      return myUserDAO.getAll(query);
 
 
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
     } finally {
       myDalServices.commitTransaction();
+      throw new WebApplicationException("Error while getting list all the users",
+          Status.BAD_REQUEST);
     }
-    return listAllUsers;
   }
 
   @Override
   public UserDTO getUserById(int id) {
 
     myDalServices.startTransaction();
-    UserDTO userDTO = null;
 
     try {
-      userDTO = myUserDAO.getOneById(id);
+      return myUserDAO.getOneById(id);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
     } finally {
       myDalServices.commitTransaction();
+      throw new WebApplicationException("Error getting the user by id", Status.BAD_REQUEST);
     }
-    return userDTO;
+
   }
 
   @Override
