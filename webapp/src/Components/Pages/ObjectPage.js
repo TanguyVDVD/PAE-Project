@@ -1,14 +1,25 @@
-import { clearPage } from '../../utils/render';
+import {clearPage, renderError} from '../../utils/render';
 import { getAuthenticatedUser } from '../../utils/auths';
+import API from "../../utils/api";
 
 
 const ObjectPage = (params) => {
   const id = parseInt(params.id, 10);
-    clearPage();
-    renderObjectPage();
-  };
 
-function renderObjectPage() {
+  clearPage();
+
+  API.get(`object/${id}`)
+  .then((object) => {
+    renderObjectPage(object);
+  })
+  .catch((error) => {
+    renderError(error.message);
+  });
+
+  renderObjectPage(object);
+};
+
+function renderObjectPage(object) {
     const main = document.querySelector('main');
 
     const authenticatedUser = getAuthenticatedUser();
