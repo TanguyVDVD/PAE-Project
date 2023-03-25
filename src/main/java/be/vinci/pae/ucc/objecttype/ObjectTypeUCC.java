@@ -5,4 +5,10 @@ package be.vinci.pae.ucc.objecttype;
  */
 public interface ObjectTypeUCC {
 
+  /**
+   * Returns a list of all object types.
+   *
+   * @return a list of all object types
+   */
+  Object getObjectTypes();
 }
