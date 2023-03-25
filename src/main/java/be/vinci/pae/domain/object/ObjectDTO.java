@@ -277,8 +277,18 @@ public interface ObjectDTO {
    */
   void setObjectType(String objectType);
 
+  /**
+   * Return the sale date of an object.
+   *
+   * @return a LocalDate corresponding to the sale date of an object
+   */
   LocalDate getOnSaleDate();
 
+  /**
+   * Set the sale date of an object.
+   *
+   * @param date the date to set
+   */
   void setOnSaleDate(LocalDate date);
 
   /**
