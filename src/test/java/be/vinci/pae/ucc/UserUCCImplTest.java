@@ -102,4 +102,5 @@ class UserUCCImplTest {
     UserDTO userDTO = userUCC.login("test@example.com", null);
     assertNull(userDTO, "Login returned a user although the password is null");
   }
+
 }

@@ -2,6 +2,7 @@ import Navigate from '../../Router/Navigate';
 import { getAuthenticatedUser } from '../../../utils/auths';
 import { clearPage } from '../../../utils/render';
 import API from '../../../utils/api';
+import {subtractDates, dateStringtoGoodFormat} from "../../../utils/dates";
 
 const AdminObjectsPage = () => {
   const user = getAuthenticatedUser();
@@ -65,20 +66,20 @@ async function fetchObjects(query = '') {
                                     <span>${object.description}</span>
                                 </div>
                                 
-                                <p>Récupéré le ${object.pickupDate} ${object.timeSlot}</p>
+                                <div class="div-receipt-date">
+                                </div>
                                 
                                 <div class="div-user">
                                 </div>
                             </div>
                             
                             <div class="align-items-center align-content-center col-md-3 border-left mt-1">
-                                <div class="d-flex flex-row align-items-center">
-                                    <h4 class="mr-1">${object.price} €</h4>
-                                </div>
-                                
                                 <div class="div-state">
                                 </div>
-                                                                
+                                
+                                <div class="d-flex flex-row align-items-center div-price-time-remaining">
+                                </div>
+                                                     
                                 <div class="d-flex flex-column mt-4 div-button">
                                 </div>
                             </div>
@@ -89,8 +90,10 @@ async function fetchObjects(query = '') {
         </div>
       `;
 
+    setReceiptDate("div-receipt-date", objects);
     setUserOrPhoneNumber("div-user", objects);
-    setPriceColor("div-state", objects);
+    setPriceOrTimeRemaining("div-price-time-remaining", objects)
+    setStateColor("div-state", objects);
     setButton("div-button", objects);
 
     list.querySelectorAll('a[data-id]').forEach((link) => {
@@ -112,6 +115,31 @@ async function fetchObjects(query = '') {
       });
     });
   });
+}
+
+function setReceiptDate(className, objects){
+  const elements = document.getElementsByClassName(className);
+  for (let i = 0; i < elements.length; i += 1) {
+    const object = objects[i];
+    const element = elements.item(i);
+    if (object.state === "proposé" || object.state === "accepté" || object.state === "refusé"){
+      element.innerHTML = `
+          <p>
+              À récupérer le ${dateStringtoGoodFormat(object.receiptDate)} ${object.timeSlot === "matin" ? 
+              " au ".concat(object.timeSlot) : " l'".concat(object.timeSlot)}
+          </p>
+
+      `
+    }
+    else {
+      element.innerHTML = `
+          <p>
+              Récupéré le ${dateStringtoGoodFormat(object.receiptDate)} ${object.timeSlot === "matin" ?
+          " au ".concat(object.timeSlot) : " l'".concat(object.timeSlot)}
+          </p>
+      `
+    }
+  }
 }
 
 function setUserOrPhoneNumber(className, objects){
@@ -137,7 +165,41 @@ function setUserOrPhoneNumber(className, objects){
   }
 }
 
-function setPriceColor(className, objects){
+function setPriceOrTimeRemaining(className, objects){
+  const elements = document.getElementsByClassName(className);
+  for (let i = 0; i < elements.length; i += 1) {
+    const object = objects[i];
+    const element = elements.item(i);
+
+    if (object.state === "proposé"){
+      const receiptDate = new Date(object.receiptDate);
+      const todaySDate = new Date();
+
+      const timeRemaining = subtractDates(receiptDate, todaySDate);
+
+      if (timeRemaining <= 3){
+        element.innerHTML = `
+          <p class="text-danger">${timeRemaining} jours restants pour répondre !</p>
+      `
+      }
+      else {
+        element.innerHTML = `
+          <p class="text-primary">${timeRemaining} jours restants pour répondre</p>
+      `
+      }
+    }
+    else if (object.status === "refusé"){
+      element.innerHTML = ``
+    }
+    else {
+      element.innerHTML = `
+          <h4 class="mr-1">${object.price} €</h4>
+      `
+    }
+  }
+}
+
+function setStateColor(className, objects){
   const elements = document.getElementsByClassName(className);
   for (let i = 0; i < elements.length; i += 1) {
     const object = objects[i];

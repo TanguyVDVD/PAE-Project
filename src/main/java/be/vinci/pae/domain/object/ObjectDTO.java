@@ -55,14 +55,14 @@ public interface ObjectDTO {
    *
    * @return true if the object is visible, else false
    */
-  Boolean isVisible();
+  Boolean getisVisible();
 
   /**
    * set the visibility of an object.
    *
-   * @param visibility the visibility of an object
+   * @param isVisible the visibility of an object
    */
-  void setVisibility(boolean visibility);
+  void setIsVisible(boolean isVisible);
 
   /**
    * Return the price of an object.
@@ -93,6 +93,20 @@ public interface ObjectDTO {
   void setState(String state);
 
   /**
+   * Return the offer date of an object.
+   *
+   * @return a String corresponding to the offer date of the object
+   */
+  String getOfferDate();
+
+  /**
+   * set the acceptance date of an object.
+   *
+   * @param offerDate the acceptance date of an object
+   */
+  void setOfferDate(String offerDate);
+
+  /**
    * Return the acceptance date of an object.
    *
    * @return a String corresponding to the acceptance date of the object
@@ -105,6 +119,20 @@ public interface ObjectDTO {
    * @param acceptanceDate the acceptance date of an object
    */
   void setAcceptanceDate(String acceptanceDate);
+
+  /**
+   * Return the refusal date of an object.
+   *
+   * @return a String corresponding to the refusal date of the object
+   */
+  String getRefusalDate();
+
+  /**
+   * set the refusal date of an object.
+   *
+   * @param refusalDate the refusal date of an object
+   */
+  void setRefusalDate(String refusalDate);
 
   /**
    * Return the deposit date of an object.
@@ -205,18 +233,18 @@ public interface ObjectDTO {
   void setPhoneNumber(String phoneNumber);
 
   /**
-   * Return the pickup date of an object.
+   * Return the receipt date of an object.
    *
-   * @return a String corresponding to the pickup date of an object
+   * @return a String corresponding to the receipt date of an object
    */
-  String getPickupDate();
+  String getReceiptDate();
 
   /**
-   * set the pickup date of an object.
+   * set the receipt date of an object.
    *
-   * @param pickupDate the pickup date of an object
+   * @param receiptDate the receipt date of an object
    */
-  void setPickupDate(String pickupDate);
+  void setReceiptDate(String receiptDate);
 
   /**
    * Return the user of an object.
@@ -245,4 +273,19 @@ public interface ObjectDTO {
    * @param objectType the type of the object
    */
   void setObjectType(String objectType);
+
+  /**
+   * Return the date an object was dropped in the workshop.
+   *
+   * @return a String corresponding to the workshop deposit date
+   */
+  String getWorkshopDate();
+
+  /**
+   * Set the date an object was dropped in the workshop.
+   *
+   * @param workshopDate the date to set
+   */
+  void setWorkshopDate(String workshopDate);
+
 }

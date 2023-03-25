@@ -38,7 +38,7 @@ const Navbar = () => {
               authenticatedUser && authenticatedUser.helper
                 ? `
                     <li class="nav-item">
-                      <a class="nav-link" href="#" data-uri="/admin/propositions">Propositions</a>
+                      <a class="nav-link" href="#" data-uri="/admin/offers">Propositions</a>
                     </li>
                     <li class="nav-item">
                       <a class="nav-link" href="#" data-uri="/admin/objects">Objets</a>

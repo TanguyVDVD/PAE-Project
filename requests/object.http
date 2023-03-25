@@ -15,11 +15,57 @@ Content-Type: application/json
 GET {{baseUrl}}/objects
 Authorization: {{adminToken}}
 
-### Accept an offer
-PATCH {{baseUrl}}/objects/status/1
+### Get a list of all offers
+GET {{baseUrl}}/objects/offers
+Authorization: {{adminToken}}
+
+### Get an object
+GET {{baseUrl}}/objects/1
+
+### Accept a offer
+PATCH {{baseUrl}}/objects/status/2
 Content-Type: application/json
 Authorization: {{adminToken}}
 
 {
   "status": "accepté"
+}
+
+### Refuse a offer without reason for refusal
+PATCH {{baseUrl}}/objects/status/1
+Content-Type: application/json
+Authorization: {{adminToken}}
+
+{
+  "status": "refusé"
+}
+
+### Refuse a offer with a reason for refusal null
+PATCH {{baseUrl}}/objects/status/1
+Content-Type: application/json
+Authorization: {{adminToken}}
+
+{
+  "status": "refusé",
+  "reasonForRefusal": null
+}
+
+### Refuse a offer with an empty reason for refusal
+PATCH {{baseUrl}}/objects/status/1
+Content-Type: application/json
+Authorization: {{adminToken}}
+
+{
+  "status": "refusé",
+  "reasonForRefusal": ""
+}
+
+### Refuse a offer with a reason for refusal
+PATCH {{baseUrl}}/objects/status/1
+Content-Type: application/json
+Authorization: {{adminToken}}
+
+{
+  "status": "refusé",
+  "reasonForRefusal": "Meuble en trop mauvais état"
 }

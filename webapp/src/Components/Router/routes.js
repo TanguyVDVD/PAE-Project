@@ -4,21 +4,20 @@ import LoginPage from '../Pages/LoginPage';
 import RegisterPage from '../Pages/RegisterPage';
 import LogoutPage from '../Pages/LogoutPage';
 import AdminUsersPage from '../Pages/admin/AdminUsersPage';
-import PropositionPage from '../Pages/PropositionPage';
+import OfferPage from '../Pages/OfferPage';
 import AdminObjectsPage from "../Pages/admin/AdminObjectsPage";
-import ObjectPage from '../Pages/ObjectPage';
+import AdminOffersPage from "../Pages/admin/AdminOffersPage";
 
 const routes = {
   '/404': PageNotFoundPage,
-
   '/': HomePage,
   '/login': LoginPage,
   '/register': RegisterPage,
   '/logout': LogoutPage,
+  '/admin/offers': AdminOffersPage,
   '/admin/objects': AdminObjectsPage,
   '/admin/users': AdminUsersPage,
-  '/propose': PropositionPage,
-  '/object': ObjectPage
+  '/propose': OfferPage
 };
 
 export default routes;
