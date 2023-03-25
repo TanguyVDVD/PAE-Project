@@ -19,7 +19,7 @@ const routes = {
   '/admin/offers': AdminOffersPage,
   '/admin/objects': AdminObjectsPage,
   '/admin/users': AdminUsersPage,
-  '/propose': PropositionPage,
+  '/propose': OfferPage,
 };
 
 export default routes;
