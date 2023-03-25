@@ -110,7 +110,7 @@ async function fetchObjects(query = '') {
           Navigate(`/object/${e.target.dataset.id}`);
         }
         else if (e.currentTarget.classList.contains("button-respond")) {
-          Navigate(`/proposition/${e.target.dataset.id}`);
+          Navigate(`/object/${e.target.dataset.id}`);
         }
       });
     });
