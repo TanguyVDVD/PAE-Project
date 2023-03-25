@@ -61,6 +61,10 @@ public class ObjectDAOImpl implements ObjectDAO {
           : resultSet.getDate("selling_date").toString());
       object.setWithdrawalDate(resultSet.getDate("withdrawal_date") == null ? ""
           : resultSet.getDate("withdrawal_date").toString());
+      object.setOnSaleDate(resultSet.getDate("on_sate_date") == null ? ""
+          : resultSet.getDate("on_sale_date").toString());
+      object.setWorkshopDate(resultSet.getDate("workshop_date") == null ? ""
+          : resultSet.getDate("workshop_date").toString());
       object.setTimeSlot(resultSet.getString("time_slot"));
       object.setStatus(resultSet.getString("status"));
       object.setReasonForRefusal(resultSet.getString("reason_for_refusal"));
@@ -157,33 +161,45 @@ public class ObjectDAOImpl implements ObjectDAO {
     return null;
   }
 
-  /**
-   * Change the state of the object with the given ID to sold with the date.
-   *
-   * @param id   the ID of the object to update
-   * @param date the date of the sale
-   * @return an ObjectDTO representing the updated object
-   */
-  public ObjectDTO setStateToSold(int id, String date) {
-    String request = "UPDATE pae.objects SET state = 'vendu', "
-        + "selling_date = ? WHERE id_object = ?;";
+  public ObjectDTO updateObject(int id, ObjectDTO objectDTO) {
+
+    String request =
+        "UPDATE FROM pae.objects SET description = ?, SET id_object_type = ?, SET is_visible = ?, SET state = ?,  "
+            + "SET price = ?, "
+            + "SET workshop_date = ?,"
+            + "deposit_date = ?, "
+            + "on_sale_date = ?, "
+            + "selling_date =?, "
+            + "withdrawal_date = ? "
+            + "WHERE id_object = ?";
 
     try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
-
-      SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-      Date parsed = format.parse(date);
-      java.sql.Date sql = new java.sql.Date(parsed.getTime());
-
-      ps.setDate(1, sql);
-      ps.setInt(2, id);
+      ps.setString(1, objectDTO.getDescription());
+      ps.setInt(2, myObjectTypeDAO.getIdByString(objectDTO.getObjectType()));
+      ps.setBoolean(3, objectDTO.isVisible());
+      ps.setString(4, objectDTO.getState());
+      ps.setDouble(5, objectDTO.getPrice());
+      ps.setDate(6, setStringDateToSQLDate(objectDTO.getWorkShopDAte()));
+      ps.setDate(7, setStringDateToSQLDate(objectDTO.getDepositDate()));
+      ps.setDate(8, setStringDateToSQLDate(objectDTO.getOnSaleDate()));
+      ps.setDate(9, setStringDateToSQLDate(objectDTO.getSellingDate()));
+      ps.setDate(10, setStringDateToSQLDate(objectDTO.getWithdrawalDate()));
+      ps.setInt(11, id);
       ps.executeUpdate();
     } catch (SQLException se) {
       se.printStackTrace();
+      return null;
     } catch (ParseException e) {
       throw new RuntimeException(e);
     }
 
-    return getOneById(id);
+    return objectDTO;
+  }
 
+  java.sql.Date setStringDateToSQLDate(String date) throws ParseException {
+    SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+    Date parsed = format.parse(date);
+    java.sql.Date sqlDate = new java.sql.Date(parsed.getTime());
+    return sqlDate;
   }
 }

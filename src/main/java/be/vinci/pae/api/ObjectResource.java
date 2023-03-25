@@ -59,19 +59,66 @@ public class ObjectResource {
    * @return the object that was just updated
    */
   @PUT
-  @Path("/updateObject/{id}")
+  @Path("/update_object/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public ObjectNode updateObject(ObjectDTO objectDTO, @PathParam("id") int id) {
+  public ObjectNode updateObject(JsonNode json, @PathParam("id") int id) {
 
-    if (id <= 0 || !json.hasNonNull("state")) {
-      throw new WebApplicationException("Changement d'état incorrect",
-          Response.Status.BAD_REQUEST);
+    if (!json.hasNonNull("type") || !json.hasNonNull("description") || !json.hasNonNull(
+        "state") || !json.hasNonNull("is_visible")) {
+      throw new WebApplicationException("Tout les champs ne sont pas rempli",
+          Status.NOT_FOUND);
     }
 
-    String date;
+    String changeDate;
 
+    if (!json.hasNonNull("date")) {
+      changeDate = LocalDate.now().toString();
+    } else {
+      changeDate = json.get("date").asText();
+    }
+
+    String typeObject = json.get("type").asText();
+    String descriptionObject = json.get("description").asText();
+    String stateObject = json.get("state").asText();
+    boolean isVisibleObject = json.get("is_visible").asBoolean();
+
+    if (stateObject.equals("mis en vente")) {
+      if (!json.hasNonNull("price")) {
+        throw new WebApplicationException("Un prix doit être entré",
+            Status.NOT_FOUND);
+      }
+    }
+
+    int priceObject = json.get("price").asInt();
+
+    ObjectDTO objectUpdated = myDomainFactory.getObject();
+
+    objectUpdated.setObjectType(typeObject);
+    objectUpdated.setDescription(descriptionObject);
+    objectUpdated.setState(stateObject);
+    objectUpdated.setVisibility(isVisibleObject);
+    objectUpdated.setPrice(priceObject);
+
+    ObjectDTO objectDTOAfterUpdate = objectUCC.update(id, objectUpdated, changeDate);
+
+    /*
+    if (id <= 0 || objectDTO.getState() == null || objectDTO.getState().isBlank()
+        || objectDTO.getObjectType() == null || objectDTO.getObjectType().isBlank()
+        || objectDTO.getDescription() == null || objectDTO.getDescription().isBlank()
+        || objectDTO.getPrice() <= 0) {
+      throw new WebApplicationException("Changement d'état incorrect",
+          Response.Status.BAD_REQUEST);
+
+    }
+
+     */
+
+    //String date;
+
+    /*
+    return (Object) objectDTO.
     if (json.hasNonNull("date")) {
       date = LocalDate.now().toString();
     } else {
@@ -107,6 +154,9 @@ public class ObjectResource {
     }
 
     return jsonMapper.convertValue(objectDTO, ObjectNode.class);
+
+     */
+    return jsonMapper.convertValue(objectDTOAfterUpdate, ObjectNode.class);
   }
 
   /**

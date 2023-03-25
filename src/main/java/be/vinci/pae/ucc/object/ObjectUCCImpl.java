@@ -13,6 +13,7 @@ public class ObjectUCCImpl implements ObjectUCC {
   @Inject
   private ObjectDAO myObjectDAO;
 
+
   /**
    * Returns a list of all objects.
    *
@@ -46,52 +47,38 @@ public class ObjectUCCImpl implements ObjectUCC {
     return null;
   }
 
-  /**
-   * Updates the status of the object with the specified ID to dropped In The Workshop with the
-   * date.
-   *
-   * @param id   the ID of the object whose status should be updated
-   * @param date the date on which the object was dropped in the workshop
-   * @return an ObjectDTO object containing the updated information of the object
-   */
   @Override
-  public ObjectDTO setStatuDroppedInTheWorkhop(int id, String date) {
-    return null;
+  public ObjectDTO update(int id, ObjectDTO objectDTO, String date) {
+
+    ObjectDTO objectFromDB = myObjectDAO.getOneById(id);
+    System.out.println(objectFromDB.getDescription());
+
+    if (!objectDTO.getState().equals(objectFromDB.getState())) {
+      if (objectDTO.getState().equals("en atelier")) {
+        objectFromDB.setWorkshopDate(date);
+      }
+      if (objectDTO.getState().equals("en magasin")) {
+        objectFromDB.setDepositDate(date);
+      }
+      if (objectDTO.getState().equals("mis en vente")) {
+        objectFromDB.setOnSaleDate(date);
+      }
+      if (objectDTO.getState().equals("vendu")) {
+        objectFromDB.setSellingDate(date);
+      }
+      if (objectDTO.getState().equals("retiré")) {
+        objectFromDB.setWithdrawalDate(date);
+      }
+    }
+
+    objectFromDB.setObjectType(objectDTO.getObjectType());
+    objectFromDB.setDescription(objectDTO.getDescription());
+    objectFromDB.setPrice(objectDTO.getPrice());
+    objectFromDB.setState(objectDTO.getState());
+    objectFromDB.setVisibility(objectDTO.isVisible());
+
+    return myObjectDAO.updateObject(objectFromDB.getId(), objectFromDB);
   }
 
-  /**
-   * Updates the status of the object with the specified ID to dropped In The Shop with the date.
-   *
-   * @param id   the ID of the object whose status should be updated
-   * @param date the date on which the object was dropped in the shop
-   * @return an ObjectDTO object containing the updated information of the object
-   */
-  @Override
-  public ObjectDTO setStatuDroppedInTheShop(int id, String date) {
-    return null;
-  }
 
-  /**
-   * Updates the status of the object with the specified ID to For Sale with the date.
-   *
-   * @param id   the ID of the object whose status should be updated
-   * @param date the date on which the object was put up for sale
-   * @return an ObjectDTO object containing the updated information of the object
-   */
-  @Override
-  public ObjectDTO setStatuForSale(int id, String date) {
-    return null;
-  }
-
-  /**
-   * Updates the status of the object with the specified ID to Sold with the date.
-   *
-   * @param id   the ID of the object whose status should be updated
-   * @param date the date on which the object was sold
-   * @return an ObjectDTO object containing the updated information of the object
-   */
-  @Override
-  public ObjectDTO setStatuSold(int id, String date) {
-    return myObjectDAO.setStateToSold(id, date);
-  }
 }

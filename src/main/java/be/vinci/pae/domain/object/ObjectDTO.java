@@ -247,4 +247,12 @@ public interface ObjectDTO {
    * @param objectType the type of the object
    */
   void setObjectType(String objectType);
+
+  void setWorkshopDate(String date);
+
+  String getWorkShopDAte();
+
+  String getOnSaleDate();
+
+  void setOnSaleDate(String date);
 }

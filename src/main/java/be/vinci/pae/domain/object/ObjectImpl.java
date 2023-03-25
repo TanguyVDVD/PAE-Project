@@ -18,6 +18,8 @@ public class ObjectImpl implements Object {
   private String depositDate;
   private String sellingDate;
   private String withdrawalDate;
+  private String workshopDate;
+  private String onSaleDate;
   private String timeSlot;
   private String status;
   private String reasonForRefusal;
@@ -365,4 +367,25 @@ public class ObjectImpl implements Object {
   public void setObjectType(String objectType) {
     this.objectType = objectType;
   }
+
+  @Override
+  public void setWorkshopDate(String date) {
+    this.workshopDate = date;
+  }
+
+  @Override
+  public String getWorkShopDAte() {
+    return workshopDate;
+  }
+
+  @Override
+  public String getOnSaleDate() {
+    return onSaleDate;
+  }
+
+  @Override
+  public void setOnSaleDate(String date) {
+    this.onSaleDate = date;
+  }
+
 }

@@ -25,13 +25,16 @@ Authorization: {{adminToken}}
 }
 
 
-### Set a object to sold
-PATCH {{baseUrl}}/objects/state/1
+### Set a object in the workshop
+PUT {{baseUrl}}/objects/update_object/1
 Content-Type: application/json
 Authorization: {{adminToken}}
 
 {
-  "state": "vendu",
+  "description": "Garde Robe",
+  "type": "Meuble",
+  "price": null,
+  "state": "en atelier",
   "date": null,
   "is_visible": true
 }
