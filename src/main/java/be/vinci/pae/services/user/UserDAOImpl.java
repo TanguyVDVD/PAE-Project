@@ -41,7 +41,7 @@ public class UserDAOImpl implements UserDAO {
       user.setPhoneNumber(resultSet.getString("phone_number"));
       user.setEmail(resultSet.getString("email"));
       user.setPassword(resultSet.getString("password"));
-      user.setPhoto(resultSet.getString("photo"));
+      user.setPhoto(resultSet.getBoolean("photo"));
       user.setRegisterDate(resultSet.getString("register_date"));
       user.setIsHelper(resultSet.getBoolean("is_helper"));
     } catch (SQLException se) {
@@ -55,19 +55,19 @@ public class UserDAOImpl implements UserDAO {
    * Insert a new user in the db.
    *
    * @param userDTO the user to insert in the db
-   * @return true if succeeds, else false
+   * @return id of the new user if succeeded, -1 if not
    */
   @Override
-  public boolean insert(UserDTO userDTO) {
+  public int insert(UserDTO userDTO) {
     String request = "INSERT INTO" + " pae.users VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+    try (PreparedStatement ps = myDALServices.getPreparedStatement(request, true)) {
       ps.setString(1, userDTO.getLastName());
       ps.setString(2, userDTO.getFirstName());
       ps.setString(3, userDTO.getPhoneNumber());
       ps.setString(4, userDTO.getEmail());
       ps.setString(5, userDTO.getPassword());
-      ps.setString(6, userDTO.getPhoto());
+      ps.setBoolean(6, userDTO.getPhoto());
 
       SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
       Date parsed = format.parse(userDTO.getRegisterDate());
@@ -76,13 +76,19 @@ public class UserDAOImpl implements UserDAO {
       ps.setDate(7, sql);
       ps.setBoolean(8, userDTO.isHelper());
       ps.executeUpdate();
+
+      // Get the id of the new user
+      ResultSet rs = ps.getGeneratedKeys();
+      if (rs.next()) {
+        return rs.getInt(1);
+      }
     } catch (SQLException se) {
       se.printStackTrace();
-      return false;
     } catch (ParseException e) {
       throw new RuntimeException(e);
     }
-    return true;
+
+    return -1;
   }
 
   /**

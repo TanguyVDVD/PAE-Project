@@ -52,6 +52,42 @@ public class ObjectResource {
   }
 
   /**
+   * Get a list of all offers.
+   *
+   * @param query query to filter offers
+   * @return a list of offers
+   */
+  @GET
+  @Path("/offers")
+  @AuthorizeAdmin
+  @Produces(MediaType.APPLICATION_JSON)
+  public ArrayNode getoffers(@QueryParam("query") String query) {
+    return jsonMapper.valueToTree(objectUCC.getOffers(query));
+  }
+
+  /**
+   * Get an object corresponding to the id.
+   *
+   * @param id the id of the object
+   * @return an object
+   */
+  @GET
+  @Path("/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public ObjectDTO getOne(@PathParam("id") int id) {
+    if (id <= 0) {
+      throw new WebApplicationException("Mauvais id indiqué",
+          Response.Status.BAD_REQUEST);
+    }
+    ObjectDTO objectDTO = objectUCC.getOne(id);
+    if (objectDTO == null) {
+      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+          .entity("Impossible de trouver les informations de l'objet").type("text/plain").build());
+    }
+    return objectDTO;
+  }
+
+  /**
    * Method that update the state of an object.
    *
    * @param json the json
@@ -98,64 +134,11 @@ public class ObjectResource {
     objectUpdated.setObjectType(typeObject);
     objectUpdated.setDescription(descriptionObject);
     objectUpdated.setState(stateObject);
-    objectUpdated.setVisibility(isVisibleObject);
+    objectUpdated.setIsVisible(isVisibleObject);
     objectUpdated.setPrice(priceObject);
 
     ObjectDTO objectDTOAfterUpdate = objectUCC.update(id, objectUpdated, changeDate);
 
-    /*
-    if (id <= 0 || objectDTO.getState() == null || objectDTO.getState().isBlank()
-        || objectDTO.getObjectType() == null || objectDTO.getObjectType().isBlank()
-        || objectDTO.getDescription() == null || objectDTO.getDescription().isBlank()
-        || objectDTO.getPrice() <= 0) {
-      throw new WebApplicationException("Changement d'état incorrect",
-          Response.Status.BAD_REQUEST);
-
-    }
-
-     */
-
-    //String date;
-
-    /*
-    return (Object) objectDTO.
-    if (json.hasNonNull("date")) {
-      date = LocalDate.now().toString();
-    } else {
-      date = json.get("date").asText();
-    }
-
-    String state = json.get("state").asText();
-    //boolean isVisible = json.get("is_visible").asBoolean();
-
-    if (!state.equals("en atelier") && !state.equals(
-        "en magasin") && !state.equals("mis en vente") && !state.equals("vendu") && !state.equals(
-        "retiré")) {
-      throw new WebApplicationException("Changement d'état incorrect",
-          Response.Status.BAD_REQUEST);
-    }
-
-    ObjectDTO objectDTO = null;
-
-    if (state.equals("en atelier")) {
-      objectDTO = objectUCC.setStatuDroppedInTheWorkhop(id, date);
-    }
-    if (state.equals("en magasin")) {
-      objectDTO = objectUCC.setStatuDroppedInTheShop(id, date);
-    }
-    if (state.equals("mis en vente")) {
-      objectDTO = objectUCC.setStatuForSale(id, date);
-    }
-    if (state.equals("vendu")) {
-      objectDTO = objectUCC.setStatuSold(id, date);
-    }
-    if (state.equals("retiré")) {
-      objectDTO = objectUCC.setStatuSold(id, date);
-    }
-
-    return jsonMapper.convertValue(objectDTO, ObjectNode.class);
-
-     */
     return jsonMapper.convertValue(objectDTOAfterUpdate, ObjectNode.class);
   }
 
@@ -173,7 +156,7 @@ public class ObjectResource {
   @AuthorizeAdmin
   public ObjectNode updateObjectStatus(JsonNode json, @PathParam("id") int id) {
     String status = json.get("status").asText();
-    if (id <= 0 || status.isBlank() || !status.equals("rejeté") && !status.equals("accepté")) {
+    if (id <= 0 || status.isBlank() || !status.equals("refusé") && !status.equals("accepté")) {
       throw new WebApplicationException("Mauvais statut (accepté ou refusé) ou id",
           Response.Status.BAD_REQUEST);
     }
@@ -183,7 +166,11 @@ public class ObjectResource {
     if (status.equals("accepté")) {
       objectDTO = objectUCC.accept(id);
     } else {
-      objectDTO = objectUCC.reject(id);
+      String reasonForRefusal = "";
+      if (json.get("reasonForRefusal") != null) {
+        reasonForRefusal = json.get("reasonForRefusal").asText("");
+      }
+      objectDTO = objectUCC.refuse(id, reasonForRefusal);
     }
 
     if (objectDTO == null) {
