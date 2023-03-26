@@ -100,7 +100,7 @@ function renderObjectPage(object, objectTypes) {
                         <div class="form-group" id="object-state-date-form">
                           <br>
                           <label for="object-price-input">Prix</label>
-                          <input type="number" id="object-price-input" min="0">
+                          <input type="number" id="object-price-input" min="0" max="10">
                         </div>
                         <br>
                         <label>Visible : </label>
