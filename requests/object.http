@@ -22,16 +22,6 @@ Authorization: {{adminToken}}
 ### Get an object
 GET {{baseUrl}}/objects/1
 
-### Accept a offer
-PATCH {{baseUrl}}/objects/status/2
-Content-Type: application/json
-Authorization: {{adminToken}}
-
-{
-  "status": "accepté"
-}
-
-
 ### Set a object in the workshop
 PUT {{baseUrl}}/objects/update_object/1
 Content-Type: application/json
@@ -62,6 +52,15 @@ Authorization: {{adminToken}}
   "is_visible": true
 }
 
+### Accept a offer
+PATCH {{baseUrl}}/objects/status/2
+Content-Type: application/json
+Authorization: {{adminToken}}
+
+{
+  "status": "accepté"
+}
+
 ### Refuse a offer without reason for refusal
 PATCH {{baseUrl}}/objects/status/1
 Content-Type: application/json
@@ -90,5 +89,4 @@ Authorization: {{adminToken}}
 {
   "status": "refusé",
   "reasonForRefusal": "Meuble en trop mauvais état"
-
 }

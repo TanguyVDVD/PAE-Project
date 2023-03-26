@@ -67,7 +67,7 @@ function renderObjectPage(object, objectTypes) {
                           <label>Description</label>
                           <textarea class="form-control" id="object-description-textarea" rows="2">${object.description}</textarea>
                         </div>
-                        
+                        <br>
                         <div class="form-group div-user" id="object-user-form">
                         </div>
                         
@@ -115,17 +115,40 @@ function renderObjectPage(object, objectTypes) {
                         <br>
                         <br>
                         <button type="submit" class="btn btn-primary" id="save-btn">Sauvegarder</button>
+                        <div class="bordure_verticale"></div>
                         <button type="submit" class="btn btn-outline-primary" id="cancel-btn">Annuler</button>
                       </form> 
                     ` :
                     `
                       <h2>${object.objectType}</h2>
-                      <h5>Description :</h5>
-                      <p>${object.description}</p>
+                      <p>Description : ${object.description}</p>
                     `
                   }
-
-            </div>
+                  
+                  ${authenticatedUser && authenticatedUser.id === 1 && object.state === "proposé" ?
+                    `
+                      <div class="div-user" id="object-user-offer">
+                      </div>
+                      
+                      <div class="form-group" id="object-receipt-date-offer">
+                        <p>À récupérer le ${dateStringtoGoodFormat(object.receiptDate)}</p>
+                      </div>
+                      
+                      <div id="object-time-slot-offer">
+                        <p>Créneau choisi : ${object.timeSlot}</p>
+                      </div>
+                      
+                      <div id="reason-for-refusal-div">
+                        <label>Raison du refus</label>
+                        <textarea class="form-control" id="reason-for-refusal" rows="2"></textarea>
+                      </div>   
+                      
+                      <a href="#" class="accept" id="accept-btn">Accepter l'objet<span class="fa fa-check"></span></a>
+                      <div class="bordure_verticale"></div>
+                      <a href="#" class="deny" id="deny-btn">Refuser l'objet<span class="fa fa-close"></span></a>
+                    ` : ''
+                  }
+              </div>
         </div>
     </section>
     `;
@@ -136,6 +159,29 @@ function renderObjectPage(object, objectTypes) {
       setDefaultValues(object);
       setUserOrPhoneNumber("div-user", object, div);
 
+      document.getElementById("accept-btn").addEventListener('click', () => {
+        const status = "accepté";
+
+        API.patch(`objects/status/${object.id}`, {body: {status}})
+        .then(() => {
+          Navigate('/admin/offers');
+        })
+      });
+
+      document.getElementById("deny-btn").addEventListener('click', () => {
+        const status = "refusé";
+        const reasonForRefusal = document.getElementById("reason-for-refusal").value;
+
+        API.patch(`objects/status/${object.id}`, {body: {status, reasonForRefusal}})
+        .then(() => {
+          Navigate('/admin/offers');
+        })
+      });
+
+    }
+
+    if (authenticatedUser && authenticatedUser.id === 1 && object.state === "proposé"){
+      setUserOrPhoneNumber("div-user", object, div);
       document.getElementById("save-btn").addEventListener('click', () => {
         const description = document.getElementById("object-description-textarea").value;
         const type = document.getElementById("object-type-select").value;
@@ -148,9 +194,6 @@ function renderObjectPage(object, objectTypes) {
         .then(() => {
           Navigate('/admin/objects');
         })
-      });
-      document.getElementById("cancel-btn").addEventListener('click', () => {
-        Navigate('/admin/objects');
       });
     }
 
@@ -174,11 +217,10 @@ function setDefaultValues(object){
 function setUserOrPhoneNumber(className, object, div){
   const element = div.getElementsByClassName(className)[0];
   if (object.user === null){
-    element.innerHTML = `<br><p>Proposé anonymement au ${object.phoneNumber} le ${dateStringtoGoodFormat(object.offerDate)}</p>`;
+    element.innerHTML = `<p>Proposé anonymement au ${object.phoneNumber} le ${dateStringtoGoodFormat(object.offerDate)}</p>`;
   }
   else {
     element.innerHTML = `
-      <br>
       <p>
         Proposé par
           <a href="#" class="btn-link" role="button" data-id="${object.user.id}">${object.user.firstName} ${object.user.lastName}</a>

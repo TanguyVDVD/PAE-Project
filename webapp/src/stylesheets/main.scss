@@ -41,32 +41,26 @@ a{
 }
 .accept {
   color: #FFF;
-  background: #44CC44;
+  background: rgba(93, 150, 93, 0.82);
   padding: 15px 20px;
-  box-shadow: 0 4px 0 0 #2EA62E;
   border-radius: 15px;
 }
 .accept:hover {
-  background: #6FE76F;
-  box-shadow: 0 4px 0 0 #7ED37E;
+  background: #517051;
 }
 .deny {
   color: #FFF;
-  background: tomato;
+  background: rgba(208, 101, 78, 0.83);
   padding: 15px 20px;
-  box-shadow: 0 4px 0 0 #CB4949;
   border-radius: 15px;
 }
 .deny:hover {
-  background: rgb(255, 147, 128);
-  box-shadow: 0 4px 0 0 #EF8282;
+  background: rgb(176, 86, 69);
 }
 
 .bordure_verticale {
-  height: 55px;
-  padding-right: 10px;
-  padding-left: 10px;
-  border-right: 1px solid rgba(0, 0, 0, 0.445);
+  height: 50px;
+  margin: 20px;
   display: inline-block;
   vertical-align: middle;
   
@@ -75,6 +69,5 @@ a{
 #refuse{
   border-radius: 10px;
   vertical-align: middle;
-  margin-left: 10px;
   width: 400px;
 }
