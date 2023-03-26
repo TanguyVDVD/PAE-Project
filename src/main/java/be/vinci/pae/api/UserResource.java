@@ -35,6 +35,7 @@ import java.util.Date;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.server.ContainerRequest;
+import org.junit.platform.commons.util.StringUtils;
 
 /**
  * UserResource class.
@@ -192,7 +193,7 @@ public class UserResource {
   @Produces(MediaType.APPLICATION_JSON)
   @Authorize
   public UserDTO updateUserInfo(@Context ContainerRequest request, @PathParam("id") int id,
-      JsonNode data) {
+      UserDTO data) {
     UserDTO authorizedUser = (UserDTO) request.getProperty("user");
 
     // Create a new DTO to only keep changes
@@ -202,29 +203,29 @@ public class UserResource {
 
     if (authorizedUser.getId() == id) {
       // Only the user themselves can change their own information
-      if (data.hasNonNull("firstName")) {
-        userDTO.setFirstName(data.get("firstName").asText());
+      if (StringUtils.isNotBlank(data.getFirstName())) {
+        userDTO.setFirstName(data.getFirstName());
       }
 
-      if (data.hasNonNull("lastName")) {
-        userDTO.setLastName(data.get("lastName").asText());
+      if (StringUtils.isNotBlank(data.getLastName())) {
+        userDTO.setLastName(data.getLastName());
       }
 
-      if (data.hasNonNull("email")) {
-        userDTO.setEmail(data.get("email").asText());
+      if (StringUtils.isNotBlank(data.getEmail())) {
+        userDTO.setEmail(data.getEmail());
       }
 
-      if (data.hasNonNull("phoneNumber")) {
-        userDTO.setPhoneNumber(data.get("phoneNumber").asText());
+      if (StringUtils.isNotBlank(data.getPhoneNumber())) {
+        userDTO.setPhoneNumber(data.getPhoneNumber());
       }
 
-      if (data.hasNonNull("password")) {
-        userDTO.setPassword(data.get("password").asText());
+      if (StringUtils.isNotBlank(data.getPassword())) {
+        userDTO.setPassword(data.getPassword());
       }
     } else if (authorizedUser.getId() == 1) {
       // Only the admin can change the helper status
-      if (data.hasNonNull("helper")) {
-        userDTO.setIsHelper(data.get("helper").asBoolean());
+      if (data.getIsHelper() != null) {
+        userDTO.setIsHelper(data.getIsHelper());
       }
     } else {
       // The user is not the admin and is not the user themselves

@@ -1,11 +1,13 @@
 package be.vinci.pae.domain.user;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.time.LocalDate;
 
 /**
  * UserDTO interface. Representing a data transfer object (DTO) for a user in the domain The
  * interface only contains getter and setter.
  */
+@JsonDeserialize(as = UserImpl.class)
 public interface UserDTO {
 
   /**
@@ -125,7 +127,7 @@ public interface UserDTO {
    *
    * @return true if the user is a helper false if he is not
    */
-  Boolean isHelper();
+  Boolean getIsHelper();
 
   /**
    * set the boolean value corresponding if the user is a helper.

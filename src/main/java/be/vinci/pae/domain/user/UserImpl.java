@@ -187,7 +187,7 @@ public class UserImpl implements User {
    * @return true if the user is a helper false if he is not
    */
   @Override
-  public Boolean isHelper() {
+  public Boolean getIsHelper() {
     return isHelper;
   }
 
