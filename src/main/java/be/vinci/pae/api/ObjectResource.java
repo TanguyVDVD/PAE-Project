@@ -128,7 +128,7 @@ public class ObjectResource {
           Status.NOT_FOUND);
     }
 
-    int priceObject = json.get("price").asInt();
+    double priceObject = json.get("price").asDouble();
 
     if (priceObject > 10 || priceObject < 0) {
       throw new WebApplicationException("Le prix doit être compris entre 0€ et 10€",
