@@ -34,7 +34,7 @@ function renderObjectPage(object, objectTypes) {
               <div class="col-md-4">
                 <img class="card-img-top mb-5 mb-md-0" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqsL6QorN-b6YhpcfTl9YJEzWB2xSkhFkN4Q&usqp=CAU" alt="..." />
                 
-                ${authenticatedUser && authenticatedUser.helper && object.state !== "proposé" ? 
+                ${authenticatedUser && authenticatedUser.isHelper && object.state !== "proposé" ? 
                   `
                     <form>
                       <br>
@@ -49,7 +49,7 @@ function renderObjectPage(object, objectTypes) {
 
               <div class="col-md-8">
                   
-                  ${authenticatedUser && authenticatedUser.helper && object.state !== "proposé" ?
+                  ${authenticatedUser && authenticatedUser.isHelper && object.state !== "proposé" ?
                     `
                       <form id="object-form">
                         <div class="form-group" id="object-type-form">
@@ -149,7 +149,7 @@ function renderObjectPage(object, objectTypes) {
                     ` : ''
                   }
                   
-                  ${authenticatedUser && !authenticatedUser.helper ?
+                  ${authenticatedUser && !authenticatedUser.isHelper ?
                     `
                       <div id="object-state-non-helper">
                         <p>État : ${object.state}</p>
@@ -167,7 +167,7 @@ function renderObjectPage(object, objectTypes) {
 
     main.appendChild(div);
 
-    if (authenticatedUser && authenticatedUser.helper && object.state !== "proposé"){
+    if (authenticatedUser && authenticatedUser.isHelper && object.state !== "proposé"){
       setDefaultValues(object);
       setUserOrPhoneNumber("div-user", object, div);
 
