@@ -16,7 +16,8 @@ public class DALServicesImpl implements DALServices, DalBackendServices {
    * Connection to the database.
    */
   private static final BasicDataSource bds;
-  private static final ThreadLocal<Connection> connectionThreadLocal = new ThreadLocal<Connection>();
+  private static final ThreadLocal<Connection> connectionThreadLocal
+      = new ThreadLocal<Connection>();
 
   static {
     bds = new BasicDataSource();
