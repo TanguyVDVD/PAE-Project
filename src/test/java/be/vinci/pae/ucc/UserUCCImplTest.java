@@ -318,6 +318,9 @@ class UserUCCImplTest {
   @DisplayName("Update user with valid email")
   @Test
   void updateUserWithValidEmail() {
+    Mockito.when(validUser.getPhoneNumber()).thenReturn(null);
+    Mockito.when(validUser.getPassword()).thenReturn(null);
+
     assertEquals(validUser, userUCC.updateUser(validUser),
         "updateUser() did not return the correct user");
   }
