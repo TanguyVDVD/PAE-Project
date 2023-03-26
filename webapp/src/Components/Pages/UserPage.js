@@ -1,8 +1,8 @@
 import Navigate from '../Router/Navigate';
 import API from '../../utils/api';
-import {getAuthenticatedUser} from '../../utils/auths';
-import {clearPage, renderError} from '../../utils/render';
-import {formatDate, formatPhoneNumber} from '../../utils/format';
+import { getAuthenticatedUser } from '../../utils/auths';
+import { clearPage, renderError } from '../../utils/render';
+import { formatDate, formatPhoneNumber } from '../../utils/format';
 
 import noProfilePicture from '../../img/no_profile_picture.webp';
 
@@ -19,7 +19,7 @@ const UserPage = (params) => {
     return;
   }
 
-  main.innerHTML = html`
+  main.innerHTML = `
     <div class="text-center my-5">
       <div class="spinner-border" role="status"></div>
     </div>
@@ -27,23 +27,14 @@ const UserPage = (params) => {
 
   // Use the my endpoint if the user is looking at their own profile
   API.get(`users/${authenticatedUser.id === id ? 'my' : id}`)
-  .then((user) => {
-    renderUserPage(user);
-    fetchObjects(user);
-  })
-  .catch((error) => {
-    renderError(error.message);
-  });
+    .then((user) => {
+      renderUserPage(user);
+      fetchObjects(user);
+    })
+    .catch((error) => {
+      renderError(error.message);
+    });
 };
-
-// TODO: remove this
-function html(strings, ...values) {
-  let str = '';
-  strings.forEach((string, i) => {
-    str += string + (values[i] || '');
-  });
-  return str;
-}
 
 function renderUserPage(user) {
   const authenticatedUser = getAuthenticatedUser();
@@ -53,58 +44,57 @@ function renderUserPage(user) {
   const userPage = document.createElement('div');
   userPage.className = 'container p-5';
 
-  userPage.innerHTML = html`
+  userPage.innerHTML = `
     <div class="d-flex gap-3 flex-column flex-md-row align-items-center">
       <div>
         <img
-            src="${user.photo ? API.getEndpoint(`users/${user.id}/photo`)
-                : noProfilePicture}"
-            onerror="this.src='${noProfilePicture}'"
-            alt="user avatar"
-            class="rounded-circle object-fit-cover"
+          src="${user.photo ? API.getEndpoint(`users/${user.id}/photo`) : noProfilePicture}"
+          onerror="this.src='${noProfilePicture}'"
+          alt="user avatar"
+          class="rounded-circle object-fit-cover"
         />
       </div>
-      <div
-          class="d-flex gap-3 flex-column align-items-center align-items-md-start">
-        <div
-            class="d-flex gap-2 justify-content-center align-items-baseline flex-wrap">
+      <div class="d-flex gap-3 flex-column align-items-center align-items-md-start">
+        <div class="d-flex gap-2 justify-content-center align-items-baseline flex-wrap">
           <h1 class="m-0">${user.firstName} ${user.lastName}</h1>
 
-          ${authenticatedUser.id === user.id
-              ? html`
+          ${
+            authenticatedUser.id === user.id
+              ? `
                 <a href="#">
                   Modifier mes données
                 </a>
               `
-              : ''}
+              : ''
+          }
         </div>
-        <div
-            class="d-flex gap-3 flex-wrap justify-content-center justify-content-md-start">
+        <div class="d-flex gap-3 flex-wrap justify-content-center justify-content-md-start">
           <div><a href="mailto:${user.email}">${user.email}</a></div>
           <div>${formatDate(user.registerDate)}</div>
           <div>
             <a href="tel:+32${user.phoneNumber.substring(1)}"
-            >${formatPhoneNumber(user.phoneNumber)}</a
+              >${formatPhoneNumber(user.phoneNumber)}</a
             >
           </div>
         </div>
-        ${authenticatedUser.id === 1 && authenticatedUser.id !== user.id
-            ? html`
+        ${
+          authenticatedUser.id === 1 && authenticatedUser.id !== user.id
+            ? `
               <div>
                 <div class="form-check form-switch">
                   <input
-                      class="form-check-input"
-                      type="checkbox"
-                      role="switch"
-                      id="helper-switch"
-                      ${user.helper ? 'checked' : ''}
+                    class="form-check-input"
+                    type="checkbox"
+                    role="switch"
+                    id="helper-switch"
+                    ${user.isHelper ? 'checked' : ''}
                   />
-                  <label class="form-check-label"
-                         for="helper-switch">Aidant</label>
+                  <label class="form-check-label" for="helper-switch">Aidant</label>
                 </div>
               </div>
             `
-            : ''}
+            : ''
+        }
       </div>
     </div>
 
@@ -123,16 +113,16 @@ function renderUserPage(user) {
       e.target.disabled = true;
       e.target.checked = !e.target.checked;
 
-      API.patch(`users/${user.id}`, {body: {helper: !e.target.checked}})
-      .then((updatedUser) => {
-        e.target.checked = updatedUser.helper;
-      })
-      .catch((error) => {
-        renderError(error.message);
-      })
-      .finally(() => {
-        e.target.disabled = false;
-      });
+      API.patch(`users/${user.id}`, { body: { isHelper: !e.target.checked } })
+        .then((updatedUser) => {
+          e.target.checked = updatedUser.isHelper;
+        })
+        .catch((error) => {
+          renderError(error.message);
+        })
+        .finally(() => {
+          e.target.disabled = false;
+        });
     });
   }
 
@@ -196,12 +186,11 @@ async function fetchObjects() {
     objects.className = 'row row-cols-1 row-cols-md-2 row-cols-lg-4 g-5 text-center';
 
     objects.innerHTML = placeholderObjects
-    .map(
-        (object) => html`
+      .map(
+        (object) => `
           <div class="col">
             <div class="card card-object" data-id="${object.id}" role="button">
-              <img src="${object.image}" class="card-img-top"
-                   alt="Photo : ${object.name}"/>
+              <img src="${object.image}" class="card-img-top" alt="Photo : ${object.name}" />
               <div class="card-title fw-bold m-0">${object.type}</div>
               <div class="card-body pt-0">
                 ${object.name}
@@ -209,8 +198,8 @@ async function fetchObjects() {
             </div>
           </div>
         `,
-    )
-    .join('');
+      )
+      .join('');
   }, 3000);
 }
 
