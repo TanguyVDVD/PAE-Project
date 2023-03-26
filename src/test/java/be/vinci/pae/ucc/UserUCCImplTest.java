@@ -242,7 +242,7 @@ class UserUCCImplTest {
   @Test
   void exceptionDuringRegistration() {
     User user = Mockito.mock(UserImpl.class);
-    Mockito.when(user.getEmail()).thenReturn(null);
+    Mockito.when(user.getEmail()).thenThrow(new RuntimeException());
 
     assertThrows(WebApplicationException.class, () -> userUCC.register(user),
         "register() did not throw an exception");
@@ -374,6 +374,7 @@ class UserUCCImplTest {
     Mockito.when(user.getPhoneNumber()).thenReturn("0493111111");
 
     User userDB = Mockito.mock(UserImpl.class);
+    Mockito.when(userDB.getPhoneNumber()).thenReturn("0493111111");
     Mockito.when(userDAO.getOneById(1)).thenReturn(userDB);
 
     Mockito.when(userDAO.update(user)).thenReturn(true);
@@ -387,6 +388,7 @@ class UserUCCImplTest {
   void updateUserWithInvalidPhoneNumber() {
     UserDTO user = Mockito.mock(UserImpl.class);
     Mockito.when(user.getId()).thenReturn(1);
+    Mockito.when(user.getEmail()).thenReturn("test@example.com");
     Mockito.when(user.getPhoneNumber()).thenReturn("0493");
 
     User userDB = Mockito.mock(UserImpl.class);
@@ -479,6 +481,21 @@ class UserUCCImplTest {
     Mockito.when(userDAO.getOneById(1)).thenReturn(null);
 
     assertNull(userUCC.updateUser(user), "updateUser() did not return null");
+  }
+
+  @DisplayName("Exception when updating user")
+  @Test
+  void exceptionWhenUpdatingUser() {
+    UserDTO user = Mockito.mock(UserImpl.class);
+    Mockito.when(user.getId()).thenReturn(1);
+
+    User userDB = Mockito.mock(UserImpl.class);
+    Mockito.when(userDAO.getOneById(1)).thenReturn(userDB);
+
+    Mockito.when(userDAO.update(user)).thenThrow(new RuntimeException());
+
+    assertThrows(WebApplicationException.class, () -> userUCC.updateUser(user),
+        "updateUser() did not throw an exception");
   }
 
   @DisplayName("Get profile picture of existing user")
