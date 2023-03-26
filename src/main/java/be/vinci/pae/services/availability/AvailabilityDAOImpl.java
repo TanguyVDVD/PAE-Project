@@ -1,6 +1,6 @@
 package be.vinci.pae.services.availability;
 
-import be.vinci.pae.services.DALServices;
+import be.vinci.pae.services.DalBackendServices;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class AvailabilityDAOImpl implements AvailabilityDAO {
 
   @Inject
-  private DALServices myDALServices;
+  private DalBackendServices dalBackendServices;
 
   /**
    * Get the availability by the id.
@@ -25,7 +25,7 @@ public class AvailabilityDAOImpl implements AvailabilityDAO {
   public LocalDate getOneById(int id) {
     String request = "SELECT date FROM pae.availability WHERE id_availability = ?;";
 
-    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       ps.setInt(1, id);
 
       try (ResultSet rs = ps.executeQuery()) {

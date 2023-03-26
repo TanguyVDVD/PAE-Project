@@ -1,6 +1,6 @@
 package be.vinci.pae.services.objecttype;
 
-import be.vinci.pae.services.DALServices;
+import be.vinci.pae.services.DalBackendServices;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,7 +12,7 @@ import java.sql.SQLException;
 public class ObjectTypeDAOImpl implements ObjectTypeDAO {
 
   @Inject
-  private DALServices myDALServices;
+  private DalBackendServices dalBackendServices;
 
   /**
    * Get the object type by the id.
@@ -24,7 +24,7 @@ public class ObjectTypeDAOImpl implements ObjectTypeDAO {
   public String getOneById(int id) {
     String request = "SELECT label FROM pae.object_types WHERE id_object_type = ?;";
 
-    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       ps.setInt(1, id);
 
       try (ResultSet rs = ps.executeQuery()) {
@@ -48,7 +48,7 @@ public class ObjectTypeDAOImpl implements ObjectTypeDAO {
   public int getIdByString(String type) {
     String request = "SELECT id_object_type FROM pae.object_types WHERE label = ?;";
 
-    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       ps.setString(1, type);
 
       try (ResultSet rs = ps.executeQuery()) {
