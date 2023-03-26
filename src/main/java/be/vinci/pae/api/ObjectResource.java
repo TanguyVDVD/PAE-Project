@@ -27,15 +27,12 @@ import jakarta.ws.rs.core.Response.Status;
 import java.time.LocalDate;
 import java.util.logging.Level;
 
-
 /**
  * ObjectResource class.
  */
 @Singleton
 @Path("/objects")
 public class ObjectResource {
-
-  //private static final Logger logger = Logger.getLogger(ObjectResource.class.getName());
 
   private final ObjectMapper jsonMapper = MyObjectMapper.getJsonMapper();
   @Inject
@@ -81,6 +78,7 @@ public class ObjectResource {
   @Produces(MediaType.APPLICATION_JSON)
   public ObjectDTO getOne(@PathParam("id") int id) {
     if (id <= 0) {
+      MyLogger.log(Level.INFO, "Mauvais id indiqué");
       throw new WebApplicationException("Mauvais id indiqué",
           Response.Status.BAD_REQUEST);
     }
@@ -100,6 +98,7 @@ public class ObjectResource {
    * @param id   the id of the object
    * @return the object that was just updated
    */
+
   @PUT
   @Path("/update_object/{id}")
   @Produces(MediaType.APPLICATION_JSON)
@@ -108,6 +107,7 @@ public class ObjectResource {
   public ObjectNode updateObject(JsonNode json, @PathParam("id") int id) {
     if (!json.hasNonNull("type") || !json.hasNonNull("description") || !json.hasNonNull(
         "state") || !json.hasNonNull("is_visible")) {
+      MyLogger.log(Level.INFO, "Tous les champs ne sont pas remplis");
       throw new WebApplicationException("Tous les champs ne sont pas remplis",
           Status.BAD_REQUEST);
     }
@@ -120,22 +120,24 @@ public class ObjectResource {
       try {
         changeDate = LocalDate.parse(json.get("date").asText());
       } catch (Exception e) {
+        MyLogger.log(Level.INFO, "La date n'est pas au bon format");
         throw new WebApplicationException("La date n'est pas au bon format",
             Status.BAD_REQUEST);
       }
     }
 
     String stateObject = json.get("state").asText();
+    int priceObject = 0;
 
     if (stateObject.equals("mis en vente") && !json.hasNonNull("price")) {
+      priceObject = json.get("price").asInt();
+      if (priceObject > 10 || priceObject == 0) {
+        MyLogger.log(Level.INFO, "Le prix doit être compris entre 1 et 10€");
+        throw new WebApplicationException("Le prix doit être compris entre 1 et 10€",
+            Status.NOT_FOUND);
+      }
+      MyLogger.log(Level.INFO, "Un prix doit être entré");
       throw new WebApplicationException("Un prix doit être entré",
-          Status.NOT_FOUND);
-    }
-
-    int priceObject = json.get("price").asInt();
-
-    if (priceObject > 10 || priceObject <= 0) {
-      throw new WebApplicationException("Le prix doit être compris entre 1 et 10€",
           Status.NOT_FOUND);
     }
 
@@ -171,6 +173,7 @@ public class ObjectResource {
   public ObjectNode updateObjectStatus(JsonNode json, @PathParam("id") int id) {
     String status = json.get("status").asText();
     if (id <= 0 || status.isBlank() || !status.equals("refusé") && !status.equals("accepté")) {
+      MyLogger.log(Level.INFO, "Mauvais statut (accepté ou refusé) ou id");
       throw new WebApplicationException("Mauvais statut (accepté ou refusé) ou id",
           Response.Status.BAD_REQUEST);
     }
@@ -188,6 +191,7 @@ public class ObjectResource {
     }
 
     if (objectDTO == null) {
+      MyLogger.log(Level.INFO, "Impossible de changer le statut de l'objet en db");
       throw new WebApplicationException("Impossible de changer le statut de l'objet en db",
           Status.NOT_MODIFIED);
     }
