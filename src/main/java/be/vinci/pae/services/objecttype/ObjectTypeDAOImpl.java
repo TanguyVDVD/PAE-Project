@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ObjectTypeDAO class that implements ObjectTypeDAO interface Provide the different methods.
@@ -46,7 +47,7 @@ public class ObjectTypeDAOImpl implements ObjectTypeDAO {
    * @return the list of object types
    */
   @Override
-  public Object getAll() {
+  public List<ObjectTypeDTO> getAll() {
     String request = "SELECT * FROM pae.object_types ORDER BY id_object_type";
     ArrayList<ObjectTypeDTO> objectTypes = new ArrayList<>();
 
@@ -63,7 +64,7 @@ public class ObjectTypeDAOImpl implements ObjectTypeDAO {
 
     return objectTypes;
   }
-  
+
   /**
    * Get the object type by the id.
    *

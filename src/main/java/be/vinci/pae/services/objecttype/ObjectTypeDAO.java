@@ -1,5 +1,8 @@
 package be.vinci.pae.services.objecttype;
 
+import be.vinci.pae.domain.objecttype.ObjectTypeDTO;
+import java.util.List;
+
 /**
  * ObjectTypeDAO interface that provide the method to interact with the db.
  */
@@ -10,7 +13,7 @@ public interface ObjectTypeDAO {
    *
    * @return the list of object types
    */
-  Object getAll();
+  List<ObjectTypeDTO> getAll();
 
   /**
    * Get the object type by the id.
