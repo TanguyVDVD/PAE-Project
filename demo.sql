@@ -97,15 +97,15 @@ VALUES (DEFAULT, 'Muise', 'Alfred', '0476963626', 'fred.muise@gmail.be',
 
 INSERT INTO pae.users
 VALUES (DEFAULT, 'Line', 'Caroline', '0487452379', 'caro.line@hotmail.com',
-        '$2a$10$3eqeUfrPN4XeX8NJdWwHuO3nHLwFP.7Qkq4VI191ArfopvdejS.p2', true, '2023-02-01', false);
+        '$2a$10$TR/BR7l7g8RfFfArewiyTumbCvZ10ol1Hcs9zp7oQfBw65zdRLTVS', true, '2023-02-01', false);
 
 INSERT INTO pae.users
 VALUES (DEFAULT, 'Ile', 'Achille', '0477653224', 'ach.ile@gmail.com',
-        '$2a$10$3eqeUfrPN4XeX8NJdWwHuO3nHLwFP.7Qkq4VI191ArfopvdejS.p2', true, '2023-02-01', false);
+        '$2a$10$TR/BR7l7g8RfFfArewiyTumbCvZ10ol1Hcs9zp7oQfBw65zdRLTVS', true, '2023-02-01', false);
 
 INSERT INTO pae.users
-VALUES (DEFAULT, 'Ile', 'Basile', '0485988642', 'basi.le@gmail.be',
-        '$2a$10$3eqeUfrPN4XeX8NJdWwHuO3nHLwFP.7Qkq4VI191ArfopvdejS.p2', true, '2023-02-01', false);
+VALUES (DEFAULT, 'Ile', 'Basile', '0485988642', 'bas.ile@gmail.be',
+        '$2a$10$TR/BR7l7g8RfFfArewiyTumbCvZ10ol1Hcs9zp7oQfBw65zdRLTVS', true, '2023-02-01', false);
 
 INSERT INTO pae.availability VALUES (DEFAULT, '2023-03-04');
 
