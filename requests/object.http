@@ -1,9 +1,22 @@
-### Login as an admin
+### Login as Mr Riez
 POST {{baseUrl}}/users/login
 Content-Type: application/json
 
 {
   "email": "riez@ressourcerie.be",
+  "password": "password"
+}
+
+> {%
+  client.global.set("riezToken", response.body.token);
+%}
+
+### Login as an admin
+POST {{baseUrl}}/users/login
+Content-Type: application/json
+
+{
+  "email": "bernard@ressourcerie.be",
   "password": "password"
 }
 
@@ -22,18 +35,8 @@ Authorization: {{adminToken}}
 ### Get an object
 GET {{baseUrl}}/objects/1
 
-### Accept a offer
-PATCH {{baseUrl}}/objects/status/2
-Content-Type: application/json
-Authorization: {{adminToken}}
-
-{
-  "status": "accepté"
-}
-
-
 ### Set a object in the workshop
-PUT {{baseUrl}}/objects/update_object/1
+PUT {{baseUrl}}/objects/1
 Content-Type: application/json
 Authorization: {{adminToken}}
 
@@ -44,11 +47,11 @@ Authorization: {{adminToken}}
   "price": null,
   "state": "en atelier",
   "date": null,
-  "is_visible": true
+  "isVisible": true
 }
 
 ### Set a object on sale with a price
-PUT {{baseUrl}}/objects/update_object/3
+PUT {{baseUrl}}/objects/3
 Content-Type: application/json
 Authorization: {{adminToken}}
 
@@ -59,10 +62,28 @@ Authorization: {{adminToken}}
   "price": 9,
   "state": "mis en vente",
   "date": null,
-  "is_visible": true
+  "isVisible": true
 }
 
-### Refuse a offer without reason for refusal
+### Try to accept an offer as an admin
+PATCH {{baseUrl}}/objects/status/2
+Content-Type: application/json
+Authorization: {{adminToken}}
+
+{
+  "status": "accepté"
+}
+
+### Accept an offer as Mr Riez
+PATCH {{baseUrl}}/objects/status/2
+Content-Type: application/json
+Authorization: {{riezToken}}
+
+{
+  "status": "accepté"
+}
+
+### Refuse an offer without reason for refusal
 PATCH {{baseUrl}}/objects/status/1
 Content-Type: application/json
 Authorization: {{adminToken}}
@@ -72,7 +93,7 @@ Authorization: {{adminToken}}
   "reasonForRefusal": null
 }
 
-### Refuse a offer with an empty reason for refusal
+### Refuse an offer with an empty reason for refusal
 PATCH {{baseUrl}}/objects/status/1
 Content-Type: application/json
 Authorization: {{adminToken}}
@@ -82,7 +103,7 @@ Authorization: {{adminToken}}
   "reasonForRefusal": ""
 }
 
-### Refuse a offer with a reason for refusal
+### Refuse an offer with a reason for refusal
 PATCH {{baseUrl}}/objects/status/1
 Content-Type: application/json
 Authorization: {{adminToken}}
@@ -90,5 +111,4 @@ Authorization: {{adminToken}}
 {
   "status": "refusé",
   "reasonForRefusal": "Meuble en trop mauvais état"
-
 }

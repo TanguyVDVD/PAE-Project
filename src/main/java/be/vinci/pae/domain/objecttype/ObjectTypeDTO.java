@@ -1,9 +1,12 @@
 package be.vinci.pae.domain.objecttype;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 /**
  * ObjectTypeDTO interface. Representing a data transfer object (DTO) for a object type in the
  * domain The interface only contains getter and setter.
  */
+@JsonDeserialize(as = ObjectTypeImpl.class)
 public interface ObjectTypeDTO {
 
   /**

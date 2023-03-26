@@ -4,6 +4,7 @@ import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.DomainFactoryImpl;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.DALServicesImpl;
+import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.services.availability.AvailabilityDAO;
 import be.vinci.pae.services.availability.AvailabilityDAOImpl;
 import be.vinci.pae.services.object.ObjectDAO;
@@ -48,6 +49,7 @@ public class ApplicationBinder extends AbstractBinder {
     bind(ObjectTypeDAOImpl.class).to(ObjectTypeDAO.class).in(Singleton.class);
     bind(AvailabilityDAOImpl.class).to(AvailabilityDAO.class).in(Singleton.class);
 
+    bind(DALServicesImpl.class).to(DalBackendServices.class).in(Singleton.class);
     bind(DALServicesImpl.class).to(DALServices.class).in(Singleton.class);
   }
 }

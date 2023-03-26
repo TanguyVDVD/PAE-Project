@@ -27,7 +27,10 @@ const getAuthenticatedUser = () => {
   return currentUser;
 };
 
-const setAuthenticatedUser = (authenticatedUser, remember = false) => {
+const setAuthenticatedUser = (_authenticatedUser, remember = false) => {
+  // Reuse saved token if given object is incomplete
+  const authenticatedUser = { token: (currentUser || {}).token, ..._authenticatedUser };
+
   clearAuthenticatedUser();
 
   const serializedUser = JSON.stringify(authenticatedUser);

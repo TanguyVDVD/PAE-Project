@@ -1,6 +1,7 @@
 package be.vinci.pae.api;
 
 import be.vinci.pae.api.filters.AuthorizeAdmin;
+import be.vinci.pae.api.filters.AuthorizeRiez;
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.ucc.object.ObjectUCC;
@@ -96,13 +97,13 @@ public class ObjectResource {
    * @return the object that was just updated
    */
   @PUT
-  @Path("/update_object/{id}")
+  @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public ObjectNode updateObject(JsonNode json, @PathParam("id") int id) {
     if (!json.hasNonNull("type") || !json.hasNonNull("description") || !json.hasNonNull(
-        "state") || !json.hasNonNull("is_visible")) {
+        "state") || !json.hasNonNull("isVisible")) {
       throw new WebApplicationException("Tous les champs ne sont pas remplis",
           Status.BAD_REQUEST);
     }
@@ -129,14 +130,14 @@ public class ObjectResource {
 
     int priceObject = json.get("price").asInt();
 
-    if (priceObject > 10 || priceObject <= 0) {
-      throw new WebApplicationException("Le prix doit être compris entre 1 et 10€",
+    if (priceObject > 10 || priceObject < 0) {
+      throw new WebApplicationException("Le prix doit être compris entre 0€ et 10€",
           Status.NOT_FOUND);
     }
 
     String typeObject = json.get("type").asText();
     String descriptionObject = json.get("description").asText();
-    boolean isVisibleObject = json.get("is_visible").asBoolean();
+    boolean isVisibleObject = json.get("isVisible").asBoolean();
 
     ObjectDTO objectUpdated = myDomainFactory.getObject();
 
@@ -162,7 +163,7 @@ public class ObjectResource {
   @Path("/status/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
-  @AuthorizeAdmin
+  @AuthorizeRiez
   public ObjectNode updateObjectStatus(JsonNode json, @PathParam("id") int id) {
     String status = json.get("status").asText();
     if (id <= 0 || status.isBlank() || !status.equals("refusé") && !status.equals("accepté")) {

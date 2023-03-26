@@ -44,6 +44,15 @@ public interface UserUCC {
   UserDTO getUserById(int id);
 
   /**
+   * Update a user, after verifying password.
+   *
+   * @param userDTO  the user to update
+   * @param password the password of the user
+   * @return the updated user
+   */
+  UserDTO updateUser(UserDTO userDTO, String password);
+
+  /**
    * Update a user.
    *
    * @param userDTO the user to update
@@ -60,11 +69,11 @@ public interface UserUCC {
   File getProfilePicture(int id);
 
   /**
-   * Update the profile picture of a user.
+   * Save the profile picture of a user.
    *
-   * @param id    id of the user
+   * @param id    id of user
    * @param photo the photo to set
-   * @return whether the update was successful
+   * @return whether the saving was successful
    */
-  boolean updateProfilePicture(int id, InputStream photo);
+  boolean saveProfilePicture(int id, InputStream photo);
 }

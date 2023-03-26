@@ -3,8 +3,11 @@ package be.vinci.pae.ucc.object;
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.object.Object;
 import be.vinci.pae.domain.object.ObjectDTO;
+import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.object.ObjectDAO;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response.Status;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -15,6 +18,9 @@ public class ObjectUCCImpl implements ObjectUCC {
 
   @Inject
   private ObjectDAO myObjectDAO;
+
+  @Inject
+  private DALServices myDalServices;
 
   @Inject
   private DomainFactory myDomainFactory;
@@ -28,7 +34,16 @@ public class ObjectUCCImpl implements ObjectUCC {
    */
   @Override
   public List<ObjectDTO> getObjects(String query) {
-    return myObjectDAO.getAll(query);
+
+    myDalServices.startTransaction();
+    try {
+      return myObjectDAO.getAll(query);
+    } catch (Exception e) {
+      myDalServices.rollbackTransaction();
+      throw new WebApplicationException("Error getting list all objects", Status.BAD_REQUEST);
+    } finally {
+      myDalServices.commitTransaction();
+    }
   }
 
   /**
@@ -39,7 +54,17 @@ public class ObjectUCCImpl implements ObjectUCC {
    */
   @Override
   public java.lang.Object getOffers(String query) {
-    return myObjectDAO.getOffers(query);
+
+    myDalServices.startTransaction();
+    try {
+      return myObjectDAO.getOffers(query);
+    } catch (Exception e) {
+      myDalServices.rollbackTransaction();
+      throw new WebApplicationException("Error getting list all offers", Status.BAD_REQUEST);
+    } finally {
+      myDalServices.commitTransaction();
+    }
+
   }
 
   /**
@@ -50,7 +75,18 @@ public class ObjectUCCImpl implements ObjectUCC {
    */
   @Override
   public ObjectDTO getOne(int id) {
-    return myObjectDAO.getOneById(id);
+
+    myDalServices.startTransaction();
+
+    try {
+      return myObjectDAO.getOneById(id);
+    } catch (Exception e) {
+      myDalServices.rollbackTransaction();
+      throw new WebApplicationException("Error getting an object by id", Status.BAD_REQUEST);
+    } finally {
+      myDalServices.commitTransaction();
+    }
+
   }
 
   /**
@@ -61,19 +97,25 @@ public class ObjectUCCImpl implements ObjectUCC {
    */
   @Override
   public ObjectDTO accept(int id) {
-    /*
-    Object object = (Object) myDomainFactory.getObject();
-    String status = myObjectDAO.getOneById(id).getStatus();
 
-     */
+    myDalServices.startTransaction();
+    try {
+      Object object = (Object) myDomainFactory.getObject();
+      String status = myObjectDAO.getOneById(id).getStatus();
 
-    ObjectDTO object = myObjectDAO.getOneById(id);
-    String status = object.getStatus();
-    if (Object.isStatusAlreadyDefined(status)) {
-      return null;
+      if (object.isStatusAlreadyDefined(status)) {
+        return null;
+      }
+
+      return myObjectDAO.setStatusToAccepted(id, LocalDate.now());
+    } catch (Exception e) {
+      myDalServices.rollbackTransaction();
+      throw new WebApplicationException("Error accepting object", Status.BAD_REQUEST);
+    } finally {
+      myDalServices.commitTransaction();
+
     }
 
-    return myObjectDAO.setStatusToAccepted(id, LocalDate.now());
   }
 
   /**
@@ -85,14 +127,26 @@ public class ObjectUCCImpl implements ObjectUCC {
    */
   @Override
   public ObjectDTO refuse(int id, String reasonForRefusal) {
-    Object object = (Object) myDomainFactory.getObject();
-    String status = myObjectDAO.getOneById(id).getStatus();
 
-    if (Object.isStatusAlreadyDefined(status)) {
-      return null;
+    myDalServices.startTransaction();
+
+    try {
+
+      Object object = (Object) myDomainFactory.getObject();
+      String status = myObjectDAO.getOneById(id).getStatus();
+
+      if (object.isStatusAlreadyDefined(status)) {
+        return null;
+      }
+
+      return myObjectDAO.setStatusToRefused(id, reasonForRefusal, LocalDate.now());
+    } catch (Exception e) {
+      myDalServices.rollbackTransaction();
+      throw new WebApplicationException("Error refusing an object", Status.BAD_REQUEST);
+    } finally {
+      myDalServices.commitTransaction();
     }
 
-    return myObjectDAO.setStatusToRefused(id, reasonForRefusal, LocalDate.now());
   }
 
   /**
@@ -105,37 +159,48 @@ public class ObjectUCCImpl implements ObjectUCC {
    */
   @Override
   public ObjectDTO update(int id, ObjectDTO objectDTO, LocalDate date) {
-    ObjectDTO objectFromDB = myObjectDAO.getOneById(id);
 
-    if (!objectFromDB.getStatus().equals("accepté")) {
-      return null;
+    myDalServices.startTransaction();
+
+    try {
+      ObjectDTO objectFromDB = myObjectDAO.getOneById(id);
+
+      if (!objectFromDB.getStatus().equals("accepté")) {
+        return null;
+      }
+
+      if (!objectDTO.getState().equals(objectFromDB.getState())) {
+        if (objectDTO.getState().equals("en atelier")) {
+          objectFromDB.setWorkshopDate(date);
+        }
+        if (objectDTO.getState().equals("en magasin")) {
+          objectFromDB.setDepositDate(date);
+        }
+        if (objectDTO.getState().equals("mis en vente")) {
+          objectFromDB.setOnSaleDate(date);
+        }
+        if (objectDTO.getState().equals("vendu")) {
+          objectFromDB.setSellingDate(date);
+        }
+        if (objectDTO.getState().equals("retiré")) {
+          objectFromDB.setWithdrawalDate(date);
+        }
+      }
+
+      objectFromDB.setObjectType(objectDTO.getObjectType());
+      objectFromDB.setDescription(objectDTO.getDescription());
+      objectFromDB.setPrice(objectDTO.getPrice());
+      objectFromDB.setState(objectDTO.getState());
+      objectFromDB.setIsVisible(objectDTO.getisVisible());
+
+      return myObjectDAO.updateObject(objectFromDB.getId(), objectFromDB);
+
+    } catch (Exception e) {
+      myDalServices.rollbackTransaction();
+      throw new WebApplicationException("Error update an object", Status.BAD_REQUEST);
+    } finally {
+      myDalServices.commitTransaction();
     }
-
-    if (!objectDTO.getState().equals(objectFromDB.getState())) {
-      if (objectDTO.getState().equals("en atelier")) {
-        objectFromDB.setWorkshopDate(date);
-      }
-      if (objectDTO.getState().equals("en magasin")) {
-        objectFromDB.setDepositDate(date);
-      }
-      if (objectDTO.getState().equals("mis en vente")) {
-        objectFromDB.setOnSaleDate(date);
-      }
-      if (objectDTO.getState().equals("vendu")) {
-        objectFromDB.setSellingDate(date);
-      }
-      if (objectDTO.getState().equals("retiré")) {
-        objectFromDB.setWithdrawalDate(date);
-      }
-    }
-
-    objectFromDB.setObjectType(objectDTO.getObjectType());
-    objectFromDB.setDescription(objectDTO.getDescription());
-    objectFromDB.setPrice(objectDTO.getPrice());
-    objectFromDB.setState(objectDTO.getState());
-    objectFromDB.setIsVisible(objectDTO.getisVisible());
-
-    return myObjectDAO.updateObject(objectFromDB.getId(), objectFromDB);
   }
 
 
