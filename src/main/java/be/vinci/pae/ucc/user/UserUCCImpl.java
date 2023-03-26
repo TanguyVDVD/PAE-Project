@@ -61,6 +61,12 @@ public class UserUCCImpl implements UserUCC {
     }
   }
 
+  /**
+   * Method that register a user if the parameters are correct.
+   *
+   * @param userDTO the user to register
+   * @return the user that has been registered
+   */
   @Override
   public UserDTO register(UserDTO userDTO) {
 
@@ -113,6 +119,12 @@ public class UserUCCImpl implements UserUCC {
 
   }
 
+  /**
+   * Returns a list of all users.
+   *
+   * @param query query to filter users
+   * @return a list of all users
+   */
   public List<UserDTO> getUsers(String query) {
     myDalServices.startTransaction();
 
@@ -127,6 +139,12 @@ public class UserUCCImpl implements UserUCC {
     }
   }
 
+  /**
+   * Get a user by the id.
+   *
+   * @param id the user
+   * @return the user corresponding to the id
+   */
   @Override
   public UserDTO getUserById(int id) {
     myDalServices.startTransaction();
@@ -142,6 +160,12 @@ public class UserUCCImpl implements UserUCC {
     }
   }
 
+  /**
+   * Update a user.
+   *
+   * @param userDTO the user to update
+   * @return the updated user
+   */
   @Override
   public UserDTO updateUser(UserDTO userDTO, String password) {
     myDalServices.startTransaction();
@@ -212,6 +236,12 @@ public class UserUCCImpl implements UserUCC {
     }
   }
 
+  /**
+   * Get the profile picture of a user.
+   *
+   * @param id id of the user
+   * @return the profile picture of the user
+   */
   @Override
   public UserDTO updateUser(UserDTO userDTO) {
     return updateUser(userDTO, null);
@@ -226,6 +256,13 @@ public class UserUCCImpl implements UserUCC {
     return file.exists() ? file : null;
   }
 
+  /**
+   * Update the profile picture of a user.
+   *
+   * @param id    id of the user
+   * @param photo the photo to set
+   * @return whether the update was successful
+   */
   @Override
   public boolean saveProfilePicture(int id, InputStream photo) {
     try {
