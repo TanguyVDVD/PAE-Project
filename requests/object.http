@@ -1,9 +1,22 @@
-### Login as an admin
+### Login as Mr Riez
 POST {{baseUrl}}/users/login
 Content-Type: application/json
 
 {
   "email": "riez@ressourcerie.be",
+  "password": "password"
+}
+
+> {%
+  client.global.set("riezToken", response.body.token);
+%}
+
+### Login as an admin
+POST {{baseUrl}}/users/login
+Content-Type: application/json
+
+{
+  "email": "bernard@ressourcerie.be",
   "password": "password"
 }
 
@@ -52,7 +65,7 @@ Authorization: {{adminToken}}
   "isVisible": true
 }
 
-### Accept a offer
+### Try to accept an offer as an admin
 PATCH {{baseUrl}}/objects/status/2
 Content-Type: application/json
 Authorization: {{adminToken}}
@@ -61,7 +74,16 @@ Authorization: {{adminToken}}
   "status": "accepté"
 }
 
-### Refuse a offer without reason for refusal
+### Accept an offer as Mr Riez
+PATCH {{baseUrl}}/objects/status/2
+Content-Type: application/json
+Authorization: {{riezToken}}
+
+{
+  "status": "accepté"
+}
+
+### Refuse an offer without reason for refusal
 PATCH {{baseUrl}}/objects/status/1
 Content-Type: application/json
 Authorization: {{adminToken}}
@@ -71,7 +93,7 @@ Authorization: {{adminToken}}
   "reasonForRefusal": null
 }
 
-### Refuse a offer with an empty reason for refusal
+### Refuse an offer with an empty reason for refusal
 PATCH {{baseUrl}}/objects/status/1
 Content-Type: application/json
 Authorization: {{adminToken}}
@@ -81,7 +103,7 @@ Authorization: {{adminToken}}
   "reasonForRefusal": ""
 }
 
-### Refuse a offer with a reason for refusal
+### Refuse an offer with a reason for refusal
 PATCH {{baseUrl}}/objects/status/1
 Content-Type: application/json
 Authorization: {{adminToken}}
