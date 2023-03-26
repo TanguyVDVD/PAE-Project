@@ -149,3 +149,15 @@ VALUES (DEFAULT, 'Fauteuil design très confortable', true, 'après-midi', null,
 INSERT INTO pae.objects
 VALUES (DEFAULT, 'Tabouret de bar en cuir', true, 'après-midi', null, 'proposé', null, null,
         true, '2023-03-01', null, null, null, null, null, null, null, null, 4, 5, 3);
+
+
+---------------Requests--------------
+
+SELECT DISTINCT ob.state, count(ob.id_object) AS "Nombre d'objets par états" FROM pae.objects ob
+group by ob.state;
+
+SELECT count(u.id_user) AS "Nombres d'utilisateurs" FROM pae.users u;
+
+SELECT count(obt.id_object_type) AS "Nombres de types d'objets" FROM pae.object_types obt;
+
+SELECT count(av.date) AS "Nombres date de présence" FROM pae.availability av;
