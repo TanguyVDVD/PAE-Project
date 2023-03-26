@@ -23,7 +23,7 @@ Authorization: {{adminToken}}
 GET {{baseUrl}}/objects/1
 
 ### Set a object in the workshop
-PUT {{baseUrl}}/objects/update_object/1
+PUT {{baseUrl}}/objects/1
 Content-Type: application/json
 Authorization: {{adminToken}}
 
@@ -34,11 +34,11 @@ Authorization: {{adminToken}}
   "price": null,
   "state": "en atelier",
   "date": null,
-  "is_visible": true
+  "isVisible": true
 }
 
 ### Set a object on sale with a price
-PUT {{baseUrl}}/objects/update_object/3
+PUT {{baseUrl}}/objects/3
 Content-Type: application/json
 Authorization: {{adminToken}}
 
@@ -49,7 +49,7 @@ Authorization: {{adminToken}}
   "price": 9,
   "state": "mis en vente",
   "date": null,
-  "is_visible": true
+  "isVisible": true
 }
 
 ### Accept a offer
