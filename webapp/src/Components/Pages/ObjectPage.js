@@ -3,6 +3,8 @@ import {getAuthenticatedUser} from '../../utils/auths';
 import API from "../../utils/api";
 import {dateStringtoGoodFormat, getTodaySDate} from "../../utils/dates";
 import Navigate from "../Router/Navigate";
+import AdminOffersPage from "./admin/AdminOffersPage";
+import AdminObjectsPage from "./admin/AdminObjectsPage";
 
 
 const ObjectPage = (params) => {
@@ -97,22 +99,25 @@ function renderObjectPage(object, objectTypes) {
                           <input type="date" id="object-state-date-input">
                         </div>
                         
-                        <div class="form-group" id="object-state-date-form">
+                        <div class="form-group" id="object-price-form">
                           <br>
                           <label for="object-price-input">Prix</label>
-                          <input type="number" id="object-price-input" min="0">
+                          <input type="number" id="object-price-input" min="0" max="10">
                         </div>
                         <br>
                         <label>Visible : </label>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" id="object-isVisible-input" value="option1" checked>
-                          <label>Oui</label>
+                          <input class="form-check-input" type="radio" name="exampleRadios" id="object-isVisible-input">
+                          <label class="form-check-label">
+                            Oui
+                          </label>
                         </div>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" id="object-isNotVisible-input" value="option2">
-                          <label>Non</label>
+                          <input class="form-check-input" type="radio" name="exampleRadios" id="object-isNotVisible-input">
+                          <label class="form-check-label">
+                            Non
+                          </label>
                         </div>
-                        <br>
                         <br>
                         <button type="submit" class="btn btn-primary" id="save-btn">Sauvegarder</button>
                         <div class="bordure_verticale"></div>
@@ -127,8 +132,7 @@ function renderObjectPage(object, objectTypes) {
                   
                   ${authenticatedUser && authenticatedUser.id === 1 && object.state === "proposé" ?
                     `
-                      <div class="div-user" id="object-user-offer">
-                      </div>
+                      <div class="div-user" id="object-user-offer"></div>
                       
                       <div class="form-group" id="object-receipt-date-offer">
                         <p>À récupérer le ${dateStringtoGoodFormat(object.receiptDate)}</p>
@@ -173,20 +177,18 @@ function renderObjectPage(object, objectTypes) {
       document.getElementById("accept-btn").addEventListener('click', () => {
         const status = "accepté";
 
-        API.patch(`objects/status/${object.id}`, {body: {status}})
-        .then(() => {
-          Navigate('/admin/offers');
-        })
+        API.patch(`objects/status/${object.id}`, {body: {status}});
+        AdminOffersPage();
+        Navigate('/admin/offers');
       });
 
       document.getElementById("deny-btn").addEventListener('click', () => {
         const status = "refusé";
         const reasonForRefusal = document.getElementById("reason-for-refusal").value;
 
-        API.patch(`objects/status/${object.id}`, {body: {status, reasonForRefusal}})
-        .then(() => {
-          Navigate('/admin/offers');
-        })
+        API.patch(`objects/status/${object.id}`, {body: {status, reasonForRefusal}});
+        AdminOffersPage();
+        Navigate('/admin/offers');
       });
 
     }
@@ -195,21 +197,37 @@ function renderObjectPage(object, objectTypes) {
       setUserOrPhoneNumber("div-user", object, div);
       setDefaultValues(object);
 
+      const stateForm = document.getElementById("object-state-select");
+      const priceInput = document.getElementById("object-price-input");
+
+      stateForm.addEventListener("change", () => {
+        if (stateForm.value === "accepté" || stateForm.value === "à l'atelier" || stateForm.value === "en magasin"){
+          priceInput.value = null;
+          priceInput.disabled = true;
+        } else if (stateForm.value === "retiré"){
+          priceInput.value = object.price;
+          priceInput.disabled = true;
+        } else {
+          priceInput.value = object.price;
+          priceInput.disabled = false;
+        }
+      });
+
       document.getElementById("save-btn").addEventListener('click', () => {
         const description = document.getElementById("object-description-textarea").value;
         const type = document.getElementById("object-type-select").value;
         const state = document.getElementById("object-state-select").value;
         const date = document.getElementById("object-state-date-input").value;
         const price = document.getElementById("object-price-input").value;
-        const isVisible = document.getElementById("object-isVisible-input").defaultChecked;
+        const isVisible = document.getElementById("object-isVisible-input").checked;
 
-        API.put(`objects/${object.id}`, {body: {description, type, state, date, price, isVisible}})
-        .then(() => {
-          Navigate('/admin/objects');
-        })
+        API.put(`objects/${object.id}`, {body: {description, type, state, date, price, isVisible}});
+        AdminObjectsPage();
+        Navigate('/admin/objects');
       });
 
       document.getElementById("cancel-btn").addEventListener('click', () => {
+        AdminObjectsPage();
         Navigate('/admin/objects');
       });
     }
@@ -220,14 +238,29 @@ function setDefaultValues(object){
   document.getElementById("object-type-select").value = object.objectType;
   document.getElementById("object-state-select").value = object.state;
   document.getElementById("object-state-date-input").value = getTodaySDate();
-  document.getElementById("object-price-input").value = object.price;
-  if (object.isVisible){
-    document.getElementById("object-isNotVisible-input").defaultChecked = false;
-    document.getElementById("object-isVisible-input").defaultChecked = true;
+
+  const priceInput = document.getElementById("object-price-input");
+
+  if (object.state === "accepté" || object.state === "à l'atelier" || object.state === "en magasin"){
+    priceInput.value = null;
+    priceInput.disabled = true;
+  } else if (object.state === "retiré") {
+    priceInput.value = object.price;
+    priceInput.disabled = true;
+  } else {
+    priceInput.value = object.price;
+    priceInput.disabled = false;
   }
-  else{
-    document.getElementById("object-isVisible-input").defaultChecked = false;
-    document.getElementById("object-isNotVisible-input").defaultChecked = true;
+
+  const isVisibleRadio = document.getElementById("object-isVisible-input");
+  const isNotVisibleRadio = document.getElementById("object-isNotVisible-input");
+
+  if (object.isVisible){
+    isNotVisibleRadio.defaultChecked = false;
+    isVisibleRadio.defaultChecked = true;
+  } else{
+    isVisibleRadio.defaultChecked = false;
+    isNotVisibleRadio.defaultChecked = true;
   }
 }
 
