@@ -61,10 +61,16 @@ public class ObjectUCCImpl implements ObjectUCC {
    */
   @Override
   public ObjectDTO accept(int id) {
+    /*
     Object object = (Object) myDomainFactory.getObject();
     String status = myObjectDAO.getOneById(id).getStatus();
 
-    if (object.isStatusAlreadyDefined(status)) {
+     */
+
+    ObjectDTO object = myObjectDAO.getOneById(id);
+    String status = object.getStatus();
+    Object object1 = (Object) object;
+    if (object1.isStatusAlreadyDefined(status)) {
       return null;
     }
 
