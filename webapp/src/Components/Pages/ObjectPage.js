@@ -186,10 +186,8 @@ function renderObjectPage(object, objectTypes) {
         const status = "refusé";
         const reasonForRefusal = document.getElementById("reason-for-refusal").value;
 
-        API.patch(`objects/status/${object.id}`, {body: {status, reasonForRefusal}})
-        .then(() => {
-          Navigate('/admin/offers');
-        })
+        API.patch(`objects/status/${object.id}`, {body: {status, reasonForRefusal}});
+        Navigate('/admin/offers');
       });
 
     }
@@ -204,12 +202,11 @@ function renderObjectPage(object, objectTypes) {
         const state = document.getElementById("object-state-select").value;
         const date = document.getElementById("object-state-date-input").value;
         const price = document.getElementById("object-price-input").value;
-        const isVisible = document.getElementById("object-isVisible-input").defaultChecked;
+        const test = document.getElementById("object-isVisible-input");
+        const isVisible = test.defaultChecked;
 
-        API.put(`objects/${object.id}`, {body: {description, type, state, date, price, isVisible}})
-        .then(() => {
-          Navigate('/admin/objects');
-        })
+        API.put(`objects/${object.id}`, {body: {description, type, state, date, price, isVisible}});
+        Navigate('/admin/objects');
       });
 
       document.getElementById("cancel-btn").addEventListener('click', () => {
@@ -223,7 +220,9 @@ function setDefaultValues(object){
   document.getElementById("object-type-select").value = object.objectType;
   document.getElementById("object-state-select").value = object.state;
   document.getElementById("object-state-date-input").value = getTodaySDate();
-  document.getElementById("object-price-input").value = object.price;
+  if (object.price !== null){
+    document.getElementById("object-price-input").value = object.price;
+  }
   if (object.isVisible){
     document.getElementById("object-isNotVisible-input").defaultChecked = false;
     document.getElementById("object-isVisible-input").defaultChecked = true;
