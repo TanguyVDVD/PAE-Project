@@ -11,10 +11,10 @@ const renderPageTitle = (title) => {
   main.appendChild(pageTitle);
 };
 
-const renderError = (error) => {
+const renderError = (error, container = document.querySelector('main')) => {
   if (!error) return;
 
-  const main = document.querySelector('main');
+  if (container.querySelector('.alert')) container.querySelector('.alert').remove();
 
   const alert = document.createElement('div');
   alert.className = 'alert alert-danger alert-dismissible d-flex align-items-center';
@@ -29,7 +29,7 @@ const renderError = (error) => {
     alert.remove();
   });
 
-  main.prepend(alert);
+  container.prepend(alert);
 };
 
 export { clearPage, renderPageTitle, renderError };

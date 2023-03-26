@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 
@@ -37,11 +38,9 @@ public class UserUCCImpl implements UserUCC {
    */
   @Override
   public UserDTO login(String email, String password) {
-
     myDalServices.startTransaction();
 
     try {
-
       User userDB = (User) myUserDAO.getOneByEmail(email);
 
       if (userDB == null) {
@@ -53,10 +52,10 @@ public class UserUCCImpl implements UserUCC {
       }
 
       return userDB;
-
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new WebApplicationException("Error during the login", Status.BAD_REQUEST);
+      throw new WebApplicationException("Erreur lors de la connexion",
+          Status.INTERNAL_SERVER_ERROR);
     } finally {
       myDalServices.commitTransaction();
     }
@@ -113,7 +112,7 @@ public class UserUCCImpl implements UserUCC {
 
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new WebApplicationException("Error during the register", Status.BAD_REQUEST);
+      throw e;
     } finally {
       myDalServices.commitTransaction();
     }
@@ -127,17 +126,14 @@ public class UserUCCImpl implements UserUCC {
    * @return a list of all users
    */
   public List<UserDTO> getUsers(String query) {
-
     myDalServices.startTransaction();
 
     try {
       return myUserDAO.getAll(query);
-
-
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new WebApplicationException("Error while getting list all the users",
-          Status.BAD_REQUEST);
+      throw new WebApplicationException("Erreur lors de la récupération des utilisateurs",
+          Status.INTERNAL_SERVER_ERROR);
     } finally {
       myDalServices.commitTransaction();
     }
@@ -151,38 +147,41 @@ public class UserUCCImpl implements UserUCC {
    */
   @Override
   public UserDTO getUserById(int id) {
-
     myDalServices.startTransaction();
 
     try {
       return myUserDAO.getOneById(id);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new WebApplicationException("Error getting the user by id", Status.BAD_REQUEST);
+      throw new WebApplicationException("Erreur lors de la récupération de l'utilisateur",
+          Status.INTERNAL_SERVER_ERROR);
     } finally {
       myDalServices.commitTransaction();
     }
-
   }
 
   /**
-   * Update a user.
+   * Update a user, after verifying password.
    *
-   * @param userDTO the user to update
+   * @param userDTO  the user to update
+   * @param password the password of the user
    * @return the updated user
    */
   @Override
-  public UserDTO updateUser(UserDTO userDTO) {
-
+  public UserDTO updateUser(UserDTO userDTO, String password) {
     myDalServices.startTransaction();
 
     try {
-
       User userDB = (User) myUserDAO.getOneById(userDTO.getId());
 
       // Check if user exists
       if (userDB == null) {
         return null;
+      }
+
+      // Check if password is correct
+      if (password != null && !userDB.isPasswordCorrect(password)) {
+        throw new WebApplicationException("Mot de passe incorrect", Response.Status.BAD_REQUEST);
       }
 
       // Check if email is valid and not already used
@@ -232,10 +231,22 @@ public class UserUCCImpl implements UserUCC {
 
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new WebApplicationException("Error during the update", Status.BAD_REQUEST);
+      throw e;
     } finally {
       myDalServices.commitTransaction();
     }
+  }
+
+
+  /**
+   * Update a user.
+   *
+   * @param userDTO the user to update
+   * @return the updated user
+   */
+  @Override
+  public UserDTO updateUser(UserDTO userDTO) {
+    return updateUser(userDTO, null);
   }
 
   /**
@@ -261,23 +272,20 @@ public class UserUCCImpl implements UserUCC {
    * @return whether the update was successful
    */
   @Override
-  public boolean updateProfilePicture(int id, InputStream photo) {
-    // TODO: process the photo
-
+  public boolean saveProfilePicture(int id, InputStream photo) {
     try {
       String blobPath = Config.getProperty("BlobPath");
 
       // Create the blob directory if it doesn't exist
       Files.createDirectories(Paths.get(blobPath));
 
-      Files.copy(photo, Paths.get(blobPath, "user-" + id + ".jpg"));
+      Files.copy(photo, Paths.get(blobPath, "user-" + id + ".jpg"),
+          StandardCopyOption.REPLACE_EXISTING);
     } catch (Exception e) {
       e.printStackTrace();
 
       return false;
     }
-
-    // TODO: Update the user in the database
 
     return true;
   }
