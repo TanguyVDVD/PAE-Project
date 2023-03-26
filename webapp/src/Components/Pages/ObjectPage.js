@@ -167,8 +167,7 @@ function renderObjectPage(object, objectTypes) {
 
     main.appendChild(div);
 
-    if (authenticatedUser && authenticatedUser.isHelper && object.state !== "proposé"){
-      setDefaultValues(object);
+    if (authenticatedUser && authenticatedUser.isHelper && object.state === "proposé"){
       setUserOrPhoneNumber("div-user", object, div);
 
       document.getElementById("accept-btn").addEventListener('click', () => {
@@ -192,8 +191,10 @@ function renderObjectPage(object, objectTypes) {
 
     }
 
-    if (authenticatedUser && authenticatedUser.id === 1 && object.state === "proposé"){
+    if (authenticatedUser && authenticatedUser.id === 1 && object.state !== "proposé"){
       setUserOrPhoneNumber("div-user", object, div);
+      setDefaultValues(object);
+
       document.getElementById("save-btn").addEventListener('click', () => {
         const description = document.getElementById("object-description-textarea").value;
         const type = document.getElementById("object-type-select").value;
@@ -206,6 +207,10 @@ function renderObjectPage(object, objectTypes) {
         .then(() => {
           Navigate('/admin/objects');
         })
+      });
+
+      document.getElementById("cancel-btn").addEventListener('click', () => {
+        Navigate('/admin/objects');
       });
     }
 
