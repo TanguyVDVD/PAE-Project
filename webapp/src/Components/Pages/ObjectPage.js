@@ -3,6 +3,8 @@ import {getAuthenticatedUser} from '../../utils/auths';
 import API from "../../utils/api";
 import {dateStringtoGoodFormat, getTodaySDate} from "../../utils/dates";
 import Navigate from "../Router/Navigate";
+import AdminOffersPage from "./admin/AdminOffersPage";
+import AdminObjectsPage from "./admin/AdminObjectsPage";
 
 
 const ObjectPage = (params) => {
@@ -176,6 +178,7 @@ function renderObjectPage(object, objectTypes) {
         const status = "accepté";
 
         API.patch(`objects/status/${object.id}`, {body: {status}});
+        AdminOffersPage();
         Navigate('/admin/offers');
       });
 
@@ -184,6 +187,7 @@ function renderObjectPage(object, objectTypes) {
         const reasonForRefusal = document.getElementById("reason-for-refusal").value;
 
         API.patch(`objects/status/${object.id}`, {body: {status, reasonForRefusal}});
+        AdminOffersPage();
         Navigate('/admin/offers');
       });
 
@@ -218,10 +222,12 @@ function renderObjectPage(object, objectTypes) {
         const isVisible = document.getElementById("object-isVisible-input").checked;
 
         API.put(`objects/${object.id}`, {body: {description, type, state, date, price, isVisible}});
+        AdminObjectsPage();
         Navigate('/admin/objects');
       });
 
       document.getElementById("cancel-btn").addEventListener('click', () => {
+        AdminObjectsPage();
         Navigate('/admin/objects');
       });
     }
