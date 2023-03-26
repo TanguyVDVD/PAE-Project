@@ -120,6 +120,11 @@ class UserUCCImplTest {
     userMockedStatic.when(() -> User.hashPassword("password")).thenReturn("hashedPassword");
   }
 
+  /**
+   * Set up a valid user.
+   *
+   * @param validUser the user to set up
+   */
   void setUpValidUser(User validUser) {
     Mockito.when(validUser.getId()).thenReturn(2);
     Mockito.when(validUser.getEmail()).thenReturn("anotherValidUser@example.com");
@@ -137,7 +142,6 @@ class UserUCCImplTest {
 
     Mockito.when(validUser.getPhoto()).thenReturn(true);
 
-//    Mockito.when(userDAO.getOneById(2)).thenReturn(validUser);
     Mockito.when(userDAO.getOneByEmail("anotherValidUser@example.com")).thenReturn(validUser);
     Mockito.when(userDAO.getOneByPhoneNumber("0493999999")).thenReturn(validUser);
   }
@@ -352,7 +356,7 @@ class UserUCCImplTest {
     Mockito.when(userDAO.getOneById(2)).thenReturn(validUser);
     Mockito.when(userDAO.getOneByEmail("anotherValidUser@example.com")).thenReturn(null);
     Mockito.when(user.getPhoneNumber()).thenReturn("0493");
-    
+
     assertThrows(WebApplicationException.class, () -> userUCC.updateUser(user),
         "updateUser() did not throw an exception although the phone number is invalid");
   }
