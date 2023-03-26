@@ -96,7 +96,7 @@ Authorization: {{adminToken}}
 ### Refuse an offer with an empty reason for refusal
 PATCH {{baseUrl}}/objects/status/1
 Content-Type: application/json
-Authorization: {{adminToken}}
+Authorization: {{riezToken}}
 
 {
   "status": "refusé",

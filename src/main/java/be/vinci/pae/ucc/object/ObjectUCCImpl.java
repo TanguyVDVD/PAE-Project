@@ -1,6 +1,5 @@
 package be.vinci.pae.ucc.object;
 
-import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.object.Object;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.services.DALServices;
@@ -21,10 +20,6 @@ public class ObjectUCCImpl implements ObjectUCC {
 
   @Inject
   private DALServices myDalServices;
-
-  @Inject
-  private DomainFactory myDomainFactory;
-
 
   /**
    * Returns a list of all objects.
@@ -100,8 +95,8 @@ public class ObjectUCCImpl implements ObjectUCC {
 
     myDalServices.startTransaction();
     try {
-      Object object = (Object) myDomainFactory.getObject();
-      String status = myObjectDAO.getOneById(id).getStatus();
+      Object object = (Object) myObjectDAO.getOneById(id);
+      String status = object.getStatus();
 
       if (object.isStatusAlreadyDefined(status)) {
         return null;
@@ -131,8 +126,8 @@ public class ObjectUCCImpl implements ObjectUCC {
 
     try {
 
-      Object object = (Object) myDomainFactory.getObject();
-      String status = myObjectDAO.getOneById(id).getStatus();
+      Object object = (Object) myObjectDAO.getOneById(id);
+      String status = object.getStatus();
 
       if (object.isStatusAlreadyDefined(status)) {
         return null;
