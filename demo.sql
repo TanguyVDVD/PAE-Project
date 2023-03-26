@@ -42,7 +42,7 @@ CREATE TABLE pae.objects (
                              price FLOAT,
                              state VARCHAR(15),
                              status VARCHAR(15),
-                             reason_for_refusal VARCHAR(50),
+                             reason_for_refusal VARCHAR(120),
                              is_visible BOOLEAN NOT NULL,
                              offer_date DATE NOT NULL,
                              acceptance_date DATE,
