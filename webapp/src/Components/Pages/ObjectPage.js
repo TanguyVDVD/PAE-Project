@@ -148,6 +148,18 @@ function renderObjectPage(object, objectTypes) {
                       <a href="#" class="deny" id="deny-btn">Refuser l'objet<span class="fa fa-close"></span></a>
                     ` : ''
                   }
+                  
+                  ${authenticatedUser && !authenticatedUser.helper ?
+                    `
+                      <div id="object-state-non-helper">
+                        <p>État : ${object.state}</p>
+                      </div>
+                      
+                      <div id="object-price-non-helper">
+                        <p>Prix : ${object.price}€</p>
+                      </div>
+                    ` : ''
+    }
               </div>
         </div>
     </section>
