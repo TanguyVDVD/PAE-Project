@@ -7,10 +7,7 @@ import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +42,7 @@ public class UserDAOImpl implements UserDAO {
       user.setEmail(resultSet.getString("email"));
       user.setPassword(resultSet.getString("password"));
       user.setPhoto(resultSet.getBoolean("photo"));
-      user.setRegisterDate(resultSet.getString("register_date"));
+      user.setRegisterDate(resultSet.getDate("register_date").toLocalDate());
       user.setIsHelper(resultSet.getBoolean("is_helper"));
     } catch (SQLException se) {
       se.printStackTrace();
@@ -72,11 +69,7 @@ public class UserDAOImpl implements UserDAO {
       ps.setString(5, userDTO.getPassword());
       ps.setBoolean(6, userDTO.getPhoto());
 
-      SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-      Date parsed = format.parse(userDTO.getRegisterDate());
-      java.sql.Date sql = new java.sql.Date(parsed.getTime());
-
-      ps.setDate(7, sql);
+      ps.setDate(7, java.sql.Date.valueOf(userDTO.getRegisterDate()));
       ps.setBoolean(8, userDTO.isHelper());
       ps.executeUpdate();
 
@@ -87,8 +80,6 @@ public class UserDAOImpl implements UserDAO {
       }
     } catch (SQLException se) {
       se.printStackTrace();
-    } catch (ParseException e) {
-      throw new RuntimeException(e);
     }
 
     return -1;
