@@ -1,6 +1,7 @@
 package be.vinci.pae.api.filters;
 
 import be.vinci.pae.domain.user.User;
+import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.user.UserDAO;
 import be.vinci.pae.utils.Config;
 import com.auth0.jwt.JWT;
@@ -29,31 +30,45 @@ public class AuthorizationRequestFilter implements ContainerRequestFilter {
   @Inject
   private UserDAO myUserDAO;
 
+  @Inject
+  private DALServices mysDalServices;
+
   @Override
   public void filter(ContainerRequestContext requestContext) {
-    String token = requestContext.getHeaderString("Authorization");
 
-    if (token == null) {
-      throw new WebApplicationException("Vous n'avez pas les droits pour accéder à cette ressource",
-          Status.FORBIDDEN);
-    } else {
-      DecodedJWT decodedToken = null;
+    mysDalServices.startTransaction();
 
-      try {
-        decodedToken = this.jwtVerifier.verify(token);
-      } catch (Exception e) {
-        throw new WebApplicationException("Token malformé : " + e.getMessage(),
-            Status.UNAUTHORIZED);
-      }
+    try {
 
-      User authenticatedUser = (User) myUserDAO.getOneById(decodedToken.getClaim("user").asInt());
-      if (authenticatedUser == null) {
+      String token = requestContext.getHeaderString("Authorization");
+
+      if (token == null) {
         throw new WebApplicationException(
             "Vous n'avez pas les droits pour accéder à cette ressource",
             Status.FORBIDDEN);
-      }
+      } else {
+        DecodedJWT decodedToken = null;
 
-      requestContext.setProperty("user", authenticatedUser);
+        try {
+          decodedToken = this.jwtVerifier.verify(token);
+        } catch (Exception e) {
+          throw new WebApplicationException("Token malformé : " + e.getMessage(),
+              Status.UNAUTHORIZED);
+        }
+
+        User authenticatedUser = (User) myUserDAO.getOneById(decodedToken.getClaim("user").asInt());
+        if (authenticatedUser == null) {
+          throw new WebApplicationException(
+              "Vous n'avez pas les droits pour accéder à cette ressource",
+              Status.FORBIDDEN);
+        }
+
+        requestContext.setProperty("user", authenticatedUser);
+      }
+    } catch (Exception e) {
+      mysDalServices.rollbackTransaction();
+    } finally {
+      mysDalServices.commitTransaction();
     }
   }
 

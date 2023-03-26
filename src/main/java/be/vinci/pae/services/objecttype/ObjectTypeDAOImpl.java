@@ -1,13 +1,10 @@
 package be.vinci.pae.services.objecttype;
 
-import be.vinci.pae.domain.DomainFactory;
-import be.vinci.pae.domain.objecttype.ObjectTypeDTO;
-import be.vinci.pae.services.DALServices;
+import be.vinci.pae.services.DalBackendServices;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 /**
  * ObjectTypeDAO class that implements ObjectTypeDAO interface Provide the different methods.
@@ -15,53 +12,7 @@ import java.util.ArrayList;
 public class ObjectTypeDAOImpl implements ObjectTypeDAO {
 
   @Inject
-  private DALServices myDALServices;
-
-  @Inject
-  private DomainFactory myDomainFactory;
-
-  /**
-   * Map a ResultSet to a ObjectTypeDTO.
-   *
-   * @param resultSet the ResultSet
-   * @return the ObjectTypeDTO
-   */
-  public ObjectTypeDTO dtoFromRS(ResultSet resultSet) {
-    ObjectTypeDTO objectType = myDomainFactory.getObjectType();
-
-    try {
-      objectType.setId(resultSet.getInt("id_object_type"));
-      objectType.setLabel(resultSet.getString("label"));
-    } catch (SQLException se) {
-      se.printStackTrace();
-    }
-
-    return objectType;
-  }
-
-  /**
-   * Get all object types.
-   *
-   * @return the list of object types
-   */
-  @Override
-  public Object getAll() {
-    String request = "SELECT * FROM pae.object_types ORDER BY id_object_type";
-    ArrayList<ObjectTypeDTO> objectTypes = new ArrayList<>();
-
-    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
-
-      try (ResultSet rs = ps.executeQuery()) {
-        while (rs.next()) {
-          objectTypes.add(dtoFromRS(rs));
-        }
-      }
-    } catch (SQLException se) {
-      se.printStackTrace();
-    }
-
-    return objectTypes;
-  }
+  private DalBackendServices dalBackendServices;
 
   /**
    * Get the object type by the id.
@@ -73,7 +24,7 @@ public class ObjectTypeDAOImpl implements ObjectTypeDAO {
   public String getOneById(int id) {
     String request = "SELECT label FROM pae.object_types WHERE id_object_type = ?;";
 
-    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       ps.setInt(1, id);
 
       try (ResultSet rs = ps.executeQuery()) {
@@ -89,16 +40,16 @@ public class ObjectTypeDAOImpl implements ObjectTypeDAO {
   }
 
   /**
-   * Get the object type id by the label.
+   * Return the id corresponding to the type label.
    *
-   * @param label the label of the object type
-   * @return the id corresponding to the label
+   * @param type the type label
+   * @return the id corresponding
    */
-  public int getIdByLabel(String label) {
+  public int getIdByString(String type) {
     String request = "SELECT id_object_type FROM pae.object_types WHERE label = ?;";
 
-    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
-      ps.setString(1, label);
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
+      ps.setString(1, type);
 
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {

@@ -2,7 +2,7 @@ package be.vinci.pae.services.object;
 
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.object.ObjectDTO;
-import be.vinci.pae.services.DALServices;
+import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.services.availability.AvailabilityDAO;
 import be.vinci.pae.services.objecttype.ObjectTypeDAO;
 import be.vinci.pae.services.user.UserDAO;
@@ -23,7 +23,7 @@ public class ObjectDAOImpl implements ObjectDAO {
   private DomainFactory myDomainFactory;
 
   @Inject
-  private DALServices myDALServices;
+  private DalBackendServices dalBackendServices;
 
   @Inject
   private UserDAO myUserDao;
@@ -100,7 +100,7 @@ public class ObjectDAOImpl implements ObjectDAO {
 
     ArrayList<ObjectDTO> objects = new ArrayList<>();
 
-    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       ps.setString(1, query == null ? "" : query.toLowerCase());
 
       try (ResultSet rs = ps.executeQuery()) {
@@ -130,7 +130,7 @@ public class ObjectDAOImpl implements ObjectDAO {
 
     ArrayList<ObjectDTO> objects = new ArrayList<>();
 
-    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       ps.setString(1, query == null ? "" : query.toLowerCase());
 
       try (ResultSet rs = ps.executeQuery()) {
@@ -155,7 +155,7 @@ public class ObjectDAOImpl implements ObjectDAO {
   public ObjectDTO getOneById(int id) {
     String request = "SELECT * FROM pae.objects WHERE id_object = ?";
 
-    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       ps.setInt(1, id);
 
       try (ResultSet rs = ps.executeQuery()) {
@@ -182,8 +182,9 @@ public class ObjectDAOImpl implements ObjectDAO {
     String request =
         "UPDATE pae.objects SET status = 'accepté', acceptance_date = ? WHERE id_object = ?;";
 
-    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       ps.setDate(1, java.sql.Date.valueOf(acceptanceDate));
+
       ps.setInt(2, id);
       ps.executeUpdate();
     } catch (SQLException se) {
@@ -217,7 +218,7 @@ public class ObjectDAOImpl implements ObjectDAO {
             + "withdrawal_date = ? "
             + "WHERE id_object = ?;";
 
-    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       ps.setString(1, objectDTO.getDescription());
       ps.setInt(2, myObjectTypeDAO.getIdByLabel(objectDTO.getObjectType()));
       ps.setBoolean(3, objectDTO.getisVisible());
@@ -256,8 +257,9 @@ public class ObjectDAOImpl implements ObjectDAO {
     String request = "UPDATE pae.objects SET status = 'refusé', refusal_date = ?, "
         + "reason_for_refusal = ?, state = 'refusé' WHERE id_object = ?;";
 
-    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       ps.setDate(1, java.sql.Date.valueOf(refusalDate));
+
       ps.setString(2, reasonForRefusal);
       ps.setInt(3, id);
       ps.executeUpdate();
