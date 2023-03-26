@@ -69,8 +69,7 @@ public class ObjectUCCImpl implements ObjectUCC {
 
     ObjectDTO object = myObjectDAO.getOneById(id);
     String status = object.getStatus();
-    Object object1 = (Object) object;
-    if (object1.isStatusAlreadyDefined(status)) {
+    if (Object.isStatusAlreadyDefined(status)) {
       return null;
     }
 
@@ -89,7 +88,7 @@ public class ObjectUCCImpl implements ObjectUCC {
     Object object = (Object) myDomainFactory.getObject();
     String status = myObjectDAO.getOneById(id).getStatus();
 
-    if (object.isStatusAlreadyDefined(status)) {
+    if (Object.isStatusAlreadyDefined(status)) {
       return null;
     }
 

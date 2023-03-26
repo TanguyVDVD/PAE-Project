@@ -11,5 +11,5 @@ public interface Object extends ObjectDTO {
    * @param status the status of the object
    * @return true if the status of the object is already defined, else false
    */
-  boolean isStatusAlreadyDefined(String status);
+  static boolean isStatusAlreadyDefined(String status);
 }
