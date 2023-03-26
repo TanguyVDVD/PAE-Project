@@ -4,6 +4,7 @@ import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.ucc.object.ObjectUCC;
+import be.vinci.pae.utils.MyLogger;
 import be.vinci.pae.utils.MyObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,6 +25,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import java.time.LocalDate;
+import java.util.logging.Level;
 
 
 /**
@@ -32,6 +34,8 @@ import java.time.LocalDate;
 @Singleton
 @Path("/objects")
 public class ObjectResource {
+
+  //private static final Logger logger = Logger.getLogger(ObjectResource.class.getName());
 
   private final ObjectMapper jsonMapper = MyObjectMapper.getJsonMapper();
   @Inject
@@ -82,6 +86,7 @@ public class ObjectResource {
     }
     ObjectDTO objectDTO = objectUCC.getOne(id);
     if (objectDTO == null) {
+      MyLogger.log(Level.INFO, "Impossible de trouver les informations de l'objet");
       throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
           .entity("Impossible de trouver les informations de l'objet").type("text/plain").build());
     }
