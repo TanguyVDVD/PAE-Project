@@ -105,14 +105,17 @@ function renderObjectPage(object, objectTypes) {
                         <br>
                         <label>Visible : </label>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" id="object-isVisible-input" value="option1" checked>
-                          <label>Oui</label>
+                          <input class="form-check-input" type="radio" name="exampleRadios" id="object-isVisible-input">
+                          <label class="form-check-label">
+                            Oui
+                          </label>
                         </div>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" id="object-isNotVisible-input" value="option2">
-                          <label>Non</label>
+                          <input class="form-check-input" type="radio" name="exampleRadios" id="object-isNotVisible-input">
+                          <label class="form-check-label">
+                            Non
+                          </label>
                         </div>
-                        <br>
                         <br>
                         <button type="submit" class="btn btn-primary" id="save-btn">Sauvegarder</button>
                         <div class="bordure_verticale"></div>
