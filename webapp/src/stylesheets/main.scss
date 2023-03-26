@@ -35,3 +35,39 @@ body {
     padding: 0.5rem;
   }
 }
+
+a{
+  text-decoration: none;
+}
+.accept {
+  color: #FFF;
+  background: rgba(93, 150, 93, 0.82);
+  padding: 15px 20px;
+  border-radius: 15px;
+}
+.accept:hover {
+  background: #517051;
+}
+.deny {
+  color: #FFF;
+  background: rgba(208, 101, 78, 0.83);
+  padding: 15px 20px;
+  border-radius: 15px;
+}
+.deny:hover {
+  background: rgb(176, 86, 69);
+}
+
+.bordure_verticale {
+  height: 50px;
+  margin: 20px;
+  display: inline-block;
+  vertical-align: middle;
+  
+  }
+
+#refuse{
+  border-radius: 10px;
+  vertical-align: middle;
+  width: 400px;
+}

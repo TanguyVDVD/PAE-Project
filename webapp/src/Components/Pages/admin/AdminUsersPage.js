@@ -6,7 +6,7 @@ import API from '../../../utils/api';
 const AdminUsersPage = () => {
   const user = getAuthenticatedUser();
 
-  if (!user || !user.helper) {
+  if (!user || !user.isHelper) {
     Navigate('/');
     return;
   }
@@ -71,7 +71,7 @@ async function fetchUsers(query = '') {
                     <th scope="row">${user.id}</th>
                     <td>${user.lastName}</td>
                     <td>${user.firstName}</td>
-                    <td>${user.helper ? 'Aidant' : 'Utilisateur'}</td>
+                    <td>${user.isHelper ? 'Aidant' : 'Utilisateur'}</td>
                     <td>
                       <a href="#" class="btn btn-link" role="button" data-id="${user.id}">
                         Voir plus

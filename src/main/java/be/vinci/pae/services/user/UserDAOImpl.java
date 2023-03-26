@@ -2,7 +2,7 @@ package be.vinci.pae.services.user;
 
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.user.UserDTO;
-import be.vinci.pae.services.DALServices;
+import be.vinci.pae.services.DalBackendServices;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,7 +23,7 @@ public class UserDAOImpl implements UserDAO {
   private DomainFactory myDomainFactory;
 
   @Inject
-  private DALServices myDALServices;
+  private DalBackendServices dalBackendServices;
 
   /**
    * Map a ResultSet to a UserDTO.
@@ -61,7 +61,7 @@ public class UserDAOImpl implements UserDAO {
   public int insert(UserDTO userDTO) {
     String request = "INSERT INTO" + " pae.users VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-    try (PreparedStatement ps = myDALServices.getPreparedStatement(request, true)) {
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       ps.setString(1, userDTO.getLastName());
       ps.setString(2, userDTO.getFirstName());
       ps.setString(3, userDTO.getPhoneNumber());
@@ -70,7 +70,7 @@ public class UserDAOImpl implements UserDAO {
       ps.setBoolean(6, userDTO.getPhoto());
 
       ps.setDate(7, java.sql.Date.valueOf(userDTO.getRegisterDate()));
-      ps.setBoolean(8, userDTO.isHelper());
+      ps.setBoolean(8, userDTO.getIsHelper());
       ps.executeUpdate();
 
       // Get the id of the new user
@@ -94,7 +94,7 @@ public class UserDAOImpl implements UserDAO {
   public UserDTO getOneByEmail(String email) {
     String request = "SELECT * FROM pae.users WHERE email = ?";
 
-    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       ps.setString(1, email);
 
       try (ResultSet rs = ps.executeQuery()) {
@@ -113,7 +113,7 @@ public class UserDAOImpl implements UserDAO {
   public UserDTO getOneByPhoneNumber(String phoneNumber) {
     String request = "SELECT * FROM pae.users WHERE phone_number = ?";
 
-    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       ps.setString(1, phoneNumber);
 
       try (ResultSet rs = ps.executeQuery()) {
@@ -137,7 +137,7 @@ public class UserDAOImpl implements UserDAO {
   public UserDTO getOneById(int id) {
     String request = "SELECT * FROM pae.users WHERE id_user = ?";
 
-    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       ps.setInt(1, id);
 
       try (ResultSet rs = ps.executeQuery()) {
@@ -163,7 +163,7 @@ public class UserDAOImpl implements UserDAO {
         + "LIKE CONCAT('%', ?, '%') ORDER BY id_user";
     ArrayList<UserDTO> users = new ArrayList<>();
 
-    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       ps.setString(1, query == null ? "" : query.toLowerCase());
 
       try (ResultSet rs = ps.executeQuery()) {
@@ -209,8 +209,8 @@ public class UserDAOImpl implements UserDAO {
     if (userDTO.getRegisterDate() != null) {
       fields.put("register_date", userDTO.getRegisterDate());
     }
-    if (userDTO.isHelper() != null) {
-      fields.put("is_helper", userDTO.isHelper());
+    if (userDTO.getIsHelper() != null) {
+      fields.put("is_helper", userDTO.getIsHelper());
     }
 
     if (fields.isEmpty()) {
@@ -220,7 +220,7 @@ public class UserDAOImpl implements UserDAO {
     String request = "UPDATE pae.users SET " + fields.keySet().stream()
         .map(key -> key + " = ?").collect(Collectors.joining(", ")) + " WHERE id_user = ?";
 
-    try (PreparedStatement ps = myDALServices.getPreparedStatement(request)) {
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       int i = 1;
       for (Object value : fields.values()) {
         ps.setObject(i++, value);

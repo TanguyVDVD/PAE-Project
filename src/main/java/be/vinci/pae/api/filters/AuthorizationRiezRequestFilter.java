@@ -8,20 +8,21 @@ import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.ext.Provider;
 
 /**
- * Filter to check if the user is authorized as an admin to access the resource.
+ * Filter to check if the user is authorized as Mr Riez to access the resource.
  */
 @Singleton
 @Provider
-@AuthorizeAdmin
-public class AuthorizationAdminRequestFilter extends AuthorizationRequestFilter {
+@AuthorizeRiez
+public class AuthorizationRiezRequestFilter extends AuthorizationAdminRequestFilter {
 
   @Override
   public void filter(ContainerRequestContext requestContext) {
     super.filter(requestContext);
 
     User authenticatedUser = (User) requestContext.getProperty("user");
-    if (!authenticatedUser.getIsHelper()) {
-      throw new WebApplicationException("Vous n'avez pas les droits pour accéder à cette ressource",
+    if (authenticatedUser.getId() != 1) {
+      throw new WebApplicationException(
+          "Vous n'avez pas les droits pour accéder à cette ressource. Seul Mr Riez y a droit",
           Status.FORBIDDEN);
     }
   }

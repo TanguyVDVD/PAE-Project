@@ -2,12 +2,12 @@ import Navigate from '../../Router/Navigate';
 import { getAuthenticatedUser } from '../../../utils/auths';
 import { clearPage } from '../../../utils/render';
 import API from '../../../utils/api';
-import {dateStringtoGoodFormat, subtractDates} from "../../../utils/dates";
+import { dateStringtoGoodFormat, subtractDates } from '../../../utils/dates';
 
 const AdminOffersPage = () => {
   const user = getAuthenticatedUser();
 
-  if (!user || !user.helper) {
+  if (!user || !user.isHelper) {
     Navigate('/');
     return;
   }
@@ -51,7 +51,9 @@ async function fetchOffers(query = '') {
         <div class="container mt-5 mb-5">
             <div class="d-flex justify-content-center row">
                 <div class="col-md-10">
-                    ${offers.map((offer) => `
+                    ${offers
+                      .map(
+                        (offer) => `
                         <div class="row p-2 bg-white border rounded">
                             <div class="col-md-3 mt-1">
                                 <img 
@@ -67,8 +69,11 @@ async function fetchOffers(query = '') {
                                 </div>
                                 
                                 <p>
-                                    À récupérer le ${dateStringtoGoodFormat(offer.receiptDate)} ${offer.timeSlot === "matin" ?
-                                    " au ".concat(offer.timeSlot) : " l'".concat(offer.timeSlot)}
+                                    À récupérer le ${dateStringtoGoodFormat(offer.receiptDate)} ${
+                          offer.timeSlot === 'matin'
+                            ? ' au '.concat(offer.timeSlot)
+                            : " l'".concat(offer.timeSlot)
+                        }
                                 </p>
                                 
                                 <div class="div-user">
@@ -80,18 +85,22 @@ async function fetchOffers(query = '') {
                                 </div>
                                                                 
                                 <div class="d-flex flex-column mt-4 div-button">
-                                    <button class="btn btn-outline-primary btn-sm button-respond" type="button" data-id="${offer.id}">Répondre</button>
+                                    <button class="btn btn-outline-primary btn-sm button-respond" type="button" data-id="${
+                                      offer.id
+                                    }">Répondre</button>
                                 </div>
                             </div>
                         </div>
-                `,).join('')}
+                `,
+                      )
+                      .join('')}
                 </div>                     
             </div>
         </div>
       `;
 
-    setUserOrPhoneNumber("div-user", offers);
-    setRemainingTime("div-remaining-time", offers);
+    setUserOrPhoneNumber('div-user', offers);
+    setRemainingTime('div-remaining-time', offers);
 
     list.querySelectorAll('a[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
@@ -109,17 +118,16 @@ async function fetchOffers(query = '') {
   });
 }
 
-function setUserOrPhoneNumber(className, offers){
+function setUserOrPhoneNumber(className, offers) {
   const elements = document.getElementsByClassName(className);
   for (let i = 0; i < elements.length; i += 1) {
     const offer = offers[i];
     const element = elements.item(i);
-    if (offer.user === null){
+    if (offer.user === null) {
       element.innerHTML = `
           <p>Proposé anonymement par ${offer.phoneNumber}</p>
-      `
-    }
-    else {
+      `;
+    } else {
       element.innerHTML = `
           <p>
           Proposé par
@@ -127,12 +135,12 @@ function setUserOrPhoneNumber(className, offers){
                   ${offer.user.firstName} ${offer.user.lastName}
               </a>
           </p>
-      `
+      `;
     }
   }
 }
 
-function setRemainingTime(className, offers){
+function setRemainingTime(className, offers) {
   const elements = document.getElementsByClassName(className);
   for (let i = 0; i < elements.length; i += 1) {
     const offer = offers[i];
@@ -143,15 +151,14 @@ function setRemainingTime(className, offers){
 
     const timeRemaining = subtractDates(receiptDate, todaySDate);
 
-    if (timeRemaining <= 3){
+    if (timeRemaining <= 3) {
       element.innerHTML = `
           <h6 class="text-danger">${timeRemaining} jours restants pour répondre !</h6>
-      `
-    }
-    else {
+      `;
+    } else {
       element.innerHTML = `
           <h6 class="text-primary">${timeRemaining} jours restants pour répondre</h6>
-      `
+      `;
     }
   }
 }

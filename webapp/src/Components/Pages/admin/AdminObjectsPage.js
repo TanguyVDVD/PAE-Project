@@ -7,7 +7,7 @@ import {subtractDates, dateStringtoGoodFormat} from "../../../utils/dates";
 const AdminObjectsPage = () => {
   const user = getAuthenticatedUser();
 
-  if (!user || !user.helper) {
+  if (!user || !user.isHelper) {
     Navigate('/');
     return;
   }
@@ -110,14 +110,14 @@ async function fetchObjects(query = '') {
           Navigate(`/object/${e.target.dataset.id}`);
         }
         else if (e.currentTarget.classList.contains("button-respond")) {
-          Navigate(`/proposition/${e.target.dataset.id}`);
+          Navigate(`/object/${e.target.dataset.id}`);
         }
       });
     });
   });
 }
 
-function setReceiptDate(className, objects){
+function setReceiptDate(className, objects) {
   const elements = document.getElementsByClassName(className);
   for (let i = 0; i < elements.length; i += 1) {
     const object = objects[i];
@@ -137,22 +137,21 @@ function setReceiptDate(className, objects){
               Récupéré le ${dateStringtoGoodFormat(object.receiptDate)} ${object.timeSlot === "matin" ?
           " au ".concat(object.timeSlot) : " l'".concat(object.timeSlot)}
           </p>
-      `
+      `;
     }
   }
 }
 
-function setUserOrPhoneNumber(className, objects){
+function setUserOrPhoneNumber(className, objects) {
   const elements = document.getElementsByClassName(className);
   for (let i = 0; i < elements.length; i += 1) {
     const object = objects[i];
     const element = elements.item(i);
-    if (object.user === null){
+    if (object.user === null) {
       element.innerHTML = `
-          <p>Proposé anonymement par ${object.phoneNumber}</p>
-      `
-    }
-    else {
+          <p>Proposé anonymement au ${object.phoneNumber}</p>
+      `;
+    } else {
       element.innerHTML = `
           <p>
           Proposé par
@@ -160,86 +159,79 @@ function setUserOrPhoneNumber(className, objects){
                   ${object.user.firstName} ${object.user.lastName}
               </a>
           </p>
-      `
+      `;
     }
   }
 }
 
-function setPriceOrTimeRemaining(className, objects){
+function setPriceOrTimeRemaining(className, objects) {
   const elements = document.getElementsByClassName(className);
   for (let i = 0; i < elements.length; i += 1) {
     const object = objects[i];
     const element = elements.item(i);
 
-    if (object.state === "proposé"){
+    if (object.state === 'proposé') {
       const receiptDate = new Date(object.receiptDate);
       const todaySDate = new Date();
 
       const timeRemaining = subtractDates(receiptDate, todaySDate);
 
-      if (timeRemaining <= 3){
+      if (timeRemaining <= 3) {
         element.innerHTML = `
           <p class="text-danger">${timeRemaining} jours restants pour répondre !</p>
-      `
-      }
-      else {
+      `;
+      } else {
         element.innerHTML = `
           <p class="text-primary">${timeRemaining} jours restants pour répondre</p>
-      `
+      `;
       }
-    }
-    else if (object.status === "refusé"){
-      element.innerHTML = ``
-    }
-    else {
+    } else if (object.status === 'refusé') {
+      element.innerHTML = ``;
+    } else {
       element.innerHTML = `
           <h4 class="mr-1">${object.price} €</h4>
-      `
+      `;
     }
   }
 }
 
-function setStateColor(className, objects){
+function setStateColor(className, objects) {
   const elements = document.getElementsByClassName(className);
   for (let i = 0; i < elements.length; i += 1) {
     const object = objects[i];
     const element = elements.item(i);
 
-    if (object.state === "refusé"){
+    if (object.state === 'refusé') {
       element.innerHTML = `
           <h6 class="text-danger">${object.state}</h6>
-      `
-    }
-    else if (object.state === "proposé"){
+      `;
+    } else if (object.state === 'proposé') {
       element.innerHTML = `
           <h6 class="text-primary">${object.state}</h6>
-      `
-    }
-    else {
+      `;
+    } else {
       element.innerHTML = `
           <h6 class="text-success">${object.state}</h6>
-      `
+      `;
     }
   }
 }
 
-function setButton(className, objects){
+function setButton(className, objects) {
   const elements = document.getElementsByClassName(className);
   for (let i = 0; i < elements.length; i += 1) {
     const object = objects[i];
     const element = elements.item(i);
-    if (object.state === "refusé"){
-      element.innerHTML = ``
-    }
-    else if (object.state === "proposé"){
+    if (object.state === 'refusé') {
+      element.innerHTML = ``;
+    } else if (object.state === 'proposé') {
       element.innerHTML = `
           <button class="btn btn-outline-primary btn-sm button-respond" type="button" data-id="${object.id}">Répondre</button>
-      `
-    }
-    else {
+      `;
+    } else {
       element.innerHTML = `
           <button class="btn btn-primary btn-sm button-modify" type="button" data-id="${object.id}">Modifier</button>
-      `
+      `;
     }
   }
 }

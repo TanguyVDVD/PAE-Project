@@ -1,6 +1,7 @@
 package be.vinci.pae.api;
 
 import be.vinci.pae.api.filters.AuthorizeAdmin;
+import be.vinci.pae.api.filters.AuthorizeRiez;
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.ucc.object.ObjectUCC;
@@ -100,7 +101,7 @@ public class ObjectResource {
    */
 
   @PUT
-  @Path("/update_object/{id}")
+  @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
@@ -108,6 +109,7 @@ public class ObjectResource {
     if (!json.hasNonNull("type") || !json.hasNonNull("description") || !json.hasNonNull(
         "state") || !json.hasNonNull("is_visible")) {
       MyLogger.log(Level.INFO, "Tous les champs ne sont pas remplis");
+
       throw new WebApplicationException("Tous les champs ne sont pas remplis",
           Status.BAD_REQUEST);
     }
@@ -127,23 +129,23 @@ public class ObjectResource {
     }
 
     String stateObject = json.get("state").asText();
-    int priceObject = 0;
 
     if (stateObject.equals("mis en vente") && !json.hasNonNull("price")) {
-      priceObject = json.get("price").asInt();
-      if (priceObject > 10 || priceObject == 0) {
-        MyLogger.log(Level.INFO, "Le prix doit être compris entre 1 et 10€");
-        throw new WebApplicationException("Le prix doit être compris entre 1 et 10€",
-            Status.NOT_FOUND);
-      }
       MyLogger.log(Level.INFO, "Un prix doit être entré");
       throw new WebApplicationException("Un prix doit être entré",
           Status.NOT_FOUND);
     }
 
+    int priceObject = json.get("price").asInt();
+
+    if (priceObject > 10 || priceObject < 0) {
+      throw new WebApplicationException("Le prix doit être compris entre 0€ et 10€",
+          Status.NOT_FOUND);
+    }
+
     String typeObject = json.get("type").asText();
     String descriptionObject = json.get("description").asText();
-    boolean isVisibleObject = json.get("is_visible").asBoolean();
+    boolean isVisibleObject = json.get("isVisible").asBoolean();
 
     ObjectDTO objectUpdated = myDomainFactory.getObject();
 
@@ -169,7 +171,7 @@ public class ObjectResource {
   @Path("/status/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
-  @AuthorizeAdmin
+  @AuthorizeRiez
   public ObjectNode updateObjectStatus(JsonNode json, @PathParam("id") int id) {
     String status = json.get("status").asText();
     if (id <= 0 || status.isBlank() || !status.equals("refusé") && !status.equals("accepté")) {

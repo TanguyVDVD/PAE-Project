@@ -1,11 +1,13 @@
 package be.vinci.pae.domain.availability;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.time.LocalDate;
 
 /**
  * AvailabilityDTO interface. Representing a data transfer object (DTO) for an availability in the
  * domain The interface only contains getter and setter.
  */
+@JsonDeserialize(as = AvailabilityImpl.class)
 public interface AvailabilityDTO {
 
   /**

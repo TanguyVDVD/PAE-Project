@@ -127,7 +127,8 @@ Authorization: {{nonAdminToken}}
 Content-Type: application/json
 
 {
-  "firstName": "Bart"
+  "firstName": "Bart",
+  "currentPassword": "password"
 }
 
 ### Update a user's helper status as an admin
@@ -136,5 +137,5 @@ Authorization: {{adminToken}}
 Content-Type: application/json
 
 {
-  "helper": true
+  "isHelper": true
 }
