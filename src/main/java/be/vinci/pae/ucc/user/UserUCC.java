@@ -61,19 +61,19 @@ public interface UserUCC {
   UserDTO updateUser(UserDTO userDTO);
 
   /**
-   * Get the profile picture of a user.
+   * Get a user's profile picture.
    *
-   * @param id id of the user
+   * @param userDTO the user
    * @return the profile picture of the user
    */
-  File getProfilePicture(int id);
+  File getProfilePicture(UserDTO userDTO);
 
   /**
-   * Save the profile picture of a user.
+   * Update a user's profile picture.
    *
-   * @param id    id of user
-   * @param photo the photo to set
-   * @return whether the saving was successful
+   * @param userDTO the user
+   * @param file    the new profile picture
+   * @return the updated user
    */
-  boolean saveProfilePicture(int id, InputStream photo);
+  UserDTO updateProfilePicture(UserDTO userDTO, InputStream file);
 }

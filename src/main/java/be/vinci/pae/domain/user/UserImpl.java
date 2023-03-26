@@ -1,7 +1,13 @@
 package be.vinci.pae.domain.user;
 
 
+import be.vinci.pae.utils.Config;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -209,5 +215,44 @@ public class UserImpl implements User {
   @Override
   public boolean isPasswordCorrect(String password) {
     return BCrypt.checkpw(password, this.password);
+  }
+
+  /**
+   * Get the profile picture of the user.
+   *
+   * @return the profile picture of the user
+   */
+  @Override
+  public File profilePictureFile() {
+    String blobPath = Config.getProperty("BlobPath");
+
+    File file = new File(blobPath, "user-" + id + ".jpg");
+
+    return file.exists() ? file : null;
+  }
+
+  /**
+   * Save the profile picture of the user.
+   *
+   * @param photo the photo to set
+   * @return whether the saving was successful
+   */
+  @Override
+  public boolean saveProfilePicture(InputStream photo) {
+    try {
+      String blobPath = Config.getProperty("BlobPath");
+
+      // Create the blob directory if it doesn't exist
+      Files.createDirectories(Paths.get(blobPath));
+
+      Files.copy(photo, Paths.get(blobPath, "user-" + id + ".jpg"),
+          StandardCopyOption.REPLACE_EXISTING);
+    } catch (Exception e) {
+      e.printStackTrace();
+
+      return false;
+    }
+
+    return true;
   }
 }
