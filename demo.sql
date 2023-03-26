@@ -89,23 +89,23 @@ INSERT INTO pae.object_types VALUES (DEFAULT, 'Vaisselle');
 
 INSERT INTO pae.users
 VALUES (DEFAULT, 'Riez', 'Robert', '0477968547', 'bert.riez@gmail.be',
-        '7fcf25d45072aa4b564be14ba1d51b0d94e3a076b5d3b2175a43eab2414eb2e3', true, '2023-02-01', true);
+        '$2a$10$61RLCqTVMfFoqZyC3CqJS.IqvdGQgr96wcFuP7WMJWtf4su3Mn0iu', true, '2023-02-01', true);
 
 INSERT INTO pae.users
 VALUES (DEFAULT, 'Muise', 'Alfred', '0476963626', 'fred.muise@gmail.be',
-        'a9872e85148d41adc2e5a302002ac6e27115623fed7aeea99ed5d93363f5877c', true, '2023-02-01', true);
+        '$2a$10$JYWLAigic6ES55nzD3rtI.UUNqhy9UJBIVv9pdDONmYashdZ1yG6W', true, '2023-02-01', true);
 
 INSERT INTO pae.users
 VALUES (DEFAULT, 'Line', 'Caroline', '0487452379', 'caro.line@hotmail.com',
-        'b113a7fa5c829b0dd12e9dddbb10e7201559dc3ff2917ead0b2984c53d1a71da', true, '2023-02-01', false);
+        '$2a$10$3eqeUfrPN4XeX8NJdWwHuO3nHLwFP.7Qkq4VI191ArfopvdejS.p2', true, '2023-02-01', false);
 
 INSERT INTO pae.users
 VALUES (DEFAULT, 'Ile', 'Achille', '0477653224', 'ach.ile@gmail.com',
-        'b113a7fa5c829b0dd12e9dddbb10e7201559dc3ff2917ead0b2984c53d1a71da', true, '2023-02-01', false);
+        '$2a$10$3eqeUfrPN4XeX8NJdWwHuO3nHLwFP.7Qkq4VI191ArfopvdejS.p2', true, '2023-02-01', false);
 
 INSERT INTO pae.users
 VALUES (DEFAULT, 'Ile', 'Basile', '0485988642', 'basi.le@gmail.be',
-        'b113a7fa5c829b0dd12e9dddbb10e7201559dc3ff2917ead0b2984c53d1a71da', true, '2023-02-01', false);
+        '$2a$10$3eqeUfrPN4XeX8NJdWwHuO3nHLwFP.7Qkq4VI191ArfopvdejS.p2', true, '2023-02-01', false);
 
 INSERT INTO pae.availability VALUES (DEFAULT, '2023-03-04');
 
