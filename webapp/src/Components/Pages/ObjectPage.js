@@ -199,7 +199,7 @@ function renderObjectPage(object, objectTypes) {
       const priceInput = document.getElementById("object-price-input");
 
       stateForm.addEventListener("change", () => {
-        if (stateForm.value === "accepté"){
+        if (stateForm.value === "accepté" || stateForm.value === "à l'atelier" || stateForm.value === "en magasin"){
           priceInput.value = null;
           priceInput.disabled = true;
         }
@@ -232,16 +232,26 @@ function setDefaultValues(object){
   document.getElementById("object-type-select").value = object.objectType;
   document.getElementById("object-state-select").value = object.state;
   document.getElementById("object-state-date-input").value = getTodaySDate();
-  if (object.price !== null){
-    document.getElementById("object-price-input").value = object.price;
+
+  const priceInput = document.getElementById("object-price-input");
+
+  if (object.state === "accepté" || object.state === "à l'atelier" || object.state === "en magasin"){
+    priceInput.value = null;
+    priceInput.disabled = true;
+  } else {
+    priceInput.value = object.price;
+    priceInput.disabled = false;
   }
+
+  const isVisibleRadio = document.getElementById("object-isVisible-input");
+  const isNotVisibleRadio = document.getElementById("object-isNotVisible-input");
+
   if (object.isVisible){
-    document.getElementById("object-isNotVisible-input").defaultChecked = false;
-    document.getElementById("object-isVisible-input").defaultChecked = true;
-  }
-  else{
-    document.getElementById("object-isVisible-input").defaultChecked = false;
-    document.getElementById("object-isNotVisible-input").defaultChecked = true;
+    isNotVisibleRadio.defaultChecked = false;
+    isVisibleRadio.defaultChecked = true;
+  } else{
+    isVisibleRadio.defaultChecked = false;
+    isNotVisibleRadio.defaultChecked = true;
   }
 }
 
