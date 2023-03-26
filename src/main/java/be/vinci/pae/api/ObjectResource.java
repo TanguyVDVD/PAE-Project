@@ -1,6 +1,7 @@
 package be.vinci.pae.api;
 
 import be.vinci.pae.api.filters.AuthorizeAdmin;
+import be.vinci.pae.api.filters.AuthorizeRiez;
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.ucc.object.ObjectUCC;
@@ -162,7 +163,7 @@ public class ObjectResource {
   @Path("/status/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
-  @AuthorizeAdmin
+  @AuthorizeRiez
   public ObjectNode updateObjectStatus(JsonNode json, @PathParam("id") int id) {
     String status = json.get("status").asText();
     if (id <= 0 || status.isBlank() || !status.equals("refusé") && !status.equals("accepté")) {
