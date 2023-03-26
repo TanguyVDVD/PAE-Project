@@ -240,6 +240,9 @@ function setDefaultValues(object){
   if (object.state === "accepté" || object.state === "à l'atelier" || object.state === "en magasin"){
     priceInput.value = null;
     priceInput.disabled = true;
+  } else if (object.state === "retiré") {
+    priceInput.value = object.price;
+    priceInput.disabled = true;
   } else {
     priceInput.value = object.price;
     priceInput.disabled = false;
