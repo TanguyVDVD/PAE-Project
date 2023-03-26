@@ -202,8 +202,7 @@ function renderObjectPage(object, objectTypes) {
         const state = document.getElementById("object-state-select").value;
         const date = document.getElementById("object-state-date-input").value;
         const price = document.getElementById("object-price-input").value;
-        const test = document.getElementById("object-isVisible-input");
-        const isVisible = test.defaultChecked;
+        const isVisible = document.getElementById("object-isVisible-input").checked;
 
         API.put(`objects/${object.id}`, {body: {description, type, state, date, price, isVisible}});
         Navigate('/admin/objects');
