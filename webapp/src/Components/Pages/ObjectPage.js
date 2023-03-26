@@ -175,10 +175,8 @@ function renderObjectPage(object, objectTypes) {
       document.getElementById("accept-btn").addEventListener('click', () => {
         const status = "accepté";
 
-        API.patch(`objects/status/${object.id}`, {body: {status}})
-        .then(() => {
-          Navigate('/admin/offers');
-        })
+        API.patch(`objects/status/${object.id}`, {body: {status}});
+        Navigate('/admin/offers');
       });
 
       document.getElementById("deny-btn").addEventListener('click', () => {
