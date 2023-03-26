@@ -3,6 +3,7 @@ package be.vinci.pae.api;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.domain.DomainFactory;
+import be.vinci.pae.domain.user.User;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.ucc.user.UserUCC;
 import be.vinci.pae.utils.Config;
@@ -19,6 +20,7 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -138,7 +140,7 @@ public class UserResource {
     UserDTO userAfterRegister = userUCC.register(userRegister);
 
     if (userAfterRegister.getPhoto()) {
-      userUCC.updateProfilePicture(userAfterRegister.getId(), photo);
+      userUCC.saveProfilePicture(userAfterRegister.getId(), photo);
     }
 
     return createToken(userAfterRegister);
@@ -190,42 +192,57 @@ public class UserResource {
    */
   @PATCH
   @Path("/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Authorize
   public UserDTO updateUserInfo(@Context ContainerRequest request, @PathParam("id") int id,
-      UserDTO data) {
+      JsonNode data) {
     UserDTO authorizedUser = (UserDTO) request.getProperty("user");
+
+    // Will only be verified if not null
+    String passwordToVerify = null;
 
     // Create a new DTO to only keep changes
     UserDTO userDTO = myDomainFactory.getUser();
-
     userDTO.setId(id);
+
+    UserDTO dataDTO = jsonMapper.convertValue(data, UserDTO.class);
 
     if (authorizedUser.getId() == id) {
       // Only the user themselves can change their own information
-      if (StringUtils.isNotBlank(data.getFirstName())) {
-        userDTO.setFirstName(data.getFirstName());
+
+      // Verify current password
+      if (data.hasNonNull("currentPassword")) {
+        passwordToVerify = data.get("currentPassword").asText();
       }
 
-      if (StringUtils.isNotBlank(data.getLastName())) {
-        userDTO.setLastName(data.getLastName());
+      if (StringUtils.isBlank(passwordToVerify)) {
+        throw new WebApplicationException("Mot de passe actuel requis", Status.BAD_REQUEST);
       }
 
-      if (StringUtils.isNotBlank(data.getEmail())) {
-        userDTO.setEmail(data.getEmail());
+      if (StringUtils.isNotBlank(dataDTO.getFirstName())) {
+        userDTO.setFirstName(dataDTO.getFirstName());
       }
 
-      if (StringUtils.isNotBlank(data.getPhoneNumber())) {
-        userDTO.setPhoneNumber(data.getPhoneNumber());
+      if (StringUtils.isNotBlank(dataDTO.getLastName())) {
+        userDTO.setLastName(dataDTO.getLastName());
       }
 
-      if (StringUtils.isNotBlank(data.getPassword())) {
-        userDTO.setPassword(data.getPassword());
+      if (StringUtils.isNotBlank(dataDTO.getEmail())) {
+        userDTO.setEmail(dataDTO.getEmail());
+      }
+
+      if (StringUtils.isNotBlank(dataDTO.getPhoneNumber())) {
+        userDTO.setPhoneNumber(dataDTO.getPhoneNumber());
+      }
+
+      if (StringUtils.isNotBlank(dataDTO.getPassword())) {
+        userDTO.setPassword(dataDTO.getPassword());
       }
     } else if (authorizedUser.getId() == 1) {
       // Only the admin can change the helper status
-      if (data.getIsHelper() != null) {
-        userDTO.setIsHelper(data.getIsHelper());
+      if (dataDTO.getIsHelper() != null) {
+        userDTO.setIsHelper(dataDTO.getIsHelper());
       }
     } else {
       // The user is not the admin and is not the user themselves
@@ -233,7 +250,7 @@ public class UserResource {
           Status.UNAUTHORIZED);
     }
 
-    UserDTO userAfterUpdate = userUCC.updateUser(userDTO);
+    UserDTO userAfterUpdate = userUCC.updateUser(userDTO, passwordToVerify);
 
     if (userAfterUpdate == null) {
       throw new WebApplicationException("Utilisateur non trouvé", Status.NOT_FOUND);
@@ -276,5 +293,56 @@ public class UserResource {
 
     return Response.ok(f, MediaType.APPLICATION_OCTET_STREAM)
         .header("Content-Disposition", "attachment; filename=\"" + f.getName() + "\"").build();
+  }
+
+  /**
+   * Update a user's profile picture.
+   *
+   * @param request     the request
+   * @param id          the user's id
+   * @param password    the user's password
+   * @param photo       the photo of the user
+   * @param photoDetail the detail of the photo
+   * @return the user's information
+   */
+  @PUT
+  @Path("/{id}/photo")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Authorize
+  public UserDTO updateProfilePicture(@Context ContainerRequest request,
+      @PathParam("id") int id,
+      @FormDataParam("password") String password,
+      @FormDataParam("photo") InputStream photo,
+      @FormDataParam("photo") FormDataContentDisposition photoDetail) {
+    User authorizedUser = (User) request.getProperty("user");
+
+    if (authorizedUser.getId() != id) {
+      throw new WebApplicationException("Vous n'avez pas les droits pour modifier cet utilisateur",
+          Status.UNAUTHORIZED);
+    }
+
+    if (photoDetail == null || photoDetail.getFileName() == null) {
+      throw new WebApplicationException("Paramètres manquants", Response.Status.BAD_REQUEST);
+    }
+
+    if (!authorizedUser.isPasswordCorrect(password)) {
+      throw new WebApplicationException("Mot de passe incorrect", Response.Status.UNAUTHORIZED);
+    }
+
+    userUCC.saveProfilePicture(id, photo);
+
+    UserDTO userDTO = myDomainFactory.getUser();
+
+    userDTO.setId(id);
+    userDTO.setPhoto(true);
+
+    UserDTO userAfterUpdate = userUCC.updateUser(userDTO);
+
+    if (userAfterUpdate == null) {
+      throw new WebApplicationException("Utilisateur non trouvé", Status.NOT_FOUND);
+    }
+
+    return userAfterUpdate;
   }
 }
