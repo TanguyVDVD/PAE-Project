@@ -70,7 +70,7 @@ public class UserDAOImpl implements UserDAO {
       ps.setBoolean(6, userDTO.getPhoto());
 
       ps.setDate(7, java.sql.Date.valueOf(userDTO.getRegisterDate()));
-      ps.setBoolean(8, userDTO.isHelper());
+      ps.setBoolean(8, userDTO.getIsHelper());
       ps.executeUpdate();
 
       // Get the id of the new user
@@ -209,8 +209,8 @@ public class UserDAOImpl implements UserDAO {
     if (userDTO.getRegisterDate() != null) {
       fields.put("register_date", userDTO.getRegisterDate());
     }
-    if (userDTO.isHelper() != null) {
-      fields.put("is_helper", userDTO.isHelper());
+    if (userDTO.getIsHelper() != null) {
+      fields.put("is_helper", userDTO.getIsHelper());
     }
 
     if (fields.isEmpty()) {
