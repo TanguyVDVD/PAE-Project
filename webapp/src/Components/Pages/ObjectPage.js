@@ -97,7 +97,7 @@ function renderObjectPage(object, objectTypes) {
                           <input type="date" id="object-state-date-input">
                         </div>
                         
-                        <div class="form-group" id="object-state-date-form">
+                        <div class="form-group" id="object-price-form">
                           <br>
                           <label for="object-price-input">Prix</label>
                           <input type="number" id="object-price-input" min="0" max="10">
@@ -130,8 +130,7 @@ function renderObjectPage(object, objectTypes) {
                   
                   ${authenticatedUser && authenticatedUser.id === 1 && object.state === "proposé" ?
                     `
-                      <div class="div-user" id="object-user-offer">
-                      </div>
+                      <div class="div-user" id="object-user-offer"></div>
                       
                       <div class="form-group" id="object-receipt-date-offer">
                         <p>À récupérer le ${dateStringtoGoodFormat(object.receiptDate)}</p>
@@ -195,6 +194,20 @@ function renderObjectPage(object, objectTypes) {
     if (authenticatedUser && authenticatedUser.id === 1 && object.state !== "proposé"){
       setUserOrPhoneNumber("div-user", object, div);
       setDefaultValues(object);
+
+      const stateForm = document.getElementById("object-state-select");
+      const priceInput = document.getElementById("object-price-input");
+
+      stateForm.addEventListener("change", () => {
+        if (stateForm.value === "accepté"){
+          priceInput.value = null;
+          priceInput.disabled = true;
+        }
+        else {
+          priceInput.value = object.price;
+          priceInput.disabled = false;
+        }
+      });
 
       document.getElementById("save-btn").addEventListener('click', () => {
         const description = document.getElementById("object-description-textarea").value;
