@@ -202,8 +202,10 @@ function renderObjectPage(object, objectTypes) {
         if (stateForm.value === "accepté" || stateForm.value === "à l'atelier" || stateForm.value === "en magasin"){
           priceInput.value = null;
           priceInput.disabled = true;
-        }
-        else {
+        } else if (stateForm.value === "retiré"){
+          priceInput.value = object.price;
+          priceInput.disabled = true;
+        } else {
           priceInput.value = object.price;
           priceInput.disabled = false;
         }
