@@ -161,9 +161,10 @@ public class UserUCCImpl implements UserUCC {
   }
 
   /**
-   * Update a user.
+   * Update a user, after verifying password.
    *
-   * @param userDTO the user to update
+   * @param userDTO  the user to update
+   * @param password the password of the user
    * @return the updated user
    */
   @Override
@@ -236,17 +237,24 @@ public class UserUCCImpl implements UserUCC {
     }
   }
 
+
   /**
-   * Get the profile picture of a user.
+   * Update a user.
    *
-   * @param id id of the user
-   * @return the profile picture of the user
+   * @param userDTO the user to update
+   * @return the updated user
    */
   @Override
   public UserDTO updateUser(UserDTO userDTO) {
     return updateUser(userDTO, null);
   }
 
+  /**
+   * Get the profile picture of a user.
+   *
+   * @param id id of the user
+   * @return the profile picture of the user
+   */
   @Override
   public File getProfilePicture(int id) {
     String blobPath = Config.getProperty("BlobPath");
