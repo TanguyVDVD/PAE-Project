@@ -149,7 +149,7 @@ function setUserOrPhoneNumber(className, objects){
     const element = elements.item(i);
     if (object.user === null){
       element.innerHTML = `
-          <p>Proposé anonymement par ${object.phoneNumber}</p>
+          <p>Proposé anonymement au ${object.phoneNumber}</p>
       `
     }
     else {
