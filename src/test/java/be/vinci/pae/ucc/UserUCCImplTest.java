@@ -124,6 +124,130 @@ class UserUCCImplTest {
     assertNull(userDTO, "Login returned a user although the password is null");
   }
 
+  @DisplayName("Exception during login")
+  @Test
+  void loginException() {
+    Mockito.when(userDAO.getOneByEmail("test@example.com")).thenThrow(new RuntimeException());
+    assertThrows(WebApplicationException.class,
+        () -> userUCC.login("test@example.com", "password"), "Login did not throw an exception");
+  }
+
+  @DisplayName("Register with correct credentials")
+  @Test
+  void registerWithCorrectCredentials() {
+    User user = Mockito.mock(UserImpl.class);
+    Mockito.when(user.getEmail()).thenReturn("test@example.com");
+    Mockito.when(user.getPhoneNumber()).thenReturn("493111111");
+    Mockito.when(user.getPassword()).thenReturn("password");
+
+    try (MockedStatic<User> userMockedStatic = Mockito.mockStatic(User.class)) {
+      userMockedStatic.when(() -> User.emailIsValid("test@example.com")).thenReturn(true);
+      userMockedStatic.when(() -> User.formatPhoneNumber("493111111")).thenReturn("0493111111");
+
+      Mockito.when(userDAO.getOneByEmail("test@example.com")).thenReturn(null);
+      Mockito.when(userDAO.getOneByPhoneNumber("0493111111")).thenReturn(null);
+
+      userMockedStatic.when(() -> User.hashPassword("password")).thenReturn("hashedPassword");
+
+      Mockito.when(userDAO.insert(user)).thenReturn(1);
+
+      assertEquals(user, userUCC.register(user), "register() did not return the correct id");
+    }
+  }
+
+  @DisplayName("Register with incorrect email")
+  @Test
+  void registerWithIncorrectEmail() {
+    User user = Mockito.mock(UserImpl.class);
+    Mockito.when(user.getEmail()).thenReturn("test");
+
+    try (MockedStatic<User> userMockedStatic = Mockito.mockStatic(User.class)) {
+      userMockedStatic.when(() -> User.emailIsValid("test")).thenReturn(false);
+      assertThrows(WebApplicationException.class, () -> userUCC.register(user),
+          "register() did not throw an exception");
+    }
+  }
+
+  @DisplayName("Register with incorrect phone number")
+  @Test
+  void registerWithIncorrectPhoneNumber() {
+    User user = Mockito.mock(UserImpl.class);
+    Mockito.when(user.getPhoneNumber()).thenReturn("0493111111");
+
+    try (MockedStatic<User> userMockedStatic = Mockito.mockStatic(User.class)) {
+      userMockedStatic.when(() -> User.formatPhoneNumber("0493111111")).thenReturn(null);
+      assertThrows(WebApplicationException.class, () -> userUCC.register(user),
+          "register() did not throw an exception");
+    }
+  }
+
+  @DisplayName("Register with existing email")
+  @Test
+  void registerWithExistingEmail() {
+    User user = Mockito.mock(UserImpl.class);
+    Mockito.when(user.getEmail()).thenReturn("test@example.com");
+    Mockito.when(user.getPhoneNumber()).thenReturn("0493111111");
+    Mockito.when(user.getPassword()).thenReturn("password");
+
+    try (MockedStatic<User> userMockedStatic = Mockito.mockStatic(User.class)) {
+      userMockedStatic.when(() -> User.emailIsValid("test@example.com")).thenReturn(true);
+      userMockedStatic.when(() -> User.formatPhoneNumber("0493111111")).thenReturn("0493111111");
+
+      Mockito.when(userDAO.getOneByEmail("test@example.com")).thenReturn(user);
+      assertThrows(WebApplicationException.class, () -> userUCC.register(user),
+          "register() did not throw an exception");
+    }
+  }
+
+  @DisplayName("Register with existing phone number")
+  @Test
+  void registerWithExistingPhoneNumber() {
+    User user = Mockito.mock(UserImpl.class);
+    Mockito.when(user.getEmail()).thenReturn("test@example.com");
+    Mockito.when(user.getPhoneNumber()).thenReturn("0493111111");
+    Mockito.when(user.getPassword()).thenReturn("password");
+
+    try (MockedStatic<User> userMockedStatic = Mockito.mockStatic(User.class)) {
+      userMockedStatic.when(() -> User.emailIsValid("test@example.com")).thenReturn(true);
+      userMockedStatic.when(() -> User.formatPhoneNumber("0493111111")).thenReturn("0493111111");
+
+      Mockito.when(userDAO.getOneByEmail("test@example.com")).thenReturn(null);
+      Mockito.when(userDAO.getOneByPhoneNumber("0493111111")).thenReturn(user);
+      assertThrows(WebApplicationException.class, () -> userUCC.register(user),
+          "register() did not throw an exception");
+    }
+  }
+
+  @DisplayName("Register with insert not returning id")
+  @Test
+  void registerWithInsertNotReturningId() {
+    User user = Mockito.mock(UserImpl.class);
+    Mockito.when(user.getEmail()).thenReturn("test@example.com");
+    Mockito.when(user.getPhoneNumber()).thenReturn("0493111111");
+    Mockito.when(user.getPassword()).thenReturn("password");
+
+    try (MockedStatic<User> userMockedStatic = Mockito.mockStatic(User.class)) {
+      userMockedStatic.when(() -> User.emailIsValid("test@example.com")).thenReturn(true);
+      userMockedStatic.when(() -> User.formatPhoneNumber("0493111111")).thenReturn("0493111111");
+
+      userMockedStatic.when(() -> User.hashPassword("password")).thenReturn("hashedPassword");
+
+      Mockito.when(userDAO.insert(user)).thenReturn(-1);
+
+      assertNull(userUCC.register(user), "register() did not return null");
+    }
+  }
+
+  @DisplayName("Exception during registration")
+  @Test
+  void exceptionDuringRegistration() {
+    User user = Mockito.mock(UserImpl.class);
+    Mockito.when(user.getEmail()).thenReturn(null);
+
+    assertThrows(WebApplicationException.class, () -> userUCC.register(user),
+        "register() did not throw an exception");
+  }
+
   @DisplayName("Get list of all users")
   @Test
   void getAllUsers() {
@@ -134,6 +258,15 @@ class UserUCCImplTest {
     assertEquals(users, userUCC.getUsers(""), "getAllUsers() did not return the correct list");
   }
 
+  @DisplayName("Exception when getting list of all users")
+  @Test
+  void exceptionWhenGettingAllUsers() {
+    Mockito.when(userDAO.getAll("")).thenThrow(new RuntimeException());
+
+    assertThrows(WebApplicationException.class, () -> userUCC.getUsers(""),
+        "getUsers() did not throw an exception");
+  }
+
   @DisplayName("Get a user by id")
   @Test
   void getUserById() {
@@ -141,6 +274,15 @@ class UserUCCImplTest {
     Mockito.when(userDAO.getOneById(1)).thenReturn(user);
 
     assertEquals(user, userUCC.getUserById(1), "getUserById() did not return the correct user");
+  }
+
+  @DisplayName("Exception when getting a user by id")
+  @Test
+  void exceptionWhenGettingUserById() {
+    Mockito.when(userDAO.getOneById(1)).thenThrow(new RuntimeException());
+
+    assertThrows(WebApplicationException.class, () -> userUCC.getUserById(1),
+        "getUserById() did not throw an exception");
   }
 
   @DisplayName("Update user without verifying the current password, email, or phone number")
@@ -328,6 +470,17 @@ class UserUCCImplTest {
     assertNull(userUCC.updateUser(user), "updateUser() did not return null");
   }
 
+  @DisplayName("Update user with non-existing user")
+  @Test
+  void updateUserWithNonExistingUser() {
+    UserDTO user = Mockito.mock(UserImpl.class);
+    Mockito.when(user.getId()).thenReturn(1);
+
+    Mockito.when(userDAO.getOneById(1)).thenReturn(null);
+
+    assertNull(userUCC.updateUser(user), "updateUser() did not return null");
+  }
+
   @DisplayName("Get profile picture of existing user")
   @Test
   void getProfilePictureOfExistingUser() {
@@ -379,5 +532,36 @@ class UserUCCImplTest {
 
     assertNull(userUCC.updateProfilePicture(user, inputStream),
         "updateProfilePicture() did not return null");
+  }
+
+  @DisplayName("Update profile picture with update failure")
+  @Test
+  void updateProfilePictureWithUpdateFailure() {
+    User user = Mockito.mock(UserImpl.class);
+    Mockito.when(user.getId()).thenReturn(1);
+    Mockito.when(userDAO.getOneById(1)).thenReturn(user);
+
+    InputStream inputStream = Mockito.mock(InputStream.class);
+    Mockito.when(user.saveProfilePicture(inputStream)).thenReturn(true);
+
+    Mockito.when(userDAO.update(user)).thenReturn(false);
+
+    assertNull(userUCC.updateProfilePicture(user, inputStream),
+        "updateProfilePicture() did not return null");
+  }
+
+  @DisplayName("Exception during update profile picture")
+  @Test
+  void updateProfilePictureWithException() {
+    User user = Mockito.mock(UserImpl.class);
+    Mockito.when(user.getId()).thenReturn(1);
+    Mockito.when(userDAO.getOneById(1)).thenReturn(user);
+
+    InputStream inputStream = Mockito.mock(InputStream.class);
+    Mockito.when(user.saveProfilePicture(inputStream)).thenThrow(new RuntimeException());
+
+    assertThrows(WebApplicationException.class,
+        () -> userUCC.updateProfilePicture(user, inputStream),
+        "updateProfilePicture() did not throw an exception");
   }
 }

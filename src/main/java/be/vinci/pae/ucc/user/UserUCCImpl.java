@@ -50,6 +50,7 @@ public class UserUCCImpl implements UserUCC {
       return userDB;
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
+
       throw new WebApplicationException("Erreur lors de la connexion",
           Status.INTERNAL_SERVER_ERROR);
     } finally {
@@ -65,34 +66,32 @@ public class UserUCCImpl implements UserUCC {
    */
   @Override
   public UserDTO register(UserDTO userDTO) {
+    // Check email format
+    if (!User.emailIsValid(userDTO.getEmail())) {
+      throw new WebApplicationException("Adresse mail invalide", Response.Status.BAD_REQUEST);
+    }
+
+    // Check phone number format
+    String phone = User.formatPhoneNumber(userDTO.getPhoneNumber());
+    if (phone == null) {
+      throw new WebApplicationException("Numéro de téléphone invalide",
+          Response.Status.BAD_REQUEST);
+    }
+    userDTO.setPhoneNumber(phone);
+
+    // Check if email or phone number already exists
+    if (myUserDAO.getOneByEmail(userDTO.getEmail()) != null) {
+      throw new WebApplicationException("Adresse mail déja utilisé", Response.Status.BAD_REQUEST);
+    }
+
+    if (myUserDAO.getOneByPhoneNumber(userDTO.getPhoneNumber()) != null) {
+      throw new WebApplicationException("Numéro de GSM déjà utilisé",
+          Response.Status.BAD_REQUEST);
+    }
 
     myDalServices.startTransaction();
 
     try {
-
-      // Check email format
-      if (!User.emailIsValid(userDTO.getEmail())) {
-        throw new WebApplicationException("Adresse mail invalide", Response.Status.BAD_REQUEST);
-      }
-
-      // Check phone number format
-      String phone = User.formatPhoneNumber(userDTO.getPhoneNumber());
-      if (phone == null) {
-        throw new WebApplicationException("Numéro de téléphone invalide",
-            Response.Status.BAD_REQUEST);
-      }
-      userDTO.setPhoneNumber(phone);
-
-      // Check if email or phone number already exists
-      if (myUserDAO.getOneByEmail(userDTO.getEmail()) != null) {
-        throw new WebApplicationException("Adresse mail déja utilisé", Response.Status.BAD_REQUEST);
-      }
-
-      if (myUserDAO.getOneByPhoneNumber(userDTO.getPhoneNumber()) != null) {
-        throw new WebApplicationException("Numéro de GSM déjà utilisé",
-            Response.Status.BAD_REQUEST);
-      }
-
       User userTemp = (User) userDTO;
       userTemp.setPassword(User.hashPassword(userTemp.getPassword()));
 
@@ -108,7 +107,13 @@ public class UserUCCImpl implements UserUCC {
 
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw e;
+
+      if (e instanceof WebApplicationException) {
+        throw e;
+      }
+
+      throw new WebApplicationException("Erreur lors de l'inscription",
+          Status.INTERNAL_SERVER_ERROR);
     } finally {
       myDalServices.commitTransaction();
     }
@@ -227,7 +232,13 @@ public class UserUCCImpl implements UserUCC {
 
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw e;
+
+      if (e instanceof WebApplicationException) {
+        throw e;
+      }
+
+      throw new WebApplicationException("Erreur lors de la mise à jour de l'utilisateur",
+          Status.INTERNAL_SERVER_ERROR);
     } finally {
       myDalServices.commitTransaction();
     }
@@ -278,7 +289,9 @@ public class UserUCCImpl implements UserUCC {
       return myUserDAO.getOneById(userDTO.getId());
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw e;
+
+      throw new WebApplicationException("Erreur lors de la mise à jour de la photo de profil",
+          Status.INTERNAL_SERVER_ERROR);
     } finally {
       myDalServices.commitTransaction();
     }
