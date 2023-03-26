@@ -4,16 +4,12 @@ import be.vinci.pae.domain.user.User;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.user.UserDAO;
-import be.vinci.pae.utils.Config;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import java.io.File;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 
@@ -249,44 +245,43 @@ public class UserUCCImpl implements UserUCC {
     return updateUser(userDTO, null);
   }
 
-  /**
-   * Get the profile picture of a user.
-   *
-   * @param id id of the user
-   * @return the profile picture of the user
-   */
   @Override
-  public File getProfilePicture(int id) {
-    String blobPath = Config.getProperty("BlobPath");
+  public File getProfilePicture(UserDTO userDTO) {
+    User user = (User) this.getUserById(userDTO.getId());
 
-    File file = new File(blobPath, "user-" + id + ".jpg");
-
-    return file.exists() ? file : null;
-  }
-
-  /**
-   * Update the profile picture of a user.
-   *
-   * @param id    id of the user
-   * @param photo the photo to set
-   * @return whether the update was successful
-   */
-  @Override
-  public boolean saveProfilePicture(int id, InputStream photo) {
-    try {
-      String blobPath = Config.getProperty("BlobPath");
-
-      // Create the blob directory if it doesn't exist
-      Files.createDirectories(Paths.get(blobPath));
-
-      Files.copy(photo, Paths.get(blobPath, "user-" + id + ".jpg"),
-          StandardCopyOption.REPLACE_EXISTING);
-    } catch (Exception e) {
-      e.printStackTrace();
-
-      return false;
+    if (user == null) {
+      return null;
     }
 
-    return true;
+    return user.profilePictureFile();
   }
+
+  @Override
+  public UserDTO updateProfilePicture(UserDTO userDTO, InputStream profilePicture) {
+    myDalServices.startTransaction();
+
+    try {
+      User user = (User) myUserDAO.getOneById(userDTO.getId());
+
+      if (user == null) {
+        return null;
+      }
+
+      user.saveProfilePicture(profilePicture);
+
+      user.setPhoto(true);
+
+      if (!myUserDAO.update(user)) {
+        return null;
+      }
+
+      return myUserDAO.getOneById(userDTO.getId());
+    } catch (Exception e) {
+      myDalServices.rollbackTransaction();
+      throw e;
+    } finally {
+      myDalServices.commitTransaction();
+    }
+  }
+
 }
