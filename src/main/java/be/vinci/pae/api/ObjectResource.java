@@ -139,6 +139,7 @@ public class ObjectResource {
     int priceObject = json.get("price").asInt();
 
     if (priceObject > 10 || priceObject < 0) {
+      MyLogger.log(Level.INFO, "Le prix n'est pas compris entre 0 et 10");
       throw new WebApplicationException("Le prix doit être compris entre 0€ et 10€",
           Status.NOT_FOUND);
     }
