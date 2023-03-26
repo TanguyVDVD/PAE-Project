@@ -124,10 +124,10 @@ public class UserUCCImpl implements UserUCC {
 
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-    } finally {
-      myDalServices.commitTransaction();
       throw new WebApplicationException("Error while getting list all the users",
           Status.BAD_REQUEST);
+    } finally {
+      myDalServices.commitTransaction();
     }
   }
 
@@ -140,9 +140,9 @@ public class UserUCCImpl implements UserUCC {
       return myUserDAO.getOneById(id);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
+      throw new WebApplicationException("Error getting the user by id", Status.BAD_REQUEST);
     } finally {
       myDalServices.commitTransaction();
-      throw new WebApplicationException("Error getting the user by id", Status.BAD_REQUEST);
     }
 
   }

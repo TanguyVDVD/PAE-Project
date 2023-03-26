@@ -1,0 +1,16 @@
+### Login as an admin
+POST {{baseUrl}}/users/login
+Content-Type: application/json
+
+{
+  "email": "riez@ressourcerie.be",
+  "password": "password"
+}
+
+> {%
+  client.global.set("adminToken", response.body.token);
+%}
+
+### Get a list of all object types
+GET {{baseUrl}}/objectsTypes
+Authorization: {{adminToken}}

@@ -2,7 +2,7 @@ import Navigate from '../../Router/Navigate';
 import { getAuthenticatedUser } from '../../../utils/auths';
 import { clearPage } from '../../../utils/render';
 import API from '../../../utils/api';
-import { subtractDates, dateStringtoGoodFormat } from '../../../utils/dates';
+import {subtractDates, dateStringtoGoodFormat} from "../../../utils/dates";
 
 const AdminObjectsPage = () => {
   const user = getAuthenticatedUser();
@@ -51,9 +51,7 @@ async function fetchObjects(query = '') {
         <div class="container mt-5 mb-5">
             <div class="d-flex justify-content-center row">
                 <div class="col-md-10">
-                    ${objects
-                      .map(
-                        (object) => `
+                    ${objects.map((object) => `
                         <div class="row p-2 bg-white border rounded">
                             <div class="col-md-3 mt-1">
                                 <img 
@@ -86,19 +84,17 @@ async function fetchObjects(query = '') {
                                 </div>
                             </div>
                         </div>
-                `,
-                      )
-                      .join('')}
+                `,).join('')}
                 </div>                     
             </div>
         </div>
       `;
 
-    setReceiptDate('div-receipt-date', objects);
-    setUserOrPhoneNumber('div-user', objects);
-    setPriceOrTimeRemaining('div-price-time-remaining', objects);
-    setStateColor('div-state', objects);
-    setButton('div-button', objects);
+    setReceiptDate("div-receipt-date", objects);
+    setUserOrPhoneNumber("div-user", objects);
+    setPriceOrTimeRemaining("div-price-time-remaining", objects)
+    setStateColor("div-state", objects);
+    setButton("div-button", objects);
 
     list.querySelectorAll('a[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
@@ -110,10 +106,11 @@ async function fetchObjects(query = '') {
     list.querySelectorAll('button[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
-        if (e.currentTarget.classList.contains('button-modify')) {
+        if (e.currentTarget.classList.contains("button-modify")){
           Navigate(`/object/${e.target.dataset.id}`);
-        } else if (e.currentTarget.classList.contains('button-respond')) {
-          Navigate(`/proposition/${e.target.dataset.id}`);
+        }
+        else if (e.currentTarget.classList.contains("button-respond")) {
+          Navigate(`/object/${e.target.dataset.id}`);
         }
       });
     });
@@ -125,21 +122,20 @@ function setReceiptDate(className, objects) {
   for (let i = 0; i < elements.length; i += 1) {
     const object = objects[i];
     const element = elements.item(i);
-    if (object.state === 'proposé' || object.state === 'accepté' || object.state === 'refusé') {
+    if (object.state === "proposé" || object.state === "accepté" || object.state === "refusé"){
       element.innerHTML = `
           <p>
-              À récupérer le ${dateStringtoGoodFormat(object.receiptDate)} ${
-        object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
-      }
+              À récupérer le ${dateStringtoGoodFormat(object.receiptDate)} ${object.timeSlot === "matin" ? 
+              " au ".concat(object.timeSlot) : " l'".concat(object.timeSlot)}
           </p>
 
-      `;
-    } else {
+      `
+    }
+    else {
       element.innerHTML = `
           <p>
-              Récupéré le ${dateStringtoGoodFormat(object.receiptDate)} ${
-        object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
-      }
+              Récupéré le ${dateStringtoGoodFormat(object.receiptDate)} ${object.timeSlot === "matin" ?
+          " au ".concat(object.timeSlot) : " l'".concat(object.timeSlot)}
           </p>
       `;
     }
@@ -153,7 +149,7 @@ function setUserOrPhoneNumber(className, objects) {
     const element = elements.item(i);
     if (object.user === null) {
       element.innerHTML = `
-          <p>Proposé anonymement par ${object.phoneNumber}</p>
+          <p>Proposé anonymement au ${object.phoneNumber}</p>
       `;
     } else {
       element.innerHTML = `

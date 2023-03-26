@@ -1,9 +1,19 @@
 package be.vinci.pae.services.objecttype;
 
+import be.vinci.pae.domain.objecttype.ObjectTypeDTO;
+import java.util.List;
+
 /**
  * ObjectTypeDAO interface that provide the method to interact with the db.
  */
 public interface ObjectTypeDAO {
+
+  /**
+   * Get all object types.
+   *
+   * @return the list of object types
+   */
+  List<ObjectTypeDTO> getAll();
 
   /**
    * Get the object type by the id.
@@ -14,10 +24,10 @@ public interface ObjectTypeDAO {
   String getOneById(int id);
 
   /**
-   * Get the object type id by the String.
+   * Get the object type id by the label.
    *
-   * @param state of the object type
-   * @return the object type id corresponding to the String
+   * @param label the label of the object type
+   * @return the id corresponding to the label
    */
-  int getIdByString(String state);
+  int getIdByLabel(String label);
 }

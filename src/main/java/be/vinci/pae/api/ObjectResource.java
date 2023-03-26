@@ -96,13 +96,13 @@ public class ObjectResource {
    * @return the object that was just updated
    */
   @PUT
-  @Path("/update_object/{id}")
+  @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public ObjectNode updateObject(JsonNode json, @PathParam("id") int id) {
     if (!json.hasNonNull("type") || !json.hasNonNull("description") || !json.hasNonNull(
-        "state") || !json.hasNonNull("is_visible")) {
+        "state") || !json.hasNonNull("isVisible")) {
       throw new WebApplicationException("Tous les champs ne sont pas remplis",
           Status.BAD_REQUEST);
     }
@@ -136,7 +136,7 @@ public class ObjectResource {
 
     String typeObject = json.get("type").asText();
     String descriptionObject = json.get("description").asText();
-    boolean isVisibleObject = json.get("is_visible").asBoolean();
+    boolean isVisibleObject = json.get("isVisible").asBoolean();
 
     ObjectDTO objectUpdated = myDomainFactory.getObject();
 
