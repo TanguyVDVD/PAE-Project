@@ -18,6 +18,14 @@ public interface ObjectUCC {
   List<ObjectDTO> getObjects(String query);
 
   /**
+   * Get all objects by user.
+   *
+   * @param id the id of the user
+   * @return the list of objects
+   */
+  List<ObjectDTO> getObjectsByUser(int id);
+
+  /**
    * Returns a list of all offers.
    *
    * @param query query to filter offers
@@ -59,5 +67,4 @@ public interface ObjectUCC {
    * @return null if there is an error or the object updated
    */
   ObjectDTO update(int id, ObjectDTO objectDTO, LocalDate date);
-
 }

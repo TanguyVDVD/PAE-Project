@@ -1,9 +1,11 @@
 package be.vinci.pae.api;
 
+import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.filters.AuthorizeRiez;
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.object.ObjectDTO;
+import be.vinci.pae.domain.user.User;
 import be.vinci.pae.ucc.object.ObjectUCC;
 import be.vinci.pae.utils.MyObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -21,10 +23,12 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import java.time.LocalDate;
+import org.glassfish.jersey.server.ContainerRequest;
 
 
 /**
@@ -51,6 +55,29 @@ public class ObjectResource {
   @Produces(MediaType.APPLICATION_JSON)
   public ArrayNode getObjects(@QueryParam("query") String query) {
     return jsonMapper.valueToTree(objectUCC.getObjects(query));
+  }
+
+  /**
+   * Get a list of all objects proposed by a user.
+   *
+   * @param request the request
+   * @param id      the id of the user
+   * @return a list of objects
+   */
+  @GET
+  @Authorize
+  @Path("/user/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public ArrayNode getObjectsByUser(@Context ContainerRequest request, @PathParam("id") int id) {
+    User authorizedUser = (User) request.getProperty("user");
+
+    if (authorizedUser.getId() != id && !authorizedUser.getIsHelper()) {
+      throw new WebApplicationException(
+          "Vous n'avez pas le droit de voir les objets de cet utilisateur",
+          Status.FORBIDDEN);
+    }
+
+    return jsonMapper.valueToTree(objectUCC.getObjectsByUser(id));
   }
 
   /**

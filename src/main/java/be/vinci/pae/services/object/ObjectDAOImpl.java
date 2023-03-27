@@ -116,6 +116,34 @@ public class ObjectDAOImpl implements ObjectDAO {
   }
 
   /**
+   * Get all objects by user.
+   *
+   * @param id the id of the user
+   * @return the list of objects
+   */
+  @Override
+  public List<ObjectDTO> getAllByUser(int id) {
+    String request = "SELECT * FROM pae.objects o, pae.object_types ot "
+        + "WHERE o.id_object_type = ot.id_object_type AND o.id_user = ? ORDER BY id_object;";
+
+    ArrayList<ObjectDTO> objects = new ArrayList<>();
+
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
+      ps.setInt(1, id);
+
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          objects.add(dtoFromRS(rs));
+        }
+      }
+    } catch (SQLException se) {
+      se.printStackTrace();
+    }
+
+    return objects;
+  }
+
+  /**
    * Get all offers.
    *
    * @param query query to filter offers
