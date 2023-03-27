@@ -455,4 +455,5 @@ public class ObjectImpl implements Object {
     }
     return status.equals("accepté") || status.equals("refusé");
   }
+
 }

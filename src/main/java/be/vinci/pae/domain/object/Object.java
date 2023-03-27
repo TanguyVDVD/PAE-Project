@@ -12,4 +12,5 @@ public interface Object extends ObjectDTO {
    * @return true if the status of the object is already defined, else false
    */
   boolean isStatusAlreadyDefined(String status);
+
 }

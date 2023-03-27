@@ -183,20 +183,20 @@ public class ObjectUCCImpl implements ObjectUCC {
     myDalServices.startTransaction();
 
     try {
-      ObjectDTO objectFromDB = myObjectDAO.getOneById(id);
+      Object objectFromDB = (Object) myObjectDAO.getOneById(id);
 
       if (!objectFromDB.getStatus().equals("accepté")) {
         return null;
       }
 
       if (!objectDTO.getState().equals(objectFromDB.getState())) {
-        if (objectDTO.getState().equals("en atelier")) {
+        if (objectDTO.getState().equals("à l'atelier")) {
           objectFromDB.setWorkshopDate(date);
         }
         if (objectDTO.getState().equals("en magasin")) {
           objectFromDB.setDepositDate(date);
         }
-        if (objectDTO.getState().equals("mis en vente")) {
+        if (objectDTO.getState().equals("en vente")) {
           objectFromDB.setOnSaleDate(date);
         }
         if (objectDTO.getState().equals("vendu")) {
