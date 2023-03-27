@@ -258,11 +258,7 @@ public class UserUCCImpl implements UserUCC {
 
   @Override
   public File getProfilePicture(UserDTO userDTO) {
-    User user = (User) this.getUserById(userDTO.getId());
-
-    if (user == null) {
-      return null;
-    }
+    User user = (User) userDTO;
 
     return user.profilePictureFile();
   }

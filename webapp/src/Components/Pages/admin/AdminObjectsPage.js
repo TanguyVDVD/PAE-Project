@@ -2,8 +2,10 @@ import Navigate from '../../Router/Navigate';
 import { getAuthenticatedUser } from '../../../utils/auths';
 import { clearPage } from '../../../utils/render';
 import API from '../../../utils/api';
-import {subtractDates, dateStringtoGoodFormat} from "../../../utils/dates";
-import setUserOrPhoneNumber from "../../../utils/objects";
+import { subtractDates, dateStringtoGoodFormat } from '../../../utils/dates';
+import setUserOrPhoneNumber from '../../../utils/objects';
+
+import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
 
 const AdminObjectsPage = () => {
   const user = getAuthenticatedUser();
@@ -52,12 +54,20 @@ async function fetchObjects(query = '') {
         <div class="container mt-5 mb-5">
             <div class="d-flex justify-content-center row">
                 <div class="col-md-10">
-                    ${objects.map((object) => `
+                    ${objects
+                      .map(
+                        (object) => `
                         <div class="row p-2 bg-white border rounded">
                             <div class="col-md-3 mt-1">
                                 <img 
-                                    class="img-fluid img-responsive rounded product-image" 
-                                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqsL6QorN-b6YhpcfTl9YJEzWB2xSkhFkN4Q&usqp=CAU"
+                                    class="rounded product-image object-fit-cover" 
+                                    src="${
+                                      object.photo
+                                        ? API.getEndpoint(`objects/${object.id}/photo`)
+                                        : noFurniturePhoto
+                                    }"
+                                    width="180" height="180"
+                                    onerror="this.src='${noFurniturePhoto}'"
                                     alt="${object.objectType}">
                             </div>
                             <div class="col-md-6 mt-1">
@@ -85,17 +95,19 @@ async function fetchObjects(query = '') {
                                 </div>
                             </div>
                         </div>
-                `,).join('')}
+                `,
+                      )
+                      .join('')}
                 </div>                     
             </div>
         </div>
       `;
 
-    setReceiptDate("div-receipt-date", objects);
-    setUserOrPhoneNumber(document, "div-user", objects);
-    setPriceOrTimeRemaining("div-price-time-remaining", objects)
-    setStateColor("div-state", objects);
-    setButton("div-button", objects);
+    setReceiptDate('div-receipt-date', objects);
+    setUserOrPhoneNumber(document, 'div-user', objects);
+    setPriceOrTimeRemaining('div-price-time-remaining', objects);
+    setStateColor('div-state', objects);
+    setButton('div-button', objects);
 
     list.querySelectorAll('a[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
@@ -107,10 +119,9 @@ async function fetchObjects(query = '') {
     list.querySelectorAll('button[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
-        if (e.currentTarget.classList.contains("button-modify")){
+        if (e.currentTarget.classList.contains('button-modify')) {
           Navigate(`/object/${e.target.dataset.id}`);
-        }
-        else if (e.currentTarget.classList.contains("button-respond")) {
+        } else if (e.currentTarget.classList.contains('button-respond')) {
           Navigate(`/object/${e.target.dataset.id}`);
         }
       });
@@ -123,24 +134,26 @@ function setReceiptDate(className, objects) {
   for (let i = 0; i < elements.length; i += 1) {
     const object = objects[i];
     const element = elements.item(i);
-    if (object.state === "proposé" || object.state === "accepté"){
+    if (object.state === 'proposé' || object.state === 'accepté') {
       element.innerHTML = `
           <p>
-              À récupérer le ${dateStringtoGoodFormat(object.receiptDate)} ${object.timeSlot === "matin" ? 
-              " au ".concat(object.timeSlot) : " l'".concat(object.timeSlot)}
+              À récupérer le ${dateStringtoGoodFormat(object.receiptDate)} ${
+        object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
+      }
           </p>
-      `
-    } else if (object.state === "refusé"){
+      `;
+    } else if (object.state === 'refusé') {
       element.innerHTML = `
           <p>
               Refusé le ${dateStringtoGoodFormat(object.refusalDate)}
           </p>
-      `
+      `;
     } else {
       element.innerHTML = `
           <p>
-              Récupéré le ${dateStringtoGoodFormat(object.receiptDate)} ${object.timeSlot === "matin" ?
-          " au ".concat(object.timeSlot) : " l'".concat(object.timeSlot)}
+              Récupéré le ${dateStringtoGoodFormat(object.receiptDate)} ${
+        object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
+      }
           </p>
       `;
     }

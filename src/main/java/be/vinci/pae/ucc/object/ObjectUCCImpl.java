@@ -7,6 +7,8 @@ import be.vinci.pae.services.object.ObjectDAO;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response.Status;
+import java.io.File;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -224,5 +226,53 @@ public class ObjectUCCImpl implements ObjectUCC {
     }
   }
 
+  /**
+   * Get an object's photo.
+   *
+   * @param objectDTO the object
+   * @return the photo of the object
+   */
+  @Override
+  public File getPhoto(ObjectDTO objectDTO) {
+    Object object = (Object) objectDTO;
 
+    return object.photoFile();
+  }
+
+  /**
+   * Update an object's photo.
+   *
+   * @param objectDTO the object
+   * @param file      the new photo
+   * @return the updated object
+   */
+  @Override
+  public ObjectDTO updatePhoto(ObjectDTO objectDTO, InputStream file) {
+    myDalServices.startTransaction();
+
+    try {
+      Object object = (Object) myObjectDAO.getOneById(objectDTO.getId());
+
+      if (object == null) {
+        return null;
+      }
+
+      object.savePhoto(file);
+
+      object.setPhoto(true);
+
+      if (myObjectDAO.updateObject(object.getId(), object) == null) {
+        return null;
+      }
+
+      return myObjectDAO.getOneById(objectDTO.getId());
+    } catch (Exception e) {
+      myDalServices.rollbackTransaction();
+
+      throw new WebApplicationException("Erreur lors de la mise à jour de la photo de l'objet",
+          Status.INTERNAL_SERVER_ERROR);
+    } finally {
+      myDalServices.commitTransaction();
+    }
+  }
 }
