@@ -192,13 +192,13 @@ public class ObjectUCCImpl implements ObjectUCC {
       }
 
       if (!objectDTO.getState().equals(objectFromDB.getState())) {
-        if (objectDTO.getState().equals("en atelier")) {
+        if (objectDTO.getState().equals("à l'atelier")) {
           objectFromDB.setWorkshopDate(date);
         }
         if (objectDTO.getState().equals("en magasin")) {
           objectFromDB.setDepositDate(date);
         }
-        if (objectDTO.getState().equals("mis en vente")) {
+        if (objectDTO.getState().equals("en vente")) {
           objectFromDB.setOnSaleDate(date);
         }
         if (objectDTO.getState().equals("vendu")) {
@@ -212,7 +212,6 @@ public class ObjectUCCImpl implements ObjectUCC {
       objectFromDB.setObjectType(objectDTO.getObjectType());
       objectFromDB.setDescription(objectDTO.getDescription());
       objectFromDB.setPrice(objectDTO.getPrice());
-      objectFromDB.setState(objectDTO.getState());
       objectFromDB.setIsVisible(objectDTO.getisVisible());
 
       return myObjectDAO.updateObject(objectFromDB.getId(), objectFromDB);

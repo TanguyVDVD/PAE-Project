@@ -154,7 +154,7 @@ public class ObjectResource {
 
     String stateObject = json.get("state").asText();
 
-    if (stateObject.equals("mis en vente") && !json.hasNonNull("price")) {
+    if (stateObject.equals("en vente") && !json.hasNonNull("price")) {
       throw new WebApplicationException("Un prix doit être entré",
           Status.NOT_FOUND);
     }
