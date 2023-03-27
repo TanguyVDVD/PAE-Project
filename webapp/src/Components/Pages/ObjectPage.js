@@ -122,7 +122,7 @@ function renderObjectPage(object, objectTypes) {
                         <div class="form-group" id="object-price-form">
                           <br>
                           <label for="object-price-input">Prix</label>
-                          <input type="number" id="object-price-input" min="0" max="10">
+                          <input type="number" id="object-price-input" min="0" max="10" step=".01">
                         </div>
                         <br>
                         <div class="form-check form-switch">
