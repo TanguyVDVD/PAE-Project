@@ -3,6 +3,7 @@ import { getAuthenticatedUser } from '../../../utils/auths';
 import { clearPage } from '../../../utils/render';
 import API from '../../../utils/api';
 import { dateStringtoGoodFormat, subtractDates } from '../../../utils/dates';
+import setUserOrPhoneNumber from "../../../utils/objects";
 
 const AdminOffersPage = () => {
   const user = getAuthenticatedUser();
@@ -99,7 +100,7 @@ async function fetchOffers(query = '') {
         </div>
       `;
 
-    setUserOrPhoneNumber('div-user', offers);
+    setUserOrPhoneNumber(document, 'div-user', offers);
     setRemainingTime('div-remaining-time', offers);
 
     list.querySelectorAll('a[data-id]').forEach((link) => {
@@ -116,27 +117,6 @@ async function fetchOffers(query = '') {
       });
     });
   });
-}
-
-function setUserOrPhoneNumber(className, offers) {
-  const elements = document.getElementsByClassName(className);
-  for (let i = 0; i < elements.length; i += 1) {
-    const offer = offers[i];
-    const element = elements.item(i);
-    if (offer.user === null) {
-      element.innerHTML = `
-          <p>Proposé anonymement par ${offer.phoneNumber} le ${dateStringtoGoodFormat(offer.offerDate)}</p>
-      `;
-    } else {
-      element.innerHTML = `
-          <p>
-          Proposé par
-              <a href="#" class="btn-link" role="button" data-id="${offer.user.id}">${offer.user.firstName} ${offer.user.lastName}</a>
-          le ${dateStringtoGoodFormat(offer.offerDate)}
-          </p>
-      `;
-    }
-  }
 }
 
 function setRemainingTime(className, offers) {
