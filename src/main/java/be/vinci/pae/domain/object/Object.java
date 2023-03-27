@@ -16,6 +16,7 @@ public interface Object extends ObjectDTO {
    */
   boolean isStatusAlreadyDefined(String status);
 
+
   /**
    * Get the photo of the object.
    *
@@ -30,4 +31,5 @@ public interface Object extends ObjectDTO {
    * @return whether the saving was successful
    */
   boolean savePhoto(InputStream photo);
+
 }

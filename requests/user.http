@@ -49,26 +49,26 @@ Content-Type: multipart/form-data; boundary=boundary
 --boundary
 Content-Disposition: form-data; name="lastname"
 
-pitt
+Ile
 --boundary
 Content-Disposition: form-data; name="firstname"
 
-brad
+Théophile
 
 --boundary
 Content-Disposition: form-data; name="phone"
 
-0456454545
+0488 35 33 89
 
 --boundary
 Content-Disposition: form-data; name="email"
 
-brad@ressourcerie.be
+theo.phile@proximus.be
 
 --boundary
 Content-Disposition: form-data; name="password"
 
-pwd
+mdpuser.3
 
 ### Register new user
 POST {{baseUrl}}/users/register
