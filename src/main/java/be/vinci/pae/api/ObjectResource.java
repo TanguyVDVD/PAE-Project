@@ -132,7 +132,7 @@ public class ObjectResource {
     if (!json.hasNonNull("type") || !json.hasNonNull("description") || !json.hasNonNull(
         "state") || !json.hasNonNull("isVisible")) {
       throw new WebApplicationException("Tous les champs ne sont pas remplis",
-          Status.BAD_REQUEST);
+          Status.UNAUTHORIZED);
     }
 
     LocalDate changeDate;

@@ -79,7 +79,7 @@ public class UserResource {
   public ObjectNode login(JsonNode json) {
 
     if (!json.hasNonNull("email") || !json.hasNonNull("password")) {
-      throw new WebApplicationException("Adresse mail et mot de passe requis", Status.NOT_FOUND);
+      throw new WebApplicationException("Adresse mail et mot de passe requis", Status.UNAUTHORIZED);
     }
 
     String login = json.get("email").asText();
@@ -121,7 +121,7 @@ public class UserResource {
 
     for (String input : inputs) {
       if (input == null || input.isBlank()) {
-        throw new WebApplicationException("Paramètres manquants", Response.Status.BAD_REQUEST);
+        throw new WebApplicationException("Paramètres manquants", Response.Status.UNAUTHORIZED);
       }
     }
 
