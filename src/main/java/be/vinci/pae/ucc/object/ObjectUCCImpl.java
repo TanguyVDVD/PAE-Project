@@ -134,6 +134,7 @@ public class ObjectUCCImpl implements ObjectUCC {
           Status.INTERNAL_SERVER_ERROR);
     } finally {
       myDalServices.commitTransaction();
+
     }
 
   }
@@ -179,13 +180,12 @@ public class ObjectUCCImpl implements ObjectUCC {
    * @return null if there is an error or the object updated
    */
   @Override
-
   public ObjectDTO update(int id, ObjectDTO objectDTO, LocalDate date) {
 
     myDalServices.startTransaction();
 
     try {
-      ObjectDTO objectFromDB = myObjectDAO.getOneById(id);
+      Object objectFromDB = (Object) myObjectDAO.getOneById(id);
 
       if (!objectFromDB.getStatus().equals("accepté")) {
         return null;
