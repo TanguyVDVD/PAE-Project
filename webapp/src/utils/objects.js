@@ -1,4 +1,6 @@
-import {dateStringtoGoodFormat} from "./dates";
+import Navigate from '../Components/Router/Navigate';
+import { dateStringtoGoodFormat } from './dates';
+import { formatPhoneNumber } from './format';
 
 function setUserOrPhoneNumber(document, className, objects) {
   const elements = document.getElementsByClassName(className);
@@ -7,22 +9,29 @@ function setUserOrPhoneNumber(document, className, objects) {
     const element = elements.item(i);
     if (object.user === null) {
       element.innerHTML = `
-          <p>Proposé anonymement au ${phoneNumberToGoodFormat(object.phoneNumber)} le ${dateStringtoGoodFormat(object.offerDate)}</p>
+          <p>Proposé anonymement au ${formatPhoneNumber(
+            object.phoneNumber,
+          )} le ${dateStringtoGoodFormat(object.offerDate)}</p>
       `;
     } else {
       element.innerHTML = `
           <p>
           Proposé par
-              <a href="#" class="btn-link link-primary" role="button" data-id="${object.user.id}">${object.user.firstName} ${object.user.lastName}</a>
+              <a href="#" class="btn-link link-primary" role="button" data-id="${object.user.id}">${
+        object.user.firstName
+      } ${object.user.lastName}</a>
           le ${dateStringtoGoodFormat(object.offerDate)}
           </p>
       `;
+
+      element.querySelectorAll('a[data-id]').forEach((link) => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          Navigate(`/user/${e.target.dataset.id}`);
+        });
+      });
     }
   }
-}
-
-function phoneNumberToGoodFormat (phoneNumber){
-  return phoneNumber.substring(0, 4).concat("/", phoneNumber.substring(4, 6), ".", phoneNumber.substring(6, 8), ".", phoneNumber.substring(8, 10));
 }
 
 export default setUserOrPhoneNumber;
