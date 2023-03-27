@@ -147,9 +147,8 @@ function renderObjectPage(object, objectTypes) {
                     `
                   }
                   
-                  ${
-                    authenticatedUser && authenticatedUser.isHelper && object.state === 'proposé'
-                      ? `
+                  ${authenticatedUser && authenticatedUser.isHelper && object.state === "proposé" ?
+                    `
                       <div class="div-user" id="object-user-offer"></div>
                       
                       <div class="form-group" id="object-receipt-date-offer">
@@ -182,8 +181,7 @@ function renderObjectPage(object, objectTypes) {
                       <div id="object-price-non-helper">
                         <p>Prix : ${object.price}€</p>
                       </div>
-                    `
-                      : ''
+                    ` : ''
                   }
               </div>
           </div>
@@ -192,26 +190,26 @@ function renderObjectPage(object, objectTypes) {
 
   main.appendChild(div);
 
-  if (authenticatedUser && authenticatedUser.isHelper && object.state === 'proposé') {
-    const acceptBtn = document.getElementById('accept-btn');
-    const denyBtn = document.getElementById('deny-btn');
+    if (authenticatedUser && authenticatedUser.isHelper && object.state === "proposé"){
+      const acceptBtn = document.getElementById("accept-btn");
+      const denyBtn = document.getElementById("deny-btn");
 
-    if (authenticatedUser.id !== 1) {
-      acceptBtn.disabled = true;
-      denyBtn.disabled = true;
-    }
+      if (authenticatedUser.id !== 1){
+        acceptBtn.disabled = true;
+        denyBtn.disabled = true;
+      }
 
-    acceptBtn.addEventListener('click', () => {
-      const status = 'accepté';
+      acceptBtn.addEventListener('click', () => {
+        const status = "accepté";
 
       API.patch(`objects/status/${object.id}`, { body: { status } });
       AdminOffersPage();
       Navigate('/admin/offers');
     });
 
-    denyBtn.addEventListener('click', () => {
-      const status = 'refusé';
-      const reasonForRefusal = document.getElementById('reason-for-refusal').value;
+      denyBtn.addEventListener('click', () => {
+        const status = "refusé";
+        const reasonForRefusal = document.getElementById("reason-for-refusal").value;
 
       API.patch(`objects/status/${object.id}`, { body: { status, reasonForRefusal } });
       AdminOffersPage();
@@ -219,9 +217,9 @@ function renderObjectPage(object, objectTypes) {
     });
   }
 
-  if (authenticatedUser && authenticatedUser.isHelper && object.state !== 'proposé') {
-    setUserOrPhoneNumber(document, 'div-user', [object]);
-    setDefaultValues(object);
+    if (authenticatedUser && authenticatedUser.isHelper && object.state !== "proposé"){
+      setUserOrPhoneNumber(document, "div-user", [object]);
+      setDefaultValues(object);
 
     const stateForm = document.getElementById('object-state-select');
     const priceInput = document.getElementById('object-price-input');
@@ -303,6 +301,7 @@ function setDefaultValues(object) {
 
   const visibleSwitch = document.getElementById('visible-switch');
 
+  visibleSwitch.checked = !!object.isVisible;
   visibleSwitch.checked = !!object.isVisible;
 }
 
