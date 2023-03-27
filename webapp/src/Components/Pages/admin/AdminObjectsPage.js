@@ -3,6 +3,7 @@ import { getAuthenticatedUser } from '../../../utils/auths';
 import { clearPage } from '../../../utils/render';
 import API from '../../../utils/api';
 import {subtractDates, dateStringtoGoodFormat} from "../../../utils/dates";
+import setUserOrPhoneNumber from "../../../utils/objects";
 
 const AdminObjectsPage = () => {
   const user = getAuthenticatedUser();
@@ -91,7 +92,7 @@ async function fetchObjects(query = '') {
       `;
 
     setReceiptDate("div-receipt-date", objects);
-    setUserOrPhoneNumber("div-user", objects);
+    setUserOrPhoneNumber(document, "div-user", objects);
     setPriceOrTimeRemaining("div-price-time-remaining", objects)
     setStateColor("div-state", objects);
     setButton("div-button", objects);
@@ -140,27 +141,6 @@ function setReceiptDate(className, objects) {
           <p>
               Récupéré le ${dateStringtoGoodFormat(object.receiptDate)} ${object.timeSlot === "matin" ?
           " au ".concat(object.timeSlot) : " l'".concat(object.timeSlot)}
-          </p>
-      `;
-    }
-  }
-}
-
-function setUserOrPhoneNumber(className, objects) {
-  const elements = document.getElementsByClassName(className);
-  for (let i = 0; i < elements.length; i += 1) {
-    const object = objects[i];
-    const element = elements.item(i);
-    if (object.user === null) {
-      element.innerHTML = `
-          <p>Proposé anonymement au ${object.phoneNumber} le ${dateStringtoGoodFormat(object.offerDate)}</p>
-      `;
-    } else {
-      element.innerHTML = `
-          <p>
-          Proposé par
-              <a href="#" class="btn-link" role="button" data-id="${object.user.id}">${object.user.firstName} ${object.user.lastName}</a>
-          le ${dateStringtoGoodFormat(object.offerDate)}
           </p>
       `;
     }

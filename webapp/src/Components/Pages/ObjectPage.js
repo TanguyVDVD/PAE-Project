@@ -5,6 +5,7 @@ import {dateStringtoGoodFormat, getTodaySDate} from "../../utils/dates";
 import Navigate from "../Router/Navigate";
 import AdminOffersPage from "./admin/AdminOffersPage";
 import AdminObjectsPage from "./admin/AdminObjectsPage";
+import setUserOrPhoneNumber from "../../utils/objects";
 
 
 const ObjectPage = (params) => {
@@ -183,8 +184,6 @@ function renderObjectPage(object, objectTypes) {
         denyBtn.disabled = true;
       }
 
-      setUserOrPhoneNumber("div-user", object, div);
-
       acceptBtn.addEventListener('click', () => {
         const status = "accepté";
 
@@ -205,7 +204,7 @@ function renderObjectPage(object, objectTypes) {
     }
 
     if (authenticatedUser && authenticatedUser.isHelper && object.state !== "proposé"){
-      setUserOrPhoneNumber("div-user", object, div);
+      setUserOrPhoneNumber(document, "div-user", [object]);
       setDefaultValues(object);
 
       const stateForm = document.getElementById("object-state-select");
@@ -266,29 +265,6 @@ function setDefaultValues(object){
   const visibleSwitch = document.getElementById("visible-switch");
 
   visibleSwitch.checked = !!object.isVisible;
-}
-
-function setUserOrPhoneNumber(className, object, div){
-  const element = div.getElementsByClassName(className)[0];
-  if (object.user === null){
-    element.innerHTML = `<p>Proposé anonymement au ${object.phoneNumber} le ${dateStringtoGoodFormat(object.offerDate)}</p>`;
-  }
-  else {
-    element.innerHTML = `
-      <p>
-        Proposé par
-          <a href="#" class="btn-link" role="button" data-id="${object.user.id}">${object.user.firstName} ${object.user.lastName}</a>
-        le ${dateStringtoGoodFormat(object.offerDate)}
-      </p>
-    `;
-
-    element.querySelectorAll('a[data-id]').forEach((link) => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        Navigate(`/user/${e.target.dataset.id}`);
-      });
-    });
-  }
 }
 
 export default ObjectPage;
