@@ -65,9 +65,9 @@ async function fetchOffers(query = '') {
                                 <h5>${offer.objectType}</h5>
                                
                                 <div class="mt-1 mb-1 spec-1">
-                                    <span>${offer.description}</span>
+                                    <h6>${offer.description}</h6>
                                 </div>
-                                
+                                <br>
                                 <p>
                                     À récupérer le ${dateStringtoGoodFormat(offer.receiptDate)} ${
                           offer.timeSlot === 'matin'
@@ -125,15 +125,14 @@ function setUserOrPhoneNumber(className, offers) {
     const element = elements.item(i);
     if (offer.user === null) {
       element.innerHTML = `
-          <p>Proposé anonymement par ${offer.phoneNumber}</p>
+          <p>Proposé anonymement par ${offer.phoneNumber} le ${dateStringtoGoodFormat(offer.offerDate)}</p>
       `;
     } else {
       element.innerHTML = `
           <p>
           Proposé par
-              <a href="#" class="btn-link" role="button" data-id="${offer.user.id}">
-                  ${offer.user.firstName} ${offer.user.lastName}
-              </a>
+              <a href="#" class="btn-link" role="button" data-id="${offer.user.id}">${offer.user.firstName} ${offer.user.lastName}</a>
+          le ${dateStringtoGoodFormat(offer.offerDate)}
           </p>
       `;
     }

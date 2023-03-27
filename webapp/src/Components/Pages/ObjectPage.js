@@ -39,9 +39,15 @@ function renderObjectPage(object, objectTypes) {
                 ${authenticatedUser && authenticatedUser.isHelper && object.state !== "proposé" ? 
                   `
                     <form>
-                      <br>
-                      <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="customFile">
+                      <div class="row row-cols-1 row-cols-md-2 m-1">
+                        <input
+                          type="file"
+                          accept="image/png, image/jpeg"
+                          class="form-control"
+                          id="input-photo"
+                          name="photo"
+                          placeholder=""
+                        />
                       </div>
                     </form>
                   ` : ''
@@ -105,18 +111,15 @@ function renderObjectPage(object, objectTypes) {
                           <input type="number" id="object-price-input" min="0" max="10">
                         </div>
                         <br>
-                        <label>Visible : </label>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="exampleRadios" id="object-isVisible-input">
-                          <label class="form-check-label">
-                            Oui
-                          </label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="exampleRadios" id="object-isNotVisible-input">
-                          <label class="form-check-label">
-                            Non
-                          </label>
+                        <div class="form-check form-switch">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            role="switch"
+                            id="visible-switch"
+                            ${object.isVisible ? 'checked' : ''}
+                          />
+                          <label class="form-check-label" for="helper-switch">Visible sur le site</label>
                         </div>
                         <br>
                         <button type="submit" class="btn btn-primary" id="save-btn">Sauvegarder</button>
@@ -227,7 +230,7 @@ function renderObjectPage(object, objectTypes) {
         const state = document.getElementById("object-state-select").value;
         const date = document.getElementById("object-state-date-input").value;
         const price = document.getElementById("object-price-input").value;
-        const isVisible = document.getElementById("object-isVisible-input").checked;
+        const isVisible = document.getElementById("visible-switch").checked;
 
         API.put(`objects/${object.id}`, {body: {description, type, state, date, price, isVisible}});
         AdminObjectsPage();
@@ -260,16 +263,9 @@ function setDefaultValues(object){
     priceInput.disabled = false;
   }
 
-  const isVisibleRadio = document.getElementById("object-isVisible-input");
-  const isNotVisibleRadio = document.getElementById("object-isNotVisible-input");
+  const visibleSwitch = document.getElementById("visible-switch");
 
-  if (object.isVisible){
-    isNotVisibleRadio.defaultChecked = false;
-    isVisibleRadio.defaultChecked = true;
-  } else{
-    isVisibleRadio.defaultChecked = false;
-    isNotVisibleRadio.defaultChecked = true;
-  }
+  visibleSwitch.checked = !!object.isVisible;
 }
 
 function setUserOrPhoneNumber(className, object, div){
