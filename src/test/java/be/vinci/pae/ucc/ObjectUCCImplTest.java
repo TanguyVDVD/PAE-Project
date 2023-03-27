@@ -73,7 +73,7 @@ class ObjectUCCImplTest {
 
   @DisplayName("Accept a correct object proposition")
   @Test
-  void AcceptACorrectObjectProposition() {
+  void acceptACorrectObjectProposition() {
 
     Object object = Mockito.mock(ObjectImpl.class);
     Mockito.when(object.getId()).thenReturn(1);
@@ -92,7 +92,7 @@ class ObjectUCCImplTest {
 
   @DisplayName("Accept an object already accepted")
   @Test
-  void AcceptAlreadyAcceptObjectProposition() {
+  void acceptAlreadyAcceptObjectProposition() {
 
     Object object = Mockito.mock(ObjectImpl.class);
     Mockito.when(object.getId()).thenReturn(1);
@@ -109,7 +109,7 @@ class ObjectUCCImplTest {
 
   @DisplayName("Refuse an object already refused")
   @Test
-  void RefuseAnObjectProposition() {
+  void refuseAnObjectProposition() {
 
     String reasonForRefusal = "Reason for refusal";
     Object object = Mockito.mock(ObjectImpl.class);
@@ -131,7 +131,7 @@ class ObjectUCCImplTest {
 
   @DisplayName("Refuse an object already refused")
   @Test
-  void RefuseAlreadyRefuseObjectProposition() {
+  void refuseAlreadyRefuseObjectProposition() {
 
     String reasonForRefusal = "Reason for refusal";
     Object object = Mockito.mock(ObjectImpl.class);
@@ -150,7 +150,7 @@ class ObjectUCCImplTest {
 
   @DisplayName("Update an object state, set to in workshop")
   @Test
-  void UpdateAnObjectStateToInWorkshop() {
+  void updateAnObjectStateToInWorkshop() {
     LocalDate dateToday = LocalDate.now();
 
     Object object = Mockito.mock(ObjectImpl.class);
@@ -178,8 +178,7 @@ class ObjectUCCImplTest {
 
   @DisplayName("Update an object state, set to in shoip")
   @Test
-  void UpdateAnObjectStateToInShop() {
-    LocalDate dateToday = LocalDate.now();
+  void updateAnObjectStateToInShop() {
 
     Object object = Mockito.mock(ObjectImpl.class);
     Object object1 = Mockito.mock(ObjectImpl.class);
@@ -192,6 +191,8 @@ class ObjectUCCImplTest {
     Mockito.when(object1.getId()).thenReturn(1);
     Mockito.when(object1.getStatus()).thenReturn("accepté");
     Mockito.when(object1.getState()).thenReturn("accepté");
+
+    LocalDate dateToday = LocalDate.now();
 
     Mockito.when(objectDAO.updateObject(object1.getId(), object1)).thenReturn(object);
 
@@ -206,8 +207,7 @@ class ObjectUCCImplTest {
 
   @DisplayName("Update an object state, with null object")
   @Test
-  void UpdateAnObjectStateNullObject() {
-    LocalDate dateToday = LocalDate.now();
+  void updateAnObjectStateNullObject() {
 
     Object object = Mockito.mock(ObjectImpl.class);
     Object object1 = Mockito.mock(ObjectImpl.class);
@@ -222,6 +222,8 @@ class ObjectUCCImplTest {
     Mockito.when(object1.getState()).thenReturn("accepté");
 
     Mockito.when(objectDAO.updateObject(object1.getId(), object1)).thenReturn(object);
+
+    LocalDate dateToday = LocalDate.now();
 
     assertThrows(WebApplicationException.class,
         () -> objectUCC.update(object.getId(), null, dateToday),

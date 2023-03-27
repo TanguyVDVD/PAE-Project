@@ -107,3 +107,7 @@ target/
 Thumbs.db
 
 /blob
+
+# File logger
+RieCochetLogger.txt
+RieCochetLogger.txt.lck

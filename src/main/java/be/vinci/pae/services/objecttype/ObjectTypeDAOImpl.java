@@ -3,12 +3,14 @@ package be.vinci.pae.services.objecttype;
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.objecttype.ObjectTypeDTO;
 import be.vinci.pae.services.DalBackendServices;
+import be.vinci.pae.utils.MyLogger;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * ObjectTypeDAO class that implements ObjectTypeDAO interface Provide the different methods.
@@ -35,6 +37,7 @@ public class ObjectTypeDAOImpl implements ObjectTypeDAO {
       objectType.setId(resultSet.getInt("id_object_type"));
       objectType.setLabel(resultSet.getString("label"));
     } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "Error dtoFromRS");
       se.printStackTrace();
     }
 
@@ -59,6 +62,7 @@ public class ObjectTypeDAOImpl implements ObjectTypeDAO {
         }
       }
     } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "Error get all objecttype");
       se.printStackTrace();
     }
 
@@ -84,6 +88,7 @@ public class ObjectTypeDAOImpl implements ObjectTypeDAO {
         }
       }
     } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "Error get a object type by id");
       se.printStackTrace();
     }
 
@@ -108,6 +113,7 @@ public class ObjectTypeDAOImpl implements ObjectTypeDAO {
         }
       }
     } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "Error get a id by label");
       se.printStackTrace();
     }
 

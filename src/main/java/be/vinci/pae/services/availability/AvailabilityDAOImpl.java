@@ -1,11 +1,13 @@
 package be.vinci.pae.services.availability;
 
 import be.vinci.pae.services.DalBackendServices;
+import be.vinci.pae.utils.MyLogger;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.logging.Level;
 
 /**
  * AvailabilityDAO class that implements AvailabilityDAO interface Provide the different methods.
@@ -34,6 +36,7 @@ public class AvailabilityDAOImpl implements AvailabilityDAO {
         }
       }
     } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "Error get a availability by id");
       se.printStackTrace();
     }
 
