@@ -3,6 +3,7 @@ import { getAuthenticatedUser } from '../../../utils/auths';
 import { clearPage } from '../../../utils/render';
 import API from '../../../utils/api';
 import {subtractDates, dateStringtoGoodFormat} from "../../../utils/dates";
+import setUserOrPhoneNumber from "../../../utils/objects";
 
 const AdminObjectsPage = () => {
   const user = getAuthenticatedUser();
@@ -63,9 +64,9 @@ async function fetchObjects(query = '') {
                                 <h5>${object.objectType}</h5>
                                
                                 <div class="mt-1 mb-1 spec-1">
-                                    <span>${object.description}</span>
+                                    <h6>${object.description}</h6>
                                 </div>
-                                
+                                <br>
                                 <div class="div-receipt-date">
                                 </div>
                                 
@@ -91,7 +92,7 @@ async function fetchObjects(query = '') {
       `;
 
     setReceiptDate("div-receipt-date", objects);
-    setUserOrPhoneNumber("div-user", objects);
+    setUserOrPhoneNumber(document, "div-user", objects);
     setPriceOrTimeRemaining("div-price-time-remaining", objects)
     setStateColor("div-state", objects);
     setButton("div-button", objects);
@@ -122,42 +123,24 @@ function setReceiptDate(className, objects) {
   for (let i = 0; i < elements.length; i += 1) {
     const object = objects[i];
     const element = elements.item(i);
-    if (object.state === "proposé" || object.state === "accepté" || object.state === "refusé"){
+    if (object.state === "proposé" || object.state === "accepté"){
       element.innerHTML = `
           <p>
               À récupérer le ${dateStringtoGoodFormat(object.receiptDate)} ${object.timeSlot === "matin" ? 
               " au ".concat(object.timeSlot) : " l'".concat(object.timeSlot)}
           </p>
-
       `
-    }
-    else {
+    } else if (object.state === "refusé"){
+      element.innerHTML = `
+          <p>
+              Refusé le ${dateStringtoGoodFormat(object.refusalDate)}
+          </p>
+      `
+    } else {
       element.innerHTML = `
           <p>
               Récupéré le ${dateStringtoGoodFormat(object.receiptDate)} ${object.timeSlot === "matin" ?
           " au ".concat(object.timeSlot) : " l'".concat(object.timeSlot)}
-          </p>
-      `;
-    }
-  }
-}
-
-function setUserOrPhoneNumber(className, objects) {
-  const elements = document.getElementsByClassName(className);
-  for (let i = 0; i < elements.length; i += 1) {
-    const object = objects[i];
-    const element = elements.item(i);
-    if (object.user === null) {
-      element.innerHTML = `
-          <p>Proposé anonymement au ${object.phoneNumber}</p>
-      `;
-    } else {
-      element.innerHTML = `
-          <p>
-          Proposé par
-              <a href="#" class="btn-link" role="button" data-id="${object.user.id}">
-                  ${object.user.firstName} ${object.user.lastName}
-              </a>
           </p>
       `;
     }

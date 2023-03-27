@@ -5,6 +5,7 @@ import {dateStringtoGoodFormat, getTodaySDate} from "../../utils/dates";
 import Navigate from "../Router/Navigate";
 import AdminOffersPage from "./admin/AdminOffersPage";
 import AdminObjectsPage from "./admin/AdminObjectsPage";
+import setUserOrPhoneNumber from "../../utils/objects";
 
 
 const ObjectPage = (params) => {
@@ -39,9 +40,15 @@ function renderObjectPage(object, objectTypes) {
                 ${authenticatedUser && authenticatedUser.isHelper && object.state !== "proposé" ? 
                   `
                     <form>
-                      <br>
-                      <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="customFile">
+                      <div class="row row-cols-1 row-cols-md-2 m-1">
+                        <input
+                          type="file"
+                          accept="image/png, image/jpeg"
+                          class="form-control"
+                          id="input-photo"
+                          name="photo"
+                          placeholder=""
+                        />
                       </div>
                     </form>
                   ` : ''
@@ -105,18 +112,15 @@ function renderObjectPage(object, objectTypes) {
                           <input type="number" id="object-price-input" min="0" max="10">
                         </div>
                         <br>
-                        <label>Visible : </label>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="exampleRadios" id="object-isVisible-input">
-                          <label class="form-check-label">
-                            Oui
-                          </label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="exampleRadios" id="object-isNotVisible-input">
-                          <label class="form-check-label">
-                            Non
-                          </label>
+                        <div class="form-check form-switch">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            role="switch"
+                            id="visible-switch"
+                            ${object.isVisible ? 'checked' : ''}
+                          />
+                          <label class="form-check-label" for="helper-switch">Visible sur le site</label>
                         </div>
                         <br>
                         <button type="submit" class="btn btn-primary" id="save-btn">Sauvegarder</button>
@@ -130,7 +134,7 @@ function renderObjectPage(object, objectTypes) {
                     `
                   }
                   
-                  ${authenticatedUser && authenticatedUser.id === 1 && object.state === "proposé" ?
+                  ${authenticatedUser && authenticatedUser.isHelper && object.state === "proposé" ?
                     `
                       <div class="div-user" id="object-user-offer"></div>
                       
@@ -163,18 +167,24 @@ function renderObjectPage(object, objectTypes) {
                         <p>Prix : ${object.price}€</p>
                       </div>
                     ` : ''
-    }
+                  }
               </div>
-        </div>
-    </section>
+          </div>
+      </section>
     `;
 
     main.appendChild(div);
 
     if (authenticatedUser && authenticatedUser.isHelper && object.state === "proposé"){
-      setUserOrPhoneNumber("div-user", object, div);
+      const acceptBtn = document.getElementById("accept-btn");
+      const denyBtn = document.getElementById("deny-btn");
 
-      document.getElementById("accept-btn").addEventListener('click', () => {
+      if (authenticatedUser.id !== 1){
+        acceptBtn.disabled = true;
+        denyBtn.disabled = true;
+      }
+
+      acceptBtn.addEventListener('click', () => {
         const status = "accepté";
 
         API.patch(`objects/status/${object.id}`, {body: {status}});
@@ -182,7 +192,7 @@ function renderObjectPage(object, objectTypes) {
         Navigate('/admin/offers');
       });
 
-      document.getElementById("deny-btn").addEventListener('click', () => {
+      denyBtn.addEventListener('click', () => {
         const status = "refusé";
         const reasonForRefusal = document.getElementById("reason-for-refusal").value;
 
@@ -193,8 +203,8 @@ function renderObjectPage(object, objectTypes) {
 
     }
 
-    if (authenticatedUser && authenticatedUser.id === 1 && object.state !== "proposé"){
-      setUserOrPhoneNumber("div-user", object, div);
+    if (authenticatedUser && authenticatedUser.isHelper && object.state !== "proposé"){
+      setUserOrPhoneNumber(document, "div-user", [object]);
       setDefaultValues(object);
 
       const stateForm = document.getElementById("object-state-select");
@@ -219,7 +229,7 @@ function renderObjectPage(object, objectTypes) {
         const state = document.getElementById("object-state-select").value;
         const date = document.getElementById("object-state-date-input").value;
         const price = document.getElementById("object-price-input").value;
-        const isVisible = document.getElementById("object-isVisible-input").checked;
+        const isVisible = document.getElementById("visible-switch").checked;
 
         API.put(`objects/${object.id}`, {body: {description, type, state, date, price, isVisible}});
         AdminObjectsPage();
@@ -252,39 +262,9 @@ function setDefaultValues(object){
     priceInput.disabled = false;
   }
 
-  const isVisibleRadio = document.getElementById("object-isVisible-input");
-  const isNotVisibleRadio = document.getElementById("object-isNotVisible-input");
+  const visibleSwitch = document.getElementById("visible-switch");
 
-  if (object.isVisible){
-    isNotVisibleRadio.defaultChecked = false;
-    isVisibleRadio.defaultChecked = true;
-  } else{
-    isVisibleRadio.defaultChecked = false;
-    isNotVisibleRadio.defaultChecked = true;
-  }
-}
-
-function setUserOrPhoneNumber(className, object, div){
-  const element = div.getElementsByClassName(className)[0];
-  if (object.user === null){
-    element.innerHTML = `<p>Proposé anonymement au ${object.phoneNumber} le ${dateStringtoGoodFormat(object.offerDate)}</p>`;
-  }
-  else {
-    element.innerHTML = `
-      <p>
-        Proposé par
-          <a href="#" class="btn-link" role="button" data-id="${object.user.id}">${object.user.firstName} ${object.user.lastName}</a>
-        le ${dateStringtoGoodFormat(object.offerDate)}
-      </p>
-    `;
-
-    element.querySelectorAll('a[data-id]').forEach((link) => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        Navigate(`/user/${e.target.dataset.id}`);
-      });
-    });
-  }
+  visibleSwitch.checked = !!object.isVisible;
 }
 
 export default ObjectPage;
