@@ -27,7 +27,11 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.io.File;
+import java.io.InputStream;
 import java.time.LocalDate;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.server.ContainerRequest;
 
 
@@ -216,5 +220,60 @@ public class ObjectResource {
     }
 
     return jsonMapper.convertValue(objectDTO, ObjectNode.class);
+  }
+
+  /**
+   * Get an object's photo.
+   *
+   * @param id the object's id
+   * @return the object's photo
+   */
+  @GET
+  @Path("/{id}/photo")
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  public Response getPhoto(@PathParam("id") int id) {
+    ObjectDTO object = objectUCC.getOne(id);
+
+    File f = objectUCC.getPhoto(object);
+
+    if (f == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    return Response.ok(f, MediaType.APPLICATION_OCTET_STREAM)
+        .header("Content-Disposition", "attachment; filename=\"" + f.getName() + "\"").build();
+  }
+
+  /**
+   * Update an object's photo.
+   *
+   * @param id          the object's id
+   * @param photo       the photo of the user
+   * @param photoDetail the detail of the photo
+   * @return the object's information
+   */
+  @PUT
+  @Path("/{id}/photo")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public ObjectDTO updatePhoto(@PathParam("id") int id, @FormDataParam("photo") InputStream photo,
+      @FormDataParam("photo") FormDataContentDisposition photoDetail) {
+    if (photoDetail == null || photoDetail.getFileName() == null) {
+      throw new WebApplicationException("Paramètres manquants", Response.Status.BAD_REQUEST);
+    }
+
+    ObjectDTO objectDTO = myDomainFactory.getObject();
+
+    objectDTO.setId(id);
+    objectDTO.setPhoto(true);
+
+    ObjectDTO objectAfterUpdate = objectUCC.updatePhoto(objectDTO, photo);
+
+    if (objectAfterUpdate == null) {
+      throw new WebApplicationException("Objet non trouvé", Status.NOT_FOUND);
+    }
+
+    return objectAfterUpdate;
   }
 }

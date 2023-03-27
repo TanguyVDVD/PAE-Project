@@ -1,6 +1,12 @@
 package be.vinci.pae.domain.object;
 
 import be.vinci.pae.domain.user.UserDTO;
+import be.vinci.pae.utils.Config;
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 
 /**
@@ -454,5 +460,44 @@ public class ObjectImpl implements Object {
       return false;
     }
     return status.equals("accepté") || status.equals("refusé");
+  }
+
+  /**
+   * Get the photo of the object.
+   *
+   * @return the photo of the object
+   */
+  @Override
+  public File photoFile() {
+    String blobPath = Config.getProperty("BlobPath");
+
+    File file = new File(blobPath, "object-" + id + ".jpg");
+
+    return file.exists() ? file : null;
+  }
+
+  /**
+   * Save the photo of the object.
+   *
+   * @param photo the photo to set
+   * @return whether the saving was successful
+   */
+  @Override
+  public boolean savePhoto(InputStream photo) {
+    try {
+      String blobPath = Config.getProperty("BlobPath");
+
+      // Create the blob directory if it doesn't exist
+      Files.createDirectories(Paths.get(blobPath));
+
+      Files.copy(photo, Paths.get(blobPath, "object-" + id + ".jpg"),
+          StandardCopyOption.REPLACE_EXISTING);
+    } catch (Exception e) {
+      e.printStackTrace();
+
+      return false;
+    }
+
+    return true;
   }
 }
