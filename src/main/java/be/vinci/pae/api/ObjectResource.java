@@ -140,7 +140,7 @@ public class ObjectResource {
   @AuthorizeAdmin
   public ObjectNode updateObject(JsonNode json, @PathParam("id") int id) {
     if (!json.hasNonNull("type") || !json.hasNonNull("description") || !json.hasNonNull(
-        "state") || !json.hasNonNull("is_visible")) {
+        "state") || !json.hasNonNull("isVisible")) {
       MyLogger.log(Level.INFO, "Tous les champs ne sont pas remplis");
 
       throw new WebApplicationException("Tous les champs ne sont pas remplis",
