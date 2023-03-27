@@ -178,7 +178,9 @@ async function fetchObjects(user) {
                 <div class="card card-object" data-id="${object.id}" role="button">
                   <img
                     src="${
-                      object.photo ? API.getEndpoint(`object/${object.id}/photo`) : noFurniturePhoto
+                      object.photo
+                        ? API.getEndpoint(`objects/${object.id}/photo`)
+                        : noFurniturePhoto
                     }"
                     onerror="this.src='${noFurniturePhoto}'"
                     class="card-img-top"
