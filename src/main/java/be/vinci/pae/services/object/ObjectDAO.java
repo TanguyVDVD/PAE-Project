@@ -18,6 +18,14 @@ public interface ObjectDAO {
   List<ObjectDTO> getAll(String query);
 
   /**
+   * Get all objects by user.
+   *
+   * @param id the id of the user
+   * @return the list of objects
+   */
+  List<ObjectDTO> getAllByUser(int id);
+
+  /**
    * Get all offers.
    *
    * @param query query to filter offers

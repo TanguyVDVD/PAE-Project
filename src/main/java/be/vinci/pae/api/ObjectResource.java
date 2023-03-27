@@ -1,9 +1,11 @@
 package be.vinci.pae.api;
 
+import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.api.filters.AuthorizeRiez;
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.object.ObjectDTO;
+import be.vinci.pae.domain.user.User;
 import be.vinci.pae.ucc.object.ObjectUCC;
 import be.vinci.pae.utils.MyLogger;
 import be.vinci.pae.utils.MyObjectMapper;
@@ -22,11 +24,21 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.io.File;
+import java.io.InputStream;
 import java.time.LocalDate;
+<<<<<<< HEAD
 import java.util.logging.Level;
+=======
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.glassfish.jersey.server.ContainerRequest;
+
+>>>>>>> 79d618047b94c93e52fdec728f99e3553638d01d
 
 /**
  * ObjectResource class.
@@ -52,6 +64,29 @@ public class ObjectResource {
   @Produces(MediaType.APPLICATION_JSON)
   public ArrayNode getObjects(@QueryParam("query") String query) {
     return jsonMapper.valueToTree(objectUCC.getObjects(query));
+  }
+
+  /**
+   * Get a list of all objects proposed by a user.
+   *
+   * @param request the request
+   * @param id      the id of the user
+   * @return a list of objects
+   */
+  @GET
+  @Authorize
+  @Path("/user/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public ArrayNode getObjectsByUser(@Context ContainerRequest request, @PathParam("id") int id) {
+    User authorizedUser = (User) request.getProperty("user");
+
+    if (authorizedUser.getId() != id && !authorizedUser.getIsHelper()) {
+      throw new WebApplicationException(
+          "Vous n'avez pas le droit de voir les objets de cet utilisateur",
+          Status.FORBIDDEN);
+    }
+
+    return jsonMapper.valueToTree(objectUCC.getObjectsByUser(id));
   }
 
   /**
@@ -111,7 +146,7 @@ public class ObjectResource {
       MyLogger.log(Level.INFO, "Tous les champs ne sont pas remplis");
 
       throw new WebApplicationException("Tous les champs ne sont pas remplis",
-          Status.BAD_REQUEST);
+          Status.UNAUTHORIZED);
     }
 
     LocalDate changeDate;
@@ -130,13 +165,17 @@ public class ObjectResource {
 
     String stateObject = json.get("state").asText();
 
+<<<<<<< HEAD
     if (stateObject.equals("mis en vente") && !json.hasNonNull("price")) {
       MyLogger.log(Level.INFO, "Un prix doit être entré");
+=======
+    if (stateObject.equals("en vente") && !json.hasNonNull("price")) {
+>>>>>>> 79d618047b94c93e52fdec728f99e3553638d01d
       throw new WebApplicationException("Un prix doit être entré",
           Status.NOT_FOUND);
     }
 
-    int priceObject = json.get("price").asInt();
+    double priceObject = json.get("price").asDouble();
 
     if (priceObject > 10 || priceObject < 0) {
       MyLogger.log(Level.INFO, "Le prix n'est pas compris entre 0 et 10");
@@ -200,5 +239,60 @@ public class ObjectResource {
     }
 
     return jsonMapper.convertValue(objectDTO, ObjectNode.class);
+  }
+
+  /**
+   * Get an object's photo.
+   *
+   * @param id the object's id
+   * @return the object's photo
+   */
+  @GET
+  @Path("/{id}/photo")
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  public Response getPhoto(@PathParam("id") int id) {
+    ObjectDTO object = objectUCC.getOne(id);
+
+    File f = objectUCC.getPhoto(object);
+
+    if (f == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    return Response.ok(f, MediaType.APPLICATION_OCTET_STREAM)
+        .header("Content-Disposition", "attachment; filename=\"" + f.getName() + "\"").build();
+  }
+
+  /**
+   * Update an object's photo.
+   *
+   * @param id          the object's id
+   * @param photo       the photo of the user
+   * @param photoDetail the detail of the photo
+   * @return the object's information
+   */
+  @PUT
+  @Path("/{id}/photo")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public ObjectDTO updatePhoto(@PathParam("id") int id, @FormDataParam("photo") InputStream photo,
+      @FormDataParam("photo") FormDataContentDisposition photoDetail) {
+    if (photoDetail == null || photoDetail.getFileName() == null) {
+      throw new WebApplicationException("Paramètres manquants", Response.Status.BAD_REQUEST);
+    }
+
+    ObjectDTO objectDTO = myDomainFactory.getObject();
+
+    objectDTO.setId(id);
+    objectDTO.setPhoto(true);
+
+    ObjectDTO objectAfterUpdate = objectUCC.updatePhoto(objectDTO, photo);
+
+    if (objectAfterUpdate == null) {
+      throw new WebApplicationException("Objet non trouvé", Status.NOT_FOUND);
+    }
+
+    return objectAfterUpdate;
   }
 }

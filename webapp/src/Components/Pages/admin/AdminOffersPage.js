@@ -3,6 +3,7 @@ import { getAuthenticatedUser } from '../../../utils/auths';
 import { clearPage } from '../../../utils/render';
 import API from '../../../utils/api';
 import { dateStringtoGoodFormat, subtractDates } from '../../../utils/dates';
+import setUserOrPhoneNumber from "../../../utils/objects";
 
 const AdminOffersPage = () => {
   const user = getAuthenticatedUser();
@@ -65,9 +66,9 @@ async function fetchOffers(query = '') {
                                 <h5>${offer.objectType}</h5>
                                
                                 <div class="mt-1 mb-1 spec-1">
-                                    <span>${offer.description}</span>
+                                    <h6>${offer.description}</h6>
                                 </div>
-                                
+                                <br>
                                 <p>
                                     À récupérer le ${dateStringtoGoodFormat(offer.receiptDate)} ${
                           offer.timeSlot === 'matin'
@@ -99,7 +100,7 @@ async function fetchOffers(query = '') {
         </div>
       `;
 
-    setUserOrPhoneNumber('div-user', offers);
+    setUserOrPhoneNumber(document, 'div-user', offers);
     setRemainingTime('div-remaining-time', offers);
 
     list.querySelectorAll('a[data-id]').forEach((link) => {
@@ -116,28 +117,6 @@ async function fetchOffers(query = '') {
       });
     });
   });
-}
-
-function setUserOrPhoneNumber(className, offers) {
-  const elements = document.getElementsByClassName(className);
-  for (let i = 0; i < elements.length; i += 1) {
-    const offer = offers[i];
-    const element = elements.item(i);
-    if (offer.user === null) {
-      element.innerHTML = `
-          <p>Proposé anonymement par ${offer.phoneNumber}</p>
-      `;
-    } else {
-      element.innerHTML = `
-          <p>
-          Proposé par
-              <a href="#" class="btn-link" role="button" data-id="${offer.user.id}">
-                  ${offer.user.firstName} ${offer.user.lastName}
-              </a>
-          </p>
-      `;
-    }
-  }
 }
 
 function setRemainingTime(className, offers) {

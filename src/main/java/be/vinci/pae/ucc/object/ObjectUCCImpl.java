@@ -1,6 +1,5 @@
 package be.vinci.pae.ucc.object;
 
-import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.object.Object;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.services.DALServices;
@@ -8,6 +7,8 @@ import be.vinci.pae.services.object.ObjectDAO;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response.Status;
+import java.io.File;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -21,10 +22,6 @@ public class ObjectUCCImpl implements ObjectUCC {
 
   @Inject
   private DALServices myDalServices;
-
-  @Inject
-  private DomainFactory myDomainFactory;
-
 
   /**
    * Returns a list of all objects.
@@ -40,7 +37,28 @@ public class ObjectUCCImpl implements ObjectUCC {
       return myObjectDAO.getAll(query);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new WebApplicationException("Error getting list all objects", Status.BAD_REQUEST);
+      throw new WebApplicationException("Erreur lors de la récupération de la liste des objets",
+          Status.INTERNAL_SERVER_ERROR);
+    } finally {
+      myDalServices.commitTransaction();
+    }
+  }
+
+  /**
+   * Get all objects by user.
+   *
+   * @param id the id of the user
+   * @return the list of objects
+   */
+  @Override
+  public List<ObjectDTO> getObjectsByUser(int id) {
+    myDalServices.startTransaction();
+    try {
+      return myObjectDAO.getAllByUser(id);
+    } catch (Exception e) {
+      myDalServices.rollbackTransaction();
+      throw new WebApplicationException("Erreur lors de la récupération de la liste des objets",
+          Status.INTERNAL_SERVER_ERROR);
     } finally {
       myDalServices.commitTransaction();
     }
@@ -60,7 +78,8 @@ public class ObjectUCCImpl implements ObjectUCC {
       return myObjectDAO.getOffers(query);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new WebApplicationException("Error getting list all offers", Status.BAD_REQUEST);
+      throw new WebApplicationException("Erreur lors de la récupération de la liste des offres",
+          Status.INTERNAL_SERVER_ERROR);
     } finally {
       myDalServices.commitTransaction();
     }
@@ -82,7 +101,8 @@ public class ObjectUCCImpl implements ObjectUCC {
       return myObjectDAO.getOneById(id);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new WebApplicationException("Error getting an object by id", Status.BAD_REQUEST);
+      throw new WebApplicationException("Erreur lors de la récupération de l'objet",
+          Status.INTERNAL_SERVER_ERROR);
     } finally {
       myDalServices.commitTransaction();
     }
@@ -100,8 +120,8 @@ public class ObjectUCCImpl implements ObjectUCC {
 
     myDalServices.startTransaction();
     try {
-      Object object = (Object) myDomainFactory.getObject();
-      String status = myObjectDAO.getOneById(id).getStatus();
+      Object object = (Object) myObjectDAO.getOneById(id);
+      String status = object.getStatus();
 
       if (object.isStatusAlreadyDefined(status)) {
         return null;
@@ -110,7 +130,8 @@ public class ObjectUCCImpl implements ObjectUCC {
       return myObjectDAO.setStatusToAccepted(id, LocalDate.now());
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new WebApplicationException("Error accepting object", Status.BAD_REQUEST);
+      throw new WebApplicationException("Erreur lors de l'acceptation de l'offre",
+          Status.INTERNAL_SERVER_ERROR);
     } finally {
       myDalServices.commitTransaction();
     }
@@ -131,8 +152,8 @@ public class ObjectUCCImpl implements ObjectUCC {
 
     try {
 
-      Object object = (Object) myDomainFactory.getObject();
-      String status = myObjectDAO.getOneById(id).getStatus();
+      Object object = (Object) myObjectDAO.getOneById(id);
+      String status = object.getStatus();
 
       if (object.isStatusAlreadyDefined(status)) {
         return null;
@@ -141,7 +162,8 @@ public class ObjectUCCImpl implements ObjectUCC {
       return myObjectDAO.setStatusToRefused(id, reasonForRefusal, LocalDate.now());
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new WebApplicationException("Error refusing an object", Status.BAD_REQUEST);
+      throw new WebApplicationException("Erreur lors du refus de l'offre",
+          Status.INTERNAL_SERVER_ERROR);
     } finally {
       myDalServices.commitTransaction();
     }
@@ -170,13 +192,13 @@ public class ObjectUCCImpl implements ObjectUCC {
       }
 
       if (!objectDTO.getState().equals(objectFromDB.getState())) {
-        if (objectDTO.getState().equals("en atelier")) {
+        if (objectDTO.getState().equals("à l'atelier")) {
           objectFromDB.setWorkshopDate(date);
         }
         if (objectDTO.getState().equals("en magasin")) {
           objectFromDB.setDepositDate(date);
         }
-        if (objectDTO.getState().equals("mis en vente")) {
+        if (objectDTO.getState().equals("en vente")) {
           objectFromDB.setOnSaleDate(date);
         }
         if (objectDTO.getState().equals("vendu")) {
@@ -197,11 +219,60 @@ public class ObjectUCCImpl implements ObjectUCC {
 
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new WebApplicationException("Error update an object", Status.BAD_REQUEST);
+      throw new WebApplicationException("Erreur lors de la mise à jour de l'objet",
+          Status.INTERNAL_SERVER_ERROR);
     } finally {
       myDalServices.commitTransaction();
     }
   }
 
+  /**
+   * Get an object's photo.
+   *
+   * @param objectDTO the object
+   * @return the photo of the object
+   */
+  @Override
+  public File getPhoto(ObjectDTO objectDTO) {
+    Object object = (Object) objectDTO;
 
+    return object.photoFile();
+  }
+
+  /**
+   * Update an object's photo.
+   *
+   * @param objectDTO the object
+   * @param file      the new photo
+   * @return the updated object
+   */
+  @Override
+  public ObjectDTO updatePhoto(ObjectDTO objectDTO, InputStream file) {
+    myDalServices.startTransaction();
+
+    try {
+      Object object = (Object) myObjectDAO.getOneById(objectDTO.getId());
+
+      if (object == null) {
+        return null;
+      }
+
+      object.savePhoto(file);
+
+      object.setPhoto(true);
+
+      if (myObjectDAO.updateObject(object.getId(), object) == null) {
+        return null;
+      }
+
+      return myObjectDAO.getOneById(objectDTO.getId());
+    } catch (Exception e) {
+      myDalServices.rollbackTransaction();
+
+      throw new WebApplicationException("Erreur lors de la mise à jour de la photo de l'objet",
+          Status.INTERNAL_SERVER_ERROR);
+    } finally {
+      myDalServices.commitTransaction();
+    }
+  }
 }

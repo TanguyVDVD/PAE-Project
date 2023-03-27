@@ -3,7 +3,6 @@ package be.vinci.pae.api;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.domain.DomainFactory;
-import be.vinci.pae.domain.user.User;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.ucc.user.UserUCC;
 import be.vinci.pae.utils.Config;
@@ -80,7 +79,7 @@ public class UserResource {
   public ObjectNode login(JsonNode json) {
 
     if (!json.hasNonNull("email") || !json.hasNonNull("password")) {
-      throw new WebApplicationException("Adresse mail et mot de passe requis", Status.NOT_FOUND);
+      throw new WebApplicationException("Adresse mail et mot de passe requis", Status.UNAUTHORIZED);
     }
 
     String login = json.get("email").asText();
@@ -122,7 +121,7 @@ public class UserResource {
 
     for (String input : inputs) {
       if (input == null || input.isBlank()) {
-        throw new WebApplicationException("Paramètres manquants", Response.Status.BAD_REQUEST);
+        throw new WebApplicationException("Paramètres manquants", Response.Status.UNAUTHORIZED);
       }
     }
 
@@ -140,7 +139,7 @@ public class UserResource {
     UserDTO userAfterRegister = userUCC.register(userRegister);
 
     if (userAfterRegister.getPhoto()) {
-      userUCC.saveProfilePicture(userAfterRegister.getId(), photo);
+      userUCC.updateProfilePicture(userAfterRegister, photo);
     }
 
     return createToken(userAfterRegister);
@@ -285,7 +284,10 @@ public class UserResource {
   @Path("/{id}/photo")
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   public Response getProfilePicture(@PathParam("id") int id) {
-    File f = userUCC.getProfilePicture(id);
+    UserDTO user = myDomainFactory.getUser();
+    user.setId(id);
+
+    File f = userUCC.getProfilePicture(user);
 
     if (f == null) {
       return Response.status(Status.NOT_FOUND).build();
@@ -315,7 +317,7 @@ public class UserResource {
       @FormDataParam("password") String password,
       @FormDataParam("photo") InputStream photo,
       @FormDataParam("photo") FormDataContentDisposition photoDetail) {
-    User authorizedUser = (User) request.getProperty("user");
+    UserDTO authorizedUser = (UserDTO) request.getProperty("user");
 
     if (authorizedUser.getId() != id) {
       throw new WebApplicationException("Vous n'avez pas les droits pour modifier cet utilisateur",
@@ -326,18 +328,12 @@ public class UserResource {
       throw new WebApplicationException("Paramètres manquants", Response.Status.BAD_REQUEST);
     }
 
-    if (!authorizedUser.isPasswordCorrect(password)) {
-      throw new WebApplicationException("Mot de passe incorrect", Response.Status.UNAUTHORIZED);
-    }
-
-    userUCC.saveProfilePicture(id, photo);
-
     UserDTO userDTO = myDomainFactory.getUser();
 
     userDTO.setId(id);
     userDTO.setPhoto(true);
 
-    UserDTO userAfterUpdate = userUCC.updateUser(userDTO);
+    UserDTO userAfterUpdate = userUCC.updateProfilePicture(userDTO, photo);
 
     if (userAfterUpdate == null) {
       throw new WebApplicationException("Utilisateur non trouvé", Status.NOT_FOUND);

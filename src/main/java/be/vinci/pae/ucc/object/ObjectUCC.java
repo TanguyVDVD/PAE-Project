@@ -1,6 +1,8 @@
 package be.vinci.pae.ucc.object;
 
 import be.vinci.pae.domain.object.ObjectDTO;
+import java.io.File;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -16,6 +18,14 @@ public interface ObjectUCC {
    * @return a list of all objects
    */
   List<ObjectDTO> getObjects(String query);
+
+  /**
+   * Get all objects by user.
+   *
+   * @param id the id of the user
+   * @return the list of objects
+   */
+  List<ObjectDTO> getObjectsByUser(int id);
 
   /**
    * Returns a list of all offers.
@@ -60,4 +70,20 @@ public interface ObjectUCC {
    */
   ObjectDTO update(int id, ObjectDTO objectDTO, LocalDate date);
 
+  /**
+   * Get an object's photo.
+   *
+   * @param objectDTO the object
+   * @return the photo of the object
+   */
+  File getPhoto(ObjectDTO objectDTO);
+
+  /**
+   * Update an object's photo.
+   *
+   * @param objectDTO the object
+   * @param file      the new photo
+   * @return the updated object
+   */
+  ObjectDTO updatePhoto(ObjectDTO objectDTO, InputStream file);
 }

@@ -4,16 +4,12 @@ import be.vinci.pae.domain.user.User;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.user.UserDAO;
-import be.vinci.pae.utils.Config;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import java.io.File;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 
@@ -54,6 +50,7 @@ public class UserUCCImpl implements UserUCC {
       return userDB;
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
+
       throw new WebApplicationException("Erreur lors de la connexion",
           Status.INTERNAL_SERVER_ERROR);
     } finally {
@@ -69,11 +66,9 @@ public class UserUCCImpl implements UserUCC {
    */
   @Override
   public UserDTO register(UserDTO userDTO) {
-
     myDalServices.startTransaction();
 
     try {
-
       // Check email format
       if (!User.emailIsValid(userDTO.getEmail())) {
         throw new WebApplicationException("Adresse mail invalide", Response.Status.BAD_REQUEST);
@@ -112,7 +107,13 @@ public class UserUCCImpl implements UserUCC {
 
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw e;
+
+      if (e instanceof WebApplicationException) {
+        throw e;
+      }
+
+      throw new WebApplicationException("Erreur lors de l'inscription",
+          Status.INTERNAL_SERVER_ERROR);
     } finally {
       myDalServices.commitTransaction();
     }
@@ -231,7 +232,13 @@ public class UserUCCImpl implements UserUCC {
 
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw e;
+
+      if (e instanceof WebApplicationException) {
+        throw e;
+      }
+
+      throw new WebApplicationException("Erreur lors de la mise à jour de l'utilisateur",
+          Status.INTERNAL_SERVER_ERROR);
     } finally {
       myDalServices.commitTransaction();
     }
@@ -249,44 +256,41 @@ public class UserUCCImpl implements UserUCC {
     return updateUser(userDTO, null);
   }
 
-  /**
-   * Get the profile picture of a user.
-   *
-   * @param id id of the user
-   * @return the profile picture of the user
-   */
   @Override
-  public File getProfilePicture(int id) {
-    String blobPath = Config.getProperty("BlobPath");
+  public File getProfilePicture(UserDTO userDTO) {
+    User user = (User) userDTO;
 
-    File file = new File(blobPath, "user-" + id + ".jpg");
-
-    return file.exists() ? file : null;
+    return user.profilePictureFile();
   }
 
-  /**
-   * Update the profile picture of a user.
-   *
-   * @param id    id of the user
-   * @param photo the photo to set
-   * @return whether the update was successful
-   */
   @Override
-  public boolean saveProfilePicture(int id, InputStream photo) {
+  public UserDTO updateProfilePicture(UserDTO userDTO, InputStream profilePicture) {
+    myDalServices.startTransaction();
+
     try {
-      String blobPath = Config.getProperty("BlobPath");
+      User user = (User) myUserDAO.getOneById(userDTO.getId());
 
-      // Create the blob directory if it doesn't exist
-      Files.createDirectories(Paths.get(blobPath));
+      if (user == null) {
+        return null;
+      }
 
-      Files.copy(photo, Paths.get(blobPath, "user-" + id + ".jpg"),
-          StandardCopyOption.REPLACE_EXISTING);
+      user.saveProfilePicture(profilePicture);
+
+      user.setPhoto(true);
+
+      if (!myUserDAO.update(user)) {
+        return null;
+      }
+
+      return myUserDAO.getOneById(userDTO.getId());
     } catch (Exception e) {
-      e.printStackTrace();
+      myDalServices.rollbackTransaction();
 
-      return false;
+      throw new WebApplicationException("Erreur lors de la mise à jour de la photo de profil",
+          Status.INTERNAL_SERVER_ERROR);
+    } finally {
+      myDalServices.commitTransaction();
     }
-
-    return true;
   }
+
 }

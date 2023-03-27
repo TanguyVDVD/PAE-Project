@@ -4,11 +4,11 @@ const formatDate = (date) => {
 };
 
 const formatPhoneNumber = (phoneNumber) => {
-  let num = `${phoneNumber.slice(0, phoneNumber.length - 6)} `;
+  let num = `${phoneNumber.slice(0, phoneNumber.length - 6)}/`;
   num += phoneNumber
     .slice(phoneNumber.length - 6)
     .match(/.{2}/g)
-    .join(' ');
+    .join('.');
 
   return num;
 };

@@ -61,7 +61,7 @@ public class UserDAOImpl implements UserDAO {
   public int insert(UserDTO userDTO) {
     String request = "INSERT INTO" + " pae.users VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request, true)) {
       ps.setString(1, userDTO.getLastName());
       ps.setString(2, userDTO.getFirstName());
       ps.setString(3, userDTO.getPhoneNumber());

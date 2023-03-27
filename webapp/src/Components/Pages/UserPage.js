@@ -7,6 +7,7 @@ import { clearPage, renderError } from '../../utils/render';
 import { formatDate, formatPhoneNumber } from '../../utils/format';
 
 import noProfilePicture from '../../img/no_profile_picture.webp';
+import noFurniturePhoto from '../../img/no_furniture_photo.svg';
 
 const objects = [];
 
@@ -148,84 +149,64 @@ function renderUserPage(user) {
 
   main.replaceChildren(userPage);
 
-  fetchObjects();
+  fetchObjects(user);
 }
 
-async function fetchObjects() {
+async function fetchObjects(user) {
   if (objects.length === 0)
-    objects.push(
-      ...[
-        {
-          id: 1,
-          type: 'Fauteuil',
-          name: 'fauteuil tapissé',
-          image: '',
-        },
-        {
-          id: 2,
-          type: 'Matériel de cuisine',
-          name: '3 casseroles',
-          image: '',
-        },
-        {
-          id: 3,
-          type: 'Matériel de cuisine',
-          name: '4 poêles',
-          image: '',
-        },
-        {
-          id: 4,
-          type: 'Couvertures',
-          name: 'couvertures en bon état',
-          image: '',
-        },
-        {
-          id: 5,
-          type: 'Meuble',
-          name: 'anciens tableaux',
-          image: '',
-        },
-        {
-          id: 6,
-          type: 'Meuble',
-          name: 'décoration de cactus',
-          image: '',
-        },
-        {
-          id: 7,
-          type: 'Matelas',
-          name: 'matelas blanc',
-          image: '',
-        },
-        {
-          id: 8,
-          type: 'Matériel de cuisine',
-          name: '4 poêles',
-          image: '',
-        },
-      ],
-    );
+    API.get(`objects/user/${user.id}`)
+      .then((result) => {
+        objects.push(...result);
 
-  setTimeout(() => {
-    const obj = document.querySelector('#objects');
-    obj.className = 'row row-cols-1 row-cols-md-2 row-cols-lg-4 g-5 text-center';
+        const obj = document.querySelector('#objects');
 
-    obj.innerHTML = objects
-      .map(
-        (object) => `
-          <div class="col">
-            <div class="card card-object" data-id="${object.id}" role="button">
-              <img src="${object.image}" class="card-img-top" alt="Photo : ${object.name}" />
-              <div class="card-title fw-bold m-0">${object.type}</div>
-              <div class="card-body pt-0">
-                ${object.name}
-              </div>
+        if (objects.length === 0) {
+          obj.innerHTML = `
+            <div class="text-center text-muted my-5">
+              <p>Aucun objet proposé</p>
             </div>
-          </div>
-        `,
-      )
-      .join('');
-  }, 3000);
+          `;
+          return;
+        }
+
+        obj.className = 'row row-cols-1 row-cols-md-2 row-cols-lg-4 g-5 text-center';
+
+        obj.innerHTML = objects
+          .map(
+            (object) => `
+              <div class="col">
+                <div class="card card-object" data-id="${object.id}" role="button">
+                  <img
+                    src="${
+                      object.photo
+                        ? API.getEndpoint(`objects/${object.id}/photo`)
+                        : noFurniturePhoto
+                    }"
+                    onerror="this.src='${noFurniturePhoto}'"
+                    class="card-img-top"
+                    alt="Photo : ${object.description}"
+                  />
+                  <div class="card-title fw-bold m-0">${object.objectType}</div>
+                  <div class="card-body pt-0">
+                    ${object.description}
+                  </div>
+                </div>
+              </div>
+            `,
+          )
+          .join('');
+
+        const cards = document.querySelectorAll('.card-object');
+        cards.forEach((card) => {
+          card.addEventListener('click', (e) => {
+            const { id } = e.currentTarget.dataset;
+            Navigate(`/object/${id}`);
+          });
+        });
+      })
+      .catch((error) => {
+        renderError(error.message);
+      });
 }
 
 function renderEditProfile(user) {

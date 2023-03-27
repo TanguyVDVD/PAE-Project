@@ -1,5 +1,7 @@
 package be.vinci.pae.domain.user;
 
+import java.io.File;
+import java.io.InputStream;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -56,5 +58,20 @@ public interface User extends UserDTO {
    * @return a boolean
    */
   boolean isPasswordCorrect(String password);
+
+  /**
+   * Get the profile picture of the user.
+   *
+   * @return the profile picture of the user
+   */
+  File profilePictureFile();
+
+  /**
+   * Save the profile picture of the user.
+   *
+   * @param photo the photo to set
+   * @return whether the saving was successful
+   */
+  boolean saveProfilePicture(InputStream photo);
 
 }
