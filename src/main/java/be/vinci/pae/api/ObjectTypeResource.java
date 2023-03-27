@@ -1,6 +1,5 @@
 package be.vinci.pae.api;
 
-import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.ucc.objecttype.ObjectTypeUCC;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -29,7 +28,6 @@ public class ObjectTypeResource {
    * @return a list of object types
    */
   @GET
-  @AuthorizeAdmin
   @Produces(MediaType.APPLICATION_JSON)
   public ArrayNode getObjectTypes() {
     return jsonMapper.valueToTree(objectTypeUCC.getObjectTypes());
