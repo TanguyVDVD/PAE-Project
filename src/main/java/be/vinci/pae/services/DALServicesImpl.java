@@ -1,10 +1,12 @@
 package be.vinci.pae.services;
 
 import be.vinci.pae.utils.Config;
+import be.vinci.pae.utils.MyLogger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 /**
@@ -42,6 +44,7 @@ public class DALServicesImpl implements DALServices, DalBackendServices {
           ? Statement.RETURN_GENERATED_KEYS
           : Statement.NO_GENERATED_KEYS);
     } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "Get PS error");
       se.printStackTrace();
     }
 
@@ -69,6 +72,7 @@ public class DALServicesImpl implements DALServices, DalBackendServices {
       connection.setAutoCommit(false);
       connectionThreadLocal.set(connection);
     } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "Start transaction error");
       se.printStackTrace();
     }
 
@@ -87,6 +91,7 @@ public class DALServicesImpl implements DALServices, DalBackendServices {
       connectionThreadLocal.remove();
       connection.close();
     } catch (SQLException e) {
+      MyLogger.log(Level.INFO, "Commit transaction error");
       throw new RuntimeException(e);
     }
 
@@ -102,6 +107,7 @@ public class DALServicesImpl implements DALServices, DalBackendServices {
       connection.rollback();
       connection.setAutoCommit(false);
     } catch (SQLException e) {
+      MyLogger.log(Level.INFO, "Rollback transaction error");
       throw new RuntimeException(e);
     }
 

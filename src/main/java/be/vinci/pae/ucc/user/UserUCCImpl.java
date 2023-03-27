@@ -4,6 +4,7 @@ import be.vinci.pae.domain.user.User;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.user.UserDAO;
+import be.vinci.pae.utils.MyLogger;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
@@ -11,6 +12,7 @@ import jakarta.ws.rs.core.Response.Status;
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
+import java.util.logging.Level;
 
 
 /**
@@ -50,7 +52,7 @@ public class UserUCCImpl implements UserUCC {
       return userDB;
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-
+      MyLogger.log(Level.INFO, "Erreur lors de la connexion");
       throw new WebApplicationException("Erreur lors de la connexion",
           Status.INTERNAL_SERVER_ERROR);
     } finally {
@@ -71,12 +73,14 @@ public class UserUCCImpl implements UserUCC {
     try {
       // Check email format
       if (!User.emailIsValid(userDTO.getEmail())) {
+        MyLogger.log(Level.INFO, "Adresse mail invalide");
         throw new WebApplicationException("Adresse mail invalide", Response.Status.BAD_REQUEST);
       }
 
       // Check phone number format
       String phone = User.formatPhoneNumber(userDTO.getPhoneNumber());
       if (phone == null) {
+        MyLogger.log(Level.INFO, "Numéro de téléphone invalide");
         throw new WebApplicationException("Numéro de téléphone invalide",
             Response.Status.BAD_REQUEST);
       }
@@ -84,10 +88,12 @@ public class UserUCCImpl implements UserUCC {
 
       // Check if email or phone number already exists
       if (myUserDAO.getOneByEmail(userDTO.getEmail()) != null) {
+        MyLogger.log(Level.INFO, "Adresse mail déja utilisé");
         throw new WebApplicationException("Adresse mail déja utilisé", Response.Status.BAD_REQUEST);
       }
 
       if (myUserDAO.getOneByPhoneNumber(userDTO.getPhoneNumber()) != null) {
+        MyLogger.log(Level.INFO, "Numéro de GSM déjà utilisé");
         throw new WebApplicationException("Numéro de GSM déjà utilisé",
             Response.Status.BAD_REQUEST);
       }
@@ -111,7 +117,7 @@ public class UserUCCImpl implements UserUCC {
       if (e instanceof WebApplicationException) {
         throw e;
       }
-
+      MyLogger.log(Level.INFO, "Erreur lors de l'inscription");
       throw new WebApplicationException("Erreur lors de l'inscription",
           Status.INTERNAL_SERVER_ERROR);
     } finally {
@@ -133,6 +139,7 @@ public class UserUCCImpl implements UserUCC {
       return myUserDAO.getAll(query);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
+      MyLogger.log(Level.INFO, "Erreur lors de la récupération des utilisateurs");
       throw new WebApplicationException("Erreur lors de la récupération des utilisateurs",
           Status.INTERNAL_SERVER_ERROR);
     } finally {
@@ -154,6 +161,7 @@ public class UserUCCImpl implements UserUCC {
       return myUserDAO.getOneById(id);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
+      MyLogger.log(Level.INFO, "Erreur lors de la récupération de l'utilisateur");
       throw new WebApplicationException("Erreur lors de la récupération de l'utilisateur",
           Status.INTERNAL_SERVER_ERROR);
     } finally {
@@ -182,6 +190,7 @@ public class UserUCCImpl implements UserUCC {
 
       // Check if password is correct
       if (password != null && !userDB.isPasswordCorrect(password)) {
+        MyLogger.log(Level.INFO, "Mot de passe incorrect");
         throw new WebApplicationException("Mot de passe incorrect", Response.Status.BAD_REQUEST);
       }
 
@@ -189,10 +198,12 @@ public class UserUCCImpl implements UserUCC {
       String email = userDTO.getEmail();
       if (email != null && !email.equals(userDB.getEmail())) {
         if (!User.emailIsValid(email)) {
+          MyLogger.log(Level.INFO, "Adresse mail invalide");
           throw new WebApplicationException("Adresse mail invalide", Response.Status.BAD_REQUEST);
         }
 
         if (myUserDAO.getOneByEmail(email) != null) {
+          MyLogger.log(Level.INFO, "Adresse mail déja utilisé");
           throw new WebApplicationException("Adresse mail déja utilisé",
               Response.Status.BAD_REQUEST);
         }
@@ -204,11 +215,13 @@ public class UserUCCImpl implements UserUCC {
         String formattedPhoneNumber = User.formatPhoneNumber(phoneNumber);
 
         if (formattedPhoneNumber == null) {
+          MyLogger.log(Level.INFO, "Numéro de GSM invalide");
           throw new WebApplicationException("Numéro de GSM invalide", Response.Status.BAD_REQUEST);
         }
 
         if (!formattedPhoneNumber.equals(userDB.getPhoneNumber())) {
           if (myUserDAO.getOneByPhoneNumber(formattedPhoneNumber) != null) {
+            MyLogger.log(Level.INFO, "Numéro de GSM déjà utilisé");
             throw new WebApplicationException("Numéro de GSM déjà utilisé",
                 Response.Status.BAD_REQUEST);
           }
@@ -236,7 +249,7 @@ public class UserUCCImpl implements UserUCC {
       if (e instanceof WebApplicationException) {
         throw e;
       }
-
+      MyLogger.log(Level.INFO, "Erreur lors de la mise à jour de l'utilisateur");
       throw new WebApplicationException("Erreur lors de la mise à jour de l'utilisateur",
           Status.INTERNAL_SERVER_ERROR);
     } finally {
@@ -285,7 +298,7 @@ public class UserUCCImpl implements UserUCC {
       return myUserDAO.getOneById(userDTO.getId());
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-
+      MyLogger.log(Level.INFO, "rreur lors de la mise à jour de la photo de profil");
       throw new WebApplicationException("Erreur lors de la mise à jour de la photo de profil",
           Status.INTERNAL_SERVER_ERROR);
     } finally {

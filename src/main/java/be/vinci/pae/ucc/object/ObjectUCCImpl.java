@@ -4,6 +4,7 @@ import be.vinci.pae.domain.object.Object;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.object.ObjectDAO;
+import be.vinci.pae.utils.MyLogger;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response.Status;
@@ -11,6 +12,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * UserUCCImpl class that implements the ObjectUCC interface.
@@ -37,6 +39,7 @@ public class ObjectUCCImpl implements ObjectUCC {
       return myObjectDAO.getAll(query);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
+      MyLogger.log(Level.INFO, "Erreur lors de la récupération de la liste des objets");
       throw new WebApplicationException("Erreur lors de la récupération de la liste des objets",
           Status.INTERNAL_SERVER_ERROR);
     } finally {
@@ -57,6 +60,7 @@ public class ObjectUCCImpl implements ObjectUCC {
       return myObjectDAO.getAllByUser(id);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
+      MyLogger.log(Level.INFO, "Erreur lors de la récupération de la liste des objets");
       throw new WebApplicationException("Erreur lors de la récupération de la liste des objets",
           Status.INTERNAL_SERVER_ERROR);
     } finally {
@@ -78,6 +82,7 @@ public class ObjectUCCImpl implements ObjectUCC {
       return myObjectDAO.getOffers(query);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
+      MyLogger.log(Level.INFO, "Erreur lors de la récupération de la liste des offres");
       throw new WebApplicationException("Erreur lors de la récupération de la liste des offres",
           Status.INTERNAL_SERVER_ERROR);
     } finally {
@@ -101,6 +106,7 @@ public class ObjectUCCImpl implements ObjectUCC {
       return myObjectDAO.getOneById(id);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
+      MyLogger.log(Level.INFO, "Erreur lors de la récupération de l'objet");
       throw new WebApplicationException("Erreur lors de la récupération de l'objet",
           Status.INTERNAL_SERVER_ERROR);
     } finally {
@@ -130,6 +136,7 @@ public class ObjectUCCImpl implements ObjectUCC {
       return myObjectDAO.setStatusToAccepted(id, LocalDate.now());
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
+      MyLogger.log(Level.INFO, "Erreur lors de l'acceptation de l'offre");
       throw new WebApplicationException("Erreur lors de l'acceptation de l'offre",
           Status.INTERNAL_SERVER_ERROR);
     } finally {
@@ -163,6 +170,7 @@ public class ObjectUCCImpl implements ObjectUCC {
       return myObjectDAO.setStatusToRefused(id, reasonForRefusal, LocalDate.now());
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
+      MyLogger.log(Level.INFO, "Erreur lors du refus de l'offre");
       throw new WebApplicationException("Erreur lors du refus de l'offre",
           Status.INTERNAL_SERVER_ERROR);
     } finally {
@@ -219,6 +227,7 @@ public class ObjectUCCImpl implements ObjectUCC {
 
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
+      MyLogger.log(Level.INFO, "Erreur lors de la mise à jour de l'objet");
       throw new WebApplicationException("Erreur lors de la mise à jour de l'objet",
           Status.INTERNAL_SERVER_ERROR);
     } finally {
@@ -268,7 +277,7 @@ public class ObjectUCCImpl implements ObjectUCC {
       return myObjectDAO.getOneById(objectDTO.getId());
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-
+      MyLogger.log(Level.INFO, "Erreur lors de la mise à jour de la photo de l'objet");
       throw new WebApplicationException("Erreur lors de la mise à jour de la photo de l'objet",
           Status.INTERNAL_SERVER_ERROR);
     } finally {

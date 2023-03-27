@@ -3,6 +3,7 @@ package be.vinci.pae.services.user;
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.services.DalBackendServices;
+import be.vinci.pae.utils.MyLogger;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 
@@ -45,6 +47,7 @@ public class UserDAOImpl implements UserDAO {
       user.setRegisterDate(resultSet.getDate("register_date").toLocalDate());
       user.setIsHelper(resultSet.getBoolean("is_helper"));
     } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "error dto from RS USer");
       se.printStackTrace();
     }
 
@@ -79,6 +82,7 @@ public class UserDAOImpl implements UserDAO {
         return rs.getInt(1);
       }
     } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "error insert user");
       se.printStackTrace();
     }
 
@@ -103,6 +107,7 @@ public class UserDAOImpl implements UserDAO {
         }
       }
     } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "error get a user by email");
       se.printStackTrace();
     }
 
@@ -122,6 +127,7 @@ public class UserDAOImpl implements UserDAO {
         }
       }
     } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "get a user by phone number");
       se.printStackTrace();
     }
 
@@ -146,6 +152,7 @@ public class UserDAOImpl implements UserDAO {
         }
       }
     } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "get a user by id");
       se.printStackTrace();
     }
 
@@ -172,6 +179,7 @@ public class UserDAOImpl implements UserDAO {
         }
       }
     } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "get all user");
       se.printStackTrace();
     }
 
@@ -231,6 +239,7 @@ public class UserDAOImpl implements UserDAO {
 
       return true;
     } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "error update user");
       se.printStackTrace();
     }
 

@@ -31,14 +31,11 @@ import jakarta.ws.rs.core.Response.Status;
 import java.io.File;
 import java.io.InputStream;
 import java.time.LocalDate;
-<<<<<<< HEAD
 import java.util.logging.Level;
-=======
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.server.ContainerRequest;
 
->>>>>>> 79d618047b94c93e52fdec728f99e3553638d01d
 
 /**
  * ObjectResource class.
@@ -81,6 +78,7 @@ public class ObjectResource {
     User authorizedUser = (User) request.getProperty("user");
 
     if (authorizedUser.getId() != id && !authorizedUser.getIsHelper()) {
+      MyLogger.log(Level.INFO, "Impossible de trouver les informations de l'objet");
       throw new WebApplicationException(
           "Vous n'avez pas le droit de voir les objets de cet utilisateur",
           Status.FORBIDDEN);
@@ -165,12 +163,9 @@ public class ObjectResource {
 
     String stateObject = json.get("state").asText();
 
-<<<<<<< HEAD
-    if (stateObject.equals("mis en vente") && !json.hasNonNull("price")) {
-      MyLogger.log(Level.INFO, "Un prix doit être entré");
-=======
     if (stateObject.equals("en vente") && !json.hasNonNull("price")) {
->>>>>>> 79d618047b94c93e52fdec728f99e3553638d01d
+      MyLogger.log(Level.INFO, "Un prix doit être entré");
+
       throw new WebApplicationException("Un prix doit être entré",
           Status.NOT_FOUND);
     }
@@ -256,6 +251,7 @@ public class ObjectResource {
     File f = objectUCC.getPhoto(object);
 
     if (f == null) {
+      MyLogger.log(Level.INFO, "photo non trouvée");
       return Response.status(Status.NOT_FOUND).build();
     }
 
@@ -279,6 +275,7 @@ public class ObjectResource {
   public ObjectDTO updatePhoto(@PathParam("id") int id, @FormDataParam("photo") InputStream photo,
       @FormDataParam("photo") FormDataContentDisposition photoDetail) {
     if (photoDetail == null || photoDetail.getFileName() == null) {
+      MyLogger.log(Level.INFO, "Paramètres manquants");
       throw new WebApplicationException("Paramètres manquants", Response.Status.BAD_REQUEST);
     }
 
@@ -290,6 +287,7 @@ public class ObjectResource {
     ObjectDTO objectAfterUpdate = objectUCC.updatePhoto(objectDTO, photo);
 
     if (objectAfterUpdate == null) {
+      MyLogger.log(Level.INFO, "Objet non trouvé");
       throw new WebApplicationException("Objet non trouvé", Status.NOT_FOUND);
     }
 

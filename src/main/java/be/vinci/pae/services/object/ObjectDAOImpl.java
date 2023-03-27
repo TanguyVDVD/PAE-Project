@@ -6,6 +6,7 @@ import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.services.availability.AvailabilityDAO;
 import be.vinci.pae.services.objecttype.ObjectTypeDAO;
 import be.vinci.pae.services.user.UserDAO;
+import be.vinci.pae.utils.MyLogger;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,6 +14,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * ObjectDAO class that implements ObjectDAO interface Provide the different methods.
@@ -80,6 +82,7 @@ public class ObjectDAOImpl implements ObjectDAO {
       object.setObjectType(myObjectTypeDAO.getOneById(resultSet.getInt("id_object_type")));
 
     } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "Error get dto from rs");
       se.printStackTrace();
     }
 
@@ -109,6 +112,7 @@ public class ObjectDAOImpl implements ObjectDAO {
         }
       }
     } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "Error get all object");
       se.printStackTrace();
     }
 
@@ -137,6 +141,7 @@ public class ObjectDAOImpl implements ObjectDAO {
         }
       }
     } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "Error get all object from a user");
       se.printStackTrace();
     }
 
@@ -167,6 +172,7 @@ public class ObjectDAOImpl implements ObjectDAO {
         }
       }
     } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "Error get all offers");
       se.printStackTrace();
     }
 
@@ -192,6 +198,7 @@ public class ObjectDAOImpl implements ObjectDAO {
         }
       }
     } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "Error get one object by id");
       se.printStackTrace();
     }
 
@@ -236,6 +243,7 @@ public class ObjectDAOImpl implements ObjectDAO {
       ps.setInt(11, id);
       ps.executeUpdate();
     } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "Error update an object");
       se.printStackTrace();
       return null;
     }
@@ -262,6 +270,7 @@ public class ObjectDAOImpl implements ObjectDAO {
       ps.setInt(2, id);
       ps.executeUpdate();
     } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "Error set object accepted");
       se.printStackTrace();
     }
 
@@ -293,6 +302,7 @@ public class ObjectDAOImpl implements ObjectDAO {
       ps.setInt(3, id);
       ps.executeUpdate();
     } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "Error set object refused");
       se.printStackTrace();
     }
 
