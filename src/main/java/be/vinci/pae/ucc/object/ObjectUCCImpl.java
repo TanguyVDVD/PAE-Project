@@ -35,7 +35,28 @@ public class ObjectUCCImpl implements ObjectUCC {
       return myObjectDAO.getAll(query);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new WebApplicationException("Error getting list all objects", Status.BAD_REQUEST);
+      throw new WebApplicationException("Erreur lors de la récupération de la liste des objets",
+          Status.INTERNAL_SERVER_ERROR);
+    } finally {
+      myDalServices.commitTransaction();
+    }
+  }
+
+  /**
+   * Get all objects by user.
+   *
+   * @param id the id of the user
+   * @return the list of objects
+   */
+  @Override
+  public List<ObjectDTO> getObjectsByUser(int id) {
+    myDalServices.startTransaction();
+    try {
+      return myObjectDAO.getAllByUser(id);
+    } catch (Exception e) {
+      myDalServices.rollbackTransaction();
+      throw new WebApplicationException("Erreur lors de la récupération de la liste des objets",
+          Status.INTERNAL_SERVER_ERROR);
     } finally {
       myDalServices.commitTransaction();
     }
@@ -55,7 +76,8 @@ public class ObjectUCCImpl implements ObjectUCC {
       return myObjectDAO.getOffers(query);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new WebApplicationException("Error getting list all offers", Status.BAD_REQUEST);
+      throw new WebApplicationException("Erreur lors de la récupération de la liste des offres",
+          Status.INTERNAL_SERVER_ERROR);
     } finally {
       myDalServices.commitTransaction();
     }
@@ -77,7 +99,8 @@ public class ObjectUCCImpl implements ObjectUCC {
       return myObjectDAO.getOneById(id);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new WebApplicationException("Error getting an object by id", Status.BAD_REQUEST);
+      throw new WebApplicationException("Erreur lors de la récupération de l'objet",
+          Status.INTERNAL_SERVER_ERROR);
     } finally {
       myDalServices.commitTransaction();
     }
@@ -105,7 +128,8 @@ public class ObjectUCCImpl implements ObjectUCC {
       return myObjectDAO.setStatusToAccepted(id, LocalDate.now());
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new WebApplicationException("Error accepting object", Status.BAD_REQUEST);
+      throw new WebApplicationException("Erreur lors de l'acceptation de l'offre",
+          Status.INTERNAL_SERVER_ERROR);
     } finally {
       myDalServices.commitTransaction();
     }
@@ -136,7 +160,8 @@ public class ObjectUCCImpl implements ObjectUCC {
       return myObjectDAO.setStatusToRefused(id, reasonForRefusal, LocalDate.now());
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new WebApplicationException("Error refusing an object", Status.BAD_REQUEST);
+      throw new WebApplicationException("Erreur lors du refus de l'offre",
+          Status.INTERNAL_SERVER_ERROR);
     } finally {
       myDalServices.commitTransaction();
     }
@@ -192,7 +217,8 @@ public class ObjectUCCImpl implements ObjectUCC {
 
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new WebApplicationException("Error update an object", Status.BAD_REQUEST);
+      throw new WebApplicationException("Erreur lors de la mise à jour de l'objet",
+          Status.INTERNAL_SERVER_ERROR);
     } finally {
       myDalServices.commitTransaction();
     }

@@ -28,6 +28,10 @@ Content-Type: application/json
 GET {{baseUrl}}/objects
 Authorization: {{adminToken}}
 
+### Get a list of all objects offered by a user
+GET {{baseUrl}}/objects/user/1
+Authorization: {{adminToken}}
+
 ### Get a list of all offers
 GET {{baseUrl}}/objects/offers
 Authorization: {{adminToken}}
@@ -41,7 +45,6 @@ Content-Type: application/json
 Authorization: {{adminToken}}
 
 {
-
   "description": "Garde Robe",
   "type": "Meuble",
   "price": null,
@@ -56,7 +59,6 @@ Content-Type: application/json
 Authorization: {{adminToken}}
 
 {
-
   "description": "Garde Robe",
   "type": "Meuble",
   "price": 9,
