@@ -3,7 +3,9 @@ import { getAuthenticatedUser } from '../../../utils/auths';
 import { clearPage } from '../../../utils/render';
 import API from '../../../utils/api';
 import { dateStringtoGoodFormat, subtractDates } from '../../../utils/dates';
-import setUserOrPhoneNumber from "../../../utils/objects";
+import setUserOrPhoneNumber from '../../../utils/objects';
+
+import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
 
 const AdminOffersPage = () => {
   const user = getAuthenticatedUser();
@@ -58,8 +60,15 @@ async function fetchOffers(query = '') {
                         <div class="row p-2 bg-white border rounded">
                             <div class="col-md-3 mt-1">
                                 <img 
-                                    class="img-fluid img-responsive rounded product-image" 
-                                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqsL6QorN-b6YhpcfTl9YJEzWB2xSkhFkN4Q&usqp=CAU"
+                                    class="object-fit-cover rounded product-image" 
+                                    src="${
+                                      offer.photo
+                                        ? API.getEndpoint(`objects/${offer.id}/photo`)
+                                        : noFurniturePhoto
+                                    }"
+                                    onerror="this.src='${noFurniturePhoto}'"
+                                    width="180"
+                                    height="180"
                                     alt="${offer.objectType}">
                             </div>
                             <div class="col-md-6 mt-1">
