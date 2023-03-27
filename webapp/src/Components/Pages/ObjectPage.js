@@ -163,10 +163,10 @@ function renderObjectPage(object, objectTypes) {
                         <p>Prix : ${object.price}€</p>
                       </div>
                     ` : ''
-    }
+                  }
               </div>
-        </div>
-    </section>
+          </div>
+      </section>
     `;
 
     main.appendChild(div);
