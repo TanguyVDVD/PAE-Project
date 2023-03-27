@@ -208,7 +208,6 @@ class ObjectUCCImplTest {
   @DisplayName("Update an object state, with null object")
   @Test
   void updateAnObjectStateNullObject() {
-    LocalDate dateToday = LocalDate.now();
 
     Object object = Mockito.mock(ObjectImpl.class);
     Object object1 = Mockito.mock(ObjectImpl.class);
@@ -223,6 +222,8 @@ class ObjectUCCImplTest {
     Mockito.when(object1.getState()).thenReturn("accepté");
 
     Mockito.when(objectDAO.updateObject(object1.getId(), object1)).thenReturn(object);
+
+    LocalDate dateToday = LocalDate.now();
 
     assertThrows(WebApplicationException.class,
         () -> objectUCC.update(object.getId(), null, dateToday),
