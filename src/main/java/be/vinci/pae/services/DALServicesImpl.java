@@ -14,16 +14,15 @@ import org.apache.commons.dbcp2.BasicDataSource;
  */
 public class DALServicesImpl implements DALServices, DalBackendServices {
 
+  private final ThreadLocal<Connection> connectionThreadLocal
+      = new ThreadLocal<Connection>();
   /**
    * Connection to the database.
    */
-  private static final BasicDataSource bds;
-  private static final ThreadLocal<Connection> connectionThreadLocal
-      = new ThreadLocal<Connection>();
+  private final BasicDataSource bds;
 
-  static {
+  public DALServicesImpl() {
     bds = new BasicDataSource();
-    //Setup of property
     bds.setUrl(Config.getProperty("DatabaseUrl"));
     bds.setUsername(Config.getProperty("DatabaseUser"));
     bds.setPassword(Config.getProperty("DatabasePassword"));
