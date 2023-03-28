@@ -104,12 +104,11 @@ function renderObjectPage(object, objectTypes) {
                         <div class="form-group" id="object-state-form">
                           <label>État</label>
                           <select class="form-control" id="object-state-select">
-                            <option>accepté</option>
-                            <option>à l'atelier</option>
-                            <option>en magasin</option>
-                            <option>en vente</option>
-                            <option>vendu</option>
-                            <option>retiré</option>
+                            ${getAvailableStates(object).map(
+                            (state) => `
+                                <option>${state}</option>
+                              `,
+                            )}
                           </select>
                         </div>
                         
@@ -232,12 +231,12 @@ function renderObjectPage(object, objectTypes) {
       ) {
         priceInput.value = null;
         priceInput.disabled = true;
-      } else if (stateForm.value === 'retiré') {
-        priceInput.value = object.price;
-        priceInput.disabled = true;
-      } else {
+      } else if (stateForm.value === 'en vente') {
         priceInput.value = object.price;
         priceInput.disabled = false;
+      } else {
+        priceInput.value = object.price;
+        priceInput.disabled = true;
       }
     });
 
@@ -285,24 +284,46 @@ function setDefaultValues(object) {
   const priceInput = document.getElementById('object-price-input');
 
   if (
-    object.state === 'accepté' ||
+    object.state === "accepté" ||
     object.state === "à l'atelier" ||
-    object.state === 'en magasin'
+    object.state === "en magasin"
   ) {
     priceInput.value = null;
     priceInput.disabled = true;
-  } else if (object.state === 'retiré') {
-    priceInput.value = object.price;
-    priceInput.disabled = true;
-  } else {
+  } else if (object.state === 'en vente') {
     priceInput.value = object.price;
     priceInput.disabled = false;
+  } else {
+    priceInput.value = object.price;
+    priceInput.disabled = true;
   }
 
   const visibleSwitch = document.getElementById('visible-switch');
 
   visibleSwitch.checked = !!object.isVisible;
   visibleSwitch.checked = !!object.isVisible;
+}
+
+function getAvailableStates(object){
+  if (object.state === "accepté"){
+    return ["accepté", "à l'atelier", "en magasin"];
+  }
+  if (object.state === "à l'atelier") {
+    return ["à l'atelier", "en magasin"];
+  }
+  if (object.state === "en magasin") {
+    return ["en magasin", "en vente"];
+  }
+  if (object.state === "en vente") {
+    return ["en vente", "vendu", "retiré"];
+  }
+  if (object.state === "vendu") {
+    return ["vendu"];
+  }
+  if (object.state === "retiré") {
+    return ["retiré"];
+  }
+  return null;
 }
 
 export default ObjectPage;
