@@ -1,5 +1,8 @@
 package be.vinci.pae.utils.exceptions;
 
+/**
+ * DALException class, deals with the exceptions of the DAL.
+ */
 public class DALException extends RuntimeException {
 
   /**

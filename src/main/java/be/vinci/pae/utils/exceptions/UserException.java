@@ -1,7 +1,7 @@
 package be.vinci.pae.utils.exceptions;
 
 /**
- * UserException class.
+ * UserException class, deals with exceptions caused by user error.
  */
 public class UserException extends RuntimeException {
 
