@@ -240,7 +240,14 @@ class UserUCCImplTest {
     assertThrows(Exception.class, () -> userUCC.getUserById(1));
   }
 
-  @DisplayName("Update valid user")
+  @DisplayName("Update user with data already set")
+  @Test
+  void updateWithAlreadySetData() {
+    assertEquals(validUser, userUCC.updateUser(validUser),
+        "Update have not return the same user");
+  }
+
+  @DisplayName("Update user with no data")
   @Test
   void updateValidUser() {
     UserDTO userDTO = Mockito.mock(UserDTO.class);
