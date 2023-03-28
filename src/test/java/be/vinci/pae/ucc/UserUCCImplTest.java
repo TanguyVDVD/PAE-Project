@@ -153,8 +153,8 @@ class UserUCCImplTest {
   @Test
   void loginWithCorrectEmailAndPassword() {
     UserDTO userDTO = userUCC.login("validUser1@example.com", "password");
-    assertAll(() -> assertNotNull(userDTO, "Login hasn't returned a user"),
-        () -> assertEquals(validUser, userDTO, "Login hasn't returned the same user"));
+
+    assertEquals(validUser, userDTO, "Login hasn't returned the same user");
   }
 
   @DisplayName("Login with incorrect email")
@@ -174,8 +174,8 @@ class UserUCCImplTest {
   @Test
   void registerWithValidUser() {
     UserDTO userDTO = userUCC.register(notInDBUser);
-    assertAll(() -> assertNotNull(userDTO, "Register have not return a user"),
-        () -> assertEquals(notInDBUser, userDTO, "Register have not return the same user"));
+
+    assertEquals(notInDBUser, userDTO, "Register have not return the same user");
   }
 
   @DisplayName("Register with already used email")
@@ -223,8 +223,7 @@ class UserUCCImplTest {
   void getUserById() {
     UserDTO user = userUCC.getUserById(1);
 
-    assertAll(() -> assertNotNull(user, "Get one user by id have not return a user"),
-        () -> assertEquals(validUser, user, "Get one user by id have not return the correct user"));
+    assertEquals(validUser, user, "Get one user by id have not return the correct user");
   }
 
   @DisplayName("Get user not in DB by id")
@@ -244,16 +243,29 @@ class UserUCCImplTest {
   @DisplayName("Update valid user")
   @Test
   void updateValidUser() {
-    UserDTO userDTO = userUCC.updateUser(validUser);
+    UserDTO userDTO = Mockito.mock(UserDTO.class);
+    Mockito.when(userDTO.getId()).thenReturn(1);
+    Mockito.when(userDAO.update(userDTO)).thenReturn(userDTO);
 
-    assertAll(() -> assertNotNull(userDTO, "Update have not return a user"),
-        () -> assertEquals(validUser, userDTO, "Update have not return the same user"));
+    assertEquals(userDTO, userUCC.updateUser(userDTO),
+        "Update have not return the same user");
   }
 
   @DisplayName("Update user that doesn't exist")
   @Test
   void updateNotInDBUser() {
     assertNull(userUCC.updateUser(notInDBUser));
+  }
+
+  @DisplayName("Update user with valid current password")
+  @Test
+  void updateWithValidCurrentPassword() {
+    UserDTO userDTO = Mockito.mock(UserDTO.class);
+    Mockito.when(userDTO.getId()).thenReturn(1);
+    Mockito.when(userDAO.update(userDTO)).thenReturn(userDTO);
+
+    assertEquals(userDTO, userUCC.updateUser(userDTO, "password"),
+        "Update have not return the same user");
   }
 
   @DisplayName("Update user with invalid current password")
@@ -272,7 +284,19 @@ class UserUCCImplTest {
     Mockito.when(userDTO.getId()).thenReturn(1);
     Mockito.when(userDTO.getEmail()).thenReturn("validUser2@example.com");
 
-    assertThrows(UserException.class, () -> userUCC.updateUser(userDTO));
+    assertThrows(UserException.class, () -> userUCC.updateUser(userDTO),
+        "Update hasn't thrown an exception");
+  }
+
+  @DisplayName("Update user with valid new email")
+  @Test
+  void updateWithValidNewEmail() {
+    UserDTO userDTO = Mockito.mock(UserDTO.class);
+    Mockito.when(userDTO.getId()).thenReturn(1);
+    Mockito.when(userDTO.getEmail()).thenReturn("newEmail@example.com");
+    Mockito.when(userDAO.update(userDTO)).thenReturn(userDTO);
+
+    assertEquals(userDTO, userUCC.updateUser(userDTO), "Update have not return the same user");
   }
 
   @DisplayName("Update user with already used phone number")
@@ -282,7 +306,30 @@ class UserUCCImplTest {
     Mockito.when(userDTO.getId()).thenReturn(1);
     Mockito.when(userDTO.getPhoneNumber()).thenReturn("0493111112");
 
-    assertThrows(UserException.class, () -> userUCC.updateUser(userDTO));
+    assertThrows(UserException.class, () -> userUCC.updateUser(userDTO),
+        "Update hasn't thrown an exception");
+  }
+
+  @DisplayName("Update user with valid new phone number")
+  @Test
+  void updateWithValidNewPhoneNumber() {
+    UserDTO userDTO = Mockito.mock(UserDTO.class);
+    Mockito.when(userDTO.getId()).thenReturn(1);
+    Mockito.when(userDTO.getPhoneNumber()).thenReturn("0493111119");
+    Mockito.when(userDAO.update(userDTO)).thenReturn(userDTO);
+
+    assertEquals(userDTO, userUCC.updateUser(userDTO), "Update have not return the same user");
+  }
+
+  @DisplayName("Update user with new password")
+  @Test
+  void updateWithNewPassword() {
+    UserDTO userDTO = Mockito.mock(UserDTO.class);
+    Mockito.when(userDTO.getId()).thenReturn(1);
+    Mockito.when(userDTO.getPassword()).thenReturn("newPassword");
+    Mockito.when(userDAO.update(userDTO)).thenReturn(userDTO);
+
+    assertEquals(userDTO, userUCC.updateUser(userDTO), "Update have not return the same user");
   }
 
   @DisplayName("Get profile picture")
@@ -291,7 +338,8 @@ class UserUCCImplTest {
     File file = Mockito.mock(File.class);
     Mockito.when(validUser.profilePictureFile()).thenReturn(file);
 
-    assertEquals(file, userUCC.getProfilePicture(validUser));
+    assertEquals(file, userUCC.getProfilePicture(validUser),
+        "Get profile picture have not return the correct file");
   }
 
   @DisplayName("Update profile picture with existing user and correct password")
@@ -299,7 +347,8 @@ class UserUCCImplTest {
   void updateProfilePictureWithExistingUserAndCorrectPassword() {
     InputStream file = Mockito.mock(InputStream.class);
 
-    assertEquals(validUser, userUCC.updateProfilePicture(validUser, "password", file));
+    assertEquals(validUser, userUCC.updateProfilePicture(validUser, "password", file),
+        "Update profile picture have not return the correct user");
   }
 
   @DisplayName("Update profile picture with non-existing user")
@@ -307,7 +356,8 @@ class UserUCCImplTest {
   void updateProfilePictureWithNonExistingUser() {
     InputStream file = Mockito.mock(InputStream.class);
 
-    assertNull(userUCC.updateProfilePicture(notInDBUser, "password", file));
+    assertNull(userUCC.updateProfilePicture(notInDBUser, "password", file),
+        "Update profile picture have not return null");
   }
 
   @DisplayName("Update profile picture with existing user and wrong password")
@@ -316,7 +366,8 @@ class UserUCCImplTest {
     InputStream file = Mockito.mock(InputStream.class);
 
     assertThrows(UserException.class,
-        () -> userUCC.updateProfilePicture(validUser, "wrongPassword", file));
+        () -> userUCC.updateProfilePicture(validUser, "wrongPassword", file),
+        "Update profile picture hasn't thrown an exception");
   }
 
   @DisplayName("Update profile picture with exception")
@@ -325,6 +376,7 @@ class UserUCCImplTest {
     InputStream file = Mockito.mock(InputStream.class);
     Mockito.when(userDAO.update(validUser)).thenThrow(new DALException(""));
 
-    assertThrows(Exception.class, () -> userUCC.updateProfilePicture(validUser, "password", file));
+    assertThrows(Exception.class, () -> userUCC.updateProfilePicture(validUser, "password", file),
+        "Update profile picture hasn't thrown an exception");
   }
 }
