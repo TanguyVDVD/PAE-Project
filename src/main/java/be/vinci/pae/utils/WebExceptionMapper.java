@@ -44,7 +44,13 @@ public class WebExceptionMapper implements ExceptionMapper<Throwable> {
           .build();
     }
 
-    MyLogger.log(Level.SEVERE, "Exception: " + exception.getMessage());
+    Throwable cause = exception.getCause();
+    if (cause != null) {
+      MyLogger.log(Level.SEVERE,
+          "Exception: " + exception.getMessage() + " caused by " + cause.getMessage());
+    } else {
+      MyLogger.log(Level.SEVERE, "Exception: " + exception.getMessage());
+    }
 
     return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
         .build();
