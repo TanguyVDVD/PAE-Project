@@ -17,7 +17,7 @@ const AdminObjectsPage = () => {
 
   clearPage();
   renderAdminObjectsPage();
-  fetchObjects();
+  renderObjects();
 };
 
 function renderAdminObjectsPage() {
@@ -40,13 +40,13 @@ function renderAdminObjectsPage() {
     e.preventDefault();
 
     const search = e.target.value;
-    fetchObjects(search);
+    renderObjects(search);
   });
 
   main.appendChild(div);
 }
 
-async function fetchObjects(query = '') {
+async function renderObjects(query = '') {
   const list = document.getElementById('objects-list');
 
   API.get(`objects?query=${encodeURIComponent(query)}`).then((objects) => {

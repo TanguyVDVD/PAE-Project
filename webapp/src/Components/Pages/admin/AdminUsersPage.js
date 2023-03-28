@@ -13,7 +13,7 @@ const AdminUsersPage = () => {
 
   clearPage();
   renderAdminUsersPage();
-  fetchUsers();
+  renderUsers();
 };
 
 function renderAdminUsersPage() {
@@ -36,13 +36,13 @@ function renderAdminUsersPage() {
     e.preventDefault();
 
     const search = e.target.value;
-    fetchUsers(search);
+    renderUsers(search);
   });
 
   main.appendChild(div);
 }
 
-async function fetchUsers(query = '') {
+async function renderUsers(query = '') {
   const table = document.getElementById('users-table');
 
   table.innerHTML = `

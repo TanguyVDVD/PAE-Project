@@ -17,7 +17,7 @@ const AdminOffersPage = () => {
 
   clearPage();
   renderAdminObjectsPage();
-  fetchOffers();
+  renderOffers();
 };
 
 function renderAdminObjectsPage() {
@@ -40,13 +40,13 @@ function renderAdminObjectsPage() {
     e.preventDefault();
 
     const search = e.target.value;
-    fetchOffers(search);
+    renderOffers(search);
   });
 
   main.appendChild(div);
 }
 
-async function fetchOffers(query = '') {
+async function renderOffers(query = '') {
   const list = document.getElementById('offers-list');
 
   API.get(`objects/offers?query=${encodeURIComponent(query)}`).then((offers) => {
