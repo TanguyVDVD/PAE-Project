@@ -3,6 +3,7 @@ package be.vinci.pae.api;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeAdmin;
 import be.vinci.pae.domain.DomainFactory;
+import be.vinci.pae.domain.user.User;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.ucc.user.UserUCC;
 import be.vinci.pae.utils.Config;
@@ -130,6 +131,18 @@ public class UserResource {
       }
     }
 
+    // Check email format
+    if (!User.emailIsValid(email)) {
+      throw new WebApplicationException("Adresse mail invalide", Response.Status.BAD_REQUEST);
+    }
+
+    // Check phone number format
+    phone = User.formatPhoneNumber(phone);
+    if (phone == null) {
+      throw new WebApplicationException("Numéro de téléphone invalide",
+          Response.Status.BAD_REQUEST);
+    }
+
     UserDTO userRegister = myDomainFactory.getUser();
 
     userRegister.setLastName(lastName);
@@ -235,11 +248,21 @@ public class UserResource {
       }
 
       if (StringUtils.isNotBlank(dataDTO.getEmail())) {
+        if (!User.emailIsValid(dataDTO.getEmail())) {
+          throw new WebApplicationException("Adresse mail invalide", Response.Status.BAD_REQUEST);
+        }
+
         userDTO.setEmail(dataDTO.getEmail());
       }
 
       if (StringUtils.isNotBlank(dataDTO.getPhoneNumber())) {
-        userDTO.setPhoneNumber(dataDTO.getPhoneNumber());
+        String formattedPhoneNumber = User.formatPhoneNumber(dataDTO.getPhoneNumber());
+
+        if (formattedPhoneNumber == null) {
+          throw new WebApplicationException("Numéro de GSM invalide", Response.Status.BAD_REQUEST);
+        }
+
+        userDTO.setPhoneNumber(formattedPhoneNumber);
       }
 
       if (StringUtils.isNotBlank(dataDTO.getPassword())) {
