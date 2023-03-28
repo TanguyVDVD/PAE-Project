@@ -37,12 +37,8 @@ public class UserUCCImpl implements UserUCC {
     try {
       User userDB = (User) myUserDAO.getOneByEmail(email);
 
-      if (userDB == null) {
-        return null;
-      }
-
-      if (!userDB.isPasswordCorrect(password)) {
-        return null;
+      if (userDB == null || !userDB.isPasswordCorrect(password)) {
+        throw new UserException("Adresse mail ou mot de passe incorrect");
       }
 
       return userDB;
@@ -75,19 +71,11 @@ public class UserUCCImpl implements UserUCC {
         throw new UserException("Numéro de GSM déjà utilisé");
       }
 
-      User userTemp = (User) userDTO;
-      userTemp.setPassword(User.hashPassword(userTemp.getPassword()));
+      userDTO.setPassword(User.hashPassword(userDTO.getPassword()));
 
-      int id = myUserDAO.insert(userTemp);
+      UserDTO userAfterRegister = myUserDAO.insert(userDTO);
 
-      if (id == -1) {
-        return null;
-      }
-
-      userTemp.setId(id);
-
-      return userTemp;
-
+      return userAfterRegister;
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
 
@@ -95,7 +83,6 @@ public class UserUCCImpl implements UserUCC {
     } finally {
       myDalServices.commitTransaction();
     }
-
   }
 
   /**
@@ -183,13 +170,7 @@ public class UserUCCImpl implements UserUCC {
       }
 
       // Update the user
-      if (!myUserDAO.update(userDTO)) {
-        return null;
-      }
-
-      // Return the updated user
-      return myUserDAO.getOneById(userDTO.getId());
-
+      return myUserDAO.update(userDTO);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
 
@@ -227,12 +208,13 @@ public class UserUCCImpl implements UserUCC {
   /**
    * Update a user's profile picture.
    *
-   * @param userDTO the user
-   * @param file    the new profile picture
+   * @param userDTO  the user
+   * @param password the password to verify
+   * @param file     the new profile picture
    * @return the updated user
    */
   @Override
-  public UserDTO updateProfilePicture(UserDTO userDTO, InputStream file) {
+  public UserDTO updateProfilePicture(UserDTO userDTO, String password, InputStream file) {
     myDalServices.startTransaction();
 
     try {
@@ -242,15 +224,15 @@ public class UserUCCImpl implements UserUCC {
         return null;
       }
 
+      if (!user.isPasswordCorrect(password)) {
+        throw new UserException("Mot de passe incorrect");
+      }
+
       user.saveProfilePicture(file);
 
       user.setPhoto(true);
 
-      if (!myUserDAO.update(user)) {
-        return null;
-      }
-
-      return myUserDAO.getOneById(userDTO.getId());
+      return myUserDAO.update(user);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
 
