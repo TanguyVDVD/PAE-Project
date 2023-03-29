@@ -169,12 +169,23 @@ function renderObjectPage(object, objectTypes) {
             
             ${authenticatedUser && authenticatedUser.isHelper && object.state === "refusé" ? 
             `
-              <div id="object-state-non-helper">
-                <p>État : ${object.state}</p>
+              <div id="object-state-refused">
+                <h6 class="text-danger">Refusé</h6>
               </div>
               
-              <div id="object-price-non-helper">
-                <p>Prix : ${object.price}€</p>
+              <div id="object-refused-reason-for-refusal">
+                <p>Raison du refus : ${object.reasonForRefusal}</p>
+              </div>
+              
+              <div class="form-group div-receipt-date" id="object-receipt-date-form">
+              </div>
+              
+              <div class="form-group div-user" id="object-user-form">
+              </div>
+              
+              
+              <div class="form-group" id="object-time-slot-form">
+                <p>Créneau choisi : ${object.timeSlot}</p>
               </div>
             ` : ''
             }
@@ -283,6 +294,14 @@ function renderObjectPage(object, objectTypes) {
       AdminObjectsPage();
       Navigate('/admin/objects');
     });
+  }
+
+  /**
+   * Page objet si objet refusé
+   */
+  if (authenticatedUser && authenticatedUser.isHelper && object.state === "refusé"){
+    setUserOrPhoneNumber(document, "div-user", [object]);
+    setReceiptDate(document, "div-receipt-date", [object]);
   }
 }
 
