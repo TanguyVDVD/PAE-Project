@@ -57,7 +57,9 @@ const refreshAuthenticatedUser = () => {
     .then((data) => {
       setAuthenticatedUser({ ...authenticatedUser, ...data }, remember);
     })
-    .catch(clearAuthenticatedUser);
+    .catch((e) => {
+      if (!(e instanceof TypeError)) clearAuthenticatedUser();
+    });
 };
 
 export {
