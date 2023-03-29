@@ -44,8 +44,8 @@ function renderObjectPage(object, objectTypes) {
             height="400"
              />
             
-            ${
-              authenticatedUser && authenticatedUser.isHelper && object.state !== 'proposé' && object.state !== "refusé"
+            
+            ${authenticatedUser && authenticatedUser.isHelper && object.state !== 'proposé' && object.state !== "refusé"
                 ? `
                 <form>
                   <div class="row row-cols-1 row-cols-md-2 m-1">
@@ -118,7 +118,7 @@ function renderObjectPage(object, objectTypes) {
                 
                 <div class="form-group" id="object-price-form">
                   <br>
-                  <label for="object-price-input">Prix</label>
+                  <label for="object-price-input" id="object-price-label">Prix</label>
                   <input type="number" id="object-price-input" min="0" max="10" step=".01">
                 </div>
                 <br>
@@ -186,6 +186,9 @@ function renderObjectPage(object, objectTypes) {
 
   main.appendChild(div);
 
+  /**
+   * Réponse à une proposition
+   */
   if (authenticatedUser && authenticatedUser.isHelper && object.state === "proposé"){
     const acceptBtn = document.getElementById("accept-btn");
     const denyBtn = document.getElementById("deny-btn");
@@ -198,74 +201,69 @@ function renderObjectPage(object, objectTypes) {
     acceptBtn.addEventListener('click', () => {
       const status = "accepté";
 
-    API.patch(`objects/status/${object.id}`, { body: { status } });
-    AdminOffersPage();
-    Navigate('/admin/offers');
-  });
+      API.patch(`objects/status/${object.id}`, { body: { status } });
+      AdminOffersPage();
+      Navigate('/admin/offers');
+    });
 
     denyBtn.addEventListener('click', () => {
       const status = "refusé";
       const reasonForRefusal = document.getElementById("reason-for-refusal").value;
 
-    API.patch(`objects/status/${object.id}`, { body: { status, reasonForRefusal } });
-    AdminOffersPage();
-    Navigate('/admin/offers');
-  });
+      API.patch(`objects/status/${object.id}`, { body: { status, reasonForRefusal } });
+      AdminOffersPage();
+      Navigate('/admin/offers');
+    });
   }
 
-    if (authenticatedUser && authenticatedUser.isHelper && object.state !== "proposé" && object.state !== "refusé"){
-      setUserOrPhoneNumber(document, "div-user", [object]);
-      setDefaultValues(object);
+  /**
+   * Page objet si aidant
+   */
+  if (
+      authenticatedUser &&
+      authenticatedUser.isHelper &&
+      object.state !== "proposé" &&
+      object.state !== "refusé"
+  ){
+    setUserOrPhoneNumber(document, "div-user", [object]);
+    setDefaultValues(object);
 
-      const stateForm = document.getElementById('object-state-select');
-      const priceInput = document.getElementById('object-price-input');
+    const stateForm = document.getElementById('object-state-select');
 
-      stateForm.addEventListener('change', () => {
-        if (
-          stateForm.value === 'accepté' ||
-          stateForm.value === "à l'atelier" ||
-          stateForm.value === 'en magasin'
-        ) {
-          priceInput.value = null;
-          priceInput.disabled = true;
-        } else if (stateForm.value === 'en vente') {
-          priceInput.value = object.price;
-          priceInput.disabled = false;
-        } else {
-          priceInput.value = object.price;
-          priceInput.disabled = true;
+    stateForm.addEventListener("change", () => {
+      const state = stateForm.value;
+      setPrice(state, object);
+      setSwitch(state, object);
+    });
+
+    document.getElementById('object-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const description = document.getElementById('object-description-textarea').value;
+      const type = document.getElementById('object-type-select').value;
+      const state = document.getElementById('object-state-select').value;
+      const date = document.getElementById('object-state-date-input').value;
+      const price = document.getElementById('object-price-input').value;
+      const isVisible = document.getElementById('visible-switch').checked;
+
+      try {
+        await API.put(`objects/${object.id}`, {
+          body: { description, type, state, date, price, isVisible },
+        });
+
+        const photo = document.getElementById('input-photo');
+        if (photo.files.length > 0) {
+          const formData = new FormData();
+          formData.append('photo', photo.files[0]);
+          await API.put(`objects/${object.id}/photo`, { body: formData });
         }
-      });
 
-      document.getElementById('object-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const description = document.getElementById('object-description-textarea').value;
-        const type = document.getElementById('object-type-select').value;
-        const state = document.getElementById('object-state-select').value;
-        const date = document.getElementById('object-state-date-input').value;
-        const price = document.getElementById('object-price-input').value;
-        const isVisible = document.getElementById('visible-switch').checked;
-
-        try {
-          await API.put(`objects/${object.id}`, {
-            body: { description, type, state, date, price, isVisible },
-          });
-
-          const photo = document.getElementById('input-photo');
-          if (photo.files.length > 0) {
-            const formData = new FormData();
-            formData.append('photo', photo.files[0]);
-            await API.put(`objects/${object.id}/photo`, { body: formData });
-          }
-
-          AdminObjectsPage();
-          Navigate('/admin/objects');
-        } catch (error) {
-          renderError(error);
-        }
+        AdminObjectsPage();
+        Navigate('/admin/objects');
+      } catch (error) {
+        renderError(error);
       }
-    );
+    });
 
     document.getElementById('cancel-btn').addEventListener('click', () => {
       AdminObjectsPage();
@@ -331,6 +329,40 @@ function getAvailableStates(object){
     return ["retiré"];
   }
   return null;
+}
+
+function setPrice(state, object){
+  const priceInput = document.getElementById('object-price-input');
+  const priceLabel = document.getElementById('object-price-label');
+
+  if (state === "accepté" || state === "à l'atelier" || state === "en magasin") {
+    priceInput.value = null;
+    priceInput.disabled = true;
+    priceLabel.style.color = "#909294";
+  } else if (state === "en vente") {
+    priceInput.value = object.price;
+    priceInput.disabled = false;
+    priceLabel.style.color = "text-primary";
+  } else {
+    priceInput.value = object.price;
+    priceInput.disabled = true;
+    priceLabel.style.color = "#909294";
+  }
+}
+
+function setSwitch(state, object){
+  const visibleSwitch = document.getElementById('visible-switch');
+
+  if (state === "en magasin") {
+    visibleSwitch.checked = true;
+    visibleSwitch.disabled = false;
+  } else if (state === "en vente" || state === "vendu") {
+    visibleSwitch.checked = !!object.isVisible;
+    visibleSwitch.disabled = false;
+  } else {
+    visibleSwitch.checked = false;
+    visibleSwitch.disabled = true;
+  }
 }
 
 export default ObjectPage;
