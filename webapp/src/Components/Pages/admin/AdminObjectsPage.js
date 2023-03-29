@@ -84,7 +84,7 @@ async function renderObjects(query = '') {
                                 </div>
                             </div>
                             
-                            <div class="align-items-center align-content-center col-md-3 border-left mt-1">
+                            <div class="col-md-3 border-left mt-1">
                                 <div class="div-state">
                                 </div>
                                 
@@ -119,11 +119,7 @@ async function renderObjects(query = '') {
     list.querySelectorAll('button[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
-        if (e.currentTarget.classList.contains('button-modify')) {
           Navigate(`/object/${e.target.dataset.id}`);
-        } else if (e.currentTarget.classList.contains('button-respond')) {
-          Navigate(`/object/${e.target.dataset.id}`);
-        }
       });
     });
   });
@@ -188,7 +184,9 @@ function setButton(className, objects) {
     const object = objects[i];
     const element = elements.item(i);
     if (object.state === 'refusé') {
-      element.innerHTML = ``;
+      element.innerHTML = `
+          <button class="btn btn-primary btn-sm button-see" type="button" data-id="${object.id}">Voir</button>
+      `;
     } else if (object.state === 'proposé') {
       element.innerHTML = `
           <button class="btn btn-outline-primary btn-sm button-respond" type="button" data-id="${object.id}">Répondre</button>
