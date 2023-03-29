@@ -5,7 +5,7 @@ import { dateStringtoGoodFormat, getTodaySDate } from '../../utils/dates';
 import Navigate from '../Router/Navigate';
 import AdminOffersPage from './admin/AdminOffersPage';
 import AdminObjectsPage from './admin/AdminObjectsPage';
-import setUserOrPhoneNumber from '../../utils/objects';
+import {setUserOrPhoneNumber, setReceiptDate} from '../../utils/objects';
 
 import noFurniturePhoto from '../../img/no_furniture_photo.svg';
 
@@ -91,8 +91,7 @@ function renderObjectPage(object, objectTypes) {
                 <div class="form-group div-user" id="object-user-form">
                 </div>
                 
-                <div class="form-group" id="object-receipt-date-form">
-                  <p>Récupéré le ${dateStringtoGoodFormat(object.receiptDate)}</p>
+                <div class="form-group div-receipt-date" id="object-receipt-date-form">
                 </div>
                 
                 <div class="form-group" id="object-time-slot-form">
@@ -168,7 +167,19 @@ function renderObjectPage(object, objectTypes) {
                 : ''
             }
             
-            ${authenticatedUser && !authenticatedUser.isHelper || object.state === "refusé"
+            ${authenticatedUser && authenticatedUser.isHelper && object.state === "refusé" ? 
+            `
+              <div id="object-state-non-helper">
+                <p>État : ${object.state}</p>
+              </div>
+              
+              <div id="object-price-non-helper">
+                <p>Prix : ${object.price}€</p>
+              </div>
+            ` : ''
+            }
+            
+            ${authenticatedUser && !authenticatedUser.isHelper
               ? `
               <div id="object-state-non-helper">
                 <p>État : ${object.state}</p>
@@ -226,6 +237,7 @@ function renderObjectPage(object, objectTypes) {
       object.state !== "refusé"
   ){
     setUserOrPhoneNumber(document, "div-user", [object]);
+    setReceiptDate(document, "div-receipt-date", [object]);
     setDefaultValues(object);
 
     const stateForm = document.getElementById('object-state-select');
