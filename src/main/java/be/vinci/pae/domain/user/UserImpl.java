@@ -1,14 +1,14 @@
 package be.vinci.pae.domain.user;
 
-
 import be.vinci.pae.utils.Config;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
+import net.coobird.thumbnailator.Thumbnails;
+import net.coobird.thumbnailator.geometry.Positions;
 import org.mindrot.jbcrypt.BCrypt;
 
 /**
@@ -239,17 +239,20 @@ public class UserImpl implements User {
    */
   @Override
   public boolean saveProfilePicture(InputStream photo) {
-    try {
-      String blobPath = Config.getProperty("BlobPath");
+    String blobPath = Config.getProperty("BlobPath");
 
+    try {
       // Create the blob directory if it doesn't exist
       Files.createDirectories(Paths.get(blobPath));
 
-      Files.copy(photo, Paths.get(blobPath, "user-" + id + ".jpg"),
-          StandardCopyOption.REPLACE_EXISTING);
+      // Resize photo and save
+      Thumbnails
+          .of(photo)
+          .crop(Positions.CENTER)
+          .size(128, 128)
+          .outputFormat("jpg")
+          .toFile(new File(blobPath, "user-" + id + ".jpg"));
     } catch (Exception e) {
-      e.printStackTrace();
-
       return false;
     }
 
