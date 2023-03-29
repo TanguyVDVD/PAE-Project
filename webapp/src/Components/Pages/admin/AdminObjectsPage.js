@@ -84,14 +84,16 @@ async function renderObjects(query = '') {
                                 </div>
                             </div>
                             
-                            <div class="col-md-3 border-left mt-1">
-                                <div class="div-state">
-                                </div>
-                                
-                                <div class="d-flex flex-row align-items-center div-price-time-remaining">
+                            <div class="col-md-3 border-left mt-1 d-flex flex-column align-content-center justify-content-between">
+                                <div>
+                                  <div class="div-state">
+                                  </div>
+                                  
+                                  <div class="d-flex flex-row align-items-center div-price-time-remaining">
+                                  </div>
                                 </div>
                                                      
-                                <div class="d-flex flex-column mt-4 div-button">
+                                <div class="d-flex flex-column mb-4 div-button">
                                 </div>
                             </div>
                         </div>
