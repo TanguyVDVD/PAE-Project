@@ -1,7 +1,11 @@
 import Navigate from '../../Router/Navigate';
 import { getAuthenticatedUser } from '../../../utils/auths';
 import { clearPage } from '../../../utils/render';
+import { formatPhoneNumber } from '../../../utils/format';
+import { dateStringtoGoodFormat } from '../../../utils/dates';
 import API from '../../../utils/api';
+
+import noProfilePicture from '../../../img/no_profile_picture.webp';
 
 const AdminUsersPage = () => {
   const user = getAuthenticatedUser();
@@ -13,7 +17,7 @@ const AdminUsersPage = () => {
 
   clearPage();
   renderAdminUsersPage();
-  fetchUsers();
+  searchUsers();
 };
 
 function renderAdminUsersPage() {
@@ -36,13 +40,13 @@ function renderAdminUsersPage() {
     e.preventDefault();
 
     const search = e.target.value;
-    fetchUsers(search);
+    searchUsers(search);
   });
 
   main.appendChild(div);
 }
 
-async function fetchUsers(query = '') {
+async function searchUsers(query = '') {
   const table = document.getElementById('users-table');
 
   table.innerHTML = `
@@ -57,8 +61,12 @@ async function fetchUsers(query = '') {
           <thead>
             <tr>
               <th scope="col">ID</th>
+              <th scope="col">Photo</th>
               <th scope="col">Nom</th>
               <th scope="col">Prénom</th>
+              <th scope="col">Numéro de GSM</th>
+              <th scope="col">Adresse mail</th>
+              <th scope="col">Date d'inscription</th>
               <th scope="col">Rôle</th>
               <th scope="col">&nbsp;</th>
             </tr>
@@ -68,10 +76,38 @@ async function fetchUsers(query = '') {
               .map(
                 (user) => `
                   <tr>
-                    <th scope="row">${user.id}</th>
+                    <th scope="row" class="font-monospace">${user.id}</th>
+                    <td>
+                      <a href="#" role="button" data-id="${user.id}">
+                        <img
+                          src="${
+                            user.photo
+                              ? API.getEndpoint(`users/${user.id}/photo`)
+                              : noProfilePicture
+                          }"
+                          onerror="this.src='${noProfilePicture}'"
+                          alt="avatar"
+                          width="64"
+                          height="64"
+                          class="rounded-circle object-fit-cover"
+                          alt="Photo de ${user.firstName} ${user.lastName}"
+                          loading="lazy"
+                        />
+                      </a>
+                    </td>
                     <td>${user.lastName}</td>
                     <td>${user.firstName}</td>
-                    <td>${user.isHelper ? 'Aidant' : 'Utilisateur'}</td>
+                    <td class="font-monospace">${formatPhoneNumber(user.phoneNumber)}</td>
+                    <td>${user.email}</td>
+                    <td class="font-monospace">${dateStringtoGoodFormat(user.registerDate)}</td>
+                    <td>
+                      ${
+                        user.isHelper
+                          ? `<span class="badge bg-primary">Aidant</span>`
+                          : `<span class="badge bg-secondary">Utilisateur</span>`
+                      }
+                    </td>
+
                     <td>
                       <a href="#" class="btn btn-link" role="button" data-id="${user.id}">
                         Voir plus
@@ -88,7 +124,7 @@ async function fetchUsers(query = '') {
     table.querySelectorAll('a[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
-        Navigate(`/user/${e.target.dataset.id}`);
+        Navigate(`/user/${e.currentTarget.dataset.id}`);
       });
     });
   });
