@@ -112,7 +112,7 @@ function renderObjectPage(object, objectTypes) {
                 
                 <div class="form-group" id="object-state-date-form">
                   <br>
-                  <label>Date du nouvel état : </label>
+                  <label id="object-state-date-label"></label>
                   <input type="date" id="object-state-date-input">
                 </div>
                 
@@ -232,6 +232,8 @@ function renderObjectPage(object, objectTypes) {
 
     stateForm.addEventListener("change", () => {
       const state = stateForm.value;
+
+      setStateDate(state, object);
       setPrice(state, object);
       setSwitch(state, object);
     });
@@ -275,37 +277,63 @@ function renderObjectPage(object, objectTypes) {
 function setDefaultValues(object) {
   document.getElementById('object-type-select').value = object.objectType;
   document.getElementById('object-state-select').value = object.state;
-  document.getElementById('object-state-date-input').value = getTodaySDate();
 
-  const priceInput = document.getElementById('object-price-input');
+  setStateDate(object.state, object);
+  setPrice(object.state, object);
+  setSwitch(object.state, object);
+}
 
-  if (
-    object.state === "accepté" ||
-    object.state === "à l'atelier" ||
-    object.state === "en magasin"
-  ) {
-    priceInput.value = null;
-    priceInput.disabled = true;
-  } else if (object.state === 'en vente') {
-    priceInput.value = object.price;
-    priceInput.disabled = false;
-  } else {
-    priceInput.value = object.price;
-    priceInput.disabled = true;
+function setStateDate(state, object){
+  const dateInput = document.getElementById('object-state-date-input');
+  const label = document.getElementById('object-state-date-label');
+
+  if (state === "accepté") {
+    if (state === object.state){
+      dateInput.value = object.acceptanceDate;
+    } else {
+      dateInput.value = getTodaySDate();
+    }
+    label.innerHTML = "Accepté le : ";
   }
-
-  const visibleSwitch = document.getElementById('visible-switch');
-
-  if (
-      object.state === "en magasin" ||
-      object.state === "en vente" ||
-      object.state === "vendu"
-  ) {
-    visibleSwitch.checked = !!object.isVisible;
-    visibleSwitch.disabled = false;
-  } else {
-    visibleSwitch.checked = false;
-    visibleSwitch.disabled = true;
+  else if (state === "à l'atelier") {
+    if (state === object.state){
+      dateInput.value = object.workshopDate;
+    } else {
+      dateInput.value = getTodaySDate();
+    }
+    label.innerHTML = "Mis à l'atelier le : ";
+  }
+  else if (state === "en magasin") {
+    if (state === object.state){
+      dateInput.value = object.depositDate;
+    } else {
+      dateInput.value = getTodaySDate();
+    }
+    label.innerHTML = "Déposé en magasin le : ";
+  }
+  else if (state === "en vente") {
+    if (state === object.state){
+      dateInput.value = object.onSaleDate;
+    } else {
+      dateInput.value = getTodaySDate();
+    }
+    label.innerHTML = "Mis en vente le : ";
+  }
+  else if (state === "vendu") {
+    if (state === object.state){
+      dateInput.value = object.sellingDate;
+    } else {
+      dateInput.value = getTodaySDate();
+    }
+    label.innerHTML = "Vendu le : ";
+  }
+  else if (state === "retiré") {
+    if (state === object.state){
+      dateInput.value = object.withdrawalDate;
+    } else {
+      dateInput.value = getTodaySDate();
+    }
+    label.innerHTML = "Retiré le : ";
   }
 }
 
