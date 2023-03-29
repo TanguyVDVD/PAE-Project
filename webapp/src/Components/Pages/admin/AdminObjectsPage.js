@@ -2,8 +2,8 @@ import Navigate from '../../Router/Navigate';
 import { getAuthenticatedUser } from '../../../utils/auths';
 import { clearPage } from '../../../utils/render';
 import API from '../../../utils/api';
-import { subtractDates, dateStringtoGoodFormat } from '../../../utils/dates';
-import setUserOrPhoneNumber from '../../../utils/objects';
+import {subtractDates} from '../../../utils/dates';
+import {setReceiptDate, setUserOrPhoneNumber} from '../../../utils/objects';
 
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
 
@@ -103,7 +103,7 @@ async function renderObjects(query = '') {
         </div>
       `;
 
-    setReceiptDate('div-receipt-date', objects);
+    setReceiptDate(document, 'div-receipt-date', objects);
     setUserOrPhoneNumber(document, 'div-user', objects);
     setPriceOrTimeRemaining('div-price-time-remaining', objects);
     setStateColor('div-state', objects);
@@ -127,37 +127,6 @@ async function renderObjects(query = '') {
       });
     });
   });
-}
-
-function setReceiptDate(className, objects) {
-  const elements = document.getElementsByClassName(className);
-  for (let i = 0; i < elements.length; i += 1) {
-    const object = objects[i];
-    const element = elements.item(i);
-    if (object.state === 'proposé' || object.state === 'accepté') {
-      element.innerHTML = `
-          <p>
-              À récupérer le ${dateStringtoGoodFormat(object.receiptDate)} ${
-        object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
-      }
-          </p>
-      `;
-    } else if (object.state === 'refusé') {
-      element.innerHTML = `
-          <p>
-              Refusé le ${dateStringtoGoodFormat(object.refusalDate)}
-          </p>
-      `;
-    } else {
-      element.innerHTML = `
-          <p>
-              Récupéré le ${dateStringtoGoodFormat(object.receiptDate)} ${
-        object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
-      }
-          </p>
-      `;
-    }
-  }
 }
 
 function setPriceOrTimeRemaining(className, objects) {
