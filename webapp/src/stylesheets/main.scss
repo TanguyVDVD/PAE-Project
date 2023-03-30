@@ -36,12 +36,36 @@ body {
   }
 }
 
-// Always align table cells vertically in the middle
-.table > tbody > tr {
-  > th,
-  > td {
-    vertical-align: middle;
+.table {
+  // Sorting indicators
+  > thead > tr > th {
+    &::after {
+      content: '▼';
+      visibility: hidden;
+      user-select: none;
+    }
+
+    &.sorting-asc::after {
+      visibility: visible;
+    }
+
+    &.sorting-desc::after {
+      visibility: visible;
+      content: '▲';
+    }
   }
+
+  // Always align table cells vertically in the middle
+  > tbody > tr {
+    > th,
+    > td {
+      vertical-align: middle;
+    }
+  }
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 a {
