@@ -398,8 +398,8 @@ function renderEditProfile(user) {
       .reduce((p, next) => p.then(next), Promise.resolve())
       .then((res) => {
         if (res) {
-          renderUserPage(res);
           setAuthenticatedUser(res);
+          renderUserPage(res);
         }
 
         editProfileModal.hide();
