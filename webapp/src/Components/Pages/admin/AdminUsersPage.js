@@ -33,7 +33,7 @@ function renderAdminUsersPage() {
         <i class="bi bi-search"></i>
       </button>
     </form>
-    <div id="users-table"></div>
+    <div id="users-table" class="table-responsive"></div>
   `;
 
   div.querySelector('form').addEventListener('keyup', (e) => {
@@ -146,6 +146,7 @@ function renderUsersTable(table, users) {
                 <th
                   scope="col"
                   class="
+                    text-nowrap
                     ${column.sortable ? 'cursor-pointer' : ''}
                     ${sortingBy === i ? `sorting-${sortingDirection}` : ''}
                   "
