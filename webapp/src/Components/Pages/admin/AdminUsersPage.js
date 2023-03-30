@@ -5,7 +5,7 @@ import { formatPhoneNumber } from '../../../utils/format';
 import { dateStringtoGoodFormat } from '../../../utils/dates';
 import API from '../../../utils/api';
 
-import noProfilePicture from '../../../img/no_profile_picture.webp';
+import noProfilePicture from '../../../img/no_profile_picture.svg';
 
 const AdminUsersPage = () => {
   const user = getAuthenticatedUser();

@@ -6,7 +6,7 @@ import Navigate from '../Router/Navigate';
 import API from '../../utils/api';
 
 import logo from '../../img/RieCochet_Logo.png';
-import noProfilePicture from '../../img/no_profile_picture.webp';
+import noProfilePicture from '../../img/no_profile_picture.svg';
 
 /**
  * Render the Navbar which is styled by using Bootstrap
