@@ -199,22 +199,20 @@ public class ObjectUCCImpl implements ObjectUCC {
         return null;
       }
 
-      if (!objectDTO.getState().equals(objectFromDB.getState())) {
-        if (objectDTO.getState().equals("à l'atelier")) {
-          objectFromDB.setWorkshopDate(date);
-        }
-        if (objectDTO.getState().equals("en magasin")) {
-          objectFromDB.setDepositDate(date);
-        }
-        if (objectDTO.getState().equals("en vente")) {
-          objectFromDB.setOnSaleDate(date);
-        }
-        if (objectDTO.getState().equals("vendu")) {
-          objectFromDB.setSellingDate(date);
-        }
-        if (objectDTO.getState().equals("retiré")) {
-          objectFromDB.setWithdrawalDate(date);
-        }
+      if (objectDTO.getState().equals("à l'atelier")) {
+        objectFromDB.setWorkshopDate(date);
+      }
+      if (objectDTO.getState().equals("en magasin")) {
+        objectFromDB.setDepositDate(date);
+      }
+      if (objectDTO.getState().equals("en vente")) {
+        objectFromDB.setOnSaleDate(date);
+      }
+      if (objectDTO.getState().equals("vendu")) {
+        objectFromDB.setSellingDate(date);
+      }
+      if (objectDTO.getState().equals("retiré")) {
+        objectFromDB.setWithdrawalDate(date);
       }
 
       objectFromDB.setObjectType(objectDTO.getObjectType());

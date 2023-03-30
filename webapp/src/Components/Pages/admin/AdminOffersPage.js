@@ -3,7 +3,7 @@ import { getAuthenticatedUser } from '../../../utils/auths';
 import { clearPage } from '../../../utils/render';
 import API from '../../../utils/api';
 import { dateStringtoGoodFormat, subtractDates } from '../../../utils/dates';
-import setUserOrPhoneNumber from '../../../utils/objects';
+import { setUserOrPhoneNumber } from '../../../utils/objects';
 
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
 
@@ -17,7 +17,7 @@ const AdminOffersPage = () => {
 
   clearPage();
   renderAdminObjectsPage();
-  fetchOffers();
+  renderOffers();
 };
 
 function renderAdminObjectsPage() {
@@ -40,13 +40,13 @@ function renderAdminObjectsPage() {
     e.preventDefault();
 
     const search = e.target.value;
-    fetchOffers(search);
+    renderOffers(search);
   });
 
   main.appendChild(div);
 }
 
-async function fetchOffers(query = '') {
+async function renderOffers(query = '') {
   const list = document.getElementById('offers-list');
 
   API.get(`objects/offers?query=${encodeURIComponent(query)}`).then((offers) => {
@@ -90,11 +90,11 @@ async function fetchOffers(query = '') {
                                 </div>
                             </div>
                             
-                            <div class="align-items-center align-content-center col-md-3 border-left mt-1">                                
+                            <div class="col-md-3 border-left mt-1 d-flex flex-column align-content-center justify-content-between">                                
                                 <div class="div-remaining-time">
                                 </div>
                                                                 
-                                <div class="d-flex flex-column mt-4 div-button">
+                                <div class="d-flex flex-column mb-4 div-button">
                                     <button class="btn btn-outline-primary btn-sm button-respond" type="button" data-id="${
                                       offer.id
                                     }">Répondre</button>
