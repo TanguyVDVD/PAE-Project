@@ -258,4 +258,16 @@ public class UserImpl implements User {
 
     return true;
   }
+
+  /**
+   * Remove the profile picture of the user.
+   *
+   * @return whether the removal was successful
+   */
+  @Override
+  public boolean removeProfilePicture() {
+    String blobPath = Config.getProperty("BlobPath");
+    File file = new File(blobPath, "user-" + id + ".jpg");
+    return file.delete();
+  }
 }
