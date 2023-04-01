@@ -5,10 +5,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Annotation to mark a resource as requiring authorization of an admin.
+ * Annotation to mark a resource as requiring authorization of a helper.
  */
 @NameBinding
 @Retention(RetentionPolicy.RUNTIME)
-public @interface AuthorizeAdmin {
+public @interface AuthorizeHelper {
 
 }

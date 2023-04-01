@@ -1,7 +1,7 @@
 package be.vinci.pae.api;
 
 import be.vinci.pae.api.filters.Authorize;
-import be.vinci.pae.api.filters.AuthorizeAdmin;
+import be.vinci.pae.api.filters.AuthorizeHelper;
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.ucc.user.UserUCC;
@@ -63,7 +63,7 @@ public class UserResource {
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeAdmin
+  @AuthorizeHelper
   public ArrayNode getUsers(@QueryParam("query") String query) {
     return jsonMapper.valueToTree(userUCC.getUsers(query));
   }
@@ -182,7 +182,7 @@ public class UserResource {
   @GET
   @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeAdmin
+  @AuthorizeHelper
   public UserDTO getUserInfo(@PathParam("id") int id) {
     return userUCC.getUserById(id);
   }
