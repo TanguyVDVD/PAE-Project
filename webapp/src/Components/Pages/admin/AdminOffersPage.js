@@ -47,7 +47,13 @@ function renderAdminOffersPage() {
 }
 
 async function renderOffers(query = '') {
-  const list = document.getElementById('offers-list');
+  const offersList = document.getElementById('offers-list');
+
+  offersList.innerHTML = `
+    <div class="text-center my-5">
+      <div class="spinner-border" role="status"></div>
+    </div>
+  `;
 
   API.get(`objects/offers?query=${encodeURIComponent(query)}`).then((offers) => {
     document.getElementById('offers-list').innerHTML = `
@@ -112,14 +118,14 @@ async function renderOffers(query = '') {
     setUserOrPhoneNumber(document, 'div-user', offers);
     setRemainingTime('div-remaining-time', offers);
 
-    list.querySelectorAll('a[data-id]').forEach((link) => {
+    offersList.querySelectorAll('a[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
         Navigate(`/user/${e.target.dataset.id}`);
       });
     });
 
-    list.querySelectorAll('button[data-id]').forEach((link) => {
+    offersList.querySelectorAll('button[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
         Navigate(`/object/${e.target.dataset.id}`);

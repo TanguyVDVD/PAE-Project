@@ -14,6 +14,14 @@ const ObjectPage = (params) => {
 
   clearPage();
 
+  const main = document.querySelector('main');
+
+  main.innerHTML = `
+    <div class="text-center my-5">
+      <div class="spinner-border" role="status"></div>
+    </div>
+  `;
+
   API.get(`/objects/${id}`).then((object) => {
     API.get('/objectsTypes').then((objectTypes) => {
       renderObjectPage(object, objectTypes);
@@ -209,7 +217,7 @@ function renderObjectPage(object, objectTypes) {
     </section>
   `;
 
-  main.appendChild(div);
+  main.replaceChildren(div);
 
   /**
    * Réponse à une proposition
