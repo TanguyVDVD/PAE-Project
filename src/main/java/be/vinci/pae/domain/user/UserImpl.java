@@ -2,12 +2,14 @@ package be.vinci.pae.domain.user;
 
 import be.vinci.pae.utils.Config;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.awt.Color;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import net.coobird.thumbnailator.Thumbnails;
+import net.coobird.thumbnailator.filters.Canvas;
 import net.coobird.thumbnailator.geometry.Positions;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -250,6 +252,7 @@ public class UserImpl implements User {
           .of(photo)
           .crop(Positions.CENTER)
           .size(128, 128)
+          .addFilter(new Canvas(128, 128, Positions.CENTER, Color.WHITE))
           .outputFormat("jpg")
           .toFile(new File(blobPath, "user-" + id + ".jpg"));
     } catch (Exception e) {
