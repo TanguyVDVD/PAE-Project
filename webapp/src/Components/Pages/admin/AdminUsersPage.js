@@ -117,8 +117,19 @@ const columns = [
     name: 'role',
     label: 'Rôle',
     sortable: true,
-    render: (user) => user.role === null ? "Utilisateur" :
-        user.role.charAt(0).toUpperCase().concat(user.role.slice(1)),
+    render: (user) => {
+      const roleColors = {
+        responsable: 'danger',
+        aidant: 'success',
+      };
+
+      return user.role === null
+        ? `<div class="badge bg-primary">Utilisateur</div>`
+        : `<div class="badge bg-${roleColors[user.role]}">${user.role
+            .charAt(0)
+            .toUpperCase()
+            .concat(user.role.slice(1))}</div>`;
+    },
   },
   {
     name: 'actions',
