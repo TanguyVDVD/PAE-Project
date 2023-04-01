@@ -218,7 +218,7 @@ public class UserDAOImpl implements UserDAO {
       fields.put("register_date", userDTO.getRegisterDate());
     }
     if (userDTO.getRole() != null) {
-      fields.put("is_helper", userDTO.getRole());
+      fields.put("role", userDTO.getRole());
     }
 
     if (fields.isEmpty()) {
