@@ -1,5 +1,7 @@
 package be.vinci.pae.services.availability;
 
+import be.vinci.pae.domain.DomainFactory;
+import be.vinci.pae.domain.availability.AvailabilityDTO;
 import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.utils.MyLogger;
 import jakarta.inject.Inject;
@@ -7,6 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 /**
@@ -16,6 +20,56 @@ public class AvailabilityDAOImpl implements AvailabilityDAO {
 
   @Inject
   private DalBackendServices dalBackendServices;
+
+  @Inject
+  private DomainFactory myDomainFactory;
+
+
+  /**
+   * Map a ResultSet to a AvailabilityDTO.
+   *
+   * @param resultSet the ResultSet
+   * @return the AvailabilityDTO
+   */
+  public AvailabilityDTO dtoFromRS(ResultSet resultSet) {
+    AvailabilityDTO availability = myDomainFactory.getAvailability();
+
+    try {
+      availability.setId(resultSet.getInt("id_availability"));
+      availability.setDate(resultSet.getDate("date") == null ? null
+          : resultSet.getDate("date").toLocalDate());
+    } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "Error dtoFromRS");
+      se.printStackTrace();
+    }
+
+    return availability;
+  }
+
+  /**
+   * Get all availabilities.
+   *
+   * @return the list of availabilities
+   */
+  @Override
+  public List<AvailabilityDTO> getAll() {
+    String request = "SELECT * FROM pae.availabilities ORDER BY date desc";
+    ArrayList<AvailabilityDTO> availabilities = new ArrayList<>();
+
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
+
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          availabilities.add(dtoFromRS(rs));
+        }
+      }
+    } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "Error get all availabilities");
+      se.printStackTrace();
+    }
+
+    return availabilities;
+  }
 
   /**
    * Get the availability by the id.
