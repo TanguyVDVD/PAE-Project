@@ -1,14 +1,11 @@
 package be.vinci.pae.ucc.availability;
 
-import be.vinci.pae.domain.availability.Availability;
 import be.vinci.pae.domain.availability.AvailabilityDTO;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.availability.AvailabilityDAO;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,28 +43,28 @@ public class AvailabilityUCCImpl implements AvailabilityUCC {
   /**
    * Add new availabilities.
    *
-   * @param dates the availabilities to add
+   * @param availabilities the availabilities to add
    * @return a list of all the new availabilities
    */
   @Override
-  public List<AvailabilityDTO> add(List<LocalDate> dates) {
-    List<AvailabilityDTO> availabilities = new ArrayList<>();
+  public List<AvailabilityDTO> add(List<AvailabilityDTO> availabilities) {
+    List<AvailabilityDTO> addedAvailabilities = new ArrayList<>();
     myDalServices.startTransaction();
     try {
 
-      for (LocalDate date : dates) {
-        AvailabilityDTO availabilityDTO = myAvailabilityDAO.add(date);
-        Availability availabilityTemp = (Availability) availabilityDTO;
+      for (AvailabilityDTO availability : availabilities) {
+        AvailabilityDTO addedAvailability = myAvailabilityDAO.insert(availability);
 
-        if (!availabilityTemp.isSaturday(date)) {
+        if (addedAvailability == null) {
           throw new WebApplicationException(
-              "Date invalide, ce n'est pas un samedi",
-              Response.Status.BAD_REQUEST);
+              "Impossible d'insérer la date en db",
+              Status.INTERNAL_SERVER_ERROR);
         }
 
-        availabilities.add(availabilityDTO);
+        addedAvailabilities.add(addedAvailability);
       }
-      return availabilities;
+
+      return addedAvailabilities;
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
       throw new WebApplicationException(
