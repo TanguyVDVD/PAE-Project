@@ -81,4 +81,11 @@ export default class API {
       method: 'PATCH',
     });
   }
+
+  static delete(endpoint, options = {}) {
+    return API.#call(endpoint, {
+      ...options,
+      method: 'DELETE',
+    });
+  }
 }
