@@ -5,10 +5,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Annotation to mark a resource as requiring authorization of Mr Riez.
+ * Annotation to mark a resource as requiring authorization of a manager.
  */
 @NameBinding
 @Retention(RetentionPolicy.RUNTIME)
-public @interface AuthorizeRiez {
+public @interface AuthorizeManager {
 
 }
