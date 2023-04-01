@@ -1,6 +1,7 @@
 package be.vinci.pae.api;
 
 import be.vinci.pae.api.filters.AuthorizeHelper;
+import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.availability.AvailabilityDTO;
 import be.vinci.pae.ucc.availability.AvailabilityUCC;
 import jakarta.inject.Inject;
@@ -13,7 +14,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.sql.Date;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,9 @@ public class AvailabilityResource {
 
   @Inject
   private AvailabilityUCC availabilityUCC;
+
+  @Inject
+  private DomainFactory myDomainFactory;
 
   /**
    * Get a list of all availabilities.
@@ -43,17 +47,20 @@ public class AvailabilityResource {
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeHelper
-  public List<AvailabilityDTO> add(List<Date> dates) {
-    List<LocalDate> localDates = new ArrayList<>();
-    for (Date date : dates) {
-      if (date == null || date.toLocalDate().isBefore(LocalDate.now())) {
+  public List<AvailabilityDTO> add(List<LocalDate> dates) {
+    List<AvailabilityDTO> availabilities = new ArrayList<>();
+    for (LocalDate date : dates) {
+      if (date == null || date.isBefore(LocalDate.now())
+          || date.getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
         throw new WebApplicationException(
-            "Les disponibilités à ajouter sont déjà passées ou null.",
+            "Les dates à ajouter aux disponibilités ne sont pas bonnes.",
             Response.Status.BAD_REQUEST);
       }
-      localDates.add(date.toLocalDate());
+      AvailabilityDTO availability = myDomainFactory.getAvailability();
+      availability.setDate(date);
+      availabilities.add(availability);
     }
 
-    return availabilityUCC.add(localDates);
+    return availabilityUCC.add(availabilities);
   }
 }

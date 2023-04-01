@@ -1,6 +1,5 @@
 package be.vinci.pae.domain.availability;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 /**
@@ -50,16 +49,5 @@ public class AvailabilityImpl implements Availability {
   @Override
   public void setDate(LocalDate date) {
     this.date = date;
-  }
-
-  /**
-   * Check if the date is a saturday.
-   *
-   * @param date the date to check
-   * @return true if the date is a saturday else false
-   */
-  @Override
-  public boolean isSaturday(LocalDate date) {
-    return date.getDayOfWeek().equals(DayOfWeek.SATURDAY);
   }
 }
