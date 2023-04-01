@@ -77,7 +77,7 @@ public class ObjectResource {
   public ArrayNode getObjectsByUser(@Context ContainerRequest request, @PathParam("id") int id) {
     User authorizedUser = (User) request.getProperty("user");
 
-    if (authorizedUser.getId() != id && !authorizedUser.getIsHelper()) {
+    if (authorizedUser.getId() != id && !authorizedUser.getRole()) {
       MyLogger.log(Level.INFO, "Impossible de trouver les informations de l'objet");
       throw new WebApplicationException(
           "Vous n'avez pas le droit de voir les objets de cet utilisateur",

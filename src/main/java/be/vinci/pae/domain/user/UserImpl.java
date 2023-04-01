@@ -25,7 +25,7 @@ public class UserImpl implements User {
   private String password;
   private Boolean photo;
   private LocalDate registerDate;
-  private Boolean isHelper;
+  private String role;
 
   /**
    * Return the id of a user.
@@ -188,23 +188,23 @@ public class UserImpl implements User {
   }
 
   /**
-   * Return a boolean corresponding if a user is a helper.
+   * Return the user role.
    *
-   * @return true if the user is a helper false if he is not
+   * @return a String corresponding to the user role
    */
   @Override
-  public Boolean getIsHelper() {
-    return isHelper;
+  public String getRole() {
+    return role;
   }
 
   /**
-   * set the boolean value corresponding if the user is a helper.
+   * set the user role.
    *
-   * @param isHelper the value
+   * @param role the value
    */
   @Override
-  public void setIsHelper(Boolean isHelper) {
-    this.isHelper = isHelper;
+  public void setRole(String role) {
+    this.role = role;
   }
 
   /**

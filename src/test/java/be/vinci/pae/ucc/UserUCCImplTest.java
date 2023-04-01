@@ -135,7 +135,7 @@ class UserUCCImplTest {
     Mockito.when(validUser.getPassword()).thenReturn("password");
     Mockito.when(validUser.getPhoto()).thenReturn(true);
     Mockito.when(validUser.getRegisterDate()).thenReturn(LocalDate.now());
-    Mockito.when(validUser.getIsHelper()).thenReturn(true);
+    Mockito.when(validUser.getRole()).thenReturn(true);
 
     Mockito.when(validUser.isPasswordCorrect("password")).thenReturn(true);
     Mockito.when(validUser.isPasswordCorrect("wrongPassword")).thenReturn(false);

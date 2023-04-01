@@ -139,7 +139,7 @@ public class UserResource {
     userRegister.setPassword(password);
     userRegister.setPhoto(photoDetail != null && photoDetail.getFileName() != null);
     userRegister.setRegisterDate(LocalDate.now());
-    userRegister.setIsHelper(false);
+    userRegister.setRole(false);
 
     UserDTO userAfterRegister = userUCC.register(userRegister);
 
@@ -247,8 +247,8 @@ public class UserResource {
       }
     } else if (authorizedUser.getId() == 1) {
       // Only the admin can change the helper status
-      if (dataDTO.getIsHelper() != null) {
-        userDTO.setIsHelper(dataDTO.getIsHelper());
+      if (dataDTO.getRole() != null) {
+        userDTO.setRole(dataDTO.getRole());
       }
     } else {
       MyLogger.log(Level.INFO, "Vous n'avez pas les droits pour modifier cet utilisateur");

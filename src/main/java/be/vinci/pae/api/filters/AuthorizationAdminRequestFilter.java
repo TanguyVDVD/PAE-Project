@@ -20,7 +20,7 @@ public class AuthorizationAdminRequestFilter extends AuthorizationRequestFilter 
     super.filter(requestContext);
 
     User authenticatedUser = (User) requestContext.getProperty("user");
-    if (!authenticatedUser.getIsHelper()) {
+    if (!authenticatedUser.getRole()) {
       throw new WebApplicationException("Vous n'avez pas les droits pour accéder à cette ressource",
           Status.FORBIDDEN);
     }
