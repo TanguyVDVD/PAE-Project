@@ -139,7 +139,7 @@ public class UserResource {
     userRegister.setPassword(password);
     userRegister.setPhoto(photoDetail != null && photoDetail.getFileName() != null);
     userRegister.setRegisterDate(LocalDate.now());
-    userRegister.setRole(false);
+    userRegister.setRole(null);
 
     UserDTO userAfterRegister = userUCC.register(userRegister);
 
@@ -245,7 +245,7 @@ public class UserResource {
       if (StringUtils.isNotBlank(dataDTO.getPassword())) {
         userDTO.setPassword(dataDTO.getPassword());
       }
-    } else if (authorizedUser.getId() == 1) {
+    } else if (authorizedUser.getRole().equals("responsable")) {
       // Only the admin can change the helper status
       if (dataDTO.getRole() != null) {
         userDTO.setRole(dataDTO.getRole());
