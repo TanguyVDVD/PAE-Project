@@ -10,7 +10,7 @@ import noProfilePicture from '../../../img/no_profile_picture.svg';
 const AdminUsersPage = () => {
   const user = getAuthenticatedUser();
 
-  if (!user || !user.isHelper) {
+  if (!user || user.role === null) {
     Navigate('/');
     return;
   }
@@ -114,13 +114,11 @@ const columns = [
     render: (user) => dateStringtoGoodFormat(user.registerDate),
   },
   {
-    name: 'isHelper',
+    name: 'role',
     label: 'Rôle',
     sortable: true,
-    render: (user) =>
-      user.isHelper
-        ? `<span class="badge bg-primary">Aidant</span>`
-        : `<span class="badge bg-secondary">Utilisateur</span>`,
+    render: (user) => user.role === null ? "Utilisateur" :
+        user.role.charAt(0).toUpperCase().concat(user.role.slice(1)),
   },
   {
     name: 'actions',
