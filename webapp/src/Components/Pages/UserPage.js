@@ -6,7 +6,7 @@ import { getAuthenticatedUser, setAuthenticatedUser } from '../../utils/auths';
 import { clearPage, renderError } from '../../utils/render';
 import { formatDate, formatPhoneNumber } from '../../utils/format';
 
-import noProfilePicture from '../../img/no_profile_picture.webp';
+import noProfilePicture from '../../img/no_profile_picture.svg';
 import noFurniturePhoto from '../../img/no_furniture_photo.svg';
 
 const objects = [];
