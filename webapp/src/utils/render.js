@@ -12,9 +12,9 @@ const renderPageTitle = (title) => {
 };
 
 const renderError = (error, container = document.querySelector('main')) => {
-  if (!error) return;
-
   if (container.querySelector('.alert')) container.querySelector('.alert').remove();
+
+  if (!error) return;
 
   const alert = document.createElement('div');
   alert.className = 'alert alert-danger alert-dismissible d-flex align-items-center';
