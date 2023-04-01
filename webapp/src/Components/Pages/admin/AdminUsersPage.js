@@ -71,7 +71,7 @@ async function renderUsers(query = '') {
                     <th scope="row">${user.id}</th>
                     <td>${user.lastName}</td>
                     <td>${user.firstName}</td>
-                    <td>${user.role === null ? 'Utilisateur' : user.role === 'aidant' ? 'Aidant' : 'Responsable'}</td>
+                    <td class="div-role"></td>
                     <td>
                       <a href="#" class="btn btn-link" role="button" data-id="${user.id}">
                         Voir plus
@@ -85,6 +85,8 @@ async function renderUsers(query = '') {
         </table>
       `;
 
+    setRole("div-role", users);
+
     table.querySelectorAll('a[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
@@ -92,6 +94,21 @@ async function renderUsers(query = '') {
       });
     });
   });
+}
+
+function setRole(className, users) {
+  const elements = document.getElementsByClassName(className);
+  for (let i = 0; i < elements.length; i += 1) {
+    const user = users[i];
+    const element = elements.item(i);
+    if (user.role === "aidant") {
+      element.innerHTML = "Aidant";
+    } else if (user.role === 'responsable') {
+      element.innerHTML = "Responsable";
+    } else {
+      element.innerHTML = "Utilisateur";
+    }
+  }
 }
 
 export default AdminUsersPage;
