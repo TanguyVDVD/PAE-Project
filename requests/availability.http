@@ -1,0 +1,2 @@
+### Get a list of all availabilities
+GET {{baseUrl}}/availabilities
