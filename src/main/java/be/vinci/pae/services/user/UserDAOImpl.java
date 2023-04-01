@@ -45,7 +45,7 @@ public class UserDAOImpl implements UserDAO {
       user.setPassword(resultSet.getString("password"));
       user.setPhoto(resultSet.getBoolean("photo"));
       user.setRegisterDate(resultSet.getDate("register_date").toLocalDate());
-      user.setRole(resultSet.getBoolean("is_helper"));
+      user.setRole(resultSet.getString("role"));
     } catch (SQLException se) {
       MyLogger.log(Level.INFO, "error dto from RS USer");
       se.printStackTrace();
@@ -73,7 +73,7 @@ public class UserDAOImpl implements UserDAO {
       ps.setBoolean(6, userDTO.getPhoto());
 
       ps.setDate(7, java.sql.Date.valueOf(userDTO.getRegisterDate()));
-      ps.setBoolean(8, userDTO.getRole());
+      ps.setString(8, userDTO.getRole());
       ps.executeUpdate();
 
       // Get the id of the new user
