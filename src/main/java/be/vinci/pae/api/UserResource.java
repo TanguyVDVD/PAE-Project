@@ -1,7 +1,7 @@
 package be.vinci.pae.api;
 
 import be.vinci.pae.api.filters.Authorize;
-import be.vinci.pae.api.filters.AuthorizeAdmin;
+import be.vinci.pae.api.filters.AuthorizeHelper;
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.ucc.user.UserUCC;
@@ -63,7 +63,7 @@ public class UserResource {
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeAdmin
+  @AuthorizeHelper
   public ArrayNode getUsers(@QueryParam("query") String query) {
     return jsonMapper.valueToTree(userUCC.getUsers(query));
   }
@@ -139,7 +139,7 @@ public class UserResource {
     userRegister.setPassword(password);
     userRegister.setPhoto(photoDetail != null && photoDetail.getFileName() != null);
     userRegister.setRegisterDate(LocalDate.now());
-    userRegister.setIsHelper(false);
+    userRegister.setRole(null);
 
     UserDTO userAfterRegister = userUCC.register(userRegister);
 
@@ -182,7 +182,7 @@ public class UserResource {
   @GET
   @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeAdmin
+  @AuthorizeHelper
   public UserDTO getUserInfo(@PathParam("id") int id) {
     return userUCC.getUserById(id);
   }
@@ -245,10 +245,10 @@ public class UserResource {
       if (StringUtils.isNotBlank(dataDTO.getPassword())) {
         userDTO.setPassword(dataDTO.getPassword());
       }
-    } else if (authorizedUser.getId() == 1) {
+    } else if (authorizedUser.getRole().equals("responsable")) {
       // Only the admin can change the helper status
-      if (dataDTO.getIsHelper() != null) {
-        userDTO.setIsHelper(dataDTO.getIsHelper());
+      if (dataDTO.getRole() != null) {
+        userDTO.setRole(dataDTO.getRole());
       }
     } else {
       MyLogger.log(Level.INFO, "Vous n'avez pas les droits pour modifier cet utilisateur");

@@ -1,8 +1,8 @@
 package be.vinci.pae.api;
 
 import be.vinci.pae.api.filters.Authorize;
-import be.vinci.pae.api.filters.AuthorizeAdmin;
-import be.vinci.pae.api.filters.AuthorizeRiez;
+import be.vinci.pae.api.filters.AuthorizeHelper;
+import be.vinci.pae.api.filters.AuthorizeManager;
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.domain.user.User;
@@ -57,7 +57,7 @@ public class ObjectResource {
    * @return a list of objects
    */
   @GET
-  @AuthorizeAdmin
+  @AuthorizeHelper
   @Produces(MediaType.APPLICATION_JSON)
   public ArrayNode getObjects(@QueryParam("query") String query) {
     return jsonMapper.valueToTree(objectUCC.getObjects(query));
@@ -77,7 +77,7 @@ public class ObjectResource {
   public ArrayNode getObjectsByUser(@Context ContainerRequest request, @PathParam("id") int id) {
     User authorizedUser = (User) request.getProperty("user");
 
-    if (authorizedUser.getId() != id && !authorizedUser.getIsHelper()) {
+    if (authorizedUser.getId() != id && authorizedUser.getRole() == null) {
       MyLogger.log(Level.INFO, "Impossible de trouver les informations de l'objet");
       throw new WebApplicationException(
           "Vous n'avez pas le droit de voir les objets de cet utilisateur",
@@ -95,7 +95,7 @@ public class ObjectResource {
    */
   @GET
   @Path("/offers")
-  @AuthorizeAdmin
+  @AuthorizeHelper
   @Produces(MediaType.APPLICATION_JSON)
   public ArrayNode getoffers(@QueryParam("query") String query) {
     return jsonMapper.valueToTree(objectUCC.getOffers(query));
@@ -137,7 +137,7 @@ public class ObjectResource {
   @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
-  @AuthorizeAdmin
+  @AuthorizeHelper
   public ObjectNode updateObject(JsonNode json, @PathParam("id") int id) {
     if (!json.hasNonNull("type") || !json.hasNonNull("description") || !json.hasNonNull(
         "state") || !json.hasNonNull("isVisible")) {
@@ -206,7 +206,7 @@ public class ObjectResource {
   @Path("/status/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
-  @AuthorizeRiez
+  @AuthorizeManager
   public ObjectNode updateObjectStatus(JsonNode json, @PathParam("id") int id) {
     String status = json.get("status").asText();
     if (id <= 0 || status.isBlank() || !status.equals("refusé") && !status.equals("accepté")) {
@@ -271,7 +271,7 @@ public class ObjectResource {
   @Path("/{id}/photo")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeAdmin
+  @AuthorizeHelper
   public ObjectDTO updatePhoto(@PathParam("id") int id, @FormDataParam("photo") InputStream photo,
       @FormDataParam("photo") FormDataContentDisposition photoDetail) {
     if (photoDetail == null || photoDetail.getFileName() == null) {

@@ -1,4 +1,4 @@
-------------- VERSION 1.0 --------------
+------------- VERSION 1.1 --------------
 
 -------------- INIT DB -----------------
 
@@ -19,7 +19,7 @@ CREATE TABLE pae.users
     password      VARCHAR(100) NOT NULL,
     photo         BOOLEAN      NOT NULL,
     register_date DATE         NOT NULL,
-    is_helper     BOOLEAN      NOT NULL
+    role          VARCHAR(12)
 );
 
 CREATE TABLE pae.object_types
@@ -89,23 +89,23 @@ INSERT INTO pae.object_types VALUES (DEFAULT, 'Vaisselle');
 
 INSERT INTO pae.users
 VALUES (DEFAULT, 'Riez', 'Robert', '0477968547', 'bert.riez@gmail.be',
-        '$2a$10$61RLCqTVMfFoqZyC3CqJS.IqvdGQgr96wcFuP7WMJWtf4su3Mn0iu', true, '2023-02-01', true);
+        '$2a$10$61RLCqTVMfFoqZyC3CqJS.IqvdGQgr96wcFuP7WMJWtf4su3Mn0iu', true, '2023-02-01', 'responsable');
 
 INSERT INTO pae.users
 VALUES (DEFAULT, 'Muise', 'Alfred', '0476963626', 'fred.muise@gmail.be',
-        '$2a$10$JYWLAigic6ES55nzD3rtI.UUNqhy9UJBIVv9pdDONmYashdZ1yG6W', true, '2023-02-01', true);
+        '$2a$10$JYWLAigic6ES55nzD3rtI.UUNqhy9UJBIVv9pdDONmYashdZ1yG6W', true, '2023-02-01', 'aidant');
 
 INSERT INTO pae.users
 VALUES (DEFAULT, 'Line', 'Caroline', '0487452379', 'caro.line@hotmail.com',
-        '$2a$10$TR/BR7l7g8RfFfArewiyTumbCvZ10ol1Hcs9zp7oQfBw65zdRLTVS', true, '2023-02-01', false);
+        '$2a$10$TR/BR7l7g8RfFfArewiyTumbCvZ10ol1Hcs9zp7oQfBw65zdRLTVS', true, '2023-02-01', null);
 
 INSERT INTO pae.users
 VALUES (DEFAULT, 'Ile', 'Achille', '0477653224', 'ach.ile@gmail.com',
-        '$2a$10$TR/BR7l7g8RfFfArewiyTumbCvZ10ol1Hcs9zp7oQfBw65zdRLTVS', true, '2023-02-01', false);
+        '$2a$10$TR/BR7l7g8RfFfArewiyTumbCvZ10ol1Hcs9zp7oQfBw65zdRLTVS', true, '2023-02-01', null);
 
 INSERT INTO pae.users
 VALUES (DEFAULT, 'Ile', 'Basile', '0485988642', 'bas.ile@gmail.be',
-        '$2a$10$TR/BR7l7g8RfFfArewiyTumbCvZ10ol1Hcs9zp7oQfBw65zdRLTVS', true, '2023-02-01', false);
+        '$2a$10$TR/BR7l7g8RfFfArewiyTumbCvZ10ol1Hcs9zp7oQfBw65zdRLTVS', true, '2023-02-01', null);
 
 INSERT INTO pae.availability VALUES (DEFAULT, '2023-03-04');
 
@@ -113,9 +113,9 @@ INSERT INTO pae.availability VALUES (DEFAULT, '2023-03-11');
 
 INSERT INTO pae.availability VALUES (DEFAULT, '2023-03-18');
 
-INSERT INTO pae.availability VALUES (DEFAULT, '2023-03-25')
+INSERT INTO pae.availability VALUES (DEFAULT, '2023-03-25');
 
-    INSERT INTO pae.availability VALUES (DEFAULT, '2023-04-01');
+INSERT INTO pae.availability VALUES (DEFAULT, '2023-04-01');
 
 INSERT INTO pae.availability VALUES (DEFAULT, '2023-04-15');
 

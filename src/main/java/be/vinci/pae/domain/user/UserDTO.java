@@ -123,16 +123,16 @@ public interface UserDTO {
   void setRegisterDate(LocalDate registerDate);
 
   /**
-   * Return a boolean corresponding if a user is a helper.
+   * Return the user role.
    *
-   * @return true if the user is a helper false if he is not
+   * @return a String corresponding to the user role
    */
-  Boolean getIsHelper();
+  String getRole();
 
   /**
-   * set the boolean value corresponding if the user is a helper.
+   * set the user role.
    *
-   * @param isHelper the value
+   * @param role the value
    */
-  void setIsHelper(Boolean isHelper);
+  void setRole(String role);
 }
