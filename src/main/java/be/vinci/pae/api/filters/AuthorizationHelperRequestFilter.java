@@ -20,8 +20,8 @@ public class AuthorizationHelperRequestFilter extends AuthorizationRequestFilter
     super.filter(requestContext);
 
     User authenticatedUser = (User) requestContext.getProperty("user");
-    if (!authenticatedUser.getRole().equals("aidant") &&
-        !authenticatedUser.getRole().equals("responsable")) {
+    if (!authenticatedUser.getRole().equals("aidant")
+        && !authenticatedUser.getRole().equals("responsable")) {
       throw new WebApplicationException(
           "Vous n'avez pas les droits pour accéder à cette ressource : "
               + "vous devez être aidant ou responsable.",
