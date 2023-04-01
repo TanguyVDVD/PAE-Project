@@ -16,11 +16,11 @@ const AdminOffersPage = () => {
   }
 
   clearPage();
-  renderAdminObjectsPage();
+  renderAdminOffersPage();
   renderOffers();
 };
 
-function renderAdminObjectsPage() {
+function renderAdminOffersPage() {
   const main = document.querySelector('main');
   const div = document.createElement('div');
   div.className = 'container my-5';
