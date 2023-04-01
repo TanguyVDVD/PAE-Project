@@ -1,11 +1,11 @@
 package be.vinci.pae.api;
 
 import be.vinci.pae.api.filters.AuthorizeHelper;
+import be.vinci.pae.domain.availability.AvailabilityDTO;
 import be.vinci.pae.ucc.availability.AvailabilityUCC;
 import be.vinci.pae.utils.MyObjectMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -47,7 +47,7 @@ public class AvailabilityResource {
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeHelper
-  public ObjectNode add(List<Date> dates) {
+  public List<AvailabilityDTO> add(List<Date> dates) {
 
     for (Date date : dates) {
       if (date == null || date.compareTo(Date.valueOf(LocalDate.now())) >= 0) {
