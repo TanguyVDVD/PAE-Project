@@ -1,6 +1,7 @@
 package be.vinci.pae.ucc.availability;
 
 import be.vinci.pae.domain.availability.AvailabilityDTO;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -14,5 +15,13 @@ public interface AvailabilityUCC {
    * @return a list of all availabilities
    */
   List<AvailabilityDTO> getAvailabilities();
+
+  /**
+   * Add new availabilities.
+   *
+   * @param dates the availabilities to add
+   * @return a list of all the new availabilities
+   */
+  List<AvailabilityDTO> add(List<LocalDate> dates);
 
 }
