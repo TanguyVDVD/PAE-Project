@@ -28,7 +28,7 @@ CREATE TABLE pae.object_types
     label          VARCHAR(25)
 );
 
-CREATE TABLE pae.availability
+CREATE TABLE pae.availabilities
 (
     id_availability SERIAL PRIMARY KEY,
     date            DATE NOT NULL
@@ -54,7 +54,7 @@ CREATE TABLE pae.objects (
                              withdrawal_date DATE,
                              phone_number VARCHAR(12),
                              id_user INTEGER REFERENCES pae.users,
-                             receipt_date INTEGER REFERENCES pae.availability NOT NULL,
+                             receipt_date INTEGER REFERENCES pae.availabilities NOT NULL,
                              id_object_type INTEGER REFERENCES pae.object_types NOT NULL
 );
 
@@ -92,13 +92,13 @@ INSERT INTO pae.object_types VALUES (DEFAULT,'Couvertures');
 INSERT INTO pae.object_types VALUES (DEFAULT,'Matériel de cuisine');
 INSERT INTO pae.object_types VALUES (DEFAULT,'Vaisselle');
 
-INSERT INTO pae.availability VALUES (DEFAULT, '2023-03-04');
-INSERT INTO pae.availability VALUES (DEFAULT, '2023-03-11');
-INSERT INTO pae.availability VALUES (DEFAULT, '2023-03-18');
-INSERT INTO pae.availability VALUES (DEFAULT, '2023-03-25');
-INSERT INTO pae.availability VALUES (DEFAULT, '2023-04-01');
-INSERT INTO pae.availability VALUES (DEFAULT, '2023-04-15');
-INSERT INTO pae.availability VALUES (DEFAULT, '2023-04-22');
+INSERT INTO pae.availabilities VALUES (DEFAULT, '2023-03-04');
+INSERT INTO pae.availabilities VALUES (DEFAULT, '2023-03-11');
+INSERT INTO pae.availabilities VALUES (DEFAULT, '2023-03-18');
+INSERT INTO pae.availabilities VALUES (DEFAULT, '2023-03-25');
+INSERT INTO pae.availabilities VALUES (DEFAULT, '2023-04-01');
+INSERT INTO pae.availabilities VALUES (DEFAULT, '2023-04-15');
+INSERT INTO pae.availabilities VALUES (DEFAULT, '2023-04-22');
 
 INSERT INTO pae.objects
 VALUES (DEFAULT, 'Chaise en bois brut avec cousin beige', true, 'matin', 2, 'en vente', 'accepté', null,

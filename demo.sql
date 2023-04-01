@@ -28,7 +28,7 @@ CREATE TABLE pae.object_types
     label          VARCHAR(25)
 );
 
-CREATE TABLE pae.availability
+CREATE TABLE pae.availabilities
 (
     id_availability SERIAL PRIMARY KEY,
     date            DATE NOT NULL
@@ -54,7 +54,7 @@ CREATE TABLE pae.objects (
                              withdrawal_date DATE,
                              phone_number VARCHAR(12),
                              id_user INTEGER REFERENCES pae.users,
-                             receipt_date INTEGER REFERENCES pae.availability NOT NULL,
+                             receipt_date INTEGER REFERENCES pae.availabilities NOT NULL,
                              id_object_type INTEGER REFERENCES pae.object_types NOT NULL
 );
 
@@ -107,19 +107,19 @@ INSERT INTO pae.users
 VALUES (DEFAULT, 'Ile', 'Basile', '0485988642', 'bas.ile@gmail.be',
         '$2a$10$TR/BR7l7g8RfFfArewiyTumbCvZ10ol1Hcs9zp7oQfBw65zdRLTVS', true, '2023-02-01', null);
 
-INSERT INTO pae.availability VALUES (DEFAULT, '2023-03-04');
+INSERT INTO pae.availabilities VALUES (DEFAULT, '2023-03-04');
 
-INSERT INTO pae.availability VALUES (DEFAULT, '2023-03-11');
+INSERT INTO pae.availabilities VALUES (DEFAULT, '2023-03-11');
 
-INSERT INTO pae.availability VALUES (DEFAULT, '2023-03-18');
+INSERT INTO pae.availabilities VALUES (DEFAULT, '2023-03-18');
 
-INSERT INTO pae.availability VALUES (DEFAULT, '2023-03-25');
+INSERT INTO pae.availabilities VALUES (DEFAULT, '2023-03-25');
 
-INSERT INTO pae.availability VALUES (DEFAULT, '2023-04-01');
+INSERT INTO pae.availabilities VALUES (DEFAULT, '2023-04-01');
 
-INSERT INTO pae.availability VALUES (DEFAULT, '2023-04-15');
+INSERT INTO pae.availabilities VALUES (DEFAULT, '2023-04-15');
 
-INSERT INTO pae.availability VALUES (DEFAULT, '2023-04-22');
+INSERT INTO pae.availabilities VALUES (DEFAULT, '2023-04-22');
 
 
 INSERT INTO pae.objects
@@ -160,4 +160,4 @@ SELECT count(u.id_user) AS "Nombres d'utilisateurs" FROM pae.users u;
 
 SELECT count(obt.id_object_type) AS "Nombres de types d'objets" FROM pae.object_types obt;
 
-SELECT count(av.date) AS "Nombres date de présence" FROM pae.availability av;
+SELECT count(av.date) AS "Nombres date de présence" FROM pae.availabilities av;
