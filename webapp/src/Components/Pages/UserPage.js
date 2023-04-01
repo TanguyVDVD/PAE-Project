@@ -26,7 +26,7 @@ const UserPage = (params) => {
     return;
   }
 
-  if (!authenticatedUser.isHelper && authenticatedUser.id !== id) {
+  if (authenticatedUser.role === null && authenticatedUser.id !== id) {
     Navigate('/');
     return;
   }
@@ -91,7 +91,7 @@ function renderUserPage(user) {
           </div>
         </div>
         ${
-          authenticatedUser.id === 1 && authenticatedUser.id !== user.id
+          authenticatedUser.role === "responsable" && authenticatedUser.id !== user.id
             ? `
               <div>
                 <div class="form-check form-switch">
@@ -100,7 +100,7 @@ function renderUserPage(user) {
                     type="checkbox"
                     role="switch"
                     id="helper-switch"
-                    ${user.isHelper ? 'checked' : ''}
+                    ${user.role === "aidant" ? 'checked' : ''}
                   />
                   <label class="form-check-label" for="helper-switch">Aidant</label>
                 </div>
@@ -134,9 +134,9 @@ function renderUserPage(user) {
       e.target.disabled = true;
       e.target.checked = !e.target.checked;
 
-      API.patch(`users/${user.id}`, { body: { isHelper: !e.target.checked } })
+      API.patch(`users/${user.id}`, { body: { role: e.target.checked ? "aidant" : null } })
         .then((updatedUser) => {
-          e.target.checked = updatedUser.isHelper;
+          e.target.checked = updatedUser.role === "aidant";
         })
         .catch((error) => {
           renderError(error.message);

@@ -45,7 +45,8 @@ function renderObjectPage(object, objectTypes) {
              />
             
             
-            ${authenticatedUser && authenticatedUser.isHelper && object.state !== 'proposé' && object.state !== "refusé"
+            ${authenticatedUser && authenticatedUser.role !== null
+              && object.state !== 'proposé' && object.state !== "refusé"
                 ? `
                 <form>
                   <div class="row row-cols-1 row-cols-md-2 m-1">
@@ -63,10 +64,10 @@ function renderObjectPage(object, objectTypes) {
                 : ''
             }
           </div>
-          
 
           <div class="col-md-8">
-            ${authenticatedUser && authenticatedUser.isHelper && object.state !== 'proposé' && object.state !== "refusé"
+            ${authenticatedUser && authenticatedUser.role !== null
+              && object.state !== 'proposé' && object.state !== "refusé"
               ? `
               <form id="object-form">
                 <div class="form-group" id="object-type-form">
@@ -143,7 +144,8 @@ function renderObjectPage(object, objectTypes) {
               `
             }
             
-            ${authenticatedUser && authenticatedUser.isHelper && object.state === "proposé" ?
+            ${authenticatedUser && authenticatedUser.role !== null
+              && object.state === "proposé" ?
               `
                 <div class="div-user" id="object-user-offer"></div>
                 
@@ -167,7 +169,8 @@ function renderObjectPage(object, objectTypes) {
                 : ''
             }
             
-            ${authenticatedUser && authenticatedUser.isHelper && object.state === "refusé" ? 
+            ${authenticatedUser && authenticatedUser.role !== null
+              && object.state === "refusé" ? 
             `
               <div id="object-state-refused">
                 <h6 class="text-danger">Refusé</h6>
@@ -190,7 +193,7 @@ function renderObjectPage(object, objectTypes) {
             ` : ''
             }
             
-            ${authenticatedUser && !authenticatedUser.isHelper
+            ${authenticatedUser && authenticatedUser.role === null
               ? `
               <div id="object-state-non-helper">
                 <p>État : ${object.state}</p>
@@ -211,11 +214,12 @@ function renderObjectPage(object, objectTypes) {
   /**
    * Réponse à une proposition
    */
-  if (authenticatedUser && authenticatedUser.isHelper && object.state === "proposé"){
+  if (authenticatedUser && authenticatedUser.role !== null
+      && object.state === "proposé"){
     const acceptBtn = document.getElementById("accept-btn");
     const denyBtn = document.getElementById("deny-btn");
 
-    if (authenticatedUser.id !== 1){
+    if (authenticatedUser.role !== "responsable"){
       acceptBtn.disabled = true;
       denyBtn.disabled = true;
     }
@@ -243,7 +247,7 @@ function renderObjectPage(object, objectTypes) {
    */
   if (
       authenticatedUser &&
-      authenticatedUser.isHelper &&
+      authenticatedUser.role !== null &&
       object.state !== "proposé" &&
       object.state !== "refusé"
   ){
@@ -299,7 +303,8 @@ function renderObjectPage(object, objectTypes) {
   /**
    * Page objet si objet refusé
    */
-  if (authenticatedUser && authenticatedUser.isHelper && object.state === "refusé"){
+  if (authenticatedUser && authenticatedUser.role !== null
+      && object.state === "refusé"){
     setUserOrPhoneNumber(document, "div-user", [object]);
     setReceiptDate(document, "div-receipt-date", [object]);
   }

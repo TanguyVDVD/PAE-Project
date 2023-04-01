@@ -4,9 +4,9 @@ import { clearPage } from '../../../utils/render';
 import API from '../../../utils/api';
 
 const AdminUsersPage = () => {
-  const user = getAuthenticatedUser();
+  const authenticatedUser = getAuthenticatedUser();
 
-  if (!user || !user.isHelper) {
+  if (!authenticatedUser || authenticatedUser.role !== null) {
     Navigate('/');
     return;
   }
@@ -71,7 +71,7 @@ async function renderUsers(query = '') {
                     <th scope="row">${user.id}</th>
                     <td>${user.lastName}</td>
                     <td>${user.firstName}</td>
-                    <td>${user.isHelper ? 'Aidant' : 'Utilisateur'}</td>
+                    <td>${user.role === null ? 'Utilisateur' : user.role === 'aidant' ? 'Aidant' : 'Responsable'}</td>
                     <td>
                       <a href="#" class="btn btn-link" role="button" data-id="${user.id}">
                         Voir plus

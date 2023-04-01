@@ -8,9 +8,9 @@ import { setUserOrPhoneNumber } from '../../../utils/objects';
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
 
 const AdminOffersPage = () => {
-  const user = getAuthenticatedUser();
+  const authenticatedUser = getAuthenticatedUser();
 
-  if (!user || !user.isHelper) {
+  if (!authenticatedUser || authenticatedUser.role !== null) {
     Navigate('/');
     return;
   }
