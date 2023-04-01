@@ -3,9 +3,6 @@ package be.vinci.pae.api;
 import be.vinci.pae.api.filters.AuthorizeHelper;
 import be.vinci.pae.domain.availability.AvailabilityDTO;
 import be.vinci.pae.ucc.availability.AvailabilityUCC;
-import be.vinci.pae.utils.MyObjectMapper;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -18,6 +15,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,8 +24,6 @@ import java.util.List;
 @Singleton
 @Path("/availabilities")
 public class AvailabilityResource {
-
-  private final ObjectMapper jsonMapper = MyObjectMapper.getJsonMapper();
 
   @Inject
   private AvailabilityUCC availabilityUCC;
@@ -39,8 +35,8 @@ public class AvailabilityResource {
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public ArrayNode getAvailabilities() {
-    return jsonMapper.valueToTree(availabilityUCC.getAvailabilities());
+  public List<AvailabilityDTO> getAvailabilities() {
+    return availabilityUCC.getAvailabilities();
   }
 
   @POST
@@ -48,15 +44,16 @@ public class AvailabilityResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeHelper
   public List<AvailabilityDTO> add(List<Date> dates) {
-
+    List<LocalDate> localDates = new ArrayList<>();
     for (Date date : dates) {
-      if (date == null || date.compareTo(Date.valueOf(LocalDate.now())) >= 0) {
+      if (date == null || date.toLocalDate().isBefore(LocalDate.now())) {
         throw new WebApplicationException(
             "Les disponibilités à ajouter sont déjà passées ou null.",
             Response.Status.BAD_REQUEST);
       }
+      localDates.add(date.toLocalDate());
     }
 
-    return availabilityUCC.add(dates);
+    return availabilityUCC.add(localDates);
   }
 }
