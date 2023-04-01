@@ -403,6 +403,8 @@ function renderEditProfile(user) {
         profilePicturePreview.src = ev.target.result;
       };
       reader.readAsDataURL(file);
+    } else {
+      profilePicturePreview.src = currentProfilePicture;
     }
   });
 
