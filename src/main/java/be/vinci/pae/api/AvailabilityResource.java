@@ -10,9 +10,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
@@ -51,7 +53,7 @@ public class AvailabilityResource {
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeHelper
-  public AvailabilityDTO add(JsonNode json) {
+  public AvailabilityDTO addOne(JsonNode json) {
     if (json.isNull() || !json.hasNonNull("date")) {
       throw new WebApplicationException(
           "La date à ajouter aux disponibilités est null",
@@ -69,6 +71,24 @@ public class AvailabilityResource {
     AvailabilityDTO availability = myDomainFactory.getAvailability();
     availability.setDate(date);
 
-    return availabilityUCC.add(availability);
+    return availabilityUCC.addOne(availability);
+  }
+
+  @DELETE
+  @Path("/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeHelper
+  public AvailabilityDTO deleteOne(@PathParam("id") int id) {
+    if (id <= 0) {
+      throw new WebApplicationException("Impossible de supprimer la disponibilité, mauvais id",
+          Response.Status.BAD_REQUEST);
+    }
+
+    AvailabilityDTO deletedAvailability = availabilityUCC.deleteOne(id);
+
+    if (deletedAvailability == null) {
+      throw new WebApplicationException("Disponibilité pas supprimée", Response.Status.NOT_FOUND);
+    }
+    return deletedAvailability;
   }
 }
