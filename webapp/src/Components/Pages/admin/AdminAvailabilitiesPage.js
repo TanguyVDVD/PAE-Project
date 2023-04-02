@@ -39,3 +39,5 @@ function renderDatePicker() {
 
   div.innerHTML = ``;
 }
+
+export default AdminAvailabilitiesPage;
