@@ -76,22 +76,48 @@ public class AvailabilityDAOImpl implements AvailabilityDAO {
    * Get the availability by the id.
    *
    * @param id of the availability
-   * @return the date corresponding to the id
+   * @return the availability corresponding to the id
    */
   @Override
-  public LocalDate getOneById(int id) {
-    String request = "SELECT date FROM pae.availability WHERE id_availability = ?;";
+  public AvailabilityDTO getOneById(int id) {
+    String request = "SELECT * FROM pae.availabilities WHERE id_availability = ?;";
 
     try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       ps.setInt(1, id);
 
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
-          return rs.getDate("date").toLocalDate();
+          return dtoFromRS(rs);
         }
       }
     } catch (SQLException se) {
       MyLogger.log(Level.INFO, "Error get a availability by id");
+      se.printStackTrace();
+    }
+
+    return null;
+  }
+
+  /**
+   * Get the availability by the date.
+   *
+   * @param date of the availability
+   * @return the availability corresponding to the id
+   */
+  @Override
+  public AvailabilityDTO getOneByDate(LocalDate date) {
+    String request = "SELECT * FROM pae.availabilities WHERE date = ?;";
+
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
+      ps.setDate(1, Date.valueOf(date));
+
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          return dtoFromRS(rs);
+        }
+      }
+    } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "Error get a availability by date");
       se.printStackTrace();
     }
 

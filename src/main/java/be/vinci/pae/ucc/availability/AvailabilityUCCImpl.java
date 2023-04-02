@@ -6,7 +6,6 @@ import be.vinci.pae.services.availability.AvailabilityDAO;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response.Status;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,34 +40,33 @@ public class AvailabilityUCCImpl implements AvailabilityUCC {
   }
 
   /**
-   * Add new availabilities.
+   * Add new availability.
    *
-   * @param availabilities the availabilities to add
-   * @return a list of all the new availabilities
+   * @param availability the availability to add
+   * @return the new availability
    */
-  @Override
-  public List<AvailabilityDTO> add(List<AvailabilityDTO> availabilities) {
-    List<AvailabilityDTO> addedAvailabilities = new ArrayList<>();
+  public AvailabilityDTO add(AvailabilityDTO availability) {
     myDalServices.startTransaction();
     try {
-
-      for (AvailabilityDTO availability : availabilities) {
-        AvailabilityDTO addedAvailability = myAvailabilityDAO.insert(availability);
-
-        if (addedAvailability == null) {
-          throw new WebApplicationException(
-              "Impossible d'insérer la date en db",
-              Status.INTERNAL_SERVER_ERROR);
-        }
-
-        addedAvailabilities.add(addedAvailability);
+      if (myAvailabilityDAO.getOneByDate(availability.getDate()) != null) {
+        throw new WebApplicationException(
+            "Impossible d'insérer la date en db, la date existe déjà",
+            Status.METHOD_NOT_ALLOWED);
       }
 
-      return addedAvailabilities;
+      AvailabilityDTO addedAvailability = myAvailabilityDAO.insert(availability);
+
+      if (addedAvailability == null) {
+        throw new WebApplicationException(
+            "Impossible d'insérer la date en db",
+            Status.INTERNAL_SERVER_ERROR);
+      }
+
+      return addedAvailability;
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
       throw new WebApplicationException(
-          "Erreur lors de l'ajout des disponibilités",
+          "Erreur lors de l'ajout de la disponibilité à la db",
           Status.INTERNAL_SERVER_ERROR);
     } finally {
       myDalServices.commitTransaction();

@@ -16,11 +16,11 @@ public interface AvailabilityUCC {
   List<AvailabilityDTO> getAvailabilities();
 
   /**
-   * Add new availabilities.
+   * Add new availability.
    *
-   * @param availabilities the availabilities to add
-   * @return a list of all the new availabilities
+   * @param availability the availability to add
+   * @return the new availability
    */
-  List<AvailabilityDTO> add(List<AvailabilityDTO> availabilities);
+  AvailabilityDTO add(AvailabilityDTO availability);
 
 }

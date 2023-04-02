@@ -4,6 +4,9 @@ import be.vinci.pae.api.filters.AuthorizeHelper;
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.availability.AvailabilityDTO;
 import be.vinci.pae.ucc.availability.AvailabilityUCC;
+import be.vinci.pae.utils.MyObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -16,7 +19,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +27,8 @@ import java.util.List;
 @Singleton
 @Path("/availabilities")
 public class AvailabilityResource {
+
+  private final ObjectMapper jsonMapper = MyObjectMapper.getJsonMapper();
 
   @Inject
   private AvailabilityUCC availabilityUCC;
@@ -47,20 +51,24 @@ public class AvailabilityResource {
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeHelper
-  public List<AvailabilityDTO> add(List<LocalDate> dates) {
-    List<AvailabilityDTO> availabilities = new ArrayList<>();
-    for (LocalDate date : dates) {
-      if (date == null || date.isBefore(LocalDate.now())
-          || date.getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
-        throw new WebApplicationException(
-            "Les dates à ajouter aux disponibilités ne sont pas bonnes.",
-            Response.Status.BAD_REQUEST);
-      }
-      AvailabilityDTO availability = myDomainFactory.getAvailability();
-      availability.setDate(date);
-      availabilities.add(availability);
+  public AvailabilityDTO add(JsonNode json) {
+    if (json.isNull() || !json.hasNonNull("date")) {
+      throw new WebApplicationException(
+          "La date à ajouter aux disponibilités est null",
+          Response.Status.BAD_REQUEST);
     }
 
-    return availabilityUCC.add(availabilities);
+    LocalDate date = jsonMapper.convertValue(json.get("date"), LocalDate.class);
+
+    if (date.isBefore(LocalDate.now()) || !date.getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
+      throw new WebApplicationException(
+          "La date à ajouter aux disponibilités n'est pas bonne",
+          Response.Status.BAD_REQUEST);
+    }
+
+    AvailabilityDTO availability = myDomainFactory.getAvailability();
+    availability.setDate(date);
+
+    return availabilityUCC.add(availability);
   }
 }
