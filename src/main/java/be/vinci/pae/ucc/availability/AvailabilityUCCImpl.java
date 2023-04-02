@@ -1,5 +1,6 @@
 package be.vinci.pae.ucc.availability;
 
+import be.vinci.pae.domain.availability.Availability;
 import be.vinci.pae.domain.availability.AvailabilityDTO;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.availability.AvailabilityDAO;
@@ -54,7 +55,7 @@ public class AvailabilityUCCImpl implements AvailabilityUCC {
             Status.METHOD_NOT_ALLOWED);
       }
 
-      AvailabilityDTO addedAvailability = myAvailabilityDAO.insert(availability);
+      AvailabilityDTO addedAvailability = myAvailabilityDAO.addOne(availability);
 
       if (addedAvailability == null) {
         throw new WebApplicationException(
@@ -67,6 +68,52 @@ public class AvailabilityUCCImpl implements AvailabilityUCC {
       myDalServices.rollbackTransaction();
       throw new WebApplicationException(
           "Erreur lors de l'ajout de la disponibilité à la db",
+          Status.INTERNAL_SERVER_ERROR);
+    } finally {
+      myDalServices.commitTransaction();
+    }
+  }
+
+  /**
+   * delete an availability.
+   *
+   * @param id the availability id
+   * @return the deleted availability
+   */
+  @Override
+  public AvailabilityDTO deleteOne(int id) {
+    myDalServices.startTransaction();
+    try {
+      AvailabilityDTO availabilityDTO = myAvailabilityDAO.getOneById(id);
+
+      if (availabilityDTO == null) {
+        throw new WebApplicationException(
+            "Impossible de supprimer la disponibilité en db, la disponibilité n'existe pas",
+            Status.NOT_FOUND);
+      }
+
+      Availability availabilityTemp = (Availability) availabilityDTO;
+
+      if (availabilityTemp.isAssociatedToObjects) {
+        throw new WebApplicationException(
+            "Impossible de supprimer la disponibilité en db, "
+                + "la disponibilité est associée à un ou plusieurs objets",
+            Status.NOT_FOUND);
+      }
+
+      AvailabilityDTO deletedAvailability = myAvailabilityDAO.deleteOne(id);
+
+      if (deletedAvailability == null) {
+        throw new WebApplicationException(
+            "Impossible de supprimer la disponibilité en db",
+            Status.INTERNAL_SERVER_ERROR);
+      }
+
+      return deletedAvailability;
+    } catch (Exception e) {
+      myDalServices.rollbackTransaction();
+      throw new WebApplicationException(
+          "Erreur lors de la suppression de la disponibilité en db",
           Status.INTERNAL_SERVER_ERROR);
     } finally {
       myDalServices.commitTransaction();

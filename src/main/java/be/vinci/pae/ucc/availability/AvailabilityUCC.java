@@ -23,4 +23,11 @@ public interface AvailabilityUCC {
    */
   AvailabilityDTO addOne(AvailabilityDTO availability);
 
+  /**
+   * delete an availability.
+   *
+   * @param id the availability id
+   * @return the deleted availability
+   */
+  AvailabilityDTO deleteOne(int id);
 }
