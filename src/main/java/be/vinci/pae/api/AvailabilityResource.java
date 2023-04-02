@@ -49,6 +49,12 @@ public class AvailabilityResource {
     return availabilityUCC.getAvailabilities();
   }
 
+  /**
+   * Add a new availability.
+   *
+   * @param json the json containing the date to add
+   * @return the new availability added
+   */
   @POST
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
@@ -74,6 +80,12 @@ public class AvailabilityResource {
     return availabilityUCC.addOne(availability);
   }
 
+  /**
+   * Delete an availability.
+   *
+   * @param id the id of the availability to delete
+   * @return the availability deleted
+   */
   @DELETE
   @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
