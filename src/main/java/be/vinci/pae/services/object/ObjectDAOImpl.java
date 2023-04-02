@@ -157,7 +157,7 @@ public class ObjectDAOImpl implements ObjectDAO {
   @Override
   public List<ObjectDTO> getAllByAvailability(int id) {
     String request = "SELECT * FROM pae.objects o, pae.availabilities a "
-        + "WHERE o.id_availability = a.id_availability AND a.id_availability = ? "
+        + "WHERE o.id_availability = a.receipt_date AND a.id_availability = ? "
         + "ORDER BY a.date desc;";
 
     ArrayList<ObjectDTO> objects = new ArrayList<>();
