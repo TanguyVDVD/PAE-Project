@@ -38,5 +38,5 @@ public interface AvailabilityDAO {
    * @param availability the date to insert in the db
    * @return the new availability added if succeeded, null if not
    */
-  AvailabilityDTO insert(AvailabilityDTO availability);
+  AvailabilityDTO addOne(AvailabilityDTO availability);
 }

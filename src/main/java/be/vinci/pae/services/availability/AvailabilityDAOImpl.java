@@ -131,7 +131,7 @@ public class AvailabilityDAOImpl implements AvailabilityDAO {
    * @return the new availability added if succeeded, null if not
    */
   @Override
-  public AvailabilityDTO insert(AvailabilityDTO availability) {
+  public AvailabilityDTO addOne(AvailabilityDTO availability) {
     String request = "INSERT INTO pae.availabilities VALUES (DEFAULT, ?);";
 
     try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request, true)) {
