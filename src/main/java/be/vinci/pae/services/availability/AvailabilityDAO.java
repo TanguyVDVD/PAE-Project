@@ -39,4 +39,12 @@ public interface AvailabilityDAO {
    * @return the new availability added if succeeded, null if not
    */
   AvailabilityDTO addOne(AvailabilityDTO availability);
+
+  /**
+   * Delete an availability in the db.
+   *
+   * @param id the id of the availability to delete in the db
+   * @return the availability deleted if succeeded, null if not
+   */
+  AvailabilityDTO deleteOne(int id);
 }

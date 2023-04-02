@@ -94,11 +94,11 @@ public class AvailabilityUCCImpl implements AvailabilityUCC {
       }
 
       // Vérifie que la disponibilité à supprimer n'est pas encore liée à un objet
-      if (myObjectDAO.getAllByAvailability(id) != null) {
+      if (!myObjectDAO.getAllByAvailability(id).isEmpty()) {
         throw new WebApplicationException(
             "Impossible de supprimer la disponibilité en db, "
                 + "la disponibilité est déjà associée à un ou plusieurs objets",
-            Status.NOT_FOUND);
+            Status.METHOD_NOT_ALLOWED);
       }
 
       AvailabilityDTO deletedAvailability = myAvailabilityDAO.deleteOne(id);

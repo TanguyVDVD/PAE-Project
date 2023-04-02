@@ -150,4 +150,30 @@ public class AvailabilityDAOImpl implements AvailabilityDAO {
     return null;
   }
 
+  /**
+   * Delete an availability in the db.
+   *
+   * @param id the id of the availability to delete in the db
+   * @return the availability deleted if succeeded, null if not
+   */
+  @Override
+  public AvailabilityDTO deleteOne(int id) {
+    String request = "DELETE FROM pae.availabilities WHERE id_availability = ?;";
+
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request, true)) {
+      ps.setInt(1, id);
+      ps.executeUpdate();
+
+      ResultSet rs = ps.getGeneratedKeys();
+      if (rs.next()) {
+        return dtoFromRS(rs);
+      }
+    } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "Error delete availability");
+      se.printStackTrace();
+    }
+
+    return null;
+  }
+
 }
