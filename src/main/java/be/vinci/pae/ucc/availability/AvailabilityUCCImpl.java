@@ -45,7 +45,7 @@ public class AvailabilityUCCImpl implements AvailabilityUCC {
    * @param availability the availability to add
    * @return the new availability
    */
-  public AvailabilityDTO add(AvailabilityDTO availability) {
+  public AvailabilityDTO addOne(AvailabilityDTO availability) {
     myDalServices.startTransaction();
     try {
       if (myAvailabilityDAO.getOneByDate(availability.getDate()) != null) {

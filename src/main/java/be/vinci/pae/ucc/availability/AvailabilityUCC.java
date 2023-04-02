@@ -21,6 +21,6 @@ public interface AvailabilityUCC {
    * @param availability the availability to add
    * @return the new availability
    */
-  AvailabilityDTO add(AvailabilityDTO availability);
+  AvailabilityDTO addOne(AvailabilityDTO availability);
 
 }
