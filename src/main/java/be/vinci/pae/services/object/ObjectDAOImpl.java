@@ -149,6 +149,36 @@ public class ObjectDAOImpl implements ObjectDAO {
   }
 
   /**
+   * Get all objects by availability.
+   *
+   * @param id the id of the availability
+   * @return the list of objects
+   */
+  @Override
+  public List<ObjectDTO> getAllByAvailability(int id) {
+    String request = "SELECT * FROM pae.objects o, pae.availabilities a "
+        + "WHERE o.id_availability = a.id_availability AND a.id_availability = ? "
+        + "ORDER BY a.date desc;";
+
+    ArrayList<ObjectDTO> objects = new ArrayList<>();
+
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
+      ps.setInt(1, id);
+
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          objects.add(dtoFromRS(rs));
+        }
+      }
+    } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "Error get all object from an availability");
+      se.printStackTrace();
+    }
+
+    return objects;
+  }
+
+  /**
    * Get all offers.
    *
    * @param query query to filter offers
