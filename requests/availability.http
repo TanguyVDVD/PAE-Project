@@ -1,2 +1,32 @@
 ### Get a list of all availabilities
 GET {{baseUrl}}/availabilities
+
+### Login as helper
+POST {{baseUrl}}/users/login
+Content-Type: application/json
+
+{
+  "email": "bernard@ressourcerie.be",
+  "password": "password"
+}
+
+> {%
+  client.global.set("helperToken", response.body.token);
+%}
+
+### Try to add an availability as non helper
+POST {{baseUrl}}/availabilities
+Content-Type: application/json
+
+{
+  "date": "2023-04-08"
+}
+
+### Add an availability as helper
+POST {{baseUrl}}/availabilities
+Content-Type: application/json
+Authorization: {{helperToken}}
+
+{
+  "date": "2023-04-08"
+}
