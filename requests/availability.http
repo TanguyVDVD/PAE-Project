@@ -30,3 +30,15 @@ Authorization: {{helperToken}}
 {
   "date": "2023-04-08"
 }
+
+### Try to delete an availability as non helper
+DELETE {{baseUrl}}/availabilities/9
+
+### Try to delete an availability already linked to an object as helper
+DELETE {{baseUrl}}/availabilities/3
+Authorization: {{helperToken}}
+
+### Delete an availability as helper (change the id by a new one in the db)
+DELETE {{baseUrl}}/availabilities/9
+Authorization: {{helperToken}}
+
