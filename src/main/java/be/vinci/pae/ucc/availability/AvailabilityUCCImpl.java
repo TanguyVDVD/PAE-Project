@@ -1,9 +1,9 @@
 package be.vinci.pae.ucc.availability;
 
-import be.vinci.pae.domain.availability.Availability;
 import be.vinci.pae.domain.availability.AvailabilityDTO;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.availability.AvailabilityDAO;
+import be.vinci.pae.services.object.ObjectDAO;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response.Status;
@@ -16,6 +16,9 @@ public class AvailabilityUCCImpl implements AvailabilityUCC {
 
   @Inject
   private AvailabilityDAO myAvailabilityDAO;
+
+  @Inject
+  private ObjectDAO myObjectDAO;
 
   @Inject
   private DALServices myDalServices;
@@ -84,20 +87,17 @@ public class AvailabilityUCCImpl implements AvailabilityUCC {
   public AvailabilityDTO deleteOne(int id) {
     myDalServices.startTransaction();
     try {
-      AvailabilityDTO availabilityDTO = myAvailabilityDAO.getOneById(id);
-
-      if (availabilityDTO == null) {
+      if (myAvailabilityDAO.getOneById(id) == null) {
         throw new WebApplicationException(
             "Impossible de supprimer la disponibilité en db, la disponibilité n'existe pas",
             Status.NOT_FOUND);
       }
 
-      Availability availabilityTemp = (Availability) availabilityDTO;
-
-      if (availabilityTemp.isAssociatedToObjects) {
+      // Vérifie que la disponibilité à supprimer n'est pas encore liée à un objet
+      if (myObjectDAO.getAllByAvailability(id) != null) {
         throw new WebApplicationException(
             "Impossible de supprimer la disponibilité en db, "
-                + "la disponibilité est associée à un ou plusieurs objets",
+                + "la disponibilité est déjà associée à un ou plusieurs objets",
             Status.NOT_FOUND);
       }
 
