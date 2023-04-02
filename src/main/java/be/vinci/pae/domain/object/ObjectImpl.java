@@ -37,6 +37,7 @@ public class ObjectImpl implements Object {
   private LocalDate receiptDate;
   private UserDTO user;
   private String objectType;
+  private int versionNumber;
 
   /**
    * Return the id of an object.
@@ -447,6 +448,26 @@ public class ObjectImpl implements Object {
   @Override
   public void setOnSaleDate(LocalDate date) {
     this.onSaleDate = date;
+  }
+
+  /**
+   * Return the version number of the object.
+   *
+   * @return an int corresponding to the version number of the object
+   */
+  @Override
+  public int getVersionNumber() {
+    return versionNumber;
+  }
+
+  /**
+   * Set the version number of the object.
+   *
+   * @param versionNumber the version number of the object
+   */
+  @Override
+  public void setVersionNumber(int versionNumber) {
+    this.versionNumber = versionNumber;
   }
 
   /**

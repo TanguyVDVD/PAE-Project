@@ -26,6 +26,7 @@ public class UserImpl implements User {
   private Boolean photo;
   private LocalDate registerDate;
   private Boolean isHelper;
+  private int versionNumber;
 
   /**
    * Return the id of a user.
@@ -205,6 +206,26 @@ public class UserImpl implements User {
   @Override
   public void setIsHelper(Boolean isHelper) {
     this.isHelper = isHelper;
+  }
+
+  /**
+   * Return the version number of a user.
+   *
+   * @return an int corresponding to the version number of a user
+   */
+  @Override
+  public int getVersionNumber() {
+    return versionNumber;
+  }
+
+  /**
+   * set the version number of a user.
+   *
+   * @param versionNumber the version number of a user
+   */
+  @Override
+  public void setVersionNumber(int versionNumber) {
+    this.versionNumber = versionNumber;
   }
 
   /**

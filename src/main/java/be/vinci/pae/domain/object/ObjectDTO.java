@@ -305,4 +305,18 @@ public interface ObjectDTO {
    */
   void setWorkshopDate(LocalDate workshopDate);
 
+  /**
+   * Return the version number of the object.
+   *
+   * @return an int corresponding to the version number of the object
+   */
+  int getVersionNumber();
+
+  /**
+   * Set the version number of the object.
+   *
+   * @param versionNumber the version number of the object
+   */
+  void setVersionNumber(int versionNumber);
+
 }
