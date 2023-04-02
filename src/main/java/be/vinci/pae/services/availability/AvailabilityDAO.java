@@ -23,4 +23,12 @@ public interface AvailabilityDAO {
    * @return the date corresponding to the id
    */
   LocalDate getOneById(int id);
+
+  /**
+   * Insert a new availability in the db.
+   *
+   * @param availability the date to insert in the db
+   * @return the new availability added if succeeded, null if not
+   */
+  AvailabilityDTO insert(AvailabilityDTO availability);
 }

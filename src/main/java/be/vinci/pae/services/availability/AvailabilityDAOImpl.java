@@ -5,6 +5,7 @@ import be.vinci.pae.domain.availability.AvailabilityDTO;
 import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.utils.MyLogger;
 import jakarta.inject.Inject;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -91,6 +92,32 @@ public class AvailabilityDAOImpl implements AvailabilityDAO {
       }
     } catch (SQLException se) {
       MyLogger.log(Level.INFO, "Error get a availability by id");
+      se.printStackTrace();
+    }
+
+    return null;
+  }
+
+  /**
+   * Insert a new availability in the db.
+   *
+   * @param availability the date to insert in the db
+   * @return the new availability added if succeeded, null if not
+   */
+  @Override
+  public AvailabilityDTO insert(AvailabilityDTO availability) {
+    String request = "INSERT INTO pae.availabilities VALUES (DEFAULT, ?);";
+
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request, true)) {
+      ps.setDate(1, Date.valueOf(availability.getDate()));
+      ps.executeUpdate();
+
+      ResultSet rs = ps.getGeneratedKeys();
+      if (rs.next()) {
+        return dtoFromRS(rs);
+      }
+    } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "Error insert availability");
       se.printStackTrace();
     }
 
