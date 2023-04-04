@@ -9,6 +9,7 @@ import AdminObjectsPage from "../Pages/admin/AdminObjectsPage";
 import AdminOffersPage from "../Pages/admin/AdminOffersPage";
 import ObjectPage from "../Pages/ObjectPage";
 import UserPage from "../Pages/UserPage";
+import BoardPage from '../Pages/BoardPage';
 
 const routes = {
   '/404': PageNotFoundPage,
@@ -21,7 +22,8 @@ const routes = {
   '/user/:id': UserPage,
   '/login': LoginPage,
   '/register': RegisterPage,
-  '/logout': LogoutPage
+  '/logout': LogoutPage,
+  '/board': BoardPage
 };
 
 export default routes;
