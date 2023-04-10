@@ -80,6 +80,7 @@ public class ObjectDAOImpl implements ObjectDAO {
               : myAvailabilityDao.getOneById(resultSet.getInt("receipt_date")));
       object.setUser(myUserDao.getOneById(resultSet.getInt("id_user")));
       object.setObjectType(myObjectTypeDAO.getOneById(resultSet.getInt("id_object_type")));
+      object.setVersionNumber(resultSet.getInt("version_number"));
 
     } catch (SQLException se) {
       MyLogger.log(Level.INFO, "Error get dto from rs");
@@ -213,16 +214,17 @@ public class ObjectDAOImpl implements ObjectDAO {
    * @return null if there is an error then the object
    */
   public ObjectDTO updateObject(int id, ObjectDTO objectDTO) {
-
     String request =
-        "UPDATE pae.objects SET description = ?, id_object_type = ?, is_visible = ?, state = ?,  "
+        "UPDATE pae.objects SET description = ?, id_object_type = ?, is_visible = ?, state = ?, "
             + "price = ?, "
             + "workshop_date = ?, "
             + "deposit_date = ?, "
             + "on_sale_date = ?, "
-            + "selling_date =?, "
-            + "withdrawal_date = ? "
-            + "WHERE id_object = ?;";
+            + "selling_date = ?, "
+            + "withdrawal_date = ?, "
+            + "version_number = ? "
+            + "WHERE id_object = ? "
+            + "AND version_number = ?;";
 
     try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       ps.setString(1, objectDTO.getDescription());
@@ -240,14 +242,16 @@ public class ObjectDAOImpl implements ObjectDAO {
           : java.sql.Date.valueOf(objectDTO.getSellingDate()));
       ps.setDate(10, objectDTO.getWithdrawalDate() == null ? null
           : java.sql.Date.valueOf(objectDTO.getWithdrawalDate()));
-      ps.setInt(11, id);
+      ps.setInt(11, (objectDTO.getVersionNumber() + 1));
+      ps.setInt(12, id);
+      ps.setInt(13, objectDTO.getVersionNumber());
       ps.executeUpdate();
     } catch (SQLException se) {
       MyLogger.log(Level.INFO, "Error update an object");
       se.printStackTrace();
       return null;
     }
-
+    objectDTO.setVersionNumber(objectDTO.getVersionNumber() + 1);
     return objectDTO;
   }
 
@@ -259,15 +263,17 @@ public class ObjectDAOImpl implements ObjectDAO {
    * @return the modified object
    */
   @Override
-  public ObjectDTO setStatusToAccepted(int id, LocalDate acceptanceDate) {
+  public ObjectDTO setStatusToAccepted(int id, LocalDate acceptanceDate, int versionNumbrer) {
     String request =
-        "UPDATE pae.objects SET state = 'accepté', status = 'accepté', acceptance_date = ? "
-            + "WHERE id_object = ?;";
+        "UPDATE pae.objects SET state = 'accepté', status = 'accepté', acceptance_date = ?, version_number = ? "
+            + "WHERE id_object = ? AND version_number = ?;";
 
     try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       ps.setDate(1, java.sql.Date.valueOf(acceptanceDate));
+      ps.setInt(2, (versionNumbrer + 1));
 
-      ps.setInt(2, id);
+      ps.setInt(3, id);
+      ps.setInt(4, versionNumbrer);
       ps.executeUpdate();
     } catch (SQLException se) {
       MyLogger.log(Level.INFO, "Error set object accepted");
@@ -291,15 +297,18 @@ public class ObjectDAOImpl implements ObjectDAO {
    * @return the modified object
    */
   @Override
-  public ObjectDTO setStatusToRefused(int id, String reasonForRefusal, LocalDate refusalDate) {
+  public ObjectDTO setStatusToRefused(int id, String reasonForRefusal, LocalDate refusalDate,
+      int versionNumber) {
     String request = "UPDATE pae.objects SET state = 'refusé', status = 'refusé', "
-        + "refusal_date = ?, reason_for_refusal = ? WHERE id_object = ?;";
+        + "refusal_date = ?, reason_for_refusal = ?, version_number = ? WHERE id_object = ? AND version_number = ?;";
 
     try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       ps.setDate(1, java.sql.Date.valueOf(refusalDate));
-
       ps.setString(2, reasonForRefusal);
-      ps.setInt(3, id);
+      ps.setInt(3, (versionNumber + 1));
+
+      ps.setInt(4, id);
+      ps.setInt(5, versionNumber);
       ps.executeUpdate();
     } catch (SQLException se) {
       MyLogger.log(Level.INFO, "Error set object refused");

@@ -49,7 +49,7 @@ public interface ObjectDAO {
    * @return the modified object
    */
 
-  ObjectDTO setStatusToAccepted(int id, LocalDate acceptanceDate);
+  ObjectDTO setStatusToAccepted(int id, LocalDate acceptanceDate, int version_number);
 
   /**
    * Set the status of an object to refused.
@@ -59,7 +59,8 @@ public interface ObjectDAO {
    * @param refusalDate      the refusal date of the object
    * @return the modified object
    */
-  ObjectDTO setStatusToRefused(int id, String reasonForRefusal, LocalDate refusalDate);
+  ObjectDTO setStatusToRefused(int id, String reasonForRefusal, LocalDate refusalDate,
+      int version_number);
 
   /**
    * Update the object in the db.
