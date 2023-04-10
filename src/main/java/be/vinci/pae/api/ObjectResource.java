@@ -181,6 +181,7 @@ public class ObjectResource {
     String typeObject = json.get("type").asText();
     String descriptionObject = json.get("description").asText();
     boolean isVisibleObject = json.get("isVisible").asBoolean();
+    int versionNumber = json.get("version_number").asInt();
 
     ObjectDTO objectUpdated = myDomainFactory.getObject();
 
@@ -189,6 +190,7 @@ public class ObjectResource {
     objectUpdated.setState(stateObject);
     objectUpdated.setIsVisible(isVisibleObject);
     objectUpdated.setPrice(priceObject);
+    objectUpdated.setVersionNumber(versionNumber);
 
     ObjectDTO objectDTOAfterUpdate = objectUCC.update(id, objectUpdated, changeDate);
 
@@ -216,15 +218,19 @@ public class ObjectResource {
     }
 
     ObjectDTO objectDTO;
+    int versionNumber = 0;
+    if (json.get("version_number") != null) {
+      versionNumber = json.get("version_number").asInt();
+    }
 
     if (status.equals("accepté")) {
-      objectDTO = objectUCC.accept(id);
+      objectDTO = objectUCC.accept(id, versionNumber);
     } else {
       String reasonForRefusal = "";
       if (json.get("reasonForRefusal") != null) {
         reasonForRefusal = json.get("reasonForRefusal").asText("");
       }
-      objectDTO = objectUCC.refuse(id, reasonForRefusal);
+      objectDTO = objectUCC.refuse(id, reasonForRefusal, versionNumber);
     }
 
     if (objectDTO == null) {
