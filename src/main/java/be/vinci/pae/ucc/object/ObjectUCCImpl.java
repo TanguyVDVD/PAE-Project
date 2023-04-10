@@ -122,7 +122,7 @@ public class ObjectUCCImpl implements ObjectUCC {
    * @return the object updated
    */
   @Override
-  public ObjectDTO accept(int id) {
+  public ObjectDTO accept(int id, int versionNumbrer) {
 
     myDalServices.startTransaction();
     try {
@@ -132,8 +132,8 @@ public class ObjectUCCImpl implements ObjectUCC {
       if (object.isStatusAlreadyDefined(status)) {
         return null;
       }
-
-      return myObjectDAO.setStatusToAccepted(id, LocalDate.now());
+      System.out.println("passage    id : " + id + " version : " + versionNumbrer);
+      return myObjectDAO.setStatusToAccepted(id, LocalDate.now(), versionNumbrer);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
       MyLogger.log(Level.INFO, "Erreur lors de l'acceptation de l'offre");
@@ -154,7 +154,7 @@ public class ObjectUCCImpl implements ObjectUCC {
    * @return the object updated
    */
   @Override
-  public ObjectDTO refuse(int id, String reasonForRefusal) {
+  public ObjectDTO refuse(int id, String reasonForRefusal, int versionNumbrer) {
 
     myDalServices.startTransaction();
 
@@ -167,7 +167,7 @@ public class ObjectUCCImpl implements ObjectUCC {
         return null;
       }
 
-      return myObjectDAO.setStatusToRefused(id, reasonForRefusal, LocalDate.now());
+      return myObjectDAO.setStatusToRefused(id, reasonForRefusal, LocalDate.now(), versionNumbrer);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
       MyLogger.log(Level.INFO, "Erreur lors du refus de l'offre");
@@ -220,6 +220,7 @@ public class ObjectUCCImpl implements ObjectUCC {
       objectFromDB.setPrice(objectDTO.getPrice());
       objectFromDB.setState(objectDTO.getState());
       objectFromDB.setIsVisible(objectDTO.getisVisible());
+      objectFromDB.setVersionNumber(objectDTO.getVersionNumber());
 
       return myObjectDAO.updateObject(objectFromDB.getId(), objectFromDB);
 
