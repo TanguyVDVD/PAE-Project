@@ -128,7 +128,8 @@ Content-Type: application/json
 
 {
   "firstName": "Bart",
-  "currentPassword": "password"
+  "currentPassword": "password",
+  "version_number": 1
 }
 
 ### Update a user's helper status as an admin
