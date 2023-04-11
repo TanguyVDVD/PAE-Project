@@ -220,6 +220,10 @@ public class UserResource {
       if (data.hasNonNull("currentPassword")) {
         passwordToVerify = data.get("currentPassword").asText();
       }
+      //add version number
+      if (data.hasNonNull("version_number")) {
+        userDTO.setVersionNumber(data.get("version_number").asInt());
+      }
 
       if (StringUtils.isBlank(passwordToVerify)) {
         MyLogger.log(Level.INFO, "Mot de passe actuel requis");
