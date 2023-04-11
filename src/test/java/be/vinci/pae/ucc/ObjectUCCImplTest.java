@@ -78,10 +78,12 @@ class ObjectUCCImplTest {
     Object object = Mockito.mock(ObjectImpl.class);
     Mockito.when(object.getId()).thenReturn(1);
     Mockito.when(object.getStatus()).thenReturn(null);
+    Mockito.when(object.getVersionNumber()).thenReturn(1);
     Mockito.when(objectDAO.getOneById(object.getId())).thenReturn(object);
     Mockito.when(object.isStatusAlreadyDefined(object.getStatus())).thenReturn(false);
-    Mockito.when(objectDAO.setStatusToAccepted(object.getId(), LocalDate.now())).thenReturn(object);
-    ObjectDTO objectDTO = objectUCC.accept(object.getId());
+    Mockito.when(objectDAO.setStatusToAccepted(object.getId(), LocalDate.now(),
+        object.getVersionNumber())).thenReturn(object);
+    ObjectDTO objectDTO = objectUCC.accept(object.getId(), object.getVersionNumber());
 
     assertAll(
         () -> assertNotNull(objectDTO, "Accept return null"),
@@ -97,11 +99,14 @@ class ObjectUCCImplTest {
     Object object = Mockito.mock(ObjectImpl.class);
     Mockito.when(object.getId()).thenReturn(1);
     Mockito.when(object.getStatus()).thenReturn("accepté");
+    Mockito.when(object.getVersionNumber()).thenReturn(1);
     Mockito.when(objectDAO.getOneById(object.getId())).thenReturn(object);
     Mockito.when(object.isStatusAlreadyDefined(object.getStatus())).thenReturn(true);
-    Mockito.when(objectDAO.setStatusToAccepted(object.getId(), LocalDate.now())).thenReturn(object);
+    Mockito.when(
+            objectDAO.setStatusToAccepted(object.getId(), LocalDate.now(), object.getVersionNumber()))
+        .thenReturn(object);
 
-    ObjectDTO objectDTO = objectUCC.accept(object.getId());
+    ObjectDTO objectDTO = objectUCC.accept(object.getId(), object.getVersionNumber());
 
     assertNull(objectDTO, "Accept return is not null");
 
@@ -115,12 +120,15 @@ class ObjectUCCImplTest {
     Object object = Mockito.mock(ObjectImpl.class);
     Mockito.when(object.getId()).thenReturn(1);
     Mockito.when(object.getStatus()).thenReturn(null);
+    Mockito.when(object.getVersionNumber()).thenReturn(1);
     Mockito.when(objectDAO.getOneById(object.getId())).thenReturn(object);
     Mockito.when(object.isStatusAlreadyDefined(object.getStatus())).thenReturn(false);
-    Mockito.when(objectDAO.setStatusToRefused(object.getId(), reasonForRefusal, LocalDate.now()))
+    Mockito.when(objectDAO.setStatusToRefused(object.getId(), reasonForRefusal, LocalDate.now(),
+            object.getVersionNumber()))
         .thenReturn(object);
 
-    ObjectDTO objectDTO = objectUCC.refuse(object.getId(), reasonForRefusal);
+    ObjectDTO objectDTO = objectUCC.refuse(object.getId(), reasonForRefusal,
+        object.getVersionNumber());
 
     assertAll(
         () -> assertNotNull(objectDTO, "Refuse return null"),
@@ -137,12 +145,15 @@ class ObjectUCCImplTest {
     Object object = Mockito.mock(ObjectImpl.class);
     Mockito.when(object.getId()).thenReturn(1);
     Mockito.when(object.getStatus()).thenReturn("refusé");
+    Mockito.when(object.getVersionNumber()).thenReturn(1);
     Mockito.when(objectDAO.getOneById(object.getId())).thenReturn(object);
     Mockito.when(object.isStatusAlreadyDefined(object.getStatus())).thenReturn(true);
-    Mockito.when(objectDAO.setStatusToRefused(object.getId(), reasonForRefusal, LocalDate.now()))
+    Mockito.when(objectDAO.setStatusToRefused(object.getId(), reasonForRefusal, LocalDate.now(),
+            object.getVersionNumber()))
         .thenReturn(object);
 
-    ObjectDTO objectDTO = objectUCC.refuse(object.getId(), reasonForRefusal);
+    ObjectDTO objectDTO = objectUCC.refuse(object.getId(), reasonForRefusal,
+        object.getVersionNumber());
 
     assertNull(objectDTO, "Refuse return is not null");
 
