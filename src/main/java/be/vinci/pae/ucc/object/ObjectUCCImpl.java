@@ -132,7 +132,6 @@ public class ObjectUCCImpl implements ObjectUCC {
       if (object.isStatusAlreadyDefined(status)) {
         return null;
       }
-      System.out.println("passage    id : " + id + " version : " + versionNumbrer);
       return myObjectDAO.setStatusToAccepted(id, LocalDate.now(), versionNumbrer);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
