@@ -102,6 +102,7 @@ public class UserUCCImpl implements UserUCC {
       userTemp.setPassword(User.hashPassword(userTemp.getPassword()));
 
       int id = myUserDAO.insert(userTemp);
+      userTemp.setVersionNumber(1);
 
       if (id == -1) {
         return null;
