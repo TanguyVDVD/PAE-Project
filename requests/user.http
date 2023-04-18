@@ -1,4 +1,4 @@
-### Login as an admin
+### Login as helper
 POST {{baseUrl}}/users/login
 Content-Type: application/json
 
@@ -8,10 +8,10 @@ Content-Type: application/json
 }
 
 > {%
-  client.global.set("adminToken", response.body.token);
+  client.global.set("helperToken", response.body.token);
 %}
 
-### Login as a non admin user
+### Login as non helper user
 POST {{baseUrl}}/users/login
 Content-Type: application/json
 
@@ -21,7 +21,7 @@ Content-Type: application/json
 }
 
 > {%
-  client.global.set("nonAdminToken", response.body.token);
+  client.global.set("nonHelperToken", response.body.token);
 %}
 
 ### Login the wrong email user
@@ -98,7 +98,7 @@ Content-Disposition: form-data; name="password"
 
 pwd
 
-### Login non admin
+### Login non helper
 POST {{baseUrl}}/users/login
 Content-Type: application/json
 
@@ -111,19 +111,19 @@ Content-Type: application/json
 ### Get the user
 GET {{baseUrl}}/users/my
 Content-Type: application/json
-Authorization: {{nonAdminToken}}
+Authorization: {{nonHelperToken}}
 
 ### Get a list of all users
 GET {{baseUrl}}/users
-Authorization: {{adminToken}}
+Authorization: {{helperToken}}
 
 ### Get a list of all users with query
 GET {{baseUrl}}/users?query=riez
-Authorization: {{adminToken}}
+Authorization: {{helperToken}}
 
 ### Update a user's own info as the user
 PATCH {{baseUrl}}/users/4
-Authorization: {{nonAdminToken}}
+Authorization: {{nonHelperToken}}
 Content-Type: application/json
 
 {
@@ -132,11 +132,11 @@ Content-Type: application/json
   "version_number": 1
 }
 
-### Update a user's helper status as an admin
+### Update a user's role as helper
 PATCH {{baseUrl}}/users/4
-Authorization: {{adminToken}}
+Authorization: {{helperToken}}
 Content-Type: application/json
 
 {
-  "isHelper": true
+  "role": "aidant"
 }

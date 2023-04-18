@@ -49,7 +49,7 @@ public class ApplicationBinder extends AbstractBinder {
     bind(ObjectTypeDAOImpl.class).to(ObjectTypeDAO.class).in(Singleton.class);
     bind(AvailabilityDAOImpl.class).to(AvailabilityDAO.class).in(Singleton.class);
 
-    bind(DALServicesImpl.class).to(DalBackendServices.class).in(Singleton.class);
-    bind(DALServicesImpl.class).to(DALServices.class).in(Singleton.class);
+    bind(DALServicesImpl.class).to(DalBackendServices.class).to(DALServices.class)
+        .in(Singleton.class);
   }
 }

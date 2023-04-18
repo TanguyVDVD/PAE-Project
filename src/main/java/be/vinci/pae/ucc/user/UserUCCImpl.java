@@ -308,4 +308,40 @@ public class UserUCCImpl implements UserUCC {
     }
   }
 
+  /**
+   * Remove a user's profile picture.
+   *
+   * @param userDTO the user
+   * @return the updated user
+   */
+  @Override
+  public UserDTO removeProfilePicture(UserDTO userDTO) {
+    myDalServices.startTransaction();
+
+    try {
+      User user = (User) myUserDAO.getOneById(userDTO.getId());
+
+      if (user == null) {
+        return null;
+      }
+
+      user.removeProfilePicture();
+
+      user.setPhoto(false);
+
+      if (!myUserDAO.update(user)) {
+        return null;
+      }
+
+      return myUserDAO.getOneById(userDTO.getId());
+    } catch (Exception e) {
+      myDalServices.rollbackTransaction();
+      MyLogger.log(Level.INFO, "Erreur lors de la suppression de la photo de profil");
+      throw new WebApplicationException("Erreur lors de la suppression de la photo de profil",
+          Status.INTERNAL_SERVER_ERROR);
+    } finally {
+      myDalServices.commitTransaction();
+    }
+  }
+
 }

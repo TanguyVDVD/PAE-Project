@@ -8,9 +8,9 @@ import {setReceiptDate, setUserOrPhoneNumber} from '../../../utils/objects';
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
 
 const AdminObjectsPage = () => {
-  const user = getAuthenticatedUser();
+  const authenticatedUser = getAuthenticatedUser();
 
-  if (!user || !user.isHelper) {
+  if (!authenticatedUser || authenticatedUser.role === null) {
     Navigate('/');
     return;
   }
@@ -47,7 +47,13 @@ function renderAdminObjectsPage() {
 }
 
 async function renderObjects(query = '') {
-  const list = document.getElementById('objects-list');
+  const objectslist = document.getElementById('objects-list');
+
+  objectslist.innerHTML = `
+    <div class="text-center my-5">
+      <div class="spinner-border" role="status"></div>
+    </div>
+  `;
 
   API.get(`objects?query=${encodeURIComponent(query)}`).then((objects) => {
     document.getElementById('objects-list').innerHTML = `
@@ -111,14 +117,14 @@ async function renderObjects(query = '') {
     setStateColor('div-state', objects);
     setButton('div-button', objects);
 
-    list.querySelectorAll('a[data-id]').forEach((link) => {
+    objectslist.querySelectorAll('a[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
         Navigate(`/user/${e.target.dataset.id}`);
       });
     });
 
-    list.querySelectorAll('button[data-id]').forEach((link) => {
+    objectslist.querySelectorAll('button[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
           Navigate(`/object/${e.target.dataset.id}`);

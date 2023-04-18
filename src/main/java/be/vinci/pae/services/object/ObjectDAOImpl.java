@@ -78,7 +78,7 @@ public class ObjectDAOImpl implements ObjectDAO {
       object.setPhoneNumber(resultSet.getString("phone_number"));
       object.setReceiptDate(
           myAvailabilityDao.getOneById(resultSet.getInt("receipt_date")) == null ? null
-              : myAvailabilityDao.getOneById(resultSet.getInt("receipt_date")));
+              : myAvailabilityDao.getOneById(resultSet.getInt("receipt_date")).getDate());
       object.setUser(myUserDao.getOneById(resultSet.getInt("id_user")));
       object.setObjectType(myObjectTypeDAO.getOneById(resultSet.getInt("id_object_type")));
 
@@ -143,6 +143,36 @@ public class ObjectDAOImpl implements ObjectDAO {
       }
     } catch (SQLException se) {
       MyLogger.log(Level.INFO, "Error get all object from a user");
+      se.printStackTrace();
+    }
+
+    return objects;
+  }
+
+  /**
+   * Get all objects by availability.
+   *
+   * @param id the id of the availability
+   * @return the list of objects
+   */
+  @Override
+  public List<ObjectDTO> getAllByAvailability(int id) {
+    String request = "SELECT * FROM pae.objects o, pae.availabilities a "
+        + "WHERE o.receipt_date = a.id_availability AND a.id_availability = ? "
+        + "ORDER BY a.date desc;";
+
+    ArrayList<ObjectDTO> objects = new ArrayList<>();
+
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
+      ps.setInt(1, id);
+
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          objects.add(dtoFromRS(rs));
+        }
+      }
+    } catch (SQLException se) {
+      MyLogger.log(Level.INFO, "Error get all object from an availability");
       se.printStackTrace();
     }
 

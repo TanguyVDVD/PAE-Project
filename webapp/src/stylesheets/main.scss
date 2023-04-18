@@ -36,11 +36,43 @@ body {
   }
 }
 
-a{
+.table {
+  // Sorting indicators
+  > thead > tr > th {
+    &::after {
+      content: '▼';
+      visibility: hidden;
+      user-select: none;
+    }
+
+    &.sorting-asc::after {
+      visibility: visible;
+    }
+
+    &.sorting-desc::after {
+      visibility: visible;
+      content: '▲';
+    }
+  }
+
+  // Always align table cells vertically in the middle
+  > tbody > tr {
+    > th,
+    > td {
+      vertical-align: middle;
+    }
+  }
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+a {
   text-decoration: none;
 }
 .accept {
-  color: #FFF;
+  color: #fff;
   background: rgba(93, 150, 93, 0.82);
   padding: 15px 20px;
   border-radius: 15px;
@@ -49,7 +81,7 @@ a{
   background: #517051;
 }
 .deny {
-  color: #FFF;
+  color: #fff;
   background: rgba(208, 101, 78, 0.83);
   padding: 15px 20px;
   border-radius: 15px;
@@ -63,10 +95,9 @@ a{
   margin: 20px;
   display: inline-block;
   vertical-align: middle;
-  
-  }
+}
 
-#refuse{
+#refuse {
   border-radius: 10px;
   vertical-align: middle;
   width: 400px;
