@@ -76,4 +76,12 @@ public interface UserUCC {
    * @return the updated user
    */
   UserDTO updateProfilePicture(UserDTO userDTO, InputStream file);
+
+  /**
+   * Remove a user's profile picture.
+   *
+   * @param userDTO the user
+   * @return the updated user
+   */
+  UserDTO removeProfilePicture(UserDTO userDTO);
 }

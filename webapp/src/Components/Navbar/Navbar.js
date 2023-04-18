@@ -6,7 +6,7 @@ import Navigate from '../Router/Navigate';
 import API from '../../utils/api';
 
 import logo from '../../img/RieCochet_Logo.png';
-import noProfilePicture from '../../img/no_profile_picture.webp';
+import noProfilePicture from '../../img/no_profile_picture.svg';
 
 /**
  * Render the Navbar which is styled by using Bootstrap
@@ -35,7 +35,7 @@ const Navbar = () => {
               <a class="nav-link" href="#" data-uri="/propose">Proposer un objet</a>
             </li>
             ${
-              authenticatedUser && authenticatedUser.isHelper
+              authenticatedUser && authenticatedUser.role !== null
                 ? `
                     <li class="nav-item">
                       <a class="nav-link" href="#" data-uri="/admin/offers">Propositions</a>

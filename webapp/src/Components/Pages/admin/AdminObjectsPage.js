@@ -2,22 +2,22 @@ import Navigate from '../../Router/Navigate';
 import { getAuthenticatedUser } from '../../../utils/auths';
 import { clearPage } from '../../../utils/render';
 import API from '../../../utils/api';
-import { subtractDates, dateStringtoGoodFormat } from '../../../utils/dates';
-import setUserOrPhoneNumber from '../../../utils/objects';
+import {subtractDates} from '../../../utils/dates';
+import {setReceiptDate, setUserOrPhoneNumber} from '../../../utils/objects';
 
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
 
 const AdminObjectsPage = () => {
-  const user = getAuthenticatedUser();
+  const authenticatedUser = getAuthenticatedUser();
 
-  if (!user || !user.isHelper) {
+  if (!authenticatedUser || authenticatedUser.role === null) {
     Navigate('/');
     return;
   }
 
   clearPage();
   renderAdminObjectsPage();
-  fetchObjects();
+  renderObjects();
 };
 
 function renderAdminObjectsPage() {
@@ -40,14 +40,20 @@ function renderAdminObjectsPage() {
     e.preventDefault();
 
     const search = e.target.value;
-    fetchObjects(search);
+    renderObjects(search);
   });
 
   main.appendChild(div);
 }
 
-async function fetchObjects(query = '') {
-  const list = document.getElementById('objects-list');
+async function renderObjects(query = '') {
+  const objectslist = document.getElementById('objects-list');
+
+  objectslist.innerHTML = `
+    <div class="text-center my-5">
+      <div class="spinner-border" role="status"></div>
+    </div>
+  `;
 
   API.get(`objects?query=${encodeURIComponent(query)}`).then((objects) => {
     document.getElementById('objects-list').innerHTML = `
@@ -84,14 +90,16 @@ async function fetchObjects(query = '') {
                                 </div>
                             </div>
                             
-                            <div class="align-items-center align-content-center col-md-3 border-left mt-1">
-                                <div class="div-state">
-                                </div>
-                                
-                                <div class="d-flex flex-row align-items-center div-price-time-remaining">
+                            <div class="col-md-3 border-left mt-1 d-flex flex-column align-content-center justify-content-between">
+                                <div>
+                                  <div class="div-state">
+                                  </div>
+                                  
+                                  <div class="d-flex flex-row align-items-center div-price-time-remaining">
+                                  </div>
                                 </div>
                                                      
-                                <div class="d-flex flex-column mt-4 div-button">
+                                <div class="d-flex flex-column mb-4 div-button">
                                 </div>
                             </div>
                         </div>
@@ -103,61 +111,26 @@ async function fetchObjects(query = '') {
         </div>
       `;
 
-    setReceiptDate('div-receipt-date', objects);
+    setReceiptDate(document, 'div-receipt-date', objects);
     setUserOrPhoneNumber(document, 'div-user', objects);
     setPriceOrTimeRemaining('div-price-time-remaining', objects);
     setStateColor('div-state', objects);
     setButton('div-button', objects);
 
-    list.querySelectorAll('a[data-id]').forEach((link) => {
+    objectslist.querySelectorAll('a[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
         Navigate(`/user/${e.target.dataset.id}`);
       });
     });
 
-    list.querySelectorAll('button[data-id]').forEach((link) => {
+    objectslist.querySelectorAll('button[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
-        if (e.currentTarget.classList.contains('button-modify')) {
           Navigate(`/object/${e.target.dataset.id}`);
-        } else if (e.currentTarget.classList.contains('button-respond')) {
-          Navigate(`/object/${e.target.dataset.id}`);
-        }
       });
     });
   });
-}
-
-function setReceiptDate(className, objects) {
-  const elements = document.getElementsByClassName(className);
-  for (let i = 0; i < elements.length; i += 1) {
-    const object = objects[i];
-    const element = elements.item(i);
-    if (object.state === 'proposé' || object.state === 'accepté') {
-      element.innerHTML = `
-          <p>
-              À récupérer le ${dateStringtoGoodFormat(object.receiptDate)} ${
-        object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
-      }
-          </p>
-      `;
-    } else if (object.state === 'refusé') {
-      element.innerHTML = `
-          <p>
-              Refusé le ${dateStringtoGoodFormat(object.refusalDate)}
-          </p>
-      `;
-    } else {
-      element.innerHTML = `
-          <p>
-              Récupéré le ${dateStringtoGoodFormat(object.receiptDate)} ${
-        object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
-      }
-          </p>
-      `;
-    }
-  }
 }
 
 function setPriceOrTimeRemaining(className, objects) {
@@ -219,7 +192,9 @@ function setButton(className, objects) {
     const object = objects[i];
     const element = elements.item(i);
     if (object.state === 'refusé') {
-      element.innerHTML = ``;
+      element.innerHTML = `
+          <button class="btn btn-primary btn-sm button-see" type="button" data-id="${object.id}">Voir</button>
+      `;
     } else if (object.state === 'proposé') {
       element.innerHTML = `
           <button class="btn btn-outline-primary btn-sm button-respond" type="button" data-id="${object.id}">Répondre</button>

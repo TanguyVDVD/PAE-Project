@@ -1,4 +1,4 @@
-### Login as Mr Riez
+### Login as manager
 POST {{baseUrl}}/users/login
 Content-Type: application/json
 
@@ -8,10 +8,10 @@ Content-Type: application/json
 }
 
 > {%
-  client.global.set("riezToken", response.body.token);
+  client.global.set("managerToken", response.body.token);
 %}
 
-### Login as an admin
+### Login as helper
 POST {{baseUrl}}/users/login
 Content-Type: application/json
 
@@ -21,20 +21,20 @@ Content-Type: application/json
 }
 
 > {%
-  client.global.set("adminToken", response.body.token);
+  client.global.set("helperToken", response.body.token);
 %}
 
 ### Get a list of all objects
 GET {{baseUrl}}/objects
-Authorization: {{adminToken}}
+Authorization: {{helperToken}}
 
 ### Get a list of all objects offered by a user
 GET {{baseUrl}}/objects/user/1
-Authorization: {{adminToken}}
+Authorization: {{helperToken}}
 
 ### Get a list of all offers
 GET {{baseUrl}}/objects/offers
-Authorization: {{adminToken}}
+Authorization: {{helperToken}}
 
 ### Get an object
 GET {{baseUrl}}/objects/1
@@ -42,7 +42,7 @@ GET {{baseUrl}}/objects/1
 ### Set a object in the workshop
 PUT {{baseUrl}}/objects/1
 Content-Type: application/json
-Authorization: {{adminToken}}
+Authorization: {{helperToken}}
 
 {
   "description": "Garde Robe",
@@ -56,7 +56,7 @@ Authorization: {{adminToken}}
 ### Set a object on sale with a price
 PUT {{baseUrl}}/objects/3
 Content-Type: application/json
-Authorization: {{adminToken}}
+Authorization: {{helperToken}}
 
 {
   "description": "Garde Robe",
@@ -67,19 +67,19 @@ Authorization: {{adminToken}}
   "isVisible": true
 }
 
-### Try to accept an offer as an admin
+### Try to accept an offer as helper
 PATCH {{baseUrl}}/objects/status/2
 Content-Type: application/json
-Authorization: {{adminToken}}
+Authorization: {{helperToken}}
 
 {
   "status": "accepté"
 }
 
-### Accept an offer as Mr Riez
+### Accept an offer as manager
 PATCH {{baseUrl}}/objects/status/2
 Content-Type: application/json
-Authorization: {{riezToken}}
+Authorization: {{managerToken}}
 
 {
   "status": "accepté"
@@ -88,7 +88,7 @@ Authorization: {{riezToken}}
 ### Refuse an offer without reason for refusal
 PATCH {{baseUrl}}/objects/status/1
 Content-Type: application/json
-Authorization: {{adminToken}}
+Authorization: {{helperToken}}
 
 {
   "status": "refusé",
@@ -98,7 +98,7 @@ Authorization: {{adminToken}}
 ### Refuse an offer with an empty reason for refusal
 PATCH {{baseUrl}}/objects/status/1
 Content-Type: application/json
-Authorization: {{riezToken}}
+Authorization: {{managerToken}}
 
 {
   "status": "refusé",
@@ -108,7 +108,7 @@ Authorization: {{riezToken}}
 ### Refuse an offer with a reason for refusal
 PATCH {{baseUrl}}/objects/status/1
 Content-Type: application/json
-Authorization: {{adminToken}}
+Authorization: {{helperToken}}
 
 {
   "status": "refusé",
