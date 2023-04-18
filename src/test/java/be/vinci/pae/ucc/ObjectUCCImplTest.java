@@ -187,7 +187,7 @@ class ObjectUCCImplTest {
 
   }
 
-  @DisplayName("Update an object state, set to in shoip")
+  @DisplayName("Update an object state, set to in shop")
   @Test
   void updateAnObjectStateToInShop() {
 
@@ -318,7 +318,7 @@ class ObjectUCCImplTest {
 
   }
 
-  @DisplayName("Exception while geting an object list by User id")
+  @DisplayName("Exception while getting an object list by User id")
   @Test
   void exceptionGetAllObjectsByUserID() {
     List<ObjectDTO> objects = new ArrayList<>();

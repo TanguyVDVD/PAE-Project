@@ -88,8 +88,8 @@ public class UserUCCImpl implements UserUCC {
 
       // Check if email or phone number already exists
       if (myUserDAO.getOneByEmail(userDTO.getEmail()) != null) {
-        MyLogger.log(Level.INFO, "Adresse mail déja utilisé");
-        throw new WebApplicationException("Adresse mail déja utilisé", Response.Status.BAD_REQUEST);
+        MyLogger.log(Level.INFO, "Adresse mail déjà utilisé");
+        throw new WebApplicationException("Adresse mail déjà utilisé", Response.Status.BAD_REQUEST);
       }
 
       if (myUserDAO.getOneByPhoneNumber(userDTO.getPhoneNumber()) != null) {
@@ -205,8 +205,8 @@ public class UserUCCImpl implements UserUCC {
         }
 
         if (myUserDAO.getOneByEmail(email) != null) {
-          MyLogger.log(Level.INFO, "Adresse mail déja utilisé");
-          throw new WebApplicationException("Adresse mail déja utilisé",
+          MyLogger.log(Level.INFO, "Adresse mail déjà utilisé");
+          throw new WebApplicationException("Adresse mail déjà utilisé",
               Response.Status.BAD_REQUEST);
         }
       }

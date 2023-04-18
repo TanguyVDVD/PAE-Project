@@ -37,7 +37,7 @@ const UserPage = (params) => {
     </div>
   `;
 
-  // Use the my endpoint if the user is looking at their own profile
+  // Use the 'my' endpoint if the user is looking at their own profile
   API.get(`users/${authenticatedUser.id === id ? 'my' : id}`)
     .then((user) => {
       renderUserPage(user);

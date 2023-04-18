@@ -62,7 +62,7 @@ public class ObjectTypeDAOImpl implements ObjectTypeDAO {
         }
       }
     } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "Error get all objecttype");
+      MyLogger.log(Level.INFO, "Error get all object_type");
       se.printStackTrace();
     }
 

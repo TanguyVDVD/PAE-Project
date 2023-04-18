@@ -122,7 +122,7 @@ public class ObjectUCCImpl implements ObjectUCC {
    * @return the object updated
    */
   @Override
-  public ObjectDTO accept(int id, int versionNumbrer) {
+  public ObjectDTO accept(int id, int versionNumber) {
 
     myDalServices.startTransaction();
     try {
@@ -132,7 +132,7 @@ public class ObjectUCCImpl implements ObjectUCC {
       if (object.isStatusAlreadyDefined(status)) {
         return null;
       }
-      return myObjectDAO.setStatusToAccepted(id, LocalDate.now(), versionNumbrer);
+      return myObjectDAO.setStatusToAccepted(id, LocalDate.now(), versionNumber);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
       MyLogger.log(Level.INFO, "Erreur lors de l'acceptation de l'offre");
@@ -153,7 +153,7 @@ public class ObjectUCCImpl implements ObjectUCC {
    * @return the object updated
    */
   @Override
-  public ObjectDTO refuse(int id, String reasonForRefusal, int versionNumbrer) {
+  public ObjectDTO refuse(int id, String reasonForRefusal, int versionNumber) {
 
     myDalServices.startTransaction();
 
@@ -166,7 +166,7 @@ public class ObjectUCCImpl implements ObjectUCC {
         return null;
       }
 
-      return myObjectDAO.setStatusToRefused(id, reasonForRefusal, LocalDate.now(), versionNumbrer);
+      return myObjectDAO.setStatusToRefused(id, reasonForRefusal, LocalDate.now(), versionNumber);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
       MyLogger.log(Level.INFO, "Erreur lors du refus de l'offre");
@@ -179,7 +179,7 @@ public class ObjectUCCImpl implements ObjectUCC {
   }
 
   /**
-   * Update the iformation and the state of an object.
+   * Update the information and the state of an object.
    *
    * @param id        the id of the object
    * @param objectDTO the object

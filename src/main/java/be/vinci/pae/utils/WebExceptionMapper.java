@@ -20,7 +20,7 @@ public class WebExceptionMapper implements ExceptionMapper<Throwable> {
   private HttpHeaders headers;
 
   /**
-   * Method that allow to make a reponse to represent an exception.
+   * Method that allow to make a response to represent an exception.
    *
    * @param exception the exception raise
    * @return a response representing the exception

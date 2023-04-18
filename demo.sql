@@ -113,9 +113,9 @@ INSERT INTO pae.availability VALUES (DEFAULT, '2023-03-11');
 
 INSERT INTO pae.availability VALUES (DEFAULT, '2023-03-18');
 
-INSERT INTO pae.availability VALUES (DEFAULT, '2023-03-25')
+INSERT INTO pae.availability VALUES (DEFAULT, '2023-03-25');
 
-    INSERT INTO pae.availability VALUES (DEFAULT, '2023-04-01');
+INSERT INTO pae.availability VALUES (DEFAULT, '2023-04-01');
 
 INSERT INTO pae.availability VALUES (DEFAULT, '2023-04-15');
 

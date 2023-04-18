@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.time.LocalDate;
 
 /**
- * ObjectDTO interface. Representing a data transfer object (DTO) for a object in the domain The
+ * ObjectDTO interface. Representing a data transfer object (DTO) for an object in the domain The
  * interface only contains getter and setter.
  */
 @JsonDeserialize(as = ObjectImpl.class)
