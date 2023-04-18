@@ -155,7 +155,6 @@ public class UserUCCImpl implements UserUCC {
    */
   @Override
   public UserDTO getUserById(int id) {
-    myDalServices.startTransaction();
 
     try {
       return myUserDAO.getOneById(id);

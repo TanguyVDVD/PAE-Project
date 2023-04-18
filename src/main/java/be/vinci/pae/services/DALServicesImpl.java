@@ -16,6 +16,8 @@ public class DALServicesImpl implements DALServices, DalBackendServices {
 
   private final ThreadLocal<Connection> connectionThreadLocal
       = new ThreadLocal<Connection>();
+
+  private final ThreadLocal<Integer> integerThreadLocalVerification = new ThreadLocal<>();
   /**
    * Connection to the database.
    */
@@ -66,15 +68,21 @@ public class DALServicesImpl implements DALServices, DalBackendServices {
    */
   @Override
   public void startTransaction() {
-    try {
-      Connection connection = bds.getConnection();
-      connection.setAutoCommit(false);
-      connectionThreadLocal.set(connection);
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "Start transaction error");
-      se.printStackTrace();
-    }
 
+    if (integerThreadLocalVerification.get() == null) {
+
+      try {
+        integerThreadLocalVerification.set(1);
+        Connection connection = bds.getConnection();
+        connection.setAutoCommit(false);
+        connectionThreadLocal.set(connection);
+      } catch (SQLException se) {
+        MyLogger.log(Level.INFO, "Start transaction error");
+        se.printStackTrace();
+      }
+    } else {
+      integerThreadLocalVerification.set(integerThreadLocalVerification.get() + 1);
+    }
   }
 
   /**
@@ -83,15 +91,23 @@ public class DALServicesImpl implements DALServices, DalBackendServices {
   @Override
   public void commitTransaction() {
 
-    Connection connection = connectionThreadLocal.get();
-    try {
-      connection.setAutoCommit(false);
-      connection.commit();
-      connectionThreadLocal.remove();
-      connection.close();
-    } catch (SQLException e) {
-      MyLogger.log(Level.INFO, "Commit transaction error");
-      throw new RuntimeException(e);
+    if (integerThreadLocalVerification.get() == 1) {
+
+      integerThreadLocalVerification.remove();
+
+      Connection connection = connectionThreadLocal.get();
+      try {
+        connection.setAutoCommit(false);
+        connection.commit();
+        connectionThreadLocal.remove();
+        connection.close();
+      } catch (SQLException e) {
+        MyLogger.log(Level.INFO, "Commit transaction error");
+        throw new RuntimeException(e);
+      }
+
+    } else {
+      integerThreadLocalVerification.set(integerThreadLocalVerification.get() - 1);
     }
 
   }
