@@ -246,6 +246,7 @@ public class UserResource {
       if (StringUtils.isNotBlank(dataDTO.getPassword())) {
         userDTO.setPassword(dataDTO.getPassword());
       }
+
     } else if (authorizedUser.getRole().equals("responsable")) {
       // Only the admin can change the helper status
       if (dataDTO.getRole() != null) {
@@ -258,16 +259,12 @@ public class UserResource {
           Status.UNAUTHORIZED);
     }
 
-    System.out.println("before " + userDTO.getRole());
-
     UserDTO userAfterUpdate = userUCC.updateUser(userDTO, passwordToVerify);
 
     if (userAfterUpdate == null) {
       MyLogger.log(Level.INFO, "Utilisateur non trouvé");
       throw new WebApplicationException("Utilisateur non trouvé", Status.NOT_FOUND);
     }
-
-    System.out.println("after " + userAfterUpdate.getRole());
 
     return userAfterUpdate;
   }

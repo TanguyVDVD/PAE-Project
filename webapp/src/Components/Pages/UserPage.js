@@ -445,7 +445,6 @@ function renderEditProfile(user) {
 
     if (Object.keys(body).length > 0) {
       body.currentPassword = form.currentPassword;
-      body.currentRole = user.role;
       body.versionNbr = user.versionNumber;
       promises.push(() => API.patch(`users/${user.id}`, { body }));
     }
