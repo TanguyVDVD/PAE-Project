@@ -203,7 +203,7 @@ public class UserImpl implements User {
   /**
    * set the boolean value corresponding if the user is a helper.
    *
-   * @param isHelper the value
+   * @param role the value
    */
   @Override
   public void setRole(String role) {
