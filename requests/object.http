@@ -40,7 +40,7 @@ Authorization: {{helperToken}}
 GET {{baseUrl}}/objects/1
 
 ### Set a object in the workshop
-PUT {{baseUrl}}/objects/1
+PUT {{baseUrl}}/objects/4
 Content-Type: application/json
 Authorization: {{helperToken}}
 
@@ -51,11 +51,11 @@ Authorization: {{helperToken}}
   "state": "en atelier",
   "date": null,
   "isVisible": true,
-  "version_number": 2
+  "version_number": 1
 }
 
 ### Set a object on sale with a price
-PUT {{baseUrl}}/objects/3
+PUT {{baseUrl}}/objects/4
 Content-Type: application/json
 Authorization: {{helperToken}}
 
@@ -66,7 +66,7 @@ Authorization: {{helperToken}}
   "state": "mis en vente",
   "date": null,
   "isVisible": true,
-  "version_number": 3
+  "version_number": 2
 }
 
 ### Try to accept an offer as helper
@@ -79,7 +79,7 @@ Authorization: {{helperToken}}
 }
 
 ### Accept an offer as manager
-PATCH {{baseUrl}}/objects/status/2
+PATCH {{baseUrl}}/objects/status/6
 Content-Type: application/json
 Authorization: {{managerToken}}
 
@@ -109,11 +109,12 @@ Authorization: {{managerToken}}
 }
 
 ### Refuse an offer with a reason for refusal
-PATCH {{baseUrl}}/objects/status/1
+PATCH {{baseUrl}}/objects/status/7
 Content-Type: application/json
 Authorization: {{helperToken}}
 
 {
   "status": "refusé",
-  "reasonForRefusal": "Meuble en trop mauvais état"
+  "reasonForRefusal": "Meuble en trop mauvais état",
+  "version_number": 1
 }

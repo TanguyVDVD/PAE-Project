@@ -181,7 +181,7 @@ public class ObjectResource {
     String typeObject = json.get("type").asText();
     String descriptionObject = json.get("description").asText();
     boolean isVisibleObject = json.get("isVisible").asBoolean();
-    int versionNumber = json.get("version_number").asInt();
+    int versionNumber = json.get("versionNbr").asInt();
 
     ObjectDTO objectUpdated = myDomainFactory.getObject();
 
@@ -219,8 +219,8 @@ public class ObjectResource {
 
     ObjectDTO objectDTO;
     int versionNumber = 0;
-    if (json.get("version_number") != null) {
-      versionNumber = json.get("version_number").asInt();
+    if (json.get("versionNbr") != null) {
+      versionNumber = json.get("versionNbr").asInt();
     }
 
     if (status.equals("accepté")) {
