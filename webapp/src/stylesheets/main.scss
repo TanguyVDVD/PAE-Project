@@ -12,6 +12,7 @@ $enable-negative-margins: true;
 @import '~bootstrap/scss/bootstrap';
 $bootstrap-icons-font-dir: '~bootstrap-icons/font/fonts';
 @import '~bootstrap-icons/font/bootstrap-icons';
+@import "flatpickr/dist/flatpickr";
 
 // Writing your own styles should be the last resort.
 // Please try your best to use the existing Bootstrap classes first.
