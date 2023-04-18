@@ -66,16 +66,16 @@ public class UserDAOImpl implements UserDAO {
     String request = "INSERT INTO" + " pae.users VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request, true)) {
-      ps.setInt(9, userDTO.getVersionNumber());
-      ps.setString(1, userDTO.getLastName());
-      ps.setString(2, userDTO.getFirstName());
-      ps.setString(3, userDTO.getPhoneNumber());
-      ps.setString(4, userDTO.getEmail());
-      ps.setString(5, userDTO.getPassword());
-      ps.setBoolean(6, userDTO.getPhoto());
+      ps.setInt(1, userDTO.getVersionNumber());
+      ps.setString(2, userDTO.getLastName());
+      ps.setString(3, userDTO.getFirstName());
+      ps.setString(4, userDTO.getPhoneNumber());
+      ps.setString(5, userDTO.getEmail());
+      ps.setString(6, userDTO.getPassword());
+      ps.setBoolean(7, userDTO.getPhoto());
 
-      ps.setDate(7, java.sql.Date.valueOf(userDTO.getRegisterDate()));
-      ps.setString(8, userDTO.getRole());
+      ps.setDate(8, java.sql.Date.valueOf(userDTO.getRegisterDate()));
+      ps.setString(9, userDTO.getRole());
       ps.executeUpdate();
 
       // Get the id of the new user

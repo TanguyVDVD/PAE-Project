@@ -237,6 +237,7 @@ public class UserUCCImpl implements UserUCC {
         userDTO.setPassword(User.hashPassword(userDTO.getPassword()));
       }
 
+      System.out.println("userDTO " + userDTO.getRole());
       // Update the user
       if (!myUserDAO.update(userDTO)) {
         return null;

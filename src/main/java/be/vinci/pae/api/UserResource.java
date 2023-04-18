@@ -211,19 +211,15 @@ public class UserResource {
     // Create a new DTO to only keep changes
     UserDTO userDTO = myDomainFactory.getUser();
     userDTO.setId(id);
+    userDTO.setVersionNumber(data.get("versionNbr").asInt());
 
     UserDTO dataDTO = jsonMapper.convertValue(data, UserDTO.class);
-
     if (authorizedUser.getId() == id) {
       // Only the user themselves can change their own information
 
       // Verify current password
       if (data.hasNonNull("currentPassword")) {
         passwordToVerify = data.get("currentPassword").asText();
-      }
-      //add version number
-      if (data.hasNonNull("version_number")) {
-        userDTO.setVersionNumber(data.get("version_number").asInt());
       }
 
       if (StringUtils.isBlank(passwordToVerify)) {
@@ -262,12 +258,16 @@ public class UserResource {
           Status.UNAUTHORIZED);
     }
 
+    System.out.println("before " + userDTO.getRole());
+
     UserDTO userAfterUpdate = userUCC.updateUser(userDTO, passwordToVerify);
 
     if (userAfterUpdate == null) {
       MyLogger.log(Level.INFO, "Utilisateur non trouvé");
       throw new WebApplicationException("Utilisateur non trouvé", Status.NOT_FOUND);
     }
+
+    System.out.println("after " + userAfterUpdate.getRole());
 
     return userAfterUpdate;
   }

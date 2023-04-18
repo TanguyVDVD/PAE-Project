@@ -134,8 +134,9 @@ function renderUserPage(user) {
       e.target.disabled = true;
       e.target.checked = !e.target.checked;
 
-      API.patch(`users/${user.id}`, { body: { role: e.target.checked ? null : 'aidant', versionNumber: user.versionNumber } })
+      API.patch(`users/${user.id}`, { body: { role: e.target.checked ? null : 'aidant', versionNbr: user.versionNumber } })
         .then((updatedUser) => {
+          user.versionNumber = updatedUser.versionNumber;
           e.target.checked = updatedUser.role === 'aidant';
         })
         .catch((error) => {
@@ -444,9 +445,9 @@ function renderEditProfile(user) {
 
     if (Object.keys(body).length > 0) {
       body.currentPassword = form.currentPassword;
-      const formData = new FormData();
-      formData.append('versionNumber', user.versionNumber);
-      promises.push(() => API.patch(`users/${user.id}`, { body: formData }));
+      body.currentRole = user.role;
+      body.versionNbr = user.versionNumber;
+      promises.push(() => API.patch(`users/${user.id}`, { body }));
     }
 
     if (form.removePhoto) {
@@ -455,7 +456,7 @@ function renderEditProfile(user) {
       const formData = new FormData();
       formData.append('photo', form.photo);
       formData.append('password', form.currentPassword);
-      formData.append('versionNumber', user.versionNumber);
+      formData.append('versionNbr', user.versionNumber);
       promises.push(() => API.put(`users/${user.id}/photo`, { body: formData }));
     }
 
