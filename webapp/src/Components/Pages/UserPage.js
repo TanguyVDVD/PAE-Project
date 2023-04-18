@@ -134,7 +134,7 @@ function renderUserPage(user) {
       e.target.disabled = true;
       e.target.checked = !e.target.checked;
 
-      API.patch(`users/${user.id}`, { body: { isHelper: !e.target.checked } })
+      API.patch(`users/${user.id}`, { body: { isHelper: !e.target.checked, versionNumber: user.versionNumber } })
         .then((updatedUser) => {
           e.target.checked = updatedUser.isHelper;
         })
@@ -381,13 +381,16 @@ function renderEditProfile(user) {
 
     if (Object.keys(body).length > 0) {
       body.currentPassword = form.currentPassword;
-      promises.push(() => API.patch(`users/${user.id}`, { body }));
+      const formData = new FormData();
+      formData.append('versionNumber', user.versionNumber);
+      promises.push(() => API.patch(`users/${user.id}`, { body: formData }));
     }
 
     if (form.photo && form.photo.size > 0) {
       const formData = new FormData();
       formData.append('photo', form.photo);
       formData.append('password', form.currentPassword);
+      formData.append('versionNumber', user.versionNumber);
       promises.push(() => API.put(`users/${user.id}/photo`, { body: formData }));
     }
 

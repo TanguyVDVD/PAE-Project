@@ -222,8 +222,9 @@ function renderObjectPage(object, objectTypes) {
 
     acceptBtn.addEventListener('click', () => {
       const status = "accepté";
+      const versionNumber = object.versionNumber;
 
-      API.patch(`objects/status/${object.id}`, { body: { status } });
+      API.patch(`objects/status/${object.id}`, { body: { status, versionNumber } });
       AdminOffersPage();
       Navigate('/admin/offers');
     });
@@ -231,8 +232,9 @@ function renderObjectPage(object, objectTypes) {
     denyBtn.addEventListener('click', () => {
       const status = "refusé";
       const reasonForRefusal = document.getElementById("reason-for-refusal").value;
+      const versionNumber = object.versionNumber;
 
-      API.patch(`objects/status/${object.id}`, { body: { status, reasonForRefusal } });
+      API.patch(`objects/status/${object.id}`, { body: { status, reasonForRefusal, versionNumber } });
       AdminOffersPage();
       Navigate('/admin/offers');
     });
@@ -270,10 +272,11 @@ function renderObjectPage(object, objectTypes) {
       const date = document.getElementById('object-state-date-input').value;
       const price = document.getElementById('object-price-input').value;
       const isVisible = document.getElementById('visible-switch').checked;
+      const versionNumber = object.versionNumber;
 
       try {
         await API.put(`objects/${object.id}`, {
-          body: { description, type, state, date, price, isVisible },
+          body: { description, type, state, date, price, isVisible, versionNumber },
         });
 
         const photo = document.getElementById('input-photo');
