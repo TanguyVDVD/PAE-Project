@@ -47,6 +47,7 @@ public class ObjectDAOImpl implements ObjectDAO {
 
     try {
       object.setId(resultSet.getInt("id_object"));
+      object.setVersionNumber(resultSet.getInt("version_number"));
       object.setDescription(resultSet.getString("description"));
       object.setPhoto(resultSet.getBoolean("photo"));
       object.setPhoneNumber(resultSet.getString("phone_number"));
@@ -80,7 +81,6 @@ public class ObjectDAOImpl implements ObjectDAO {
               : myAvailabilityDao.getOneById(resultSet.getInt("receipt_date")));
       object.setUser(myUserDao.getOneById(resultSet.getInt("id_user")));
       object.setObjectType(myObjectTypeDAO.getOneById(resultSet.getInt("id_object_type")));
-      object.setVersionNumber(resultSet.getInt("version_number"));
 
     } catch (SQLException se) {
       MyLogger.log(Level.INFO, "Error get dto from rs");
@@ -242,7 +242,7 @@ public class ObjectDAOImpl implements ObjectDAO {
           : java.sql.Date.valueOf(objectDTO.getSellingDate()));
       ps.setDate(10, objectDTO.getWithdrawalDate() == null ? null
           : java.sql.Date.valueOf(objectDTO.getWithdrawalDate()));
-      ps.setInt(11, (objectDTO.getVersionNumber() + 1));
+      ps.setInt(11, objectDTO.getVersionNumber() + 1);
       ps.setInt(12, id);
       ps.setInt(13, objectDTO.getVersionNumber());
       ps.executeUpdate();
@@ -270,7 +270,7 @@ public class ObjectDAOImpl implements ObjectDAO {
 
     try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       ps.setDate(1, java.sql.Date.valueOf(acceptanceDate));
-      ps.setInt(2, (versionNumbrer + 1));
+      ps.setInt(2, versionNumbrer + 1);
 
       ps.setInt(3, id);
       ps.setInt(4, versionNumbrer);
@@ -305,7 +305,7 @@ public class ObjectDAOImpl implements ObjectDAO {
     try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       ps.setDate(1, java.sql.Date.valueOf(refusalDate));
       ps.setString(2, reasonForRefusal);
-      ps.setInt(3, (versionNumber + 1));
+      ps.setInt(3, versionNumber + 1);
 
       ps.setInt(4, id);
       ps.setInt(5, versionNumber);

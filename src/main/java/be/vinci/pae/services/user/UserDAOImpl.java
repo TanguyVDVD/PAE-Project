@@ -38,6 +38,7 @@ public class UserDAOImpl implements UserDAO {
 
     try {
       user.setId(resultSet.getInt("id_user"));
+      user.setVersionNumber(resultSet.getInt("version_number"));
       user.setLastName(resultSet.getString("last_name"));
       user.setFirstName(resultSet.getString("first_name"));
       user.setPhoneNumber(resultSet.getString("phone_number"));
@@ -46,7 +47,6 @@ public class UserDAOImpl implements UserDAO {
       user.setPhoto(resultSet.getBoolean("photo"));
       user.setRegisterDate(resultSet.getDate("register_date").toLocalDate());
       user.setIsHelper(resultSet.getBoolean("is_helper"));
-      user.setVersionNumber(resultSet.getInt("version_number"));
     } catch (SQLException se) {
       MyLogger.log(Level.INFO, "error dto from RS USer");
       se.printStackTrace();
@@ -66,6 +66,7 @@ public class UserDAOImpl implements UserDAO {
     String request = "INSERT INTO" + " pae.users VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request, true)) {
+      ps.setInt(9, userDTO.getVersionNumber());
       ps.setString(1, userDTO.getLastName());
       ps.setString(2, userDTO.getFirstName());
       ps.setString(3, userDTO.getPhoneNumber());
@@ -75,7 +76,6 @@ public class UserDAOImpl implements UserDAO {
 
       ps.setDate(7, java.sql.Date.valueOf(userDTO.getRegisterDate()));
       ps.setBoolean(8, userDTO.getIsHelper());
-      ps.setInt(9, userDTO.getVersionNumber());
       ps.executeUpdate();
 
       // Get the id of the new user
@@ -198,6 +198,7 @@ public class UserDAOImpl implements UserDAO {
   public boolean update(UserDTO userDTO) {
     // Only update the fields that are not null
     Map<String, Object> fields = new HashMap<>();
+    fields.put("version_number", userDTO.getVersionNumber() + 1);
     if (userDTO.getLastName() != null) {
       fields.put("last_name", userDTO.getLastName());
     }
@@ -227,8 +228,6 @@ public class UserDAOImpl implements UserDAO {
       return false;
     }
 
-    fields.put("version_number", (userDTO.getVersionNumber() + 1));
-
     String request = "UPDATE pae.users SET " + fields.keySet().stream()
         .map(key -> key + " = ?").collect(Collectors.joining(", "))
         + " WHERE id_user = ? AND version_number = ?";
@@ -239,7 +238,7 @@ public class UserDAOImpl implements UserDAO {
         ps.setObject(i++, value);
       }
       ps.setInt(i, userDTO.getId());
-      ps.setInt((i + 1), userDTO.getVersionNumber());
+      ps.setInt(i + 1, userDTO.getVersionNumber());
 
       ps.executeUpdate();
 
