@@ -43,7 +43,7 @@ public class UserDAOImpl implements UserDAO {
       user.setPassword(resultSet.getString("password"));
       user.setPhoto(resultSet.getBoolean("photo"));
       user.setRegisterDate(resultSet.getDate("register_date").toLocalDate());
-      user.setIsHelper(resultSet.getBoolean("is_helper"));
+      user.setRole(resultSet.getString("role"));
     } catch (Exception e) {
       throw new DALException("Error during the mapping of the user", e);
     }
@@ -70,7 +70,7 @@ public class UserDAOImpl implements UserDAO {
       ps.setBoolean(6, userDTO.getPhoto());
 
       ps.setDate(7, java.sql.Date.valueOf(userDTO.getRegisterDate()));
-      ps.setBoolean(8, userDTO.getIsHelper());
+      ps.setString(8, userDTO.getRole());
       ps.executeUpdate();
 
       // Get the id of the new user
@@ -182,7 +182,7 @@ public class UserDAOImpl implements UserDAO {
    * Update a user.
    *
    * @param userDTO the user to update
-   * @return true if succeeded, false if not
+   * @return user updated
    */
   @Override
   public UserDTO update(UserDTO userDTO) {
@@ -209,8 +209,10 @@ public class UserDAOImpl implements UserDAO {
     if (userDTO.getRegisterDate() != null) {
       fields.put("register_date", userDTO.getRegisterDate());
     }
-    if (userDTO.getIsHelper() != null) {
-      fields.put("is_helper", userDTO.getIsHelper());
+    if (userDTO.getRole() == null
+        || userDTO.getRole().equals("aidant")
+        || userDTO.getRole().equals("responsable")) {
+      fields.put("role", userDTO.getRole());
     }
 
     if (fields.isEmpty()) {

@@ -6,7 +6,7 @@ import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.services.availability.AvailabilityDAO;
 import be.vinci.pae.services.objecttype.ObjectTypeDAO;
 import be.vinci.pae.services.user.UserDAO;
-import be.vinci.pae.utils.MyLogger;
+import be.vinci.pae.utils.exceptions.DALException;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 /**
  * ObjectDAO class that implements ObjectDAO interface Provide the different methods.
@@ -77,13 +76,12 @@ public class ObjectDAOImpl implements ObjectDAO {
       object.setPhoneNumber(resultSet.getString("phone_number"));
       object.setReceiptDate(
           myAvailabilityDao.getOneById(resultSet.getInt("receipt_date")) == null ? null
-              : myAvailabilityDao.getOneById(resultSet.getInt("receipt_date")));
+              : myAvailabilityDao.getOneById(resultSet.getInt("receipt_date")).getDate());
       object.setUser(myUserDao.getOneById(resultSet.getInt("id_user")));
       object.setObjectType(myObjectTypeDAO.getOneById(resultSet.getInt("id_object_type")));
 
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "Error get dto from rs");
-      se.printStackTrace();
+    } catch (SQLException e) {
+      throw new DALException("Error mapping ResultSet to ObjectDTO", e);
     }
 
     return object;
@@ -111,9 +109,8 @@ public class ObjectDAOImpl implements ObjectDAO {
           objects.add(dtoFromRS(rs));
         }
       }
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "Error get all object");
-      se.printStackTrace();
+    } catch (SQLException e) {
+      throw new DALException("Error getting all objects", e);
     }
 
     return objects;
@@ -140,9 +137,37 @@ public class ObjectDAOImpl implements ObjectDAO {
           objects.add(dtoFromRS(rs));
         }
       }
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "Error get all object from a user");
-      se.printStackTrace();
+    } catch (SQLException e) {
+      throw new DALException("Error getting all objects by user", e);
+    }
+
+    return objects;
+  }
+
+  /**
+   * Get all objects by availability.
+   *
+   * @param id the id of the availability
+   * @return the list of objects
+   */
+  @Override
+  public List<ObjectDTO> getAllByAvailability(int id) {
+    String request = "SELECT * FROM pae.objects o, pae.availabilities a "
+        + "WHERE o.receipt_date = a.id_availability AND a.id_availability = ? "
+        + "ORDER BY a.date desc;";
+
+    ArrayList<ObjectDTO> objects = new ArrayList<>();
+
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
+      ps.setInt(1, id);
+
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          objects.add(dtoFromRS(rs));
+        }
+      }
+    } catch (SQLException e) {
+      throw new DALException("Error getting all objects by availability", e);
     }
 
     return objects;
@@ -171,9 +196,8 @@ public class ObjectDAOImpl implements ObjectDAO {
           objects.add(dtoFromRS(rs));
         }
       }
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "Error get all offers");
-      se.printStackTrace();
+    } catch (SQLException e) {
+      throw new DALException("Error getting all offers", e);
     }
 
     return objects;
@@ -197,9 +221,8 @@ public class ObjectDAOImpl implements ObjectDAO {
           return dtoFromRS(rs);
         }
       }
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "Error get one object by id");
-      se.printStackTrace();
+    } catch (SQLException e) {
+      throw new DALException("Error getting object by id", e);
     }
 
     return null;
@@ -242,13 +265,11 @@ public class ObjectDAOImpl implements ObjectDAO {
           : java.sql.Date.valueOf(objectDTO.getWithdrawalDate()));
       ps.setInt(11, id);
       ps.executeUpdate();
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "Error update an object");
-      se.printStackTrace();
-      return null;
+    } catch (SQLException e) {
+      throw new DALException("Error updating object", e);
     }
 
-    return objectDTO;
+    return getOneById(id);
   }
 
   /**
@@ -269,9 +290,8 @@ public class ObjectDAOImpl implements ObjectDAO {
 
       ps.setInt(2, id);
       ps.executeUpdate();
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "Error set object accepted");
-      se.printStackTrace();
+    } catch (SQLException e) {
+      throw new DALException("Error setting status to accepted", e);
     }
 
     ObjectDTO object = getOneById(id);
@@ -283,7 +303,7 @@ public class ObjectDAOImpl implements ObjectDAO {
   }
 
   /**
-   * Set the status of an object to refused.
+   * Set the status of an object to "refused".
    *
    * @param id               the id of the object
    * @param reasonForRefusal the reason for refusal
@@ -301,9 +321,8 @@ public class ObjectDAOImpl implements ObjectDAO {
       ps.setString(2, reasonForRefusal);
       ps.setInt(3, id);
       ps.executeUpdate();
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "Error set object refused");
-      se.printStackTrace();
+    } catch (SQLException e) {
+      throw new DALException("Error setting status to refused", e);
     }
 
     ObjectDTO object = getOneById(id);

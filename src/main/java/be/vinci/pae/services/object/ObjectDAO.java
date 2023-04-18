@@ -26,6 +26,14 @@ public interface ObjectDAO {
   List<ObjectDTO> getAllByUser(int id);
 
   /**
+   * Get all objects by availability.
+   *
+   * @param id the id of the availability
+   * @return the list of objects
+   */
+  List<ObjectDTO> getAllByAvailability(int id);
+
+  /**
    * Get all offers.
    *
    * @param query query to filter offers
@@ -52,7 +60,7 @@ public interface ObjectDAO {
   ObjectDTO setStatusToAccepted(int id, LocalDate acceptanceDate);
 
   /**
-   * Set the status of an object to refused.
+   * Set the status of an object to "refused".
    *
    * @param id               the id of the object
    * @param reasonForRefusal the reason for refusal

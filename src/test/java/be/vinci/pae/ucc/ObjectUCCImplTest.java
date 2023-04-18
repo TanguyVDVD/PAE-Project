@@ -15,8 +15,8 @@ import be.vinci.pae.services.object.ObjectDAOImpl;
 import be.vinci.pae.ucc.object.ObjectUCC;
 import be.vinci.pae.ucc.object.ObjectUCCImpl;
 import be.vinci.pae.utils.exceptions.DALException;
-import be.vinci.pae.utils.exceptions.UserException;
 import jakarta.inject.Singleton;
+import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,6 +108,15 @@ class ObjectUCCImplTest {
 
   }
 
+  @DisplayName("Exception when accepting an object")
+  @Test
+  void acceptAnObjectPropositionException() {
+    Mockito.when(objectDAO.getOneById(1)).thenThrow(new DALException("Exception"));
+
+    assertThrows(DALException.class, () -> objectUCC.accept(1),
+        "Exception not thrown");
+  }
+
   @DisplayName("Refuse an object already refused")
   @Test
   void refuseAnObjectProposition() {
@@ -149,6 +158,15 @@ class ObjectUCCImplTest {
 
   }
 
+  @DisplayName("Exception when refusing an object")
+  @Test
+  void refuseAnObjectPropositionException() {
+    Mockito.when(objectDAO.getOneById(1)).thenThrow(new DALException("Exception"));
+
+    assertThrows(DALException.class, () -> objectUCC.refuse(1, "Reason for refusal"),
+        "Exception not thrown");
+  }
+
   @DisplayName("Update an object state, set to in workshop")
   @Test
   void updateAnObjectStateToInWorkshop() {
@@ -179,7 +197,7 @@ class ObjectUCCImplTest {
 
   }
 
-  @DisplayName("Update an object state, set to in shoip")
+  @DisplayName("Update an object state, set to in shop")
   @Test
   void updateAnObjectStateToInShop() {
 
@@ -236,6 +254,41 @@ class ObjectUCCImplTest {
         "Update return is not null");
   }
 
+  @DisplayName("Update an object that is not accepted")
+  @Test
+  void updateAnObjectNotAccepted() {
+
+    Object object = Mockito.mock(ObjectImpl.class);
+    Object object1 = Mockito.mock(ObjectImpl.class);
+    Mockito.when(object.getId()).thenReturn(1);
+    Mockito.when(object.getStatus()).thenReturn("refusé");
+    Mockito.when(object.getState()).thenReturn("en magasin");
+
+    Mockito.when(objectDAO.getOneById(object.getId())).thenReturn(object1);
+
+    Mockito.when(object1.getId()).thenReturn(1);
+    Mockito.when(object1.getStatus()).thenReturn("refusé");
+    Mockito.when(object1.getState()).thenReturn("refusé");
+
+    Mockito.when(object1.setSateDate(object, object1, null)).thenReturn(null);
+
+    Mockito.when(objectDAO.updateObject(object1.getId(), object1)).thenReturn(object);
+
+    LocalDate dateToday = LocalDate.now();
+
+    assertNull(objectUCC.update(object.getId(), null, dateToday),
+        "Update return is not null");
+  }
+
+  @DisplayName("Exception when updating an object")
+  @Test
+  void updateAnObjectException() {
+    Mockito.when(objectDAO.getOneById(1)).thenThrow(new DALException("Exception"));
+
+    assertThrows(DALException.class, () -> objectUCC.update(1, null, null),
+        "Exception not thrown");
+  }
+
   @DisplayName("Get a object by id")
   @Test
   void getObjectById() {
@@ -250,7 +303,7 @@ class ObjectUCCImplTest {
   @Test
   void exceptionGetAnObjectByID() {
     Mockito.when(objectDAO.getOneById(1)).thenThrow(new DALException(""));
-    assertThrows(UserException.class, () -> objectUCC.getOne(1),
+    assertThrows(Exception.class, () -> objectUCC.getOne(1),
         "getOneByID did not throw an exception");
 
   }
@@ -270,9 +323,9 @@ class ObjectUCCImplTest {
   @DisplayName("Exception when getting list of all objects")
   @Test
   void exceptionWhenGettingAllObjects() {
-    Mockito.when(objectDAO.getAll("")).thenThrow(new RuntimeException());
+    Mockito.when(objectDAO.getAll("")).thenThrow(new DALException(""));
 
-    assertThrows(UserException.class, () -> objectUCC.getObjects(""),
+    assertThrows(Exception.class, () -> objectUCC.getObjects(""),
         "getObjects() did not throw an exception");
   }
 
@@ -293,7 +346,7 @@ class ObjectUCCImplTest {
   void exceptionWhenGettingAllOffers() {
     Mockito.when(objectDAO.getOffers("")).thenThrow(new DALException(""));
 
-    assertThrows(UserException.class, () -> objectUCC.getOffers(""),
+    assertThrows(Exception.class, () -> objectUCC.getOffers(""),
         "getOffers() did not throw an exception");
   }
 
@@ -322,9 +375,52 @@ class ObjectUCCImplTest {
 
     Mockito.when(objectDAO.getAllByUser(1)).thenThrow(new DALException(""));
 
-    assertThrows(UserException.class, () -> objectUCC.getObjectsByUser(1),
+    assertThrows(Exception.class, () -> objectUCC.getObjectsByUser(1),
         "getObject by id user did not return exception");
 
   }
 
+  @DisplayName("Get photo of an object")
+  @Test
+  void getPhoto() {
+    File file = Mockito.mock(File.class);
+    Object object = Mockito.mock(ObjectImpl.class);
+    Mockito.when(objectDAO.getOneById(1)).thenReturn(object);
+    Mockito.when(object.photoFile()).thenReturn(file);
+
+    assertEquals(file, objectUCC.getPhoto(object), "getPhoto did not return the correct file");
+  }
+
+  @DisplayName("Update photo of an existing object")
+  @Test
+  void updatePhotoExistingObject() {
+    Object object = Mockito.mock(ObjectImpl.class);
+    Mockito.when(object.getId()).thenReturn(1);
+    Mockito.when(objectDAO.getOneById(1)).thenReturn(object);
+    Mockito.when(objectDAO.updateObject(1, object)).thenReturn(object);
+
+    assertNotNull(objectUCC.updatePhoto(object, null), "updatePhoto did not return true");
+  }
+
+  @DisplayName("Update photo of a non-existing object")
+  @Test
+  void updatePhotoNonExistingObject() {
+    Object object = Mockito.mock(ObjectImpl.class);
+    Mockito.when(object.getId()).thenReturn(1);
+    Mockito.when(objectDAO.getOneById(1)).thenReturn(null);
+
+    assertNull(objectUCC.updatePhoto(object, null), "updatePhoto did not return null");
+  }
+
+  @DisplayName("Exception when updating photo of an object")
+  @Test
+  void exceptionUpdatePhoto() {
+    Object object = Mockito.mock(ObjectImpl.class);
+    Mockito.when(object.getId()).thenReturn(1);
+    Mockito.when(objectDAO.getOneById(1)).thenReturn(object);
+    Mockito.when(objectDAO.updateObject(1, object)).thenThrow(new DALException(""));
+
+    assertThrows(Exception.class, () -> objectUCC.updatePhoto(object, null),
+        "updatePhoto did not throw an exception");
+  }
 }

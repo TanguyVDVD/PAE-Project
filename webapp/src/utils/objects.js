@@ -34,4 +34,38 @@ function setUserOrPhoneNumber(document, className, objects) {
   }
 }
 
-export default setUserOrPhoneNumber;
+function setReceiptDate(document, className, objects) {
+  const elements = document.getElementsByClassName(className);
+  for (let i = 0; i < elements.length; i += 1) {
+    const object = objects[i];
+    const element = elements.item(i);
+    if (object.state === 'proposé' || object.state === 'accepté') {
+      element.innerHTML = `
+          <p>
+              À récupérer le ${dateStringtoGoodFormat(object.receiptDate)} ${
+          object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
+      }
+          </p>
+      `;
+    } else if (object.state === 'refusé') {
+      element.innerHTML = `
+          <p>
+              Refusé le ${dateStringtoGoodFormat(object.refusalDate)}
+          </p>
+      `;
+    } else {
+      element.innerHTML = `
+          <p>
+              Récupéré le ${dateStringtoGoodFormat(object.receiptDate)} ${
+          object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
+      }
+          </p>
+      `;
+    }
+  }
+}
+
+export {
+  setUserOrPhoneNumber,
+  setReceiptDate
+}

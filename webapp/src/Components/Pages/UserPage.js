@@ -6,7 +6,7 @@ import { getAuthenticatedUser, setAuthenticatedUser } from '../../utils/auths';
 import { clearPage, renderError } from '../../utils/render';
 import { formatDate, formatPhoneNumber } from '../../utils/format';
 
-import noProfilePicture from '../../img/no_profile_picture.webp';
+import noProfilePicture from '../../img/no_profile_picture.svg';
 import noFurniturePhoto from '../../img/no_furniture_photo.svg';
 
 const objects = [];
@@ -26,7 +26,7 @@ const UserPage = (params) => {
     return;
   }
 
-  if (!authenticatedUser.isHelper && authenticatedUser.id !== id) {
+  if (authenticatedUser.role === null && authenticatedUser.id !== id) {
     Navigate('/');
     return;
   }
@@ -91,7 +91,7 @@ function renderUserPage(user) {
           </div>
         </div>
         ${
-          authenticatedUser.id === 1 && authenticatedUser.id !== user.id
+          authenticatedUser.role === 'responsable' && authenticatedUser.id !== user.id
             ? `
               <div>
                 <div class="form-check form-switch">
@@ -100,7 +100,7 @@ function renderUserPage(user) {
                     type="checkbox"
                     role="switch"
                     id="helper-switch"
-                    ${user.isHelper ? 'checked' : ''}
+                    ${user.role === 'aidant' ? 'checked' : ''}
                   />
                   <label class="form-check-label" for="helper-switch">Aidant</label>
                 </div>
@@ -134,9 +134,9 @@ function renderUserPage(user) {
       e.target.disabled = true;
       e.target.checked = !e.target.checked;
 
-      API.patch(`users/${user.id}`, { body: { isHelper: !e.target.checked } })
+      API.patch(`users/${user.id}`, { body: { role: e.target.checked ? null : 'aidant' } })
         .then((updatedUser) => {
-          e.target.checked = updatedUser.isHelper;
+          e.target.checked = updatedUser.role === 'aidant';
         })
         .catch((error) => {
           renderError(error.message);
@@ -216,7 +216,8 @@ function renderEditProfile(user) {
   editProfile.className = 'modal fade';
   editProfile.tabIndex = -1;
 
-  editProfile.innerHTML = `
+  const html = String.raw;
+  editProfile.innerHTML = html`
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
         <div class="modal-header">
@@ -301,7 +302,25 @@ function renderEditProfile(user) {
               </div>
               <div class="row row-cols-1 row-cols-md-2">
                 <div class="col mb-3">
-                  <label for="input-photo" class="form-label">Photo de profil</label>
+                  <div class="hstack gap-2 justify-content-between">
+                    <label for="input-photo" class="form-label">Photo de profil</label>
+                    ${user.photo
+                      ? html`
+                          <div class="form-check form-check-reverse form-switch">
+                            <label class="form-check-label" for="input-removePhoto"
+                              >Supprimer</label
+                            >
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              role="switch"
+                              id="input-removePhoto"
+                              name="removePhoto"
+                            />
+                          </div>
+                        `
+                      : ''}
+                  </div>
                   <input
                     type="file"
                     accept="image/png, image/jpeg"
@@ -311,7 +330,18 @@ function renderEditProfile(user) {
                     placeholder=""
                   />
                 </div>
-                <div class="col mb-3"></div>
+                <div class="col mb-3">
+                  <img
+                    src="${user.photo
+                      ? API.getEndpoint(`users/${user.id}/photo`)
+                      : noProfilePicture}"
+                    onerror="this.src='${noProfilePicture}'"
+                    class="rounded-circle object-fit-cover"
+                    width="70"
+                    height="70"
+                    id="profile-picture-preview"
+                  />
+                </div>
               </div>
               <br />
               <div class="row row-cols-1 row-cols-md-2">
@@ -347,12 +377,45 @@ function renderEditProfile(user) {
   });
   editProfile.querySelector(`#input-phoneNumber`).value = formatPhoneNumber(user.phoneNumber);
 
+  // Handle the photo preview
+  const currentProfilePicture = user.photo
+    ? API.getEndpoint(`users/${user.id}/photo`)
+    : noProfilePicture;
+  const photoInput = editProfile.querySelector('#input-photo');
+  const profilePicturePreview = editProfile.querySelector('#profile-picture-preview');
+  const removePhoto = editProfile.querySelector('#input-removePhoto');
+  if (removePhoto)
+    removePhoto.addEventListener('change', (e) => {
+      profilePicturePreview.src = e.target.checked ? noProfilePicture : currentProfilePicture;
+
+      if (e.target.checked) {
+        photoInput.value = '';
+      }
+
+      photoInput.disabled = e.target.checked;
+    });
+
+  photoInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        profilePicturePreview.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      profilePicturePreview.src = currentProfilePicture;
+    }
+  });
+
   const editProfileForm = editProfile.querySelector('#edit-profile-form');
   let formIsSubmitting = false;
   editProfileForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
     if (formIsSubmitting) return;
+
+    renderError(null, editProfileForm);
 
     const form = Object.fromEntries(new FormData(e.target));
 
@@ -384,22 +447,27 @@ function renderEditProfile(user) {
       promises.push(() => API.patch(`users/${user.id}`, { body }));
     }
 
-    if (form.photo && form.photo.size > 0) {
+    if (form.removePhoto) {
+      promises.push(() => API.delete(`users/${user.id}/photo`));
+    } else if (form.photo && form.photo.size > 0) {
       const formData = new FormData();
       formData.append('photo', form.photo);
       formData.append('password', form.currentPassword);
       promises.push(() => API.put(`users/${user.id}/photo`, { body: formData }));
     }
 
-    if (promises.length === 0) return;
+    if (promises.length === 0) {
+      renderError("Aucune modification n'a été apportée.", editProfileForm);
+      return;
+    }
 
     formIsSubmitting = true;
     promises
       .reduce((p, next) => p.then(next), Promise.resolve())
       .then((res) => {
         if (res) {
-          renderUserPage(res);
           setAuthenticatedUser(res);
+          renderUserPage(res);
         }
 
         editProfileModal.hide();

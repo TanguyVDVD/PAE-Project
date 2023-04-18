@@ -2,12 +2,15 @@ package be.vinci.pae.domain.object;
 
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.utils.Config;
+import java.awt.Color;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
+import net.coobird.thumbnailator.Thumbnails;
+import net.coobird.thumbnailator.filters.Canvas;
+import net.coobird.thumbnailator.geometry.Positions;
 
 /**
  * ObjectImpl class that implements the ObjectDTO interface Contains all the attribute of an
@@ -484,17 +487,21 @@ public class ObjectImpl implements Object {
    */
   @Override
   public boolean savePhoto(InputStream photo) {
-    try {
-      String blobPath = Config.getProperty("BlobPath");
+    String blobPath = Config.getProperty("BlobPath");
 
+    try {
       // Create the blob directory if it doesn't exist
       Files.createDirectories(Paths.get(blobPath));
 
-      Files.copy(photo, Paths.get(blobPath, "object-" + id + ".jpg"),
-          StandardCopyOption.REPLACE_EXISTING);
+      // Resize photo and save
+      Thumbnails
+          .of(photo)
+          .crop(Positions.CENTER)
+          .size(400, 400)
+          .addFilter(new Canvas(400, 400, Positions.CENTER, Color.WHITE))
+          .outputFormat("jpg")
+          .toFile(new File(blobPath, "object-" + id + ".jpg"));
     } catch (Exception e) {
-      e.printStackTrace();
-
       return false;
     }
 

@@ -3,24 +3,24 @@ import { getAuthenticatedUser } from '../../../utils/auths';
 import { clearPage } from '../../../utils/render';
 import API from '../../../utils/api';
 import { dateStringtoGoodFormat, subtractDates } from '../../../utils/dates';
-import setUserOrPhoneNumber from '../../../utils/objects';
+import { setUserOrPhoneNumber } from '../../../utils/objects';
 
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
 
 const AdminOffersPage = () => {
-  const user = getAuthenticatedUser();
+  const authenticatedUser = getAuthenticatedUser();
 
-  if (!user || !user.isHelper) {
+  if (!authenticatedUser || authenticatedUser.role === null) {
     Navigate('/');
     return;
   }
 
   clearPage();
-  renderAdminObjectsPage();
-  fetchOffers();
+  renderAdminOffersPage();
+  renderOffers();
 };
 
-function renderAdminObjectsPage() {
+function renderAdminOffersPage() {
   const main = document.querySelector('main');
   const div = document.createElement('div');
   div.className = 'container my-5';
@@ -40,14 +40,20 @@ function renderAdminObjectsPage() {
     e.preventDefault();
 
     const search = e.target.value;
-    fetchOffers(search);
+    renderOffers(search);
   });
 
   main.appendChild(div);
 }
 
-async function fetchOffers(query = '') {
-  const list = document.getElementById('offers-list');
+async function renderOffers(query = '') {
+  const offersList = document.getElementById('offers-list');
+
+  offersList.innerHTML = `
+    <div class="text-center my-5">
+      <div class="spinner-border" role="status"></div>
+    </div>
+  `;
 
   API.get(`objects/offers?query=${encodeURIComponent(query)}`).then((offers) => {
     document.getElementById('offers-list').innerHTML = `
@@ -90,11 +96,11 @@ async function fetchOffers(query = '') {
                                 </div>
                             </div>
                             
-                            <div class="align-items-center align-content-center col-md-3 border-left mt-1">                                
+                            <div class="col-md-3 border-left mt-1 d-flex flex-column align-content-center justify-content-between">                                
                                 <div class="div-remaining-time">
                                 </div>
                                                                 
-                                <div class="d-flex flex-column mt-4 div-button">
+                                <div class="d-flex flex-column mb-4 div-button">
                                     <button class="btn btn-outline-primary btn-sm button-respond" type="button" data-id="${
                                       offer.id
                                     }">Répondre</button>
@@ -112,14 +118,14 @@ async function fetchOffers(query = '') {
     setUserOrPhoneNumber(document, 'div-user', offers);
     setRemainingTime('div-remaining-time', offers);
 
-    list.querySelectorAll('a[data-id]').forEach((link) => {
+    offersList.querySelectorAll('a[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
         Navigate(`/user/${e.target.dataset.id}`);
       });
     });
 
-    list.querySelectorAll('button[data-id]').forEach((link) => {
+    offersList.querySelectorAll('button[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
         Navigate(`/object/${e.target.dataset.id}`);

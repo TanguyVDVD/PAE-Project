@@ -74,4 +74,11 @@ public interface User extends UserDTO {
    */
   boolean saveProfilePicture(InputStream photo);
 
+  /**
+   * Remove the profile picture of the user.
+   *
+   * @return whether the removal was successful
+   */
+  boolean removeProfilePicture();
+
 }

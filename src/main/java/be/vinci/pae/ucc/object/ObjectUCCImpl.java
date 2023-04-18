@@ -4,7 +4,6 @@ import be.vinci.pae.domain.object.Object;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.object.ObjectDAO;
-import be.vinci.pae.utils.exceptions.UserException;
 import jakarta.inject.Inject;
 import java.io.File;
 import java.io.InputStream;
@@ -37,7 +36,8 @@ public class ObjectUCCImpl implements ObjectUCC {
       return myObjectDAO.getAll(query);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new UserException("Erreur lors de la récupération de la liste des objets");
+
+      throw e;
     } finally {
       myDalServices.commitTransaction();
     }
@@ -56,7 +56,8 @@ public class ObjectUCCImpl implements ObjectUCC {
       return myObjectDAO.getAllByUser(id);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new UserException("Erreur lors de la récupération de la liste des objets");
+
+      throw e;
     } finally {
       myDalServices.commitTransaction();
     }
@@ -76,7 +77,8 @@ public class ObjectUCCImpl implements ObjectUCC {
       return myObjectDAO.getOffers(query);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new UserException("Erreur lors de la récupération de la liste des offres");
+
+      throw e;
     } finally {
       myDalServices.commitTransaction();
     }
@@ -98,7 +100,8 @@ public class ObjectUCCImpl implements ObjectUCC {
       return myObjectDAO.getOneById(id);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new UserException("Erreur lors de la récupération de l'objet");
+
+      throw e;
     } finally {
       myDalServices.commitTransaction();
     }
@@ -126,7 +129,8 @@ public class ObjectUCCImpl implements ObjectUCC {
       return myObjectDAO.setStatusToAccepted(id, LocalDate.now());
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new UserException("Erreur lors de l'acceptation de l'offre");
+
+      throw e;
     } finally {
       myDalServices.commitTransaction();
 
@@ -158,7 +162,8 @@ public class ObjectUCCImpl implements ObjectUCC {
       return myObjectDAO.setStatusToRefused(id, reasonForRefusal, LocalDate.now());
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new UserException("Erreur lors du refus de l'offre");
+
+      throw e;
     } finally {
       myDalServices.commitTransaction();
     }
@@ -166,7 +171,7 @@ public class ObjectUCCImpl implements ObjectUCC {
   }
 
   /**
-   * Update the iformation and the state of an object.
+   * Update the information and the state of an object.
    *
    * @param id        the id of the object
    * @param objectDTO the object
@@ -199,7 +204,8 @@ public class ObjectUCCImpl implements ObjectUCC {
 
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new UserException("Erreur lors de la mise à jour de l'objet");
+
+      throw e;
     } finally {
       myDalServices.commitTransaction();
     }
@@ -240,14 +246,11 @@ public class ObjectUCCImpl implements ObjectUCC {
 
       object.setPhoto(true);
 
-      if (myObjectDAO.updateObject(object.getId(), object) == null) {
-        return null;
-      }
-
-      return myObjectDAO.getOneById(objectDTO.getId());
+      return myObjectDAO.updateObject(object.getId(), object);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new UserException("Erreur lors de la mise à jour de la photo de l'objet");
+
+      throw e;
     } finally {
       myDalServices.commitTransaction();
     }

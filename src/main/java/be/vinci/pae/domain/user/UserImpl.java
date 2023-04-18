@@ -1,14 +1,16 @@
 package be.vinci.pae.domain.user;
 
-
 import be.vinci.pae.utils.Config;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.awt.Color;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
+import net.coobird.thumbnailator.Thumbnails;
+import net.coobird.thumbnailator.filters.Canvas;
+import net.coobird.thumbnailator.geometry.Positions;
 import org.mindrot.jbcrypt.BCrypt;
 
 /**
@@ -25,7 +27,7 @@ public class UserImpl implements User {
   private String password;
   private Boolean photo;
   private LocalDate registerDate;
-  private Boolean isHelper;
+  private String role;
 
   /**
    * Return the id of a user.
@@ -188,23 +190,23 @@ public class UserImpl implements User {
   }
 
   /**
-   * Return a boolean corresponding if a user is a helper.
+   * Return the user role.
    *
-   * @return true if the user is a helper false if he is not
+   * @return a String corresponding to the user role
    */
   @Override
-  public Boolean getIsHelper() {
-    return isHelper;
+  public String getRole() {
+    return role;
   }
 
   /**
-   * set the boolean value corresponding if the user is a helper.
+   * set the user role.
    *
-   * @param isHelper the value
+   * @param role the value
    */
   @Override
-  public void setIsHelper(Boolean isHelper) {
-    this.isHelper = isHelper;
+  public void setRole(String role) {
+    this.role = role;
   }
 
   /**
@@ -239,20 +241,36 @@ public class UserImpl implements User {
    */
   @Override
   public boolean saveProfilePicture(InputStream photo) {
-    try {
-      String blobPath = Config.getProperty("BlobPath");
+    String blobPath = Config.getProperty("BlobPath");
 
+    try {
       // Create the blob directory if it doesn't exist
       Files.createDirectories(Paths.get(blobPath));
 
-      Files.copy(photo, Paths.get(blobPath, "user-" + id + ".jpg"),
-          StandardCopyOption.REPLACE_EXISTING);
+      // Resize photo and save
+      Thumbnails
+          .of(photo)
+          .crop(Positions.CENTER)
+          .size(128, 128)
+          .addFilter(new Canvas(128, 128, Positions.CENTER, Color.WHITE))
+          .outputFormat("jpg")
+          .toFile(new File(blobPath, "user-" + id + ".jpg"));
     } catch (Exception e) {
-      e.printStackTrace();
-
       return false;
     }
 
     return true;
+  }
+
+  /**
+   * Remove the profile picture of the user.
+   *
+   * @return whether the removal was successful
+   */
+  @Override
+  public boolean removeProfilePicture() {
+    String blobPath = Config.getProperty("BlobPath");
+    File file = new File(blobPath, "user-" + id + ".jpg");
+    return file.delete();
   }
 }

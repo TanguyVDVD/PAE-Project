@@ -73,9 +73,7 @@ public class UserUCCImpl implements UserUCC {
 
       userDTO.setPassword(User.hashPassword(userDTO.getPassword()));
 
-      UserDTO userAfterRegister = myUserDAO.insert(userDTO);
-
-      return userAfterRegister;
+      return myUserDAO.insert(userDTO);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
 
@@ -231,6 +229,42 @@ public class UserUCCImpl implements UserUCC {
       user.saveProfilePicture(file);
 
       user.setPhoto(true);
+
+      return myUserDAO.update(user);
+    } catch (Exception e) {
+      myDalServices.rollbackTransaction();
+
+      throw e;
+    } finally {
+      myDalServices.commitTransaction();
+    }
+  }
+
+  /**
+   * Remove a user's profile picture.
+   *
+   * @param userDTO  the user
+   * @param password the password to verify
+   * @return the updated user
+   */
+  @Override
+  public UserDTO removeProfilePicture(UserDTO userDTO, String password) {
+    myDalServices.startTransaction();
+
+    try {
+      User user = (User) myUserDAO.getOneById(userDTO.getId());
+
+      if (user == null) {
+        return null;
+      }
+
+      if (!user.isPasswordCorrect(password)) {
+        throw new UserException("Mot de passe incorrect");
+      }
+
+      user.removeProfilePicture();
+
+      user.setPhoto(false);
 
       return myUserDAO.update(user);
     } catch (Exception e) {

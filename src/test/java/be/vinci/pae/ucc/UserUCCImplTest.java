@@ -132,7 +132,7 @@ class UserUCCImplTest {
     Mockito.when(validUser.getPassword()).thenReturn("password");
     Mockito.when(validUser.getPhoto()).thenReturn(true);
     Mockito.when(validUser.getRegisterDate()).thenReturn(LocalDate.now());
-    Mockito.when(validUser.getIsHelper()).thenReturn(true);
+    Mockito.when(validUser.getRole()).thenReturn("aidant");
 
     Mockito.when(validUser.isPasswordCorrect("password")).thenReturn(true);
     Mockito.when(validUser.isPasswordCorrect("wrongPassword")).thenReturn(false);
@@ -385,5 +385,36 @@ class UserUCCImplTest {
 
     assertThrows(Exception.class, () -> userUCC.updateProfilePicture(validUser, "password", file),
         "Update profile picture hasn't thrown an exception");
+  }
+
+  @DisplayName("Remove profile picture with existing user and correct password")
+  @Test
+  void removeProfilePictureWithExistingUserAndCorrectPassword() {
+    assertEquals(validUser, userUCC.removeProfilePicture(validUser, "password"),
+        "Remove profile picture have not return the correct user");
+  }
+
+  @DisplayName("Remove profile picture with non-existing user")
+  @Test
+  void removeProfilePictureWithNonExistingUser() {
+    assertNull(userUCC.removeProfilePicture(notInDBUser, "password"),
+        "Remove profile picture have not return null");
+  }
+
+  @DisplayName("Remove profile picture with existing user and wrong password")
+  @Test
+  void removeProfilePictureWithExistingUserAndWrongPassword() {
+    assertThrows(UserException.class,
+        () -> userUCC.removeProfilePicture(validUser, "wrongPassword"),
+        "Remove profile picture hasn't thrown an exception");
+  }
+
+  @DisplayName("Remove profile picture with exception")
+  @Test
+  void removeProfilePictureWithException() {
+    Mockito.when(userDAO.update(validUser)).thenThrow(new DALException(""));
+
+    assertThrows(Exception.class, () -> userUCC.removeProfilePicture(validUser, "password"),
+        "Remove profile picture hasn't thrown an exception");
   }
 }

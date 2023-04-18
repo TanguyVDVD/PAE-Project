@@ -77,4 +77,13 @@ public interface UserUCC {
    * @return the updated user
    */
   UserDTO updateProfilePicture(UserDTO userDTO, String password, InputStream file);
+
+  /**
+   * Remove a user's profile picture.
+   *
+   * @param userDTO  the user
+   * @param password the password to verify
+   * @return the updated user
+   */
+  UserDTO removeProfilePicture(UserDTO userDTO, String password);
 }
