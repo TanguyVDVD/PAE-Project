@@ -66,6 +66,8 @@ public class DALServicesImpl implements DALServices, DalBackendServices {
    * Starts a transaction by getting a connection from the connection pool.
    */
   @Override
+  //@Transactional(isolation = Isolation.SERIALIZABLE)
+  //synchronized
   public void startTransaction() {
     try {
       Connection connection = bds.getConnection();

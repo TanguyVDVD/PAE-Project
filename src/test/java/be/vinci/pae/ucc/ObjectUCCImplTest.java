@@ -14,8 +14,9 @@ import be.vinci.pae.services.object.ObjectDAO;
 import be.vinci.pae.services.object.ObjectDAOImpl;
 import be.vinci.pae.ucc.object.ObjectUCC;
 import be.vinci.pae.ucc.object.ObjectUCCImpl;
+import be.vinci.pae.utils.exceptions.DALException;
+import be.vinci.pae.utils.exceptions.UserException;
 import jakarta.inject.Singleton;
-import jakarta.ws.rs.WebApplicationException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -165,6 +166,8 @@ class ObjectUCCImplTest {
     Mockito.when(object1.getStatus()).thenReturn("accepté");
     Mockito.when(object1.getState()).thenReturn("accepté");
 
+    Mockito.when(object1.setSateDate(object, object1, dateToday)).thenReturn(object);
+
     Mockito.when(objectDAO.updateObject(object1.getId(), object1)).thenReturn(object);
 
     ObjectDTO objectDTO = objectUCC.update(object.getId(), object, dateToday);
@@ -194,6 +197,8 @@ class ObjectUCCImplTest {
 
     LocalDate dateToday = LocalDate.now();
 
+    Mockito.when(object1.setSateDate(object, object1, dateToday)).thenReturn(object);
+
     Mockito.when(objectDAO.updateObject(object1.getId(), object1)).thenReturn(object);
 
     ObjectDTO objectDTO = objectUCC.update(object.getId(), object, dateToday);
@@ -221,14 +226,14 @@ class ObjectUCCImplTest {
     Mockito.when(object1.getStatus()).thenReturn("accepté");
     Mockito.when(object1.getState()).thenReturn("accepté");
 
+    Mockito.when(object1.setSateDate(object, object1, null)).thenReturn(null);
+
     Mockito.when(objectDAO.updateObject(object1.getId(), object1)).thenReturn(object);
 
     LocalDate dateToday = LocalDate.now();
 
-    assertThrows(WebApplicationException.class,
-        () -> objectUCC.update(object.getId(), null, dateToday),
+    assertNull(objectUCC.update(object.getId(), null, dateToday),
         "Update return is not null");
-
   }
 
   @DisplayName("Get a object by id")
@@ -244,8 +249,8 @@ class ObjectUCCImplTest {
   @DisplayName("Exception when getting an object by id")
   @Test
   void exceptionGetAnObjectByID() {
-    Mockito.when(objectDAO.getOneById(1)).thenThrow(new RuntimeException());
-    assertThrows(WebApplicationException.class, () -> objectUCC.getOne(1),
+    Mockito.when(objectDAO.getOneById(1)).thenThrow(new DALException(""));
+    assertThrows(UserException.class, () -> objectUCC.getOne(1),
         "getOneByID did not throw an exception");
 
   }
@@ -267,7 +272,7 @@ class ObjectUCCImplTest {
   void exceptionWhenGettingAllObjects() {
     Mockito.when(objectDAO.getAll("")).thenThrow(new RuntimeException());
 
-    assertThrows(WebApplicationException.class, () -> objectUCC.getObjects(""),
+    assertThrows(UserException.class, () -> objectUCC.getObjects(""),
         "getObjects() did not throw an exception");
   }
 
@@ -286,9 +291,9 @@ class ObjectUCCImplTest {
   @DisplayName("Exception when getting list of all offers")
   @Test
   void exceptionWhenGettingAllOffers() {
-    Mockito.when(objectDAO.getOffers("")).thenThrow(new WebApplicationException());
+    Mockito.when(objectDAO.getOffers("")).thenThrow(new DALException(""));
 
-    assertThrows(WebApplicationException.class, () -> objectUCC.getOffers(""),
+    assertThrows(UserException.class, () -> objectUCC.getOffers(""),
         "getOffers() did not throw an exception");
   }
 
@@ -315,9 +320,9 @@ class ObjectUCCImplTest {
 
     objects.add(object);
 
-    Mockito.when(objectDAO.getAllByUser(1)).thenThrow(new RuntimeException());
+    Mockito.when(objectDAO.getAllByUser(1)).thenThrow(new DALException(""));
 
-    assertThrows(WebApplicationException.class, () -> objectUCC.getObjectsByUser(1),
+    assertThrows(UserException.class, () -> objectUCC.getObjectsByUser(1),
         "getObject by id user did not return exception");
 
   }

@@ -501,4 +501,62 @@ public class ObjectImpl implements Object {
     return true;
   }
 
+  /**
+   * Check if the state is "en magasain" of "à l'atelier".
+   *
+   * @param objectDTO the object to check the state
+   * @return true if the state correspond else false
+   */
+  @Override
+  public boolean isSateWorkshopOrShop(ObjectDTO objectDTO) {
+    return objectDTO.getState().equals("à l'atelier") || objectDTO.getState().equals("en magasin");
+  }
+
+  /**
+   * Set the correct change sate date.
+   *
+   * @param objectDTO       the object after the sate change
+   * @param objectDTOFromDb the object before the state change
+   * @param dateChange      the date of de change
+   * @return the objectDTO change, null if there is a problem
+   */
+  @Override
+  public ObjectDTO setSateDate(ObjectDTO objectDTO, ObjectDTO objectDTOFromDb,
+      LocalDate dateChange) {
+
+    if (objectDTO == null || objectDTOFromDb == null || dateChange == null) {
+      return null;
+    }
+
+    if (!objectDTO.getState().equals(objectDTOFromDb.getState())) {
+      if (objectDTO.getState().equals("à l'atelier")) {
+        objectDTOFromDb.setWorkshopDate(dateChange);
+      }
+      if (objectDTO.getState().equals("en magasin")) {
+        objectDTOFromDb.setDepositDate(dateChange);
+      }
+      if (objectDTO.getState().equals("en vente")) {
+        if (!isSateWorkshopOrShop(objectDTOFromDb)) {
+          return null;
+        }
+        objectDTOFromDb.setOnSaleDate(dateChange);
+      }
+      if (objectDTO.getState().equals("vendu")) {
+        if (!isSateWorkshopOrShop(objectDTOFromDb) || !objectDTOFromDb.getState()
+            .equals("en vente")) {
+          return null;
+        }
+        objectDTOFromDb.setSellingDate(dateChange);
+      }
+      if (objectDTO.getState().equals("retiré")) {
+        if (!isSateWorkshopOrShop(objectDTOFromDb) || !objectDTOFromDb.getState()
+            .equals("en vente")) {
+          return null;
+        }
+        objectDTOFromDb.setWithdrawalDate(dateChange);
+      }
+    }
+    return objectDTO;
+  }
+
 }
