@@ -5,6 +5,7 @@ import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.utils.MyLogger;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.WebApplicationException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -243,6 +244,15 @@ public class UserDAOImpl implements UserDAO {
       ps.setInt(i + 1, userDTO.getVersionNumber());
 
       ps.executeUpdate();
+
+      if (ps.getUpdateCount() == 0) {
+        if (getOneById(userDTO.getId()) == null) {
+          throw new WebApplicationException("Utilisateur non trouvé", 404);
+        } else {
+          throw new WebApplicationException(
+              "Conflit de version d'utilisateur - v" + userDTO.getVersionNumber(), 409);
+        }
+      }
 
       return true;
     } catch (SQLException se) {

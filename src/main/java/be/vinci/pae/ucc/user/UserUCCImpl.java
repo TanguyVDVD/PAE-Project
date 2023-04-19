@@ -300,7 +300,7 @@ public class UserUCCImpl implements UserUCC {
       return myUserDAO.getOneById(userDTO.getId());
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      MyLogger.log(Level.INFO, "rreur lors de la mise à jour de la photo de profil");
+      MyLogger.log(Level.INFO, "Erreur lors de la mise à jour de la photo de profil");
       throw new WebApplicationException("Erreur lors de la mise à jour de la photo de profil",
           Status.INTERNAL_SERVER_ERROR);
     } finally {

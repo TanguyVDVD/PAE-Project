@@ -127,9 +127,9 @@ Authorization: {{nonHelperToken}}
 Content-Type: application/json
 
 {
-  "firstName": "Bart",
+  "firstName": "Barteeeeee",
   "currentPassword": "password",
-  "version_number": 1
+  "versionNbr": 3
 }
 
 ### Update a user's role as helper
@@ -138,5 +138,6 @@ Authorization: {{helperToken}}
 Content-Type: application/json
 
 {
-  "role": "aidant"
+  "role": "aidant",
+  "versionNbr": 2
 }

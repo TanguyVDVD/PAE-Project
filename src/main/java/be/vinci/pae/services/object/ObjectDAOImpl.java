@@ -8,6 +8,7 @@ import be.vinci.pae.services.objecttype.ObjectTypeDAO;
 import be.vinci.pae.services.user.UserDAO;
 import be.vinci.pae.utils.MyLogger;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.WebApplicationException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -275,7 +276,18 @@ public class ObjectDAOImpl implements ObjectDAO {
       ps.setInt(11, objectDTO.getVersionNumber() + 1);
       ps.setInt(12, id);
       ps.setInt(13, objectDTO.getVersionNumber());
+
       ps.executeUpdate();
+
+      if (ps.getUpdateCount() == 0) {
+        if (getOneById(objectDTO.getId()) == null) {
+          throw new WebApplicationException("Objet non trouvé", 404);
+        } else {
+          throw new WebApplicationException(
+              "Conflit de version de l'objet - V" + objectDTO.getVersionNumber(), 409);
+        }
+      }
+
     } catch (SQLException se) {
       MyLogger.log(Level.INFO, "Error update an object");
       se.printStackTrace();
@@ -304,7 +316,18 @@ public class ObjectDAOImpl implements ObjectDAO {
 
       ps.setInt(3, id);
       ps.setInt(4, versionNumber);
+
       ps.executeUpdate();
+
+      if (ps.getUpdateCount() == 0) {
+        if (getOneById(id) == null) {
+          throw new WebApplicationException("Objet non trouvé", 404);
+        } else {
+          throw new WebApplicationException(
+              "Conflit de version de l'objet - V" + versionNumber, 409);
+        }
+      }
+
     } catch (SQLException se) {
       MyLogger.log(Level.INFO, "Error set object accepted");
       se.printStackTrace();
@@ -339,7 +362,18 @@ public class ObjectDAOImpl implements ObjectDAO {
 
       ps.setInt(4, id);
       ps.setInt(5, versionNumber);
+
       ps.executeUpdate();
+
+      if (ps.getUpdateCount() == 0) {
+        if (getOneById(id) == null) {
+          throw new WebApplicationException("Objet non trouvé", 404);
+        } else {
+          throw new WebApplicationException(
+              "Conflit de version de l'objet - V" + versionNumber, 409);
+        }
+      }
+
     } catch (SQLException se) {
       MyLogger.log(Level.INFO, "Error set object refused");
       se.printStackTrace();
