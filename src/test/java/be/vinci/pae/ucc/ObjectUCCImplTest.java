@@ -333,4 +333,16 @@ class ObjectUCCImplTest {
 
   }
 
+  //test update object with wrong version number
+  @DisplayName("Update an object with wrong version number")
+  @Test
+  void updateAnObjectWithWrongVersionNumber() {
+    Object object = Mockito.mock(ObjectImpl.class);
+    Mockito.when(object.getId()).thenReturn(1);
+    Mockito.when(object.getVersionNumber()).thenReturn(46545345);
+    assertThrows(WebApplicationException.class, () -> objectUCC.update(1, object, LocalDate.now()),
+        "Update did not throw an exception");
+  }
+
+
 }
