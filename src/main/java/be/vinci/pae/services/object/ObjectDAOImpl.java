@@ -302,6 +302,7 @@ public class ObjectDAOImpl implements ObjectDAO {
    *
    * @param id             the id of the object
    * @param acceptanceDate the acceptance date of the object
+   * @param versionNumber  the version number of the object
    * @return the modified object
    */
   @Override
@@ -347,6 +348,7 @@ public class ObjectDAOImpl implements ObjectDAO {
    * @param id               the id of the object
    * @param reasonForRefusal the reason for refusal
    * @param refusalDate      the refusal date
+   * @param versionNumber    the version number of the object
    * @return the modified object
    */
   @Override

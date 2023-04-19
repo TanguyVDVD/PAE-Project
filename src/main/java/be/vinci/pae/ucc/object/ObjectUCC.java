@@ -46,7 +46,8 @@ public interface ObjectUCC {
   /**
    * Accept an offer.
    *
-   * @param id the id of the object to accept
+   * @param id            the id of the object to accept
+   * @param versionNumber the version number of the object
    * @return the object updated
    */
   ObjectDTO accept(int id, int versionNumber);
@@ -56,6 +57,7 @@ public interface ObjectUCC {
    *
    * @param id               the id of the object to refuse
    * @param reasonForRefusal the reason for refusal
+   * @param versionNumber    the version number of the object
    * @return the object updated
    */
   ObjectDTO refuse(int id, String reasonForRefusal, int versionNumber);

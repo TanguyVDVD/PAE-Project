@@ -271,6 +271,12 @@ public class UserUCCImpl implements UserUCC {
     return updateUser(userDTO, null);
   }
 
+  /**
+   * Get a user's profile picture.
+   *
+   * @param userDTO the user
+   * @return the user's profile picture
+   */
   @Override
   public File getProfilePicture(UserDTO userDTO) {
     User user = (User) userDTO;
@@ -278,6 +284,13 @@ public class UserUCCImpl implements UserUCC {
     return user.profilePictureFile();
   }
 
+  /**
+   * Update a user's profile picture.
+   *
+   * @param userDTO        the user to update
+   * @param profilePicture the new profile picture
+   * @return the updated user
+   */
   @Override
   public UserDTO updateProfilePicture(UserDTO userDTO, InputStream profilePicture) {
     myDalServices.startTransaction();

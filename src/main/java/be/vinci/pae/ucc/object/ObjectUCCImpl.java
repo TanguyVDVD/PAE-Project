@@ -118,7 +118,8 @@ public class ObjectUCCImpl implements ObjectUCC {
   /**
    * Accept an offer.
    *
-   * @param id the id of the object to accept
+   * @param id            the id of the object to accept
+   * @param versionNumber the version number of the object
    * @return the object updated
    */
   @Override
@@ -150,6 +151,7 @@ public class ObjectUCCImpl implements ObjectUCC {
    *
    * @param id               the id of the object to refuse
    * @param reasonForRefusal the reason for refusal
+   * @param versionNumber    the version number of the object
    * @return the object updated
    */
   @Override

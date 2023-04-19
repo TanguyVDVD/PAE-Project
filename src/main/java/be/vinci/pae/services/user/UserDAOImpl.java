@@ -250,7 +250,7 @@ public class UserDAOImpl implements UserDAO {
           throw new WebApplicationException("Utilisateur non trouvé", 404);
         } else {
           throw new WebApplicationException(
-              "Conflit de version d'utilisateur - v" + userDTO.getVersionNumber(), 409);
+              "Conflit de version d'utilisateur - V" + userDTO.getVersionNumber(), 409);
         }
       }
 
