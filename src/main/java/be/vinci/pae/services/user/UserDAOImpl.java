@@ -3,17 +3,15 @@ package be.vinci.pae.services.user;
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.services.DalBackendServices;
-import be.vinci.pae.utils.MyLogger;
+import be.vinci.pae.utils.exceptions.DALException;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 
@@ -48,9 +46,8 @@ public class UserDAOImpl implements UserDAO {
       user.setPhoto(resultSet.getBoolean("photo"));
       user.setRegisterDate(resultSet.getDate("register_date").toLocalDate());
       user.setRole(resultSet.getString("role"));
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "error dto from RS USer");
-      se.printStackTrace();
+    } catch (Exception e) {
+      throw new DALException("Error during the mapping of the user", e);
     }
 
     return user;
@@ -60,10 +57,10 @@ public class UserDAOImpl implements UserDAO {
    * Insert a new user in the db.
    *
    * @param userDTO the user to insert in the db
-   * @return id of the new user if succeeded, -1 if not
+   * @return the user inserted in the db
    */
   @Override
-  public int insert(UserDTO userDTO) {
+  public UserDTO insert(UserDTO userDTO) {
     String request = "INSERT INTO" + " pae.users VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request, true)) {
@@ -82,14 +79,13 @@ public class UserDAOImpl implements UserDAO {
       // Get the id of the new user
       ResultSet rs = ps.getGeneratedKeys();
       if (rs.next()) {
-        return rs.getInt(1);
+        return getOneById(rs.getInt(1));
       }
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "error insert user");
-      se.printStackTrace();
+    } catch (Exception e) {
+      throw new DALException("Error during the insertion of the user", e);
     }
 
-    return -1;
+    return null;
   }
 
   /**
@@ -109,9 +105,8 @@ public class UserDAOImpl implements UserDAO {
           return dtoFromRS(rs);
         }
       }
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "error get a user by email");
-      se.printStackTrace();
+    } catch (Exception e) {
+      throw new DALException("Error during getting user by email", e);
     }
 
     return null;
@@ -129,9 +124,8 @@ public class UserDAOImpl implements UserDAO {
           return dtoFromRS(rs);
         }
       }
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "get a user by phone number");
-      se.printStackTrace();
+    } catch (Exception e) {
+      throw new DALException("Error during getting user by phone number", e);
     }
 
     return null;
@@ -154,9 +148,8 @@ public class UserDAOImpl implements UserDAO {
           return dtoFromRS(rs);
         }
       }
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "get a user by id");
-      se.printStackTrace();
+    } catch (Exception e) {
+      throw new DALException("Error during getting user by id", e);
     }
 
     return null;
@@ -181,9 +174,8 @@ public class UserDAOImpl implements UserDAO {
           users.add(dtoFromRS(rs));
         }
       }
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "get all user");
-      se.printStackTrace();
+    } catch (Exception e) {
+      throw new DALException("Error during getting all users", e);
     }
 
     return users;
@@ -193,10 +185,10 @@ public class UserDAOImpl implements UserDAO {
    * Update a user.
    *
    * @param userDTO the user to update
-   * @return true if succeeded, false if not
+   * @return user updated
    */
   @Override
-  public boolean update(UserDTO userDTO) {
+  public UserDTO update(UserDTO userDTO) {
     // Only update the fields that are not null
     Map<String, Object> fields = new HashMap<>();
     fields.put("version_number", userDTO.getVersionNumber() + 1);
@@ -228,7 +220,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     if (fields.isEmpty()) {
-      return false;
+      return userDTO;
     }
 
     String request = "UPDATE pae.users SET " + fields.keySet().stream()
@@ -254,13 +246,10 @@ public class UserDAOImpl implements UserDAO {
         }
       }
 
-      return true;
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "error update user");
-      se.printStackTrace();
+      return getOneById(userDTO.getId());
+    } catch (Exception se) {
+      throw new DALException("Error during updating user", se);
     }
-
-    return false;
   }
 }
 

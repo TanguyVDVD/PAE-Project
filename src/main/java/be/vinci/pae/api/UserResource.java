@@ -3,10 +3,10 @@ package be.vinci.pae.api;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeHelper;
 import be.vinci.pae.domain.DomainFactory;
+import be.vinci.pae.domain.user.User;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.ucc.user.UserUCC;
 import be.vinci.pae.utils.Config;
-import be.vinci.pae.utils.MyLogger;
 import be.vinci.pae.utils.MyObjectMapper;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -35,7 +35,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.Date;
-import java.util.logging.Level;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.server.ContainerRequest;
@@ -82,7 +81,6 @@ public class UserResource {
   public ObjectNode login(JsonNode json) {
 
     if (!json.hasNonNull("email") || !json.hasNonNull("password")) {
-      MyLogger.log(Level.INFO, "Adresse mail et mot de passe requis");
       throw new WebApplicationException("Adresse mail et mot de passe requis", Status.UNAUTHORIZED);
     }
 
@@ -90,11 +88,6 @@ public class UserResource {
     String password = json.get("password").asText();
 
     UserDTO userDTO = userUCC.login(login, password);
-
-    if (userDTO == null) {
-      MyLogger.log(Level.INFO, "Adresse mail ou mot de passe incorrect");
-      throw new WebApplicationException("Adresse mail ou mot de passe incorrect", Status.NOT_FOUND);
-    }
 
     return createToken(userDTO);
   }
@@ -126,9 +119,20 @@ public class UserResource {
 
     for (String input : inputs) {
       if (input == null || input.isBlank()) {
-        MyLogger.log(Level.INFO, "Paramètres manquants");
         throw new WebApplicationException("Paramètres manquants", Response.Status.UNAUTHORIZED);
       }
+    }
+
+    // Check email format
+    if (!User.emailIsValid(email)) {
+      throw new WebApplicationException("Adresse mail invalide", Response.Status.BAD_REQUEST);
+    }
+
+    // Check phone number format
+    phone = User.formatPhoneNumber(phone);
+    if (phone == null) {
+      throw new WebApplicationException("Numéro de téléphone invalide",
+          Response.Status.BAD_REQUEST);
     }
 
     UserDTO userRegister = myDomainFactory.getUser();
@@ -145,7 +149,7 @@ public class UserResource {
     UserDTO userAfterRegister = userUCC.register(userRegister);
 
     if (userAfterRegister.getPhoto()) {
-      userUCC.updateProfilePicture(userAfterRegister, photo);
+      userUCC.updateProfilePicture(userAfterRegister, password, photo);
     }
 
     return createToken(userAfterRegister);
@@ -159,19 +163,11 @@ public class UserResource {
    */
   public ObjectNode createToken(UserDTO userDTO) {
     String token;
-    try {
-      token = JWT.create().withIssuer("auth0").withClaim("user", userDTO.getId())
-          .withExpiresAt(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 7)))
-          .sign(this.jwtAlgorithm);
+    token = JWT.create().withIssuer("auth0").withClaim("user", userDTO.getId())
+        .withExpiresAt(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 7)))
+        .sign(this.jwtAlgorithm);
 
-      return jsonMapper.convertValue(userDTO, ObjectNode.class).put("token", token);
-
-    } catch (Exception e) {
-      MyLogger.log(Level.INFO, "Erreur création token");
-      System.out.println(e.getMessage());
-      System.out.println("Unable to create token");
-      return null;
-    }
+    return jsonMapper.convertValue(userDTO, ObjectNode.class).put("token", token);
   }
 
   /**
@@ -223,7 +219,6 @@ public class UserResource {
       }
 
       if (StringUtils.isBlank(passwordToVerify)) {
-        MyLogger.log(Level.INFO, "Mot de passe actuel requis");
         throw new WebApplicationException("Mot de passe actuel requis", Status.BAD_REQUEST);
       }
 
@@ -236,11 +231,21 @@ public class UserResource {
       }
 
       if (StringUtils.isNotBlank(dataDTO.getEmail())) {
+        if (!User.emailIsValid(dataDTO.getEmail())) {
+          throw new WebApplicationException("Adresse mail invalide", Response.Status.BAD_REQUEST);
+        }
+
         userDTO.setEmail(dataDTO.getEmail());
       }
 
       if (StringUtils.isNotBlank(dataDTO.getPhoneNumber())) {
-        userDTO.setPhoneNumber(dataDTO.getPhoneNumber());
+        String formattedPhoneNumber = User.formatPhoneNumber(dataDTO.getPhoneNumber());
+
+        if (formattedPhoneNumber == null) {
+          throw new WebApplicationException("Numéro de GSM invalide", Response.Status.BAD_REQUEST);
+        }
+
+        userDTO.setPhoneNumber(formattedPhoneNumber);
       }
 
       if (StringUtils.isNotBlank(dataDTO.getPassword())) {
@@ -253,7 +258,6 @@ public class UserResource {
         userDTO.setRole(dataDTO.getRole());
       }
     } else {
-      MyLogger.log(Level.INFO, "Vous n'avez pas les droits pour modifier cet utilisateur");
       // The user is not the admin and is not the user themselves
       throw new WebApplicationException("Vous n'avez pas les droits pour modifier cet utilisateur",
           Status.UNAUTHORIZED);
@@ -262,7 +266,6 @@ public class UserResource {
     UserDTO userAfterUpdate = userUCC.updateUser(userDTO, passwordToVerify);
 
     if (userAfterUpdate == null) {
-      MyLogger.log(Level.INFO, "Utilisateur non trouvé");
       throw new WebApplicationException("Utilisateur non trouvé", Status.NOT_FOUND);
     }
 
@@ -301,8 +304,7 @@ public class UserResource {
     File f = userUCC.getProfilePicture(user);
 
     if (f == null) {
-      MyLogger.log(Level.INFO, "Photo non trouvée");
-      return Response.status(Status.NOT_FOUND).build();
+      throw new WebApplicationException("Photo non trouvé", Status.NOT_FOUND);
     }
 
     return Response.ok(f, MediaType.APPLICATION_OCTET_STREAM)
@@ -332,13 +334,11 @@ public class UserResource {
     UserDTO authorizedUser = (UserDTO) request.getProperty("user");
 
     if (authorizedUser.getId() != id) {
-      MyLogger.log(Level.INFO, "Vous n'avez pas les droits pour modifier cet utilisateur");
       throw new WebApplicationException("Vous n'avez pas les droits pour modifier cet utilisateur",
           Status.UNAUTHORIZED);
     }
 
     if (photoDetail == null || photoDetail.getFileName() == null) {
-      MyLogger.log(Level.INFO, "Paramètres manquants");
       throw new WebApplicationException("Paramètres manquants", Response.Status.BAD_REQUEST);
     }
 
@@ -347,10 +347,9 @@ public class UserResource {
     userDTO.setId(id);
     userDTO.setPhoto(true);
 
-    UserDTO userAfterUpdate = userUCC.updateProfilePicture(userDTO, photo);
+    UserDTO userAfterUpdate = userUCC.updateProfilePicture(userDTO, password, photo);
 
     if (userAfterUpdate == null) {
-      MyLogger.log(Level.INFO, "Utilisateur non trouvé");
       throw new WebApplicationException("Utilisateur non trouvé", Status.NOT_FOUND);
     }
 
@@ -375,7 +374,6 @@ public class UserResource {
     UserDTO authorizedUser = (UserDTO) request.getProperty("user");
 
     if (authorizedUser.getId() != id) {
-      MyLogger.log(Level.INFO, "Vous n'avez pas les droits pour modifier cet utilisateur");
       throw new WebApplicationException("Vous n'avez pas les droits pour modifier cet utilisateur",
           Status.UNAUTHORIZED);
     }
@@ -385,10 +383,9 @@ public class UserResource {
     userDTO.setId(id);
     userDTO.setPhoto(false);
 
-    UserDTO userAfterUpdate = userUCC.removeProfilePicture(userDTO);
+    UserDTO userAfterUpdate = userUCC.removeProfilePicture(userDTO, password);
 
     if (userAfterUpdate == null) {
-      MyLogger.log(Level.INFO, "Utilisateur non trouvé");
       throw new WebApplicationException("Utilisateur non trouvé", Status.NOT_FOUND);
     }
 

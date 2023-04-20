@@ -4,7 +4,7 @@ import be.vinci.pae.domain.user.User;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.user.UserDAO;
-import be.vinci.pae.utils.MyLogger;
+import be.vinci.pae.utils.exceptions.UserException;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
@@ -12,7 +12,6 @@ import jakarta.ws.rs.core.Response.Status;
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
-import java.util.logging.Level;
 
 
 /**
@@ -41,20 +40,15 @@ public class UserUCCImpl implements UserUCC {
     try {
       User userDB = (User) myUserDAO.getOneByEmail(email);
 
-      if (userDB == null) {
-        return null;
-      }
-
-      if (!userDB.isPasswordCorrect(password)) {
-        return null;
+      if (userDB == null || !userDB.isPasswordCorrect(password)) {
+        throw new UserException("Adresse mail ou mot de passe incorrect");
       }
 
       return userDB;
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      MyLogger.log(Level.INFO, "Erreur lors de la connexion");
-      throw new WebApplicationException("Erreur lors de la connexion",
-          Status.INTERNAL_SERVER_ERROR);
+
+      throw e;
     } finally {
       myDalServices.commitTransaction();
     }
@@ -71,61 +65,27 @@ public class UserUCCImpl implements UserUCC {
     myDalServices.startTransaction();
 
     try {
-      // Check email format
-      if (!User.emailIsValid(userDTO.getEmail())) {
-        MyLogger.log(Level.INFO, "Adresse mail invalide");
-        throw new WebApplicationException("Adresse mail invalide", Response.Status.BAD_REQUEST);
-      }
-
-      // Check phone number format
-      String phone = User.formatPhoneNumber(userDTO.getPhoneNumber());
-      if (phone == null) {
-        MyLogger.log(Level.INFO, "Numéro de téléphone invalide");
-        throw new WebApplicationException("Numéro de téléphone invalide",
-            Response.Status.BAD_REQUEST);
-      }
-      userDTO.setPhoneNumber(phone);
-
       // Check if email or phone number already exists
       if (myUserDAO.getOneByEmail(userDTO.getEmail()) != null) {
-        MyLogger.log(Level.INFO, "Adresse mail déjà utilisé");
-        throw new WebApplicationException("Adresse mail déjà utilisé", Response.Status.BAD_REQUEST);
+        throw new UserException("Adresse mail déjà utilisé");
       }
 
       if (myUserDAO.getOneByPhoneNumber(userDTO.getPhoneNumber()) != null) {
-        MyLogger.log(Level.INFO, "Numéro de GSM déjà utilisé");
-        throw new WebApplicationException("Numéro de GSM déjà utilisé",
-            Response.Status.BAD_REQUEST);
+        throw new UserException("Numéro de GSM déjà utilisé");
       }
 
-      User userTemp = (User) userDTO;
-      userTemp.setPassword(User.hashPassword(userTemp.getPassword()));
+      userDTO.setPassword(User.hashPassword(userDTO.getPassword()));
 
-      userTemp.setVersionNumber(1);
+      userDTO.setVersionNumber(1);
 
-      int id = myUserDAO.insert(userTemp);
-
-      if (id == -1) {
-        return null;
-      }
-
-      userTemp.setId(id);
-
-      return userTemp;
-
+      return myUserDAO.insert(userDTO);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
 
-      if (e instanceof WebApplicationException) {
-        throw e;
-      }
-      MyLogger.log(Level.INFO, "Erreur lors de l'inscription");
-      throw new WebApplicationException("Erreur lors de l'inscription",
-          Status.INTERNAL_SERVER_ERROR);
+      throw e;
     } finally {
       myDalServices.commitTransaction();
     }
-
   }
 
   /**
@@ -141,9 +101,8 @@ public class UserUCCImpl implements UserUCC {
       return myUserDAO.getAll(query);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      MyLogger.log(Level.INFO, "Erreur lors de la récupération des utilisateurs");
-      throw new WebApplicationException("Erreur lors de la récupération des utilisateurs",
-          Status.INTERNAL_SERVER_ERROR);
+
+      throw e;
     } finally {
       myDalServices.commitTransaction();
     }
@@ -163,9 +122,8 @@ public class UserUCCImpl implements UserUCC {
       return myUserDAO.getOneById(id);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      MyLogger.log(Level.INFO, "Erreur lors de la récupération de l'utilisateur");
-      throw new WebApplicationException("Erreur lors de la récupération de l'utilisateur",
-          Status.INTERNAL_SERVER_ERROR);
+
+      throw e;
     } finally {
       myDalServices.commitTransaction();
     }
@@ -192,44 +150,21 @@ public class UserUCCImpl implements UserUCC {
 
       // Check if password is correct
       if (password != null && !userDB.isPasswordCorrect(password)) {
-        MyLogger.log(Level.INFO, "Mot de passe incorrect");
-        throw new WebApplicationException("Mot de passe incorrect", Response.Status.BAD_REQUEST);
+        throw new UserException("Mot de passe incorrect");
       }
 
-      // Check if email is valid and not already used
+      // Check if email is not already used
       String email = userDTO.getEmail();
-      if (email != null && !email.equals(userDB.getEmail())) {
-        if (!User.emailIsValid(email)) {
-          MyLogger.log(Level.INFO, "Adresse mail invalide");
-          throw new WebApplicationException("Adresse mail invalide", Response.Status.BAD_REQUEST);
-        }
-
-        if (myUserDAO.getOneByEmail(email) != null) {
-          MyLogger.log(Level.INFO, "Adresse mail déjà utilisé");
-          throw new WebApplicationException("Adresse mail déjà utilisé",
-              Response.Status.BAD_REQUEST);
-        }
+      if (email != null && !email.equals(userDB.getEmail())
+          && myUserDAO.getOneByEmail(email) != null) {
+        throw new UserException("Adresse mail déjà utilisé");
       }
 
-      // Check if phone number is valid and not already used
+      // Check if phone number is not already used
       String phoneNumber = userDTO.getPhoneNumber();
-      if (phoneNumber != null) {
-        String formattedPhoneNumber = User.formatPhoneNumber(phoneNumber);
-
-        if (formattedPhoneNumber == null) {
-          MyLogger.log(Level.INFO, "Numéro de GSM invalide");
-          throw new WebApplicationException("Numéro de GSM invalide", Response.Status.BAD_REQUEST);
-        }
-
-        if (!formattedPhoneNumber.equals(userDB.getPhoneNumber())) {
-          if (myUserDAO.getOneByPhoneNumber(formattedPhoneNumber) != null) {
-            MyLogger.log(Level.INFO, "Numéro de GSM déjà utilisé");
-            throw new WebApplicationException("Numéro de GSM déjà utilisé",
-                Response.Status.BAD_REQUEST);
-          }
-
-          userDTO.setPhoneNumber(formattedPhoneNumber);
-        }
+      if (phoneNumber != null && !phoneNumber.equals(userDB.getPhoneNumber())
+          && myUserDAO.getOneByPhoneNumber(phoneNumber) != null) {
+        throw new UserException("Numéro de GSM déjà utilisé");
       }
 
       // Hash password if it has been changed
@@ -238,22 +173,11 @@ public class UserUCCImpl implements UserUCC {
       }
 
       // Update the user
-      if (!myUserDAO.update(userDTO)) {
-        return null;
-      }
-
-      // Return the updated user
-      return myUserDAO.getOneById(userDTO.getId());
-
+      return myUserDAO.update(userDTO);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
 
-      if (e instanceof WebApplicationException) {
-        throw e;
-      }
-      MyLogger.log(Level.INFO, "Erreur lors de la mise à jour de l'utilisateur");
-      throw new WebApplicationException("Erreur lors de la mise à jour de l'utilisateur",
-          Status.INTERNAL_SERVER_ERROR);
+      throw e;
     } finally {
       myDalServices.commitTransaction();
     }
@@ -288,11 +212,12 @@ public class UserUCCImpl implements UserUCC {
    * Update a user's profile picture.
    *
    * @param userDTO        the user to update
-   * @param profilePicture the new profile picture
+   * @param password the password to verify
+   * @param file     the new profile picture
    * @return the updated user
    */
   @Override
-  public UserDTO updateProfilePicture(UserDTO userDTO, InputStream profilePicture) {
+  public UserDTO updateProfilePicture(UserDTO userDTO, String password, InputStream file) {
     myDalServices.startTransaction();
 
     try {
@@ -302,20 +227,19 @@ public class UserUCCImpl implements UserUCC {
         return null;
       }
 
-      user.saveProfilePicture(profilePicture);
+      if (!user.isPasswordCorrect(password)) {
+        throw new UserException("Mot de passe incorrect");
+      }
+
+      user.saveProfilePicture(file);
 
       user.setPhoto(true);
 
-      if (!myUserDAO.update(user)) {
-        return null;
-      }
-
-      return myUserDAO.getOneById(userDTO.getId());
+      return myUserDAO.update(user);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      MyLogger.log(Level.INFO, "Erreur lors de la mise à jour de la photo de profil");
-      throw new WebApplicationException("Erreur lors de la mise à jour de la photo de profil",
-          Status.INTERNAL_SERVER_ERROR);
+
+      throw e;
     } finally {
       myDalServices.commitTransaction();
     }
@@ -324,11 +248,12 @@ public class UserUCCImpl implements UserUCC {
   /**
    * Remove a user's profile picture.
    *
-   * @param userDTO the user
+   * @param userDTO  the user
+   * @param password the password to verify
    * @return the updated user
    */
   @Override
-  public UserDTO removeProfilePicture(UserDTO userDTO) {
+  public UserDTO removeProfilePicture(UserDTO userDTO, String password) {
     myDalServices.startTransaction();
 
     try {
@@ -338,20 +263,19 @@ public class UserUCCImpl implements UserUCC {
         return null;
       }
 
+      if (!user.isPasswordCorrect(password)) {
+        throw new UserException("Mot de passe incorrect");
+      }
+
       user.removeProfilePicture();
 
       user.setPhoto(false);
 
-      if (!myUserDAO.update(user)) {
-        return null;
-      }
-
-      return myUserDAO.getOneById(userDTO.getId());
+      return myUserDAO.update(user);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      MyLogger.log(Level.INFO, "Erreur lors de la suppression de la photo de profil");
-      throw new WebApplicationException("Erreur lors de la suppression de la photo de profil",
-          Status.INTERNAL_SERVER_ERROR);
+
+      throw e;
     } finally {
       myDalServices.commitTransaction();
     }
