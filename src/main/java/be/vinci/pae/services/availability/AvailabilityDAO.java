@@ -36,7 +36,7 @@ public interface AvailabilityDAO {
    * Insert a new availability in the db.
    *
    * @param availability the date to insert in the db
-   * @return the new availability added if succeeded, null if not
+   * @return the new availability added if succeeded
    */
   AvailabilityDTO addOne(AvailabilityDTO availability);
 
@@ -44,7 +44,7 @@ public interface AvailabilityDAO {
    * Delete an availability in the db.
    *
    * @param id the id of the availability to delete in the db
-   * @return the availability deleted if succeeded, null if not
+   * @return the availability deleted if succeeded
    */
   AvailabilityDTO deleteOne(int id);
 }

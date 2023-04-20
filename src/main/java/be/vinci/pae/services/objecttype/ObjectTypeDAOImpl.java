@@ -3,14 +3,13 @@ package be.vinci.pae.services.objecttype;
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.objecttype.ObjectTypeDTO;
 import be.vinci.pae.services.DalBackendServices;
-import be.vinci.pae.utils.MyLogger;
+import be.vinci.pae.utils.exceptions.DALException;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 /**
  * ObjectTypeDAO class that implements ObjectTypeDAO interface Provide the different methods.
@@ -36,9 +35,8 @@ public class ObjectTypeDAOImpl implements ObjectTypeDAO {
     try {
       objectType.setId(resultSet.getInt("id_object_type"));
       objectType.setLabel(resultSet.getString("label"));
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "Error dtoFromRS");
-      se.printStackTrace();
+    } catch (SQLException e) {
+      throw new DALException("Error during the mapping of the object type", e);
     }
 
     return objectType;
@@ -61,9 +59,8 @@ public class ObjectTypeDAOImpl implements ObjectTypeDAO {
           objectTypes.add(dtoFromRS(rs));
         }
       }
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "Error get all objecttype");
-      se.printStackTrace();
+    } catch (SQLException e) {
+      throw new DALException("Error during the get all object types", e);
     }
 
     return objectTypes;
@@ -87,9 +84,8 @@ public class ObjectTypeDAOImpl implements ObjectTypeDAO {
           return rs.getString("label");
         }
       }
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "Error get a object type by id");
-      se.printStackTrace();
+    } catch (SQLException e) {
+      throw new DALException("Error during the get one object type by id", e);
     }
 
     return null;
@@ -112,9 +108,8 @@ public class ObjectTypeDAOImpl implements ObjectTypeDAO {
           return rs.getInt("id_object_type");
         }
       }
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "Error get a id by label");
-      se.printStackTrace();
+    } catch (SQLException e) {
+      throw new DALException("Error during the get one object type by id", e);
     }
 
     return 0;

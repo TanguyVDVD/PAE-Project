@@ -4,9 +4,8 @@ import be.vinci.pae.domain.availability.AvailabilityDTO;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.availability.AvailabilityDAO;
 import be.vinci.pae.services.object.ObjectDAO;
+import be.vinci.pae.utils.exceptions.UserException;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response.Status;
 import java.util.List;
 
 /**
@@ -35,9 +34,8 @@ public class AvailabilityUCCImpl implements AvailabilityUCC {
       return myAvailabilityDAO.getAll();
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new WebApplicationException(
-          "Erreur lors de la récupération de la liste des disponibilités",
-          Status.INTERNAL_SERVER_ERROR);
+
+      throw e;
     } finally {
       myDalServices.commitTransaction();
     }
@@ -53,25 +51,15 @@ public class AvailabilityUCCImpl implements AvailabilityUCC {
     myDalServices.startTransaction();
     try {
       if (myAvailabilityDAO.getOneByDate(availability.getDate()) != null) {
-        throw new WebApplicationException(
-            "Impossible d'insérer la date en db, la date existe déjà",
-            Status.METHOD_NOT_ALLOWED);
+        throw new UserException(
+            "Impossible d'insérer la date, la date existe déjà");
       }
 
-      AvailabilityDTO addedAvailability = myAvailabilityDAO.addOne(availability);
-
-      if (addedAvailability == null) {
-        throw new WebApplicationException(
-            "Impossible d'insérer la date en db",
-            Status.INTERNAL_SERVER_ERROR);
-      }
-
-      return addedAvailability;
+      return myAvailabilityDAO.addOne(availability);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new WebApplicationException(
-          "Erreur lors de l'ajout de la disponibilité à la db",
-          Status.INTERNAL_SERVER_ERROR);
+
+      throw e;
     } finally {
       myDalServices.commitTransaction();
     }
@@ -88,33 +76,22 @@ public class AvailabilityUCCImpl implements AvailabilityUCC {
     myDalServices.startTransaction();
     try {
       if (myAvailabilityDAO.getOneById(id) == null) {
-        throw new WebApplicationException(
-            "Impossible de supprimer la disponibilité en db, la disponibilité n'existe pas",
-            Status.NOT_FOUND);
+        throw new UserException(
+            "Impossible de supprimer la disponibilité, la disponibilité n'existe pas");
       }
 
       // Vérifie que la disponibilité à supprimer n'est pas encore liée à un objet
       if (!myObjectDAO.getAllByAvailability(id).isEmpty()) {
-        throw new WebApplicationException(
-            "Impossible de supprimer la disponibilité en db, "
-                + "la disponibilité est déjà associée à un ou plusieurs objets",
-            Status.METHOD_NOT_ALLOWED);
+        throw new UserException(
+            "Impossible de supprimer la disponibilité, "
+                + "la disponibilité est déjà associée à un ou plusieurs objets");
       }
 
-      AvailabilityDTO deletedAvailability = myAvailabilityDAO.deleteOne(id);
-
-      if (deletedAvailability == null) {
-        throw new WebApplicationException(
-            "Impossible de supprimer la disponibilité en db",
-            Status.INTERNAL_SERVER_ERROR);
-      }
-
-      return deletedAvailability;
+      return myAvailabilityDAO.deleteOne(id);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      throw new WebApplicationException(
-          "Erreur lors de la suppression de la disponibilité en db",
-          Status.INTERNAL_SERVER_ERROR);
+
+      throw e;
     } finally {
       myDalServices.commitTransaction();
     }
