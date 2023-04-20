@@ -1,9 +1,10 @@
 import flatpickr from 'flatpickr';
+import "flatpickr/dist/l10n/fr";
 import {getAuthenticatedUser} from "../../../utils/auths";
 import Navigate from "../../Router/Navigate";
-import {clearPage} from "../../../utils/render";
+import {clearPage, renderError} from "../../../utils/render";
 import API from "../../../utils/api";
-import {dateStringtoGoodFormat} from "../../../utils/dates";
+import {invertDateFormat} from "../../../utils/dates";
 
 const AdminAvailabilitiesPage = () => {
   const authenticatedUser = getAuthenticatedUser();
@@ -32,28 +33,61 @@ function renderAdminAvailabilitiesPage() {
 
   main.appendChild(div);
 
-  renderDatePicker("#date-picker");
-}
+  const datePicker = document.getElementById("date-picker");
 
-function renderDatePicker(datePickerId) {
-  flatpickr(datePickerId);
+  let defaultAvailabilities = [];
 
   API.get('/availabilities').then((availabilities) => {
-    const defaultAvailabilities = [];
-
     availabilities.forEach((item) => {
-      defaultAvailabilities.push(dateStringtoGoodFormat(item.date));
-    })
-
-    flatpickr("#date-picker", {
-      static: true,
-      position: "center",
-      inline: true,
-      mode: "multiple",
-      dateFormat: "d-m-Y",
-      defaultDate: defaultAvailabilities,
-      minDate: "today",
+      defaultAvailabilities.push(invertDateFormat(item.date));
     });
+
+    renderDatePicker("#date-picker", defaultAvailabilities);
+
+    defaultAvailabilities = datePicker.value.split(", ");
+
+    datePicker.addEventListener("change", (event) => {
+      const datesAfterChange = event.target.value.split(", ");
+
+      if (defaultAvailabilities.length < datesAfterChange.length){
+        const lastDate = invertDateFormat(datesAfterChange[datesAfterChange.length-1]);
+        API.post('/availabilities', { body: { date: lastDate } })
+        .finally(AdminAvailabilitiesPage);
+      }
+      else if (defaultAvailabilities.length > datesAfterChange.length || datesAfterChange[0] === ""){
+        defaultAvailabilities.forEach((availability) => {
+          // Finding missing date to delete
+          if (!datesAfterChange.includes(availability)){
+            availabilities.forEach((item) => {
+              const date = invertDateFormat(item.date);
+              // Finding the id to delete
+              if (date === availability){
+                API.delete(`/availabilities/${item.id}`)
+                .catch((err) => {
+                  renderError(err.message);
+                })
+                .finally(AdminAvailabilitiesPage);
+              }
+            })
+          }
+        })
+      }
+    });
+  });
+}
+
+function renderDatePicker(datePickerId, defaultAvailabilities) {
+  flatpickr(datePickerId, {
+    altInputClass : "invisible",
+    altInput: true,
+    static: true,
+    position: "center",
+    inline: true,
+    mode: "multiple",
+    locale: "fr",
+    dateFormat: "d-m-Y",
+    defaultDate: defaultAvailabilities,
+    minDate: "today",
   });
 }
 
