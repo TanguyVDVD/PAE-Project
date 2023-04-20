@@ -1,6 +1,9 @@
+import flatpickr from 'flatpickr';
 import {getAuthenticatedUser} from "../../../utils/auths";
 import Navigate from "../../Router/Navigate";
 import {clearPage} from "../../../utils/render";
+import API from "../../../utils/api";
+import {dateStringtoGoodFormat} from "../../../utils/dates";
 
 const AdminAvailabilitiesPage = () => {
   const authenticatedUser = getAuthenticatedUser();
@@ -12,7 +15,6 @@ const AdminAvailabilitiesPage = () => {
 
   clearPage();
   renderAdminAvailabilitiesPage();
-  renderDatePicker();
 };
 
 function renderAdminAvailabilitiesPage() {
@@ -20,24 +22,39 @@ function renderAdminAvailabilitiesPage() {
   const div = document.createElement('div');
   div.className = 'container my-5';
 
+
   div.innerHTML = `
     <h2>Disponibilités</h2>
-    <div id="div-date-picker"></div>
+    <div id="div-date-picker" class="text-center">
+      <input type="text" id="date-picker" class="text-center">
+    </div>
   `;
 
   main.appendChild(div);
+
+  renderDatePicker("#date-picker");
 }
 
-function renderDatePicker() {
-  const main = document.querySelector('main');
+function renderDatePicker(datePickerId) {
+  flatpickr(datePickerId);
 
-  const authenticatedUser = getAuthenticatedUser();
+  API.get('/availabilities').then((availabilities) => {
+    const defaultAvailabilities = [];
 
-  const div = document.createElement('div');
+    availabilities.forEach((item) => {
+      defaultAvailabilities.push(dateStringtoGoodFormat(item.date));
+    })
 
-  div.className = 'container p-5';
-
-  div.innerHTML = ``;
+    flatpickr("#date-picker", {
+      static: true,
+      position: "center",
+      inline: true,
+      mode: "multiple",
+      dateFormat: "d-m-Y",
+      defaultDate: defaultAvailabilities,
+      minDate: "today",
+    });
+  });
 }
 
 export default AdminAvailabilitiesPage;
