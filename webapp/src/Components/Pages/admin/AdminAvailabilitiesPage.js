@@ -21,19 +21,22 @@ const AdminAvailabilitiesPage = () => {
 function renderAdminAvailabilitiesPage() {
   const main = document.querySelector('main');
   const div = document.createElement('div');
+  const divDatePicker = document.createElement('divDatePicker');
   div.className = 'container my-5';
-
 
   div.innerHTML = `
     <h2>Disponibilités</h2>
-    <div id="div-date-picker" class="text-center">
-      <input type="text" id="date-picker" class="text-center">
+  `;
+
+  divDatePicker.innerHTML = `
+    <div class="text-center my-5">
+      <div class="spinner-border" role="status"></div>
     </div>
   `;
 
-  main.appendChild(div);
+  div.append(divDatePicker)
 
-  const datePicker = document.getElementById("date-picker");
+  main.append(div);
 
   let defaultAvailabilities = [];
 
@@ -41,6 +44,14 @@ function renderAdminAvailabilitiesPage() {
     availabilities.forEach((item) => {
       defaultAvailabilities.push(invertDateFormat(item.date));
     });
+
+    divDatePicker.innerHTML = `
+      <div id="div-date-picker" class="text-center">
+        <input type="text" id="date-picker" class="text-center">
+      </div>
+    `;
+
+    const datePicker = document.getElementById("date-picker");
 
     renderDatePicker("#date-picker", defaultAvailabilities);
 
@@ -52,6 +63,9 @@ function renderAdminAvailabilitiesPage() {
       if (defaultAvailabilities.length < datesAfterChange.length){
         const lastDate = invertDateFormat(datesAfterChange[datesAfterChange.length-1]);
         API.post('/availabilities', { body: { date: lastDate } })
+        .catch((err) => {
+          renderError(err.message);
+        })
         .finally(AdminAvailabilitiesPage);
       }
       else if (defaultAvailabilities.length > datesAfterChange.length || datesAfterChange[0] === ""){
@@ -63,10 +77,11 @@ function renderAdminAvailabilitiesPage() {
               // Finding the id to delete
               if (date === availability){
                 API.delete(`/availabilities/${item.id}`)
+                .then(AdminAvailabilitiesPage)
                 .catch((err) => {
+                  AdminAvailabilitiesPage();
                   renderError(err.message);
-                })
-                .finally(AdminAvailabilitiesPage);
+                });
               }
             })
           }
