@@ -22,7 +22,7 @@ public class DALServicesImpl implements DALServices, DalBackendServices {
 
 
   /**
-   * DALServices constructor : Set the connection to the db
+   * DALServices constructor : Set the connection to the db.
    */
   public DALServicesImpl() {
     bds = new BasicDataSource();
