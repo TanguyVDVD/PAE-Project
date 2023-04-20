@@ -3,7 +3,7 @@ package be.vinci.pae.services.availability;
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.availability.AvailabilityDTO;
 import be.vinci.pae.services.DalBackendServices;
-import be.vinci.pae.utils.MyLogger;
+import be.vinci.pae.utils.exceptions.DALException;
 import jakarta.inject.Inject;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 /**
  * AvailabilityDAO class that implements AvailabilityDAO interface Provide the different methods.
@@ -39,9 +38,8 @@ public class AvailabilityDAOImpl implements AvailabilityDAO {
       availability.setId(resultSet.getInt("id_availability"));
       availability.setDate(resultSet.getDate("date") == null ? null
           : resultSet.getDate("date").toLocalDate());
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "Error dtoFromRS");
-      se.printStackTrace();
+    } catch (SQLException e) {
+      throw new DALException("Error during the mapping of the availability", e);
     }
 
     return availability;
@@ -64,9 +62,8 @@ public class AvailabilityDAOImpl implements AvailabilityDAO {
           availabilities.add(dtoFromRS(rs));
         }
       }
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "Error get all availabilities");
-      se.printStackTrace();
+    } catch (SQLException e) {
+      throw new DALException("Error during the get all availabilities", e);
     }
 
     return availabilities;
@@ -90,9 +87,8 @@ public class AvailabilityDAOImpl implements AvailabilityDAO {
           return dtoFromRS(rs);
         }
       }
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "Error get a availability by id");
-      se.printStackTrace();
+    } catch (SQLException e) {
+      throw new DALException("Error during the get one availability by id", e);
     }
 
     return null;
@@ -116,9 +112,8 @@ public class AvailabilityDAOImpl implements AvailabilityDAO {
           return dtoFromRS(rs);
         }
       }
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "Error get a availability by date");
-      se.printStackTrace();
+    } catch (SQLException e) {
+      throw new DALException("Error during the get one availability by date", e);
     }
 
     return null;
@@ -128,7 +123,7 @@ public class AvailabilityDAOImpl implements AvailabilityDAO {
    * Insert a new availability in the db.
    *
    * @param availability the date to insert in the db
-   * @return the new availability added if succeeded, null if not
+   * @return the new availability added if succeeded
    */
   @Override
   public AvailabilityDTO addOne(AvailabilityDTO availability) {
@@ -141,20 +136,19 @@ public class AvailabilityDAOImpl implements AvailabilityDAO {
       ResultSet rs = ps.getGeneratedKeys();
       if (rs.next()) {
         return dtoFromRS(rs);
+      } else {
+        throw new DALException("Error during the add one availability");
       }
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "Error insert availability");
-      se.printStackTrace();
+    } catch (SQLException e) {
+      throw new DALException("Error during the add one availability", e);
     }
-
-    return null;
   }
 
   /**
    * Delete an availability in the db.
    *
    * @param id the id of the availability to delete in the db
-   * @return the availability deleted if succeeded, null if not
+   * @return the availability deleted if succeeded
    */
   @Override
   public AvailabilityDTO deleteOne(int id) {
@@ -167,13 +161,12 @@ public class AvailabilityDAOImpl implements AvailabilityDAO {
       ResultSet rs = ps.getGeneratedKeys();
       if (rs.next()) {
         return dtoFromRS(rs);
+      } else {
+        throw new DALException("Error during the delete one availability");
       }
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "Error delete availability");
-      se.printStackTrace();
+    } catch (SQLException e) {
+      throw new DALException("Error during the delete one availability", e);
     }
-
-    return null;
   }
 
 }
