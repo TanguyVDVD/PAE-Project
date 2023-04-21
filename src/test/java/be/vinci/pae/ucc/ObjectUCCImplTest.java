@@ -104,7 +104,8 @@ class ObjectUCCImplTest {
     Mockito.when(objectDAO.getOneById(object.getId())).thenReturn(object);
     Mockito.when(object.isStatusAlreadyDefined(object.getStatus())).thenReturn(true);
     Mockito.when(
-            objectDAO.setStatusToAccepted(object.getId(), LocalDate.now(), object.getVersionNumber()))
+            objectDAO.setStatusToAccepted(object.getId(), LocalDate.now(),
+                object.getVersionNumber()))
         .thenReturn(object);
 
     ObjectDTO objectDTO = objectUCC.accept(object.getId(), object.getVersionNumber());
@@ -434,24 +435,5 @@ class ObjectUCCImplTest {
     assertThrows(Exception.class, () -> objectUCC.updatePhoto(object, null),
         "updatePhoto did not throw an exception");
   }
-/*
-  //test update object with wrong version number
-  @DisplayName("Update an object with wrong version number")
-  @Test
-  void updateAnObjectWithWrongVersionNumber() {
-    Object object = Mockito.mock(ObjectImpl.class);
-    Mockito.when(object.getId()).thenReturn(1);
-    Mockito.when(object.getVersionNumber()).thenReturn(1);
-    Mockito.when(object.getStatus()).thenReturn("En vente");
-    Mockito.when(objectDAO.getOneById(1)).thenReturn(object);
-
-    System.out.println(objectUCC.update(1, object, LocalDate.now()));
-
-    assertThrows(DALException.class, () -> objectUCC.update(1, object, LocalDate.now()),
-        "Update did not throw an exception");
-  }
-
- */
-
 
 }

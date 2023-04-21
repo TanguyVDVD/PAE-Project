@@ -6,9 +6,6 @@ import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.user.UserDAO;
 import be.vinci.pae.utils.exceptions.UserException;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
@@ -211,7 +208,7 @@ public class UserUCCImpl implements UserUCC {
   /**
    * Update a user's profile picture.
    *
-   * @param userDTO        the user to update
+   * @param userDTO  the user to update
    * @param password the password to verify
    * @param file     the new profile picture
    * @return the updated user
