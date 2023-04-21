@@ -38,6 +38,9 @@ const Navbar = () => {
               authenticatedUser && authenticatedUser.role !== 'utilisateur'
                 ? `
                     <li class="nav-item">
+                      <a class="nav-link" href="#" data-uri="/admin/availabilities">Disponibilités</a>
+                    </li>
+                    <li class="nav-item">
                       <a class="nav-link" href="#" data-uri="/admin/offers">Propositions</a>
                     </li>
                     <li class="nav-item">

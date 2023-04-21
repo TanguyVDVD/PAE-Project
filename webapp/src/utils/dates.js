@@ -10,6 +10,11 @@ function dateStringtoGoodFormat(dateString) {
   return date.toLocaleDateString('fr-BE', { year: 'numeric', month: 'numeric', day: 'numeric' });
 }
 
+function invertDateFormat(date) {
+  const dateParts = date.split("-");
+  return dateParts[2].concat("-", dateParts[1], "-", dateParts[0]);
+}
+
 function getTodaySDate() {
   const date = new Date();
   const yyyy = String(date.getFullYear());
@@ -18,4 +23,4 @@ function getTodaySDate() {
   return yyyy.concat('-', mm, '-', dd);
 }
 
-export { subtractDates, dateStringtoGoodFormat, getTodaySDate };
+export { subtractDates, dateStringtoGoodFormat, invertDateFormat, getTodaySDate };

@@ -19,7 +19,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -68,9 +67,9 @@ public class AvailabilityResource {
 
     LocalDate date = jsonMapper.convertValue(json.get("date"), LocalDate.class);
 
-    if (date.isBefore(LocalDate.now()) || !date.getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
+    if (date.isBefore(LocalDate.now())) {
       throw new WebApplicationException(
-          "La date à ajouter aux disponibilités n'est pas bonne",
+          "La date à ajouter aux disponibilités est déjà passée",
           Response.Status.BAD_REQUEST);
     }
 
