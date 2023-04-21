@@ -1,6 +1,7 @@
 package be.vinci.pae.ucc.object;
 
 import be.vinci.pae.domain.object.ObjectDTO;
+import be.vinci.pae.domain.user.UserDTO;
 import java.io.File;
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -86,4 +87,12 @@ public interface ObjectUCC {
    * @return the updated object
    */
   ObjectDTO updatePhoto(ObjectDTO objectDTO, InputStream file);
+
+  /**
+   * Add an object.
+   *
+   * @param objectDTO the object to add
+   * @return the object that has been added
+   */
+  UserDTO add(ObjectDTO objectDTO);
 }

@@ -2,6 +2,7 @@ package be.vinci.pae.ucc.object;
 
 import be.vinci.pae.domain.object.Object;
 import be.vinci.pae.domain.object.ObjectDTO;
+import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.object.ObjectDAO;
 import jakarta.inject.Inject;
@@ -247,6 +248,27 @@ public class ObjectUCCImpl implements ObjectUCC {
       object.setPhoto(true);
 
       return myObjectDAO.updateObject(object.getId(), object);
+    } catch (Exception e) {
+      myDalServices.rollbackTransaction();
+
+      throw e;
+    } finally {
+      myDalServices.commitTransaction();
+    }
+  }
+
+  /**
+   * Add an object.
+   *
+   * @param objectDTO the object to add
+   * @return the object that has been added
+   */
+  @Override
+  public UserDTO add(ObjectDTO objectDTO) {
+    myDalServices.startTransaction();
+
+    try {
+      return myObjectDAO.insert(objectDTO);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
 
