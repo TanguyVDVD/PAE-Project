@@ -32,6 +32,7 @@ public class UserUCCImpl implements UserUCC {
    */
   @Override
   public UserDTO login(String email, String password) {
+
     myDalServices.startTransaction();
 
     try {
@@ -111,6 +112,7 @@ public class UserUCCImpl implements UserUCC {
    */
   @Override
   public UserDTO getUserById(int id) {
+
     myDalServices.startTransaction();
 
     try {
