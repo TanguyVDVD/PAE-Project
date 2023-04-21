@@ -60,7 +60,7 @@ public interface ObjectDAO {
   ObjectDTO setStatusToAccepted(int id, LocalDate acceptanceDate);
 
   /**
-   * Set the status of an object to refused.
+   * Set the status of an object to "refused".
    *
    * @param id               the id of the object
    * @param reasonForRefusal the reason for refusal
