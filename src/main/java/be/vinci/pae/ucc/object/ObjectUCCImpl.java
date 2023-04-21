@@ -2,7 +2,6 @@ package be.vinci.pae.ucc.object;
 
 import be.vinci.pae.domain.object.Object;
 import be.vinci.pae.domain.object.ObjectDTO;
-import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.object.ObjectDAO;
 import jakarta.inject.Inject;
@@ -264,7 +263,7 @@ public class ObjectUCCImpl implements ObjectUCC {
    * @return the object that has been added
    */
   @Override
-  public UserDTO add(ObjectDTO objectDTO) {
+  public ObjectDTO add(ObjectDTO objectDTO) {
     myDalServices.startTransaction();
 
     try {
