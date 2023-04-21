@@ -83,6 +83,8 @@ export default class API {
   }
 
   static delete(endpoint, options = {}) {
+    // DELETE requests can't have a body
+
     return API.#call(endpoint, {
       ...options,
       method: 'DELETE',
