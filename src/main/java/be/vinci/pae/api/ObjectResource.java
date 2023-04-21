@@ -301,7 +301,7 @@ public class ObjectResource {
       @FormDataParam("phoneNumber") String phoneNumber,
       @FormDataParam("description") String description,
       @FormDataParam("objectType") String objectType,
-      @FormDataParam("receiptDate") LocalDate receiptDate,
+      @FormDataParam("receiptDate") String receiptDate,
       @FormDataParam("timeSlot") String timeSlot,
       @FormDataParam("photo") InputStream photo
   ) {
@@ -311,8 +311,8 @@ public class ObjectResource {
     if (authorizedUser == null) {
       if (phoneNumber == null || phoneNumber.isBlank()) {
         throw new WebApplicationException(
-            "Numéro de téléphonne manquant ou utilisateur non connecté",
-            Response.Status.BAD_REQUEST);
+            "Numéro de téléphonne manquant ou utilisateur non connecté. user : " + authorizedUser +
+                ", phoneNumber : " + phoneNumber, Response.Status.BAD_REQUEST);
       } else {
         // Check phone number format
         phoneNumber = User.formatPhoneNumber(phoneNumber);
@@ -335,8 +335,14 @@ public class ObjectResource {
       }
     }
 
-    if (!timeSlot.equals("matin") && !timeSlot.equals("après-midi")) {
-      throw new WebApplicationException("Créneau invalide", Response.Status.BAD_REQUEST);
+    if (receiptDate == null || LocalDate.parse(receiptDate).isBefore(LocalDate.now())) {
+      throw new WebApplicationException("Date invalide : " + receiptDate,
+          Response.Status.BAD_REQUEST);
+    }
+
+    if (timeSlot == null || (!timeSlot.equals("matin") && !timeSlot.equals("après-midi"))) {
+      throw new WebApplicationException("Créneau invalide : " + timeSlot,
+          Response.Status.BAD_REQUEST);
     }
 
     if (photo == null) {
@@ -347,7 +353,7 @@ public class ObjectResource {
 
     objectDTO.setDescription(description);
     objectDTO.setObjectType(objectType);
-    objectDTO.setReceiptDate(receiptDate);
+    objectDTO.setReceiptDate(LocalDate.parse(receiptDate));
     objectDTO.setTimeSlot(timeSlot);
     objectDTO.setPhoneNumber(phoneNumber);
     objectDTO.setUser(authorizedUser);

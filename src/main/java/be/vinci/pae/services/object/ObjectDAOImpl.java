@@ -11,6 +11,7 @@ import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -342,7 +343,7 @@ public class ObjectDAOImpl implements ObjectDAO {
   @Override
   public ObjectDTO insert(ObjectDTO objectDTO) {
     String request = "INSERT INTO pae.objects VALUES "
-        + "(DEFAULT, DEFAULT, ?, ?, null, 'proposé', null, null, false, ?, "
+        + "(DEFAULT, ?, ?, null, 'proposé', null, null, false, ?, "
         + "null, null, null, null, null, null, null, ?, ?, ?, ?);";
 
     try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request, true)) {
@@ -350,7 +351,11 @@ public class ObjectDAOImpl implements ObjectDAO {
       ps.setString(2, objectDTO.getTimeSlot());
       ps.setDate(3, java.sql.Date.valueOf(objectDTO.getOfferDate()));
       ps.setString(4, objectDTO.getPhoneNumber());
-      ps.setInt(5, objectDTO.getUser().getId());
+      if (objectDTO.getUser() != null) {
+        ps.setInt(5, objectDTO.getUser().getId());
+      } else {
+        ps.setNull(5, Types.INTEGER);
+      }
       ps.setInt(6, myAvailabilityDao.getOneByDate(objectDTO.getReceiptDate()).getId());
       ps.setInt(7, myObjectTypeDAO.getIdByLabel(objectDTO.getObjectType()));
       ps.executeUpdate();
