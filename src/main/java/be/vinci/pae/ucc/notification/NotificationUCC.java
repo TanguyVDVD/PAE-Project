@@ -9,8 +9,8 @@ import java.util.List;
 public interface NotificationUCC {
 
   /**
-   * This method returns a list of NotificationDTO objects that represent all the notifications a.
-   * user has.
+   * Method returns a list of NotificationDTO objects that represent all the notifications a. user
+   * has.
    *
    * @param id The ID of the user to retrieve notifications for
    * @return A list of NotificationDTO objects associated with the given user ID
