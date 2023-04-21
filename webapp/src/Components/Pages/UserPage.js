@@ -37,7 +37,7 @@ const UserPage = (params) => {
     </div>
   `;
 
-  // Use the my endpoint if the user is looking at their own profile
+  // Use the 'my' endpoint if the user is looking at their own profile
   API.get(`users/${authenticatedUser.id === id ? 'my' : id}`)
     .then((user) => {
       renderUserPage(user);
@@ -134,8 +134,9 @@ function renderUserPage(user) {
       e.target.disabled = true;
       e.target.checked = !e.target.checked;
 
-      API.patch(`users/${user.id}`, { body: { role: e.target.checked ? null : 'aidant' } })
+      API.patch(`users/${user.id}`, { body: { role: e.target.checked ? null : 'aidant', versionNbr: user.versionNumber } })
         .then((updatedUser) => {
+          user.versionNumber = updatedUser.versionNumber;
           e.target.checked = updatedUser.role === 'aidant';
         })
         .catch((error) => {
@@ -444,6 +445,7 @@ function renderEditProfile(user) {
 
     if (Object.keys(body).length > 0) {
       body.currentPassword = form.currentPassword;
+      body.versionNbr = user.versionNumber;
       promises.push(() => API.patch(`users/${user.id}`, { body }));
     }
 
@@ -453,6 +455,7 @@ function renderEditProfile(user) {
       const formData = new FormData();
       formData.append('photo', form.removePhoto ? null : form.photo);
       formData.append('password', form.currentPassword);
+      formData.append('versionNbr', user.versionNumber);
       promises.push(() => API.put(`users/${user.id}/photo`, { body: formData }));
     }
 

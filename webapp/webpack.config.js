@@ -68,7 +68,7 @@ module.exports = {
       },
 
       // emits a separate file and exports the URLs => works for import in JS and url in CSS
-      // default condition: a file with size less than 8kb will be treated as a inline
+      // default condition: a file with size less than 8kb will be treated as an inline
       // module type and resource module type otherwise
       {
         test: /\.(png|jpg|gif|svg|mp3|mpe?g|webp)$/,

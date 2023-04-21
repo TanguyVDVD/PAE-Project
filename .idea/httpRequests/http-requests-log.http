@@ -1,0 +1,627 @@
+PATCH http://localhost:3000/objects/status/7
+Content-Type: application/json
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjcwMTcyNCwidXNlciI6MX0.jpC4DcaeiIQ5IZMUOPlaAjoR5lSToEzsqruTUkIrbvU
+
+{
+  "status": "accepté",
+  "versionNbr": 1
+}
+
+<> 2023-04-21T191458.200.json
+
+###
+
+PATCH http://localhost:3000/objects/status/7
+Content-Type: application/json
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjcwMTcyNCwidXNlciI6MX0.jpC4DcaeiIQ5IZMUOPlaAjoR5lSToEzsqruTUkIrbvU
+
+{
+  "status": "accepté",
+  "version_number": 1
+}
+
+###
+
+PATCH http://localhost:3000/objects/status/7
+Content-Type: application/json
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjcwMTcyNCwidXNlciI6MX0.jpC4DcaeiIQ5IZMUOPlaAjoR5lSToEzsqruTUkIrbvU
+
+{
+  "status": "accepté",
+  "version_number": 1
+}
+
+###
+
+PATCH http://localhost:3000/objects/status/6
+Content-Type: application/json
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjcwMTcyNCwidXNlciI6MX0.jpC4DcaeiIQ5IZMUOPlaAjoR5lSToEzsqruTUkIrbvU
+
+{
+  "status": "accepté",
+  "version_number": 1
+}
+
+###
+
+POST http://localhost:3000/users/login
+Content-Type: application/json
+
+{
+  "email": "riez@ressourcerie.be",
+  "password": "password"
+}
+
+<> 2023-04-21T190844.200.json
+
+###
+
+PATCH http://localhost:3000/objects/status/6
+Content-Type: application/json
+Authorization: {{managerToken}}
+
+{
+  "status": "accepté",
+  "version_number": 1
+}
+
+<> 2023-04-21T190840.401.json
+
+###
+
+PUT http://localhost:3000/objects/4
+Content-Type: application/json
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjcwMTY0MCwidXNlciI6M30.C2v-tuI_mi-jhVP163KakvMecb-NRCYrKxKFsidQ_0k
+
+{
+  "description": "Garde Robe",
+  "type": "Meuble",
+  "price": null,
+  "state": "en atelier",
+  "date": null,
+  "isVisible": true,
+  "version_number": 1
+}
+
+###
+
+POST http://localhost:3000/users/login
+Content-Type: application/json
+
+{
+  "email": "bernard@ressourcerie.be",
+  "password": "password"
+}
+
+<> 2023-04-21T190720.200.json
+
+###
+
+PATCH http://localhost:3000/users/6
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjcwMTEwNSwidXNlciI6MX0.WQf0IGTrO_UxHs71ulTPDys7zWxTd2QTt8_fvJZYOVU
+Content-Type: application/json
+
+{
+  "role": "aidant",
+  "versionNbr": 4
+}
+
+<> 2023-04-21T185851.404.json
+
+###
+
+PATCH http://localhost:3000/users/4
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjcwMTEwNSwidXNlciI6MX0.WQf0IGTrO_UxHs71ulTPDys7zWxTd2QTt8_fvJZYOVU
+Content-Type: application/json
+
+{
+  "role": "aidant",
+  "versionNbr": 4
+}
+
+<> 2023-04-21T185844.200.json
+
+###
+
+PATCH http://localhost:3000/users/4
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjcwMTEwNSwidXNlciI6MX0.WQf0IGTrO_UxHs71ulTPDys7zWxTd2QTt8_fvJZYOVU
+Content-Type: application/json
+
+{
+  "role": "aidant",
+  "versionNbr": 3
+}
+
+###
+
+PATCH http://localhost:3000/users/4
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjcwMTEwNSwidXNlciI6MX0.WQf0IGTrO_UxHs71ulTPDys7zWxTd2QTt8_fvJZYOVU
+Content-Type: application/json
+
+{
+  "role": "aidant",
+  "versionNbr": 2
+}
+
+###
+
+POST http://localhost:3000/users/login
+Content-Type: application/json
+
+{
+  "email": "riez@ressourcerie.be",
+  "password": "password"
+}
+
+<> 2023-04-21T185825.200.json
+
+###
+
+PATCH http://localhost:3000/users/4
+Authorization: {{helperToken}}
+Content-Type: application/json
+
+{
+  "role": "aidant",
+  "versionNbr": 2
+}
+
+<> 2023-04-21T185813.401.json
+
+###
+
+PATCH http://localhost:3000/users/4
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjcwMDkxMCwidXNlciI6NH0.rLEcN3cwrSrfIGaNmCs4vscNJws07kK174iTXSGn33A
+Content-Type: application/json
+
+{
+  "firstName": "Barteeeeee",
+  "currentPassword": "password",
+  "versionNbr": 3
+}
+
+<> 2023-04-21T185757.200.json
+
+###
+
+PATCH http://localhost:3000/users/4
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjcwMDkxMCwidXNlciI6NH0.rLEcN3cwrSrfIGaNmCs4vscNJws07kK174iTXSGn33A
+Content-Type: application/json
+
+{
+  "firstName": "Barteeeeee",
+  "currentPassword": "password",
+  "versionNbr": 2
+}
+
+###
+
+PATCH http://localhost:3000/users/6
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjcwMDkxMCwidXNlciI6NH0.rLEcN3cwrSrfIGaNmCs4vscNJws07kK174iTXSGn33A
+Content-Type: application/json
+
+{
+  "firstName": "Barteeeeee",
+  "currentPassword": "password",
+  "versionNbr": 2
+}
+
+###
+
+POST http://localhost:3000/users/login
+Content-Type: application/json
+
+{
+  "email": "lise@ressourcerie.be",
+  "password": "password"
+}
+
+<> 2023-04-21T185510.200.json
+
+###
+
+PATCH http://localhost:3000/users/4
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjYyMjcwNywidXNlciI6NH0.UQDbT6gdJ-43HWPZOtZN5v2iTy2pTuK8BWCiYYpiiE4
+Content-Type: application/json
+
+{
+  "firstName": "Barteeeeee",
+  "currentPassword": "password",
+  "versionNbr": 2
+}
+
+<> 2023-04-20T211511.200.json
+
+###
+
+PATCH http://localhost:3000/users/4
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjYyMjcwNywidXNlciI6NH0.UQDbT6gdJ-43HWPZOtZN5v2iTy2pTuK8BWCiYYpiiE4
+Content-Type: application/json
+
+{
+  "firstName": "Barteeeeee",
+  "currentPassword": "password",
+  "versionNbr": 2
+}
+
+<> 2023-04-20T211452.200.json
+
+###
+
+PATCH http://localhost:3000/users/4
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjYyMjcwNywidXNlciI6NH0.UQDbT6gdJ-43HWPZOtZN5v2iTy2pTuK8BWCiYYpiiE4
+Content-Type: application/json
+
+{
+  "firstName": "Barteeeeee",
+  "currentPassword": "password",
+  "versionNbr": 2
+}
+
+###
+
+PATCH http://localhost:3000/users/4
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjYyMjcwNywidXNlciI6NH0.UQDbT6gdJ-43HWPZOtZN5v2iTy2pTuK8BWCiYYpiiE4
+Content-Type: application/json
+
+{
+  "firstName": "Barteeeeee",
+  "currentPassword": "password",
+  "versionNbr": 2
+}
+
+###
+
+POST http://localhost:3000/users/login
+Content-Type: application/json
+
+{
+  "email": "lise@ressourcerie.be",
+  "password": "password"
+}
+
+<> 2023-04-20T211147.200.json
+
+###
+
+PATCH http://localhost:3000/users/4
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjYyMTQzMywidXNlciI6NH0.FyDFfFM2ZlEhrDSXn46tCQRXpNCYK912sP-B6cjo96U
+Content-Type: application/json
+
+{
+  "firstName": "Barteeeeee",
+  "currentPassword": "password",
+  "versionNbr": 2
+}
+
+###
+
+PATCH http://localhost:3000/users/4
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjYyMTQzMywidXNlciI6NH0.FyDFfFM2ZlEhrDSXn46tCQRXpNCYK912sP-B6cjo96U
+Content-Type: application/json
+
+{
+  "firstName": "Barteeeeee",
+  "currentPassword": "password",
+  "versionNbr": 2
+}
+
+<> 2023-04-20T205042.200.json
+
+###
+
+POST http://localhost:3000/users/login
+Content-Type: application/json
+
+{
+  "email": "lise@ressourcerie.be",
+  "password": "password"
+}
+
+<> 2023-04-20T205033.200.json
+
+###
+
+PATCH http://localhost:3000/users/4
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjYyMDUyNSwidXNlciI6NH0.RhwMG3Z2TCW2k99naULezV_n5tPuah0-ASUgY4wMt84
+Content-Type: application/json
+
+{
+  "firstName": "Barteeeeee",
+  "currentPassword": "password",
+  "versionNbr": 1
+}
+
+<> 2023-04-20T203606.200.json
+
+###
+
+PATCH http://localhost:3000/users/4
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjYyMDUyNSwidXNlciI6NH0.RhwMG3Z2TCW2k99naULezV_n5tPuah0-ASUgY4wMt84
+Content-Type: application/json
+
+{
+  "firstName": "Barteeeeee",
+  "currentPassword": "password",
+  "versionNbr": 3
+}
+
+###
+
+POST http://localhost:3000/users/login
+Content-Type: application/json
+
+{
+  "email": "lise@ressourcerie.be",
+  "password": "password"
+}
+
+<> 2023-04-20T203525.200.json
+
+###
+
+POST http://localhost:3000/users/login
+Content-Type: application/json
+
+{
+  "email": "lise@ressourcerie.be",
+  "password": "password"
+}
+
+###
+
+PATCH http://localhost:3000/users/4
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjQ2MTU5MCwidXNlciI6NH0.mm69kESDfR-IYMElvDDM5p4jVxmhkjTRh8dn-ZQfwJM
+Content-Type: application/json
+
+{
+  "firstName": "Barteeeeee",
+  "currentPassword": "password",
+  "versionNbr": 3
+}
+
+<> 2023-04-19T002647.409.json
+
+###
+
+PATCH http://localhost:3000/users/5
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjQ2MTU5MCwidXNlciI6NH0.mm69kESDfR-IYMElvDDM5p4jVxmhkjTRh8dn-ZQfwJM
+Content-Type: application/json
+
+{
+  "firstName": "Barteeeeee",
+  "currentPassword": "password",
+  "versionNbr": 3
+}
+
+###
+
+POST http://localhost:3000/users/login
+Content-Type: application/json
+
+{
+  "email": "lise@ressourcerie.be",
+  "password": "password"
+}
+
+<> 2023-04-19T002630.200.json
+
+###
+
+POST http://localhost:3000/users/login
+Content-Type: application/json
+
+{
+  "email": "riez@ressourcerie.be",
+  "password": "password"
+}
+
+<> 2023-04-19T002628.200.json
+
+###
+
+PATCH http://localhost:3000/users/5
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjQ2MDI5NSwidXNlciI6NH0.3mNbkGT9auX-Pc4PgAgjyj_B9-fwVd72K_iIl5aWdhE
+Content-Type: application/json
+
+{
+  "firstName": "Barteeeeee",
+  "currentPassword": "password",
+  "versionNbr": 3
+}
+
+###
+
+POST http://localhost:3000/users/login
+Content-Type: application/json
+
+{
+  "email": "lise@ressourcerie.be",
+  "password": "password"
+}
+
+<> 2023-04-19T000455.200.json
+
+###
+
+PATCH http://localhost:3000/users/5
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjQ2MDE0MiwidXNlciI6NH0.vwOrFR6UWWnLFJb8Gp5ug84H7GL6casHa_W_ahH5BD4
+Content-Type: application/json
+
+{
+  "firstName": "Barteeeeee",
+  "currentPassword": "password",
+  "versionNbr": 3
+}
+
+###
+
+PATCH http://localhost:3000/users/6
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjQ2MDE0MiwidXNlciI6NH0.vwOrFR6UWWnLFJb8Gp5ug84H7GL6casHa_W_ahH5BD4
+Content-Type: application/json
+
+{
+  "firstName": "Barteeeeee",
+  "currentPassword": "password",
+  "versionNbr": 3
+}
+
+###
+
+PATCH http://localhost:3000/users/4
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjQ2MDE0MiwidXNlciI6NH0.vwOrFR6UWWnLFJb8Gp5ug84H7GL6casHa_W_ahH5BD4
+Content-Type: application/json
+
+{
+  "firstName": "Barteeeeee",
+  "currentPassword": "password",
+  "versionNbr": 3
+}
+
+<> 2023-04-19T000228.404.json
+
+###
+
+POST http://localhost:3000/users/login
+Content-Type: application/json
+
+{
+  "email": "lise@ressourcerie.be",
+  "password": "password"
+}
+
+<> 2023-04-19T000222.200.json
+
+###
+
+PATCH http://localhost:3000/users/4
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjQ1OTEyNywidXNlciI6NH0.3NbGoqXuNEWkm0yQEhs5B7L5x73P_bQ64XbK_qsPoys
+Content-Type: application/json
+
+{
+  "firstName": "Barteeeeee",
+  "currentPassword": "password",
+  "versionNbr": 3
+}
+
+<> 2023-04-18T234533.404.json
+
+###
+
+POST http://localhost:3000/users/login
+Content-Type: application/json
+
+{
+  "email": "lise@ressourcerie.be",
+  "password": "password"
+}
+
+<> 2023-04-18T234527.200.json
+
+###
+
+PATCH http://localhost:3000/users/4
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjQ1ODgzMSwidXNlciI6NH0.Try5IzQg4Z0qeq_zmT9op2JvNrnwKVH7kwmcZh62TfA
+Content-Type: application/json
+
+{
+  "firstName": "Barteeeeee",
+  "currentPassword": "password",
+  "versionNbr": 3
+}
+
+<> 2023-04-18T234153.500.json
+
+###
+
+POST http://localhost:3000/users/login
+Content-Type: application/json
+
+{
+  "email": "riez@ressourcerie.be",
+  "password": "password"
+}
+
+<> 2023-04-18T234148.200.json
+
+###
+
+PATCH http://localhost:3000/users/4
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjQ1ODgzMSwidXNlciI6NH0.Try5IzQg4Z0qeq_zmT9op2JvNrnwKVH7kwmcZh62TfA
+Content-Type: application/json
+
+{
+  "firstName": "Barteeeeee",
+  "currentPassword": "password",
+  "versionNbr": 3
+}
+
+<> 2023-04-18T234037.500.json
+
+###
+
+POST http://localhost:3000/users/login
+Content-Type: application/json
+
+{
+  "email": "lise@ressourcerie.be",
+  "password": "password"
+}
+
+<> 2023-04-18T234031.200.json
+
+###
+
+PATCH http://localhost:3000/users/4
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjQ1ODIwMCwidXNlciI6NH0.Bjh-aQ0FyTRd5fnwt04aoiGbCvEEnuTDBr8G0imujx0
+Content-Type: application/json
+
+{
+  "firstName": "Barteeeeee",
+  "currentPassword": "password",
+  "versionNbr": 3
+}
+
+<> 2023-04-18T233024.200.json
+
+###
+
+PATCH http://localhost:3000/users/4
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjQ1ODIwMCwidXNlciI6NH0.Bjh-aQ0FyTRd5fnwt04aoiGbCvEEnuTDBr8G0imujx0
+Content-Type: application/json
+
+{
+  "firstName": "Barteeeeee",
+  "currentPassword": "password",
+  "versionNbr": 2
+}
+
+<> 2023-04-18T233007.200.json
+
+###
+
+POST http://localhost:3000/users/login
+Content-Type: application/json
+
+{
+  "email": "lise@ressourcerie.be",
+  "password": "password"
+}
+
+<> 2023-04-18T233000.200.json
+
+###
+
+PATCH http://localhost:3000/users/4
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjQ1ODA3NiwidXNlciI6MX0.t0sx8azI-7K08WH4txS2ihx7Sg38RD5EL8JUSgt7XCo
+Content-Type: application/json
+
+{
+  "role": "aidant",
+  "versionNbr": 2
+}
+
+<> 2023-04-18T232759.200.json
+
+###
+
