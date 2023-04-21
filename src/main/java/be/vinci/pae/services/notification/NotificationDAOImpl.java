@@ -3,6 +3,9 @@ package be.vinci.pae.services.notification;
 import be.vinci.pae.domain.notification.NotificationDTO;
 import java.util.List;
 
+/**
+ * NotificationDAO class that implements NotificationDAO interface Provide the different methods.
+ */
 public class NotificationDAOImpl implements NotificationDAO {
 
   /**
