@@ -229,50 +229,6 @@ public class ObjectDAOImpl implements ObjectDAO {
   }
 
   /**
-   * Update the object in the db.
-   *
-   * @param id        the id of the object
-   * @param objectDTO the object to update
-   * @return null if there is an error then the object
-   */
-  public ObjectDTO updateObject(int id, ObjectDTO objectDTO) {
-
-    String request =
-        "UPDATE pae.objects SET description = ?, id_object_type = ?, is_visible = ?, state = ?,  "
-            + "price = ?, "
-            + "workshop_date = ?, "
-            + "deposit_date = ?, "
-            + "on_sale_date = ?, "
-            + "selling_date =?, "
-            + "withdrawal_date = ? "
-            + "WHERE id_object = ?;";
-
-    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
-      ps.setString(1, objectDTO.getDescription());
-      ps.setInt(2, myObjectTypeDAO.getIdByLabel(objectDTO.getObjectType()));
-      ps.setBoolean(3, objectDTO.getisVisible());
-      ps.setString(4, objectDTO.getState());
-      ps.setDouble(5, objectDTO.getPrice());
-      ps.setDate(6, objectDTO.getWorkshopDate() == null ? null
-          : java.sql.Date.valueOf(objectDTO.getWorkshopDate()));
-      ps.setDate(7, objectDTO.getDepositDate() == null ? null
-          : java.sql.Date.valueOf(objectDTO.getDepositDate()));
-      ps.setDate(8, objectDTO.getOnSaleDate() == null ? null
-          : java.sql.Date.valueOf(objectDTO.getOnSaleDate()));
-      ps.setDate(9, objectDTO.getSellingDate() == null ? null
-          : java.sql.Date.valueOf(objectDTO.getSellingDate()));
-      ps.setDate(10, objectDTO.getWithdrawalDate() == null ? null
-          : java.sql.Date.valueOf(objectDTO.getWithdrawalDate()));
-      ps.setInt(11, id);
-      ps.executeUpdate();
-    } catch (SQLException e) {
-      throw new DALException("Error updating object", e);
-    }
-
-    return getOneById(id);
-  }
-
-  /**
    * Set the status of an object to accepted.
    *
    * @param id             the id of the object
@@ -333,4 +289,84 @@ public class ObjectDAOImpl implements ObjectDAO {
     return null;
 
   }
+
+  /**
+   * Update the object in the db.
+   *
+   * @param id        the id of the object
+   * @param objectDTO the object to update
+   * @return null if there is an error then the object
+   */
+  public ObjectDTO updateObject(int id, ObjectDTO objectDTO) {
+
+    String request =
+        "UPDATE pae.objects SET description = ?, id_object_type = ?, is_visible = ?, state = ?,  "
+            + "price = ?, "
+            + "workshop_date = ?, "
+            + "deposit_date = ?, "
+            + "on_sale_date = ?, "
+            + "selling_date =?, "
+            + "withdrawal_date = ? "
+            + "WHERE id_object = ?;";
+
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
+      ps.setString(1, objectDTO.getDescription());
+      ps.setInt(2, myObjectTypeDAO.getIdByLabel(objectDTO.getObjectType()));
+      ps.setBoolean(3, objectDTO.getisVisible());
+      ps.setString(4, objectDTO.getState());
+      ps.setDouble(5, objectDTO.getPrice());
+      ps.setDate(6, objectDTO.getWorkshopDate() == null ? null
+          : java.sql.Date.valueOf(objectDTO.getWorkshopDate()));
+      ps.setDate(7, objectDTO.getDepositDate() == null ? null
+          : java.sql.Date.valueOf(objectDTO.getDepositDate()));
+      ps.setDate(8, objectDTO.getOnSaleDate() == null ? null
+          : java.sql.Date.valueOf(objectDTO.getOnSaleDate()));
+      ps.setDate(9, objectDTO.getSellingDate() == null ? null
+          : java.sql.Date.valueOf(objectDTO.getSellingDate()));
+      ps.setDate(10, objectDTO.getWithdrawalDate() == null ? null
+          : java.sql.Date.valueOf(objectDTO.getWithdrawalDate()));
+      ps.setInt(11, id);
+      ps.executeUpdate();
+    } catch (SQLException e) {
+      throw new DALException("Error updating object", e);
+    }
+
+    return getOneById(id);
+  }
+
+  /**
+   * Insert a new object in the db.
+   *
+   * @param objectDTO the object to insert in the db
+   * @return the object inserted in the db
+   */
+  @Override
+  public ObjectDTO insert(ObjectDTO objectDTO) {
+    String request = "INSERT INTO pae.objects VALUES "
+        + "(DEFAULT, DEFAULT, ?, ?, ?, null, 'proposé', null, null, false, ?, "
+        + "null, null, null, null, null, null, null, ?, ?, ?, ?);";
+
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request, true)) {
+      ps.setString(1, objectDTO.getDescription());
+      ps.setBoolean(2, objectDTO.getPhoto());
+      ps.setString(3, objectDTO.getTimeSlot());
+      ps.setDate(4, java.sql.Date.valueOf(objectDTO.getOfferDate()));
+      ps.setString(5, objectDTO.getPhoneNumber());
+      ps.setInt(6, objectDTO.getUser().getId());
+      ps.setInt(7, myAvailabilityDao.getOneByDate(objectDTO.getReceiptDate()).getId());
+      ps.setInt(8, myObjectTypeDAO.getIdByLabel(objectDTO.getObjectType()));
+      ps.executeUpdate();
+
+      // Get the id of the new object
+      ResultSet rs = ps.getGeneratedKeys();
+      if (rs.next()) {
+        return getOneById(rs.getInt(1));
+      }
+    } catch (Exception e) {
+      throw new DALException("Error during the insertion of the object", e);
+    }
+
+    return null;
+  }
+
 }
