@@ -15,6 +15,8 @@ public class DALServicesImpl implements DALServices, DalBackendServices {
 
   private final ThreadLocal<Connection> connectionThreadLocal
       = new ThreadLocal<Connection>();
+
+  private final ThreadLocal<Integer> integerThreadLocalVerification = new ThreadLocal<>();
   /**
    * Connection to the database.
    */
@@ -68,14 +70,20 @@ public class DALServicesImpl implements DALServices, DalBackendServices {
   //@Transactional(isolation = Isolation.SERIALIZABLE)
   //synchronized
   public void startTransaction() {
-    try {
-      Connection connection = bds.getConnection();
-      connection.setAutoCommit(false);
-      connectionThreadLocal.set(connection);
-    } catch (SQLException e) {
-      throw new DALException("Error during the creation of the transaction", e);
-    }
 
+    if (integerThreadLocalVerification.get() == null) {
+
+      try {
+        integerThreadLocalVerification.set(1);
+        Connection connection = bds.getConnection();
+        connection.setAutoCommit(false);
+        connectionThreadLocal.set(connection);
+      } catch (SQLException e) {
+        throw new DALException("Error during the creation of the transaction", e);
+      }
+    } else {
+      integerThreadLocalVerification.set(integerThreadLocalVerification.get() + 1);
+    }
   }
 
   /**
@@ -84,16 +92,23 @@ public class DALServicesImpl implements DALServices, DalBackendServices {
   @Override
   public void commitTransaction() {
 
-    Connection connection = connectionThreadLocal.get();
-    try {
-      connection.setAutoCommit(false);
-      connection.commit();
-      connectionThreadLocal.remove();
-      connection.close();
-    } catch (SQLException e) {
-      throw new DALException("Error during the commit of the transaction", e);
-    }
+    if (integerThreadLocalVerification.get() == 1) {
 
+      integerThreadLocalVerification.remove();
+
+      Connection connection = connectionThreadLocal.get();
+      try {
+        connection.setAutoCommit(false);
+        connection.commit();
+        connectionThreadLocal.remove();
+        connection.close();
+      } catch (SQLException e) {
+        throw new DALException("Error during the commit of the transaction", e);
+      }
+
+    } else {
+      integerThreadLocalVerification.set(integerThreadLocalVerification.get() - 1);
+    }
   }
 
   /**

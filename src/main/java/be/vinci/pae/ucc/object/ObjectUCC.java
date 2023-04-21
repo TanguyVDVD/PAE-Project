@@ -44,21 +44,23 @@ public interface ObjectUCC {
   ObjectDTO getOne(int id);
 
   /**
-   * Accept a offer.
+   * Accept an offer.
    *
-   * @param id the id of the object to accept
+   * @param id            the id of the object to accept
+   * @param versionNumber the version number of the object
    * @return the object updated
    */
-  ObjectDTO accept(int id);
+  ObjectDTO accept(int id, int versionNumber);
 
   /**
-   * Refuse a offer.
+   * Refuse an offer.
    *
    * @param id               the id of the object to refuse
    * @param reasonForRefusal the reason for refusal
+   * @param versionNumber    the version number of the object
    * @return the object updated
    */
-  ObjectDTO refuse(int id, String reasonForRefusal);
+  ObjectDTO refuse(int id, String reasonForRefusal, int versionNumber);
 
   /**
    * Update the information and the state of an object.
