@@ -93,8 +93,8 @@ function renderAdminAvailabilitiesPage() {
 
 function renderDatePicker(datePickerId, defaultAvailabilities) {
   flatpickr(datePickerId, {
-    altInputClass : "invisible",
     altInput: true,
+    altInputClass : "invisible",
     static: true,
     position: "center",
     inline: true,
