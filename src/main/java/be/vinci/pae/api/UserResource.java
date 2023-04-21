@@ -17,7 +17,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
@@ -338,52 +337,18 @@ public class UserResource {
           Status.UNAUTHORIZED);
     }
 
-    if (photoDetail == null || photoDetail.getFileName() == null) {
-      throw new WebApplicationException("Paramètres manquants", Response.Status.BAD_REQUEST);
-    }
-
     UserDTO userDTO = myDomainFactory.getUser();
 
     userDTO.setId(id);
     userDTO.setPhoto(true);
 
-    UserDTO userAfterUpdate = userUCC.updateProfilePicture(userDTO, password, photo);
+    UserDTO userAfterUpdate;
 
-    if (userAfterUpdate == null) {
-      throw new WebApplicationException("Utilisateur non trouvé", Status.NOT_FOUND);
+    if (photoDetail == null || photoDetail.getFileName() == null) {
+      userAfterUpdate = userUCC.removeProfilePicture(userDTO, password);
+    } else {
+      userAfterUpdate = userUCC.updateProfilePicture(userDTO, password, photo);
     }
-
-    return userAfterUpdate;
-  }
-
-  /**
-   * Remove a user's profile picture.
-   *
-   * @param request  the request
-   * @param id       the user's id
-   * @param password the user's password
-   * @return the user's information
-   */
-  @DELETE
-  @Path("/{id}/photo")
-  @Produces(MediaType.APPLICATION_JSON)
-  @Authorize
-  public UserDTO removeProfilePicture(@Context ContainerRequest request,
-      @PathParam("id") int id,
-      @QueryParam("password") String password) {
-    UserDTO authorizedUser = (UserDTO) request.getProperty("user");
-
-    if (authorizedUser.getId() != id) {
-      throw new WebApplicationException("Vous n'avez pas les droits pour modifier cet utilisateur",
-          Status.UNAUTHORIZED);
-    }
-
-    UserDTO userDTO = myDomainFactory.getUser();
-
-    userDTO.setId(id);
-    userDTO.setPhoto(false);
-
-    UserDTO userAfterUpdate = userUCC.removeProfilePicture(userDTO, password);
 
     if (userAfterUpdate == null) {
       throw new WebApplicationException("Utilisateur non trouvé", Status.NOT_FOUND);
