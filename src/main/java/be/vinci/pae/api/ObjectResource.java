@@ -334,8 +334,12 @@ public class ObjectResource {
 
     for (String input : inputs) {
       if (input == null || input.isBlank()) {
-        throw new WebApplicationException("Paramètres manquants", Response.Status.UNAUTHORIZED);
+        throw new WebApplicationException("Paramètres manquants", Response.Status.BAD_REQUEST);
       }
+    }
+
+    if (!timeSlot.equals("matin") && !timeSlot.equals("après-midi")) {
+      throw new WebApplicationException("Créneau invalide", Response.Status.BAD_REQUEST);
     }
 
     ObjectDTO objectDTO = myDomainFactory.getObject();
