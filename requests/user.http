@@ -129,7 +129,7 @@ Content-Type: application/json
 {
   "firstName": "Barteeeeee",
   "currentPassword": "password",
-  "versionNbr": 3
+  "versionNbr": 2
 }
 
 ### Update a user's role as helper
