@@ -20,7 +20,6 @@ public class ObjectImpl implements Object {
 
   private int id;
   private String description;
-  private boolean photo;
   private boolean isVisible;
   private double price;
   private String state;
@@ -78,26 +77,6 @@ public class ObjectImpl implements Object {
   @Override
   public void setDescription(String description) {
     this.description = description;
-  }
-
-  /**
-   * Return the path of the photo of an object.
-   *
-   * @return a String corresponding to the path of the photo of an object
-   */
-  @Override
-  public boolean getPhoto() {
-    return photo;
-  }
-
-  /**
-   * set the description of an object.
-   *
-   * @param photo the path of the photo of an object
-   */
-  @Override
-  public void setPhoto(boolean photo) {
-    this.photo = photo;
   }
 
   /**

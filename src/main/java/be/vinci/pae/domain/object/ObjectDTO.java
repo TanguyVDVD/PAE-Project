@@ -40,20 +40,6 @@ public interface ObjectDTO {
   void setDescription(String description);
 
   /**
-   * Return the path of the photo of an object.
-   *
-   * @return a String corresponding to the path of the photo of an object
-   */
-  boolean getPhoto();
-
-  /**
-   * set the description of an object.
-   *
-   * @param photo the path of the photo of an object
-   */
-  void setPhoto(boolean photo);
-
-  /**
    * Return the visibility of an object.
    *
    * @return true if the object is visible, else false

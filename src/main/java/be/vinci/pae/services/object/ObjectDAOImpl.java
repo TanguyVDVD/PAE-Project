@@ -47,7 +47,6 @@ public class ObjectDAOImpl implements ObjectDAO {
     try {
       object.setId(resultSet.getInt("id_object"));
       object.setDescription(resultSet.getString("description"));
-      object.setPhoto(resultSet.getBoolean("photo"));
       object.setPhoneNumber(resultSet.getString("phone_number"));
       object.setIsVisible(resultSet.getBoolean("is_visible"));
       object.setPrice(resultSet.getDouble("price"));
@@ -343,18 +342,17 @@ public class ObjectDAOImpl implements ObjectDAO {
   @Override
   public ObjectDTO insert(ObjectDTO objectDTO) {
     String request = "INSERT INTO pae.objects VALUES "
-        + "(DEFAULT, DEFAULT, ?, ?, ?, null, 'proposé', null, null, false, ?, "
+        + "(DEFAULT, DEFAULT, ?, ?, null, 'proposé', null, null, false, ?, "
         + "null, null, null, null, null, null, null, ?, ?, ?, ?);";
 
     try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request, true)) {
       ps.setString(1, objectDTO.getDescription());
-      ps.setBoolean(2, objectDTO.getPhoto());
-      ps.setString(3, objectDTO.getTimeSlot());
-      ps.setDate(4, java.sql.Date.valueOf(objectDTO.getOfferDate()));
-      ps.setString(5, objectDTO.getPhoneNumber());
-      ps.setInt(6, objectDTO.getUser().getId());
-      ps.setInt(7, myAvailabilityDao.getOneByDate(objectDTO.getReceiptDate()).getId());
-      ps.setInt(8, myObjectTypeDAO.getIdByLabel(objectDTO.getObjectType()));
+      ps.setString(2, objectDTO.getTimeSlot());
+      ps.setDate(3, java.sql.Date.valueOf(objectDTO.getOfferDate()));
+      ps.setString(4, objectDTO.getPhoneNumber());
+      ps.setInt(5, objectDTO.getUser().getId());
+      ps.setInt(6, myAvailabilityDao.getOneByDate(objectDTO.getReceiptDate()).getId());
+      ps.setInt(7, myObjectTypeDAO.getIdByLabel(objectDTO.getObjectType()));
       ps.executeUpdate();
 
       // Get the id of the new object

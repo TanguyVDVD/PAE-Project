@@ -271,7 +271,6 @@ public class ObjectResource {
     ObjectDTO objectDTO = myDomainFactory.getObject();
 
     objectDTO.setId(id);
-    objectDTO.setPhoto(true);
 
     ObjectDTO objectAfterUpdate = objectUCC.updatePhoto(objectDTO, photo);
 
@@ -292,7 +291,6 @@ public class ObjectResource {
    * @param timeSlot    the time slot chosen
    * @param phoneNumber the phone number used to offer the object
    * @param photo       the photo of the user
-   * @param photoDetail the detail of the photo
    * @return an object when added
    */
   @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -305,8 +303,7 @@ public class ObjectResource {
       @FormDataParam("objectType") String objectType,
       @FormDataParam("receiptDate") LocalDate receiptDate,
       @FormDataParam("timeSlot") String timeSlot,
-      @FormDataParam("photo") InputStream photo,
-      @FormDataParam("photo") FormDataContentDisposition photoDetail
+      @FormDataParam("photo") InputStream photo
   ) {
     UserDTO authorizedUser = (UserDTO) request.getProperty("user");
 
@@ -342,6 +339,10 @@ public class ObjectResource {
       throw new WebApplicationException("Créneau invalide", Response.Status.BAD_REQUEST);
     }
 
+    if (photo == null) {
+      throw new WebApplicationException("Photo manquante", Status.BAD_REQUEST);
+    }
+
     ObjectDTO objectDTO = myDomainFactory.getObject();
 
     objectDTO.setDescription(description);
@@ -350,14 +351,11 @@ public class ObjectResource {
     objectDTO.setTimeSlot(timeSlot);
     objectDTO.setPhoneNumber(phoneNumber);
     objectDTO.setUser(authorizedUser);
-    objectDTO.setPhoto(photoDetail != null && photoDetail.getFileName() != null);
     objectDTO.setOfferDate(LocalDate.now());
 
     ObjectDTO objectAdded = objectUCC.add(objectDTO);
 
-    if (objectAdded.getPhoto()) {
-      objectUCC.updatePhoto(objectAdded, photo);
-    }
+    objectUCC.updatePhoto(objectAdded, photo);
 
     return objectAdded;
   }

@@ -244,8 +244,6 @@ public class ObjectUCCImpl implements ObjectUCC {
 
       object.savePhoto(file);
 
-      object.setPhoto(true);
-
       return myObjectDAO.updateObject(object.getId(), object);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
