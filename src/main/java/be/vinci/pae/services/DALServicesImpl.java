@@ -20,6 +20,9 @@ public class DALServicesImpl implements DALServices, DalBackendServices {
    */
   private final BasicDataSource bds;
 
+  /**
+   * Constructor of the DALServicesImpl class.
+   */
   public DALServicesImpl() {
     bds = new BasicDataSource();
     bds.setUrl(Config.getProperty("DatabaseUrl"));
