@@ -36,7 +36,11 @@ public class UserUCCImpl implements UserUCC {
    */
   @Override
   public UserDTO login(String email, String password) {
+
     myDalServices.startTransaction();
+
+    getUserById(1);
+    getUserById(1);
 
     try {
       User userDB = (User) myUserDAO.getOneByEmail(email);
@@ -155,6 +159,8 @@ public class UserUCCImpl implements UserUCC {
    */
   @Override
   public UserDTO getUserById(int id) {
+
+    myDalServices.startTransaction();
 
     try {
       return myUserDAO.getOneById(id);

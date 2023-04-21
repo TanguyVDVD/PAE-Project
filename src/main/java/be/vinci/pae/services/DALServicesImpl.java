@@ -70,6 +70,7 @@ public class DALServicesImpl implements DALServices, DalBackendServices {
   public void startTransaction() {
 
     if (integerThreadLocalVerification.get() == null) {
+      System.out.println("J'ouvre une co");
 
       try {
         integerThreadLocalVerification.set(1);
@@ -81,6 +82,7 @@ public class DALServicesImpl implements DALServices, DalBackendServices {
         se.printStackTrace();
       }
     } else {
+      System.out.println("J'ouvre pas de co");
       integerThreadLocalVerification.set(integerThreadLocalVerification.get() + 1);
     }
   }
@@ -92,6 +94,7 @@ public class DALServicesImpl implements DALServices, DalBackendServices {
   public void commitTransaction() {
 
     if (integerThreadLocalVerification.get() == 1) {
+      System.out.println("Je ferme une co");
 
       integerThreadLocalVerification.remove();
 
@@ -107,6 +110,7 @@ public class DALServicesImpl implements DALServices, DalBackendServices {
       }
 
     } else {
+      System.out.println("Je ferme pas de co");
       integerThreadLocalVerification.set(integerThreadLocalVerification.get() - 1);
     }
 
