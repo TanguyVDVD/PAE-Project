@@ -51,7 +51,7 @@ Authorization: {{helperToken}}
   "state": "en atelier",
   "date": null,
   "isVisible": true,
-  "version_number": 1
+  "versionNbr": 1
 }
 
 ### Set a object on sale with a price
@@ -66,7 +66,7 @@ Authorization: {{helperToken}}
   "state": "mis en vente",
   "date": null,
   "isVisible": true,
-  "version_number": 2
+  "versionNbr": 2
 }
 
 ### Try to accept an offer as helper
@@ -79,13 +79,13 @@ Authorization: {{helperToken}}
 }
 
 ### Accept an offer as manager
-PATCH {{baseUrl}}/objects/status/6
+PATCH {{baseUrl}}/objects/status/7
 Content-Type: application/json
 Authorization: {{managerToken}}
 
 {
   "status": "accepté",
-  "version_number": 1
+  "versionNbr": 1
 }
 
 ### Refuse an offer without reason for refusal
@@ -116,5 +116,5 @@ Authorization: {{helperToken}}
 {
   "status": "refusé",
   "reasonForRefusal": "Meuble en trop mauvais état",
-  "version_number": 1
+  "versionNbr": 1
 }

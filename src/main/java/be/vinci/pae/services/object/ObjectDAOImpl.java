@@ -8,7 +8,7 @@ import be.vinci.pae.services.objecttype.ObjectTypeDAO;
 import be.vinci.pae.services.user.UserDAO;
 import be.vinci.pae.utils.exceptions.DALException;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.NotFoundException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -275,14 +275,14 @@ public class ObjectDAOImpl implements ObjectDAO {
 
       if (ps.getUpdateCount() == 0) {
         if (getOneById(objectDTO.getId()) == null) {
-          throw new WebApplicationException("Objet non trouvé", 404);
+          throw new NotFoundException("Objet non trouvé");
         } else {
-          throw new WebApplicationException(
-              "Conflit de version de l'objet - V" + objectDTO.getVersionNumber(), 409);
+          throw new SQLException(
+              "Conflit de version de l'objet - V" + objectDTO.getVersionNumber());
         }
       }
-    } catch (SQLException e) {
-      throw new DALException("Error updating object", e);
+    } catch (Exception e) {
+      throw new DALException(e.getMessage(), e);
     }
 
     return getOneById(id);
@@ -314,15 +314,15 @@ public class ObjectDAOImpl implements ObjectDAO {
 
       if (ps.getUpdateCount() == 0) {
         if (getOneById(id) == null) {
-          throw new WebApplicationException("Objet non trouvé", 404);
+          throw new NotFoundException("Objet non trouvé");
         } else {
-          throw new WebApplicationException(
-              "Conflit de version de l'objet - V" + versionNumber, 409);
+          throw new SQLException(
+              "Conflit de version de l'objet - V" + versionNumber);
         }
       }
 
-    } catch (SQLException e) {
-      throw new DALException("Error setting status to accepted", e);
+    } catch (Exception e) {
+      throw new DALException(e.getMessage(), e);
     }
 
     ObjectDTO object = getOneById(id);
@@ -362,15 +362,15 @@ public class ObjectDAOImpl implements ObjectDAO {
 
       if (ps.getUpdateCount() == 0) {
         if (getOneById(id) == null) {
-          throw new WebApplicationException("Objet non trouvé", 404);
+          throw new NotFoundException("Objet non trouvé");
         } else {
-          throw new WebApplicationException(
-              "Conflit de version de l'objet - V" + versionNumber, 409);
+          throw new SQLException(
+              "Conflit de version de l'objet - V" + versionNumber);
         }
       }
 
-    } catch (SQLException e) {
-      throw new DALException("Error setting status to refused", e);
+    } catch (Exception e) {
+      throw new DALException(e.getMessage(), e);
     }
 
     ObjectDTO object = getOneById(id);
