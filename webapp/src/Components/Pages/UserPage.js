@@ -37,7 +37,7 @@ const UserPage = (params) => {
     </div>
   `;
 
-  // Use the my endpoint if the user is looking at their own profile
+  // Use the 'my' endpoint if the user is looking at their own profile
   API.get(`users/${authenticatedUser.id === id ? 'my' : id}`)
     .then((user) => {
       renderUserPage(user);
@@ -136,6 +136,7 @@ function renderUserPage(user) {
 
       API.patch(`users/${user.id}`, { body: { role: e.target.checked ? 'utilisateur' : 'aidant' } })
         .then((updatedUser) => {
+          user.versionNumber = updatedUser.versionNumber;
           e.target.checked = updatedUser.role === 'aidant';
         })
         .catch((error) => {
@@ -444,15 +445,17 @@ function renderEditProfile(user) {
 
     if (Object.keys(body).length > 0) {
       body.currentPassword = form.currentPassword;
+      body.versionNbr = user.versionNumber;
       promises.push(() => API.patch(`users/${user.id}`, { body }));
     }
 
-    if (form.removePhoto) {
-      promises.push(() => API.delete(`users/${user.id}/photo`));
-    } else if (form.photo && form.photo.size > 0) {
+    // HTTP DELETE requests cannot have a body, so we use the same endpoint as the PUT request
+    // but with an empty photo
+    if (form.removePhoto || (form.photo && form.photo.size > 0)) {
       const formData = new FormData();
-      formData.append('photo', form.photo);
+      formData.append('photo', form.removePhoto ? null : form.photo);
       formData.append('password', form.currentPassword);
+      formData.append('versionNbr', user.versionNumber);
       promises.push(() => API.put(`users/${user.id}/photo`, { body: formData }));
     }
 

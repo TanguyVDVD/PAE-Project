@@ -32,6 +32,7 @@ public class UserUCCImpl implements UserUCC {
    */
   @Override
   public UserDTO login(String email, String password) {
+
     myDalServices.startTransaction();
 
     try {
@@ -73,6 +74,8 @@ public class UserUCCImpl implements UserUCC {
 
       userDTO.setPassword(User.hashPassword(userDTO.getPassword()));
 
+      userDTO.setVersionNumber(1);
+
       return myUserDAO.insert(userDTO);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
@@ -111,6 +114,7 @@ public class UserUCCImpl implements UserUCC {
    */
   @Override
   public UserDTO getUserById(int id) {
+
     myDalServices.startTransaction();
 
     try {
@@ -199,7 +203,7 @@ public class UserUCCImpl implements UserUCC {
    * Get a user's profile picture.
    *
    * @param userDTO the user
-   * @return the profile picture of the user
+   * @return the user's profile picture
    */
   @Override
   public File getProfilePicture(UserDTO userDTO) {
@@ -211,7 +215,7 @@ public class UserUCCImpl implements UserUCC {
   /**
    * Update a user's profile picture.
    *
-   * @param userDTO  the user
+   * @param userDTO  the user to update
    * @param password the password to verify
    * @param file     the new profile picture
    * @return the updated user

@@ -5,8 +5,10 @@ import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.utils.exceptions.DALException;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.NotFoundException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +38,7 @@ public class UserDAOImpl implements UserDAO {
 
     try {
       user.setId(resultSet.getInt("id_user"));
+      user.setVersionNumber(resultSet.getInt("version_number"));
       user.setLastName(resultSet.getString("last_name"));
       user.setFirstName(resultSet.getString("first_name"));
       user.setPhoneNumber(resultSet.getString("phone_number"));
@@ -59,18 +62,19 @@ public class UserDAOImpl implements UserDAO {
    */
   @Override
   public UserDTO insert(UserDTO userDTO) {
-    String request = "INSERT INTO" + " pae.users VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?);";
+    String request = "INSERT INTO" + " pae.users VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request, true)) {
-      ps.setString(1, userDTO.getLastName());
-      ps.setString(2, userDTO.getFirstName());
-      ps.setString(3, userDTO.getPhoneNumber());
-      ps.setString(4, userDTO.getEmail());
-      ps.setString(5, userDTO.getPassword());
-      ps.setBoolean(6, userDTO.getPhoto());
+      ps.setInt(1, userDTO.getVersionNumber());
+      ps.setString(2, userDTO.getLastName());
+      ps.setString(3, userDTO.getFirstName());
+      ps.setString(4, userDTO.getPhoneNumber());
+      ps.setString(5, userDTO.getEmail());
+      ps.setString(6, userDTO.getPassword());
+      ps.setBoolean(7, userDTO.getPhoto());
 
-      ps.setDate(7, java.sql.Date.valueOf(userDTO.getRegisterDate()));
-      ps.setString(8, userDTO.getRole());
+      ps.setDate(8, java.sql.Date.valueOf(userDTO.getRegisterDate()));
+      ps.setString(9, userDTO.getRole());
       ps.executeUpdate();
 
       // Get the id of the new user
@@ -188,6 +192,7 @@ public class UserDAOImpl implements UserDAO {
   public UserDTO update(UserDTO userDTO) {
     // Only update the fields that are not null
     Map<String, Object> fields = new HashMap<>();
+    fields.put("version_number", userDTO.getVersionNumber() + 1);
     if (userDTO.getLastName() != null) {
       fields.put("last_name", userDTO.getLastName());
     }
@@ -220,7 +225,8 @@ public class UserDAOImpl implements UserDAO {
     }
 
     String request = "UPDATE pae.users SET " + fields.keySet().stream()
-        .map(key -> key + " = ?").collect(Collectors.joining(", ")) + " WHERE id_user = ?";
+        .map(key -> key + " = ?").collect(Collectors.joining(", "))
+        + " WHERE id_user = ? AND version_number = ?";
 
     try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       int i = 1;
@@ -228,12 +234,22 @@ public class UserDAOImpl implements UserDAO {
         ps.setObject(i++, value);
       }
       ps.setInt(i, userDTO.getId());
+      ps.setInt(i + 1, userDTO.getVersionNumber());
 
       ps.executeUpdate();
 
+      if (ps.getUpdateCount() == 0) {
+        if (getOneById(userDTO.getId()) == null) {
+          throw new NotFoundException("Utilisateur non trouvé");
+        } else {
+          throw new SQLException(
+              "Conflit de version d'utilisateur - V" + userDTO.getVersionNumber());
+        }
+      }
+
       return getOneById(userDTO.getId());
     } catch (Exception se) {
-      throw new DALException("Error during updating user", se);
+      throw new DALException(se.getMessage(), se);
     }
   }
 }
