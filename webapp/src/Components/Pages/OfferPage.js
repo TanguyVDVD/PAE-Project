@@ -168,11 +168,17 @@ function renderOfferPage(objectTypes) {
             formData.append("timeSlot", "après-midi");
         }
 
-        ['description', 'objectType', 'photo'].forEach((key) => {
+        ['description', 'objectType'].forEach((key) => {
             const input = form.querySelector(`#input-${key}`);
 
-            formData.append(key, input.type === 'file' ? input.files[0] : input.value);
+            formData.append(key, input.value);
         });
+
+        const file = document.getElementById("input-photo").files[0];
+
+        if (file){
+            formData.append("photo", file);
+        }
 
         formData.append("receiptDate",
             invertDateFormat(document.getElementById("input-receipt-date").value));
