@@ -305,7 +305,7 @@ public class ObjectDAOImpl implements ObjectDAO {
 
     try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       ps.setDate(1, java.sql.Date.valueOf(acceptanceDate));
-
+      ps.setInt(2, versionNumber + 1);
       ps.setInt(3, id);
       ps.setInt(4, versionNumber);
 
