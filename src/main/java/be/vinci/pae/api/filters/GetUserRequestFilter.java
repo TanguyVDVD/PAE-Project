@@ -20,7 +20,7 @@ import jakarta.ws.rs.ext.Provider;
  */
 @Singleton
 @Provider
-@Authorize
+@GetUser
 public class GetUserRequestFilter implements ContainerRequestFilter {
 
   private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
