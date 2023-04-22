@@ -82,7 +82,7 @@ function renderAdminObjectsPage() {
     const minPrice = document.getElementById('input-minPrice').value;
     const maxPrice = document.getElementById('input-maxPrice').value;
     const date = document.getElementById('input-receipt-date').value;
-    const typeFilters = [...document.querySelectorAll('.type-filter:checked')].map((cb) => cb.value);
+    const typeFilters = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
 
     renderObjects(minPrice, maxPrice, date, search, typeFilters);
   });
