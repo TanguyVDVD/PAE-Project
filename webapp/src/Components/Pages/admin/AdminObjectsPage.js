@@ -2,12 +2,16 @@ import Navigate from '../../Router/Navigate';
 import { getAuthenticatedUser } from '../../../utils/auths';
 import { clearPage } from '../../../utils/render';
 import API from '../../../utils/api';
-import {subtractDates} from '../../../utils/dates';
-import {setReceiptDate, setUserOrPhoneNumber} from '../../../utils/objects';
+import { subtractDates } from '../../../utils/dates';
+import { setReceiptDate, setUserOrPhoneNumber } from '../../../utils/objects';
 
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
 
+let searchQuery = '';
+
 const AdminObjectsPage = () => {
+  searchQuery = '';
+
   const authenticatedUser = getAuthenticatedUser();
 
   if (!authenticatedUser || authenticatedUser.role === null) {
@@ -36,11 +40,20 @@ function renderAdminObjectsPage() {
     <div id="objects-list"></div>
   `;
 
+  div.querySelector('form').addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const search = e.target.querySelector('input').value;
+    if (search === searchQuery) return;
+    searchQuery = search;
+
+    renderObjects(searchQuery);
+  });
+
   div.querySelector('form').addEventListener('keyup', (e) => {
     e.preventDefault();
 
-    const search = e.target.value;
-    renderObjects(search);
+    e.currentTarget.dispatchEvent(new Event('submit'));
   });
 
   main.appendChild(div);
@@ -57,55 +70,56 @@ async function renderObjects(query = '') {
 
   API.get(`objects?query=${encodeURIComponent(query)}`).then((objects) => {
     document.getElementById('objects-list').innerHTML = `
-        <div class="container mt-5 mb-5">
-            <div class="d-flex justify-content-center row">
-                <div class="col-md-10">
-                    ${objects
-                      .map(
-                        (object) => `
-                        <div class="row p-2 bg-white border rounded">
-                            <div class="col-md-3 mt-1">
-                                <img 
-                                    class="rounded product-image object-fit-cover" 
-                                    src="${API.getEndpoint(`objects/${object.id}/photo`)}"
-                                    width="180" height="180"
-                                    onerror="this.src='${noFurniturePhoto}'"
-                                    alt="${object.objectType}">
-                            </div>
-                            <div class="col-md-6 mt-1">
-                                <h5>${object.objectType}</h5>
-                               
-                                <div class="mt-1 mb-1 spec-1">
-                                    <h6>${object.description}</h6>
-                                </div>
-                                <br>
-                                <div class="div-receipt-date">
-                                </div>
-                                
-                                <div class="div-user">
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-3 border-left mt-1 d-flex flex-column align-content-center justify-content-between">
-                                <div>
-                                  <div class="div-state">
-                                  </div>
-                                  
-                                  <div class="d-flex flex-row align-items-center div-price-time-remaining">
-                                  </div>
-                                </div>
-                                                     
-                                <div class="d-flex flex-column mb-4 div-button">
-                                </div>
-                            </div>
-                        </div>
+      <div class="container mt-5 mb-5">
+        <div class="d-flex justify-content-center row">
+          <div class="col-md-10">
+            ${objects
+              .map(
+                (object) => `
+                  <div class="row p-2 bg-white border rounded">
+                    <div class="col-md-3 mt-1">
+                      <img
+                        class="rounded product-image object-fit-cover"
+                        src="${API.getEndpoint(`objects/${object.id}/photo`)}"
+                        width="180"
+                        height="180"
+                        onerror="this.src='${noFurniturePhoto}'"
+                        alt="${object.objectType}"
+                      />
+                    </div>
+                    <div class="col-md-6 mt-1">
+                      <h5>${object.objectType}</h5>
+
+                      <div class="mt-1 mb-1 spec-1">
+                        <h6>${object.description}</h6>
+                      </div>
+                      <br />
+                      <div class="div-receipt-date"></div>
+
+                      <div class="div-user"></div>
+                    </div>
+
+                    <div
+                      class="col-md-3 border-left mt-1 d-flex flex-column align-content-center justify-content-between"
+                    >
+                      <div>
+                        <div class="div-state"></div>
+
+                        <div
+                          class="d-flex flex-row align-items-center div-price-time-remaining"
+                        ></div>
+                      </div>
+
+                      <div class="d-flex flex-column mb-4 div-button"></div>
+                    </div>
+                  </div>
                 `,
-                      )
-                      .join('')}
-                </div>                     
-            </div>
+              )
+              .join('')}
+          </div>
         </div>
-      `;
+      </div>
+    `;
 
     setReceiptDate(document, 'div-receipt-date', objects);
     setUserOrPhoneNumber(document, 'div-user', objects);
@@ -123,7 +137,7 @@ async function renderObjects(query = '') {
     objectslist.querySelectorAll('button[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
-          Navigate(`/object/${e.target.dataset.id}`);
+        Navigate(`/object/${e.target.dataset.id}`);
       });
     });
   });
@@ -144,17 +158,17 @@ function setPriceOrTimeRemaining(className, objects) {
       if (timeRemaining <= 3) {
         element.innerHTML = `
           <p class="text-danger">${timeRemaining} jours restants pour répondre !</p>
-      `;
+        `;
       } else {
         element.innerHTML = `
           <p class="text-primary">${timeRemaining} jours restants pour répondre</p>
-      `;
+        `;
       }
     } else if (object.status === 'refusé') {
       element.innerHTML = ``;
     } else {
       element.innerHTML = `
-          <h4 class="mr-1">${object.price} €</h4>
+        <h4 class="mr-1">${object.price} €</h4>
       `;
     }
   }
@@ -168,15 +182,15 @@ function setStateColor(className, objects) {
 
     if (object.state === 'refusé') {
       element.innerHTML = `
-          <h6 class="text-danger">${object.state}</h6>
+        <h6 class="text-danger">${object.state}</h6>
       `;
     } else if (object.state === 'proposé') {
       element.innerHTML = `
-          <h6 class="text-primary">${object.state}</h6>
+        <h6 class="text-primary">${object.state}</h6>
       `;
     } else {
       element.innerHTML = `
-          <h6 class="text-success">${object.state}</h6>
+        <h6 class="text-success">${object.state}</h6>
       `;
     }
   }
@@ -189,15 +203,25 @@ function setButton(className, objects) {
     const element = elements.item(i);
     if (object.state === 'refusé') {
       element.innerHTML = `
-          <button class="btn btn-primary btn-sm button-see" type="button" data-id="${object.id}">Voir</button>
+        <button class="btn btn-primary btn-sm button-see" type="button" data-id="${object.id}">
+          Voir
+        </button>
       `;
     } else if (object.state === 'proposé') {
       element.innerHTML = `
-          <button class="btn btn-outline-primary btn-sm button-respond" type="button" data-id="${object.id}">Répondre</button>
+        <button
+          class="btn btn-outline-primary btn-sm button-respond"
+          type="button"
+          data-id="${object.id}"
+        >
+          Répondre
+        </button>
       `;
     } else {
       element.innerHTML = `
-          <button class="btn btn-primary btn-sm button-modify" type="button" data-id="${object.id}">Modifier</button>
+        <button class="btn btn-primary btn-sm button-modify" type="button" data-id="${object.id}">
+          Modifier
+        </button>
       `;
     }
   }
