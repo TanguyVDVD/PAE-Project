@@ -111,4 +111,29 @@ public class NotificationUCCImpl implements NotificationUCC {
     }
     return null;
   }
+
+  /**
+   * Marks a notification with the specified ID as read and returns the updated notification
+   * object.
+   *
+   * @param notificationDTO the ID of the notification to mark as read
+   * @return the updated NotificationDTO object with the specified ID marked as read
+   */
+  @Override
+  public NotificationDTO markANotificationAsRead(NotificationDTO notificationDTO) {
+    myDalServices.startTransaction();
+
+    try {
+
+      return null;
+
+    } catch (Exception e) {
+      myDalServices.rollbackTransaction();
+      throw e;
+
+    } finally {
+      myDalServices.commitTransaction();
+    }
+
+  }
 }

@@ -14,3 +14,7 @@ Content-Type: application/json
 ### Get all notifications
 GET {{baseUrl}}/notifications/user/2
 Authorization: {{helperToken}}
+
+### Set notification as read
+GET {{baseUrl}}/notifications/4/read
+Authorization: {{helperToken}}

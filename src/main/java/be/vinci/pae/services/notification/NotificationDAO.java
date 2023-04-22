@@ -20,4 +20,6 @@ public interface NotificationDAO {
 
   NotificationDTO createAcceptedObjectUserNotification(NotificationDTO notificationDTO);
 
+  NotificationDTO markANotificationAsRead(NotificationDTO notificationDTO);
+
 }

@@ -1,3 +1,80 @@
+PATCH http://localhost:3000/objects/status/7
+Content-Type: application/json
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjgwMTY4MywidXNlciI6MX0.l3WNe1ZztLocD5SLkNhDLwyLxEixlWSS9qhYvjzXzG0
+Content-Length: 45
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "status": "accepté",
+  "versionNbr": 1
+}
+
+###
+
+POST http://localhost:3000/users/login
+Content-Type: application/json
+Content-Length: 63
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "email": "riez@ressourcerie.be",
+  "password": "password"
+}
+
+<> 2023-04-22T225443.200.json
+
+###
+
+GET http://localhost:3000/notifications/user/2
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjgwMTU3OSwidXNlciI6Mn0.-7nrxbBbi25DaIZ65BQj8YHmB6kFX0k5JAajUtZYVGk
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-04-22T225320.200.json
+
+###
+
+GET http://localhost:3000/notifications/user/2
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjgwMTU3OSwidXNlciI6Mn0.-7nrxbBbi25DaIZ65BQj8YHmB6kFX0k5JAajUtZYVGk
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-04-22T225314.200.json
+
+###
+
+GET http://localhost:3000/notifications/user/2
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjgwMTU3OSwidXNlciI6Mn0.-7nrxbBbi25DaIZ65BQj8YHmB6kFX0k5JAajUtZYVGk
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-04-22T225302.200.json
+
+###
+
+POST http://localhost:3000/users/login
+Content-Type: application/json
+Content-Length: 70
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "email": "constantine@ressourcerie.be",
+  "password": "password"
+}
+
+<> 2023-04-22T225259.200.json
+
+###
+
 GET http://localhost:3000/notifications/user/2
 Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4Mjc4NDcwOCwidXNlciI6Mn0.cpEFwfI5Ib5oqYwlUoejyczJGmPZ1-1KMf_ZPzymCrM
 Connection: Keep-Alive
@@ -587,80 +664,6 @@ Content-Type: application/json
 }
 
 <> 2023-04-20T205033.200.json
-
-###
-
-PATCH http://localhost:3000/users/4
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjYyMDUyNSwidXNlciI6NH0.RhwMG3Z2TCW2k99naULezV_n5tPuah0-ASUgY4wMt84
-Content-Type: application/json
-
-{
-  "firstName": "Barteeeeee",
-  "currentPassword": "password",
-  "versionNbr": 1
-}
-
-<> 2023-04-20T203606.200.json
-
-###
-
-PATCH http://localhost:3000/users/4
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjYyMDUyNSwidXNlciI6NH0.RhwMG3Z2TCW2k99naULezV_n5tPuah0-ASUgY4wMt84
-Content-Type: application/json
-
-{
-  "firstName": "Barteeeeee",
-  "currentPassword": "password",
-  "versionNbr": 3
-}
-
-###
-
-POST http://localhost:3000/users/login
-Content-Type: application/json
-
-{
-  "email": "lise@ressourcerie.be",
-  "password": "password"
-}
-
-<> 2023-04-20T203525.200.json
-
-###
-
-POST http://localhost:3000/users/login
-Content-Type: application/json
-
-{
-  "email": "lise@ressourcerie.be",
-  "password": "password"
-}
-
-###
-
-PATCH http://localhost:3000/users/4
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjQ2MTU5MCwidXNlciI6NH0.mm69kESDfR-IYMElvDDM5p4jVxmhkjTRh8dn-ZQfwJM
-Content-Type: application/json
-
-{
-  "firstName": "Barteeeeee",
-  "currentPassword": "password",
-  "versionNbr": 3
-}
-
-<> 2023-04-19T002647.409.json
-
-###
-
-PATCH http://localhost:3000/users/5
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjQ2MTU5MCwidXNlciI6NH0.mm69kESDfR-IYMElvDDM5p4jVxmhkjTRh8dn-ZQfwJM
-Content-Type: application/json
-
-{
-  "firstName": "Barteeeeee",
-  "currentPassword": "password",
-  "versionNbr": 3
-}
 
 ###
 

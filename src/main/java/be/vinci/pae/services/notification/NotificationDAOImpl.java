@@ -144,4 +144,22 @@ public class NotificationDAOImpl implements NotificationDAO {
     }
 
   }
+
+  @Override
+  public NotificationDTO markANotificationAsRead(NotificationDTO notificationDTO) {
+    String request =
+        "UPDATE pae.users_notifications SET read = true WHERE id_notification = ? AND id_user = ?";
+
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
+      ps.setInt(1, notificationDTO.getId());
+      ps.setInt(2, notificationDTO.getIdUser());
+
+      ps.executeUpdate();
+
+    } catch (Exception e) {
+      throw new DALException(e.getMessage(), e);
+    }
+
+    return notificationDTO;
+  }
 }

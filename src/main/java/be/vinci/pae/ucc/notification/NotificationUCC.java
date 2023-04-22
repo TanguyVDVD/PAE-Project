@@ -34,5 +34,13 @@ public interface NotificationUCC {
    */
   NotificationDTO createNewObjectPropositionNotification(int idObject);
 
+  /**
+   * Marks a notification with the specified ID as read and returns the updated notification
+   * object.
+   *
+   * @param id the ID of the notification to mark as read
+   * @return the updated NotificationDTO object with the specified ID marked as read
+   */
+  NotificationDTO markANotificationAsRead(NotificationDTO notificationDTO);
 
 }
