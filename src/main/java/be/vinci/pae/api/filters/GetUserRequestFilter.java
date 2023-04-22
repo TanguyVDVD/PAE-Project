@@ -41,6 +41,7 @@ public class GetUserRequestFilter implements ContainerRequestFilter {
           requestContext.setProperty("user", authenticatedUser);
         }
       } catch (Exception ignored) {
+        // We can ignore the exception
       }
     }
   }
