@@ -1,6 +1,6 @@
 import Navigate from '../../Router/Navigate';
 import { getAuthenticatedUser } from '../../../utils/auths';
-import { clearPage } from '../../../utils/render';
+import {clearPage, renderError} from '../../../utils/render';
 import API from '../../../utils/api';
 import {subtractDates} from '../../../utils/dates';
 import {setReceiptDate, setUserOrPhoneNumber} from '../../../utils/objects';
@@ -36,17 +36,8 @@ function renderAdminObjectsPage() {
     <div id="objects-list"></div>
   `;
 
-  div.querySelector('form').addEventListener('keyup', (e) => {
-    e.preventDefault();
-
-    const search = e.target.value;
-    renderObjects(search);
-  });
-
   main.appendChild(div);
-}
 
-async function renderObjects(query = '') {
   const objectslist = document.getElementById('objects-list');
 
   objectslist.innerHTML = `
@@ -55,76 +46,99 @@ async function renderObjects(query = '') {
     </div>
   `;
 
-  API.get(`objects?query=${encodeURIComponent(query)}`).then((objects) => {
-    document.getElementById('objects-list').innerHTML = `
-        <div class="container mt-5 mb-5">
-            <div class="d-flex justify-content-center row">
-                <div class="col-md-10">
-                    ${objects
-                      .map(
-                        (object) => `
-                        <div class="row p-2 bg-white border rounded">
-                            <div class="col-md-3 mt-1">
-                                <img 
-                                    class="rounded product-image object-fit-cover" 
-                                    src="${API.getEndpoint(`objects/${object.id}/photo`)}"
-                                    width="180" height="180"
-                                    onerror="this.src='${noFurniturePhoto}'"
-                                    alt="${object.objectType}">
-                            </div>
-                            <div class="col-md-6 mt-1">
-                                <h5>${object.objectType}</h5>
-                               
-                                <div class="mt-1 mb-1 spec-1">
-                                    <h6>${object.description}</h6>
-                                </div>
-                                <br>
-                                <div class="div-receipt-date">
+  API.get(`objects?query=${encodeURIComponent("")}`)
+  .then((objects) => {
+    renderObjects(objects);
+  })
+  .catch((err) => {
+    renderError(err.message);
+  });
+
+  div.querySelector('form').addEventListener('keyup', (e) => {
+    e.preventDefault();
+
+    const search = e.target.value;
+    API.get(`objects?query=${encodeURIComponent(search)}`)
+    .then((objects) => {
+      renderObjects(objects);
+    })
+    .catch((err) => {
+      renderError(err.message);
+    });
+  });
+}
+
+async function renderObjects(objects) {
+  const objectslist = document.getElementById('objects-list');
+
+  objectslist.innerHTML = `
+      <div class="container mt-5 mb-5">
+          <div class="d-flex justify-content-center row">
+              <div class="col-md-10">
+                  ${objects
+                    .map(
+                      (object) => `
+                      <div class="row p-2 bg-white border rounded">
+                          <div class="col-md-3 mt-1">
+                              <img 
+                                  class="rounded product-image object-fit-cover" 
+                                  src="${API.getEndpoint(`objects/${object.id}/photo`)}"
+                                  width="180" height="180"
+                                  onerror="this.src='${noFurniturePhoto}'"
+                                  alt="${object.objectType}">
+                          </div>
+                          <div class="col-md-6 mt-1">
+                              <h5>${object.objectType}</h5>
+                             
+                              <div class="mt-1 mb-1 spec-1">
+                                  <h6>${object.description}</h6>
+                              </div>
+                              <br>
+                              <div class="div-receipt-date">
+                              </div>
+                              
+                              <div class="div-user">
+                              </div>
+                          </div>
+                          
+                          <div class="col-md-3 border-left mt-1 d-flex flex-column align-content-center justify-content-between">
+                              <div>
+                                <div class="div-state">
                                 </div>
                                 
-                                <div class="div-user">
+                                <div class="d-flex flex-row align-items-center div-price-time-remaining">
                                 </div>
-                            </div>
-                            
-                            <div class="col-md-3 border-left mt-1 d-flex flex-column align-content-center justify-content-between">
-                                <div>
-                                  <div class="div-state">
-                                  </div>
-                                  
-                                  <div class="d-flex flex-row align-items-center div-price-time-remaining">
-                                  </div>
-                                </div>
-                                                     
-                                <div class="d-flex flex-column mb-4 div-button">
-                                </div>
-                            </div>
-                        </div>
-                `,
-                      )
-                      .join('')}
-                </div>                     
-            </div>
-        </div>
-      `;
+                              </div>
+                                                   
+                              <div class="d-flex flex-column mb-4 div-button">
+                              </div>
+                          </div>
+                      </div>
+              `,
+                    )
+                    .join('')}
+              </div>                     
+          </div>
+      </div>
+    `;
 
-    setReceiptDate(document, 'div-receipt-date', objects);
-    setUserOrPhoneNumber(document, 'div-user', objects);
-    setPriceOrTimeRemaining('div-price-time-remaining', objects);
-    setStateColor('div-state', objects);
-    setButton('div-button', objects);
+  setReceiptDate(document, 'div-receipt-date', objects);
+  setUserOrPhoneNumber(document, 'div-user', objects);
+  setPriceOrTimeRemaining('div-price-time-remaining', objects);
+  setStateColor('div-state', objects);
+  setButton('div-button', objects);
 
-    objectslist.querySelectorAll('a[data-id]').forEach((link) => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        Navigate(`/user/${e.target.dataset.id}`);
-      });
+  objectslist.querySelectorAll('a[data-id]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      Navigate(`/user/${e.target.dataset.id}`);
     });
+  });
 
-    objectslist.querySelectorAll('button[data-id]').forEach((link) => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-          Navigate(`/object/${e.target.dataset.id}`);
-      });
+  objectslist.querySelectorAll('button[data-id]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+        Navigate(`/object/${e.target.dataset.id}`);
     });
   });
 }
