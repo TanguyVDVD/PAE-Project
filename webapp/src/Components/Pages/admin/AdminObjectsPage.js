@@ -1,8 +1,10 @@
+import flatpickr from 'flatpickr';
+import "flatpickr/dist/l10n/fr";
 import Navigate from '../../Router/Navigate';
 import { getAuthenticatedUser } from '../../../utils/auths';
-import { clearPage } from '../../../utils/render';
+import {clearPage, renderError} from '../../../utils/render';
 import API from '../../../utils/api';
-import {subtractDates} from '../../../utils/dates';
+import {invertDateFormat, subtractDates} from '../../../utils/dates';
 import {setReceiptDate, setUserOrPhoneNumber} from '../../../utils/objects';
 
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
@@ -99,6 +101,17 @@ function renderAdminObjectsPage() {
   });
 
   main.appendChild(div);
+
+  const enableDates = [];
+
+  API.get('/availabilities').then((availabilities) => {
+    availabilities.forEach((item) => {
+      enableDates.push(invertDateFormat(item.date));
+    });
+    renderDatePicker("#input-receipt-date",enableDates);
+  }).catch((err) => {
+    renderError(err.message);
+  });
 }
 
 async function renderObjects(minPrice , maxPrice, date, query = '', typeFilter = []) {
@@ -112,12 +125,17 @@ async function renderObjects(minPrice , maxPrice, date, query = '', typeFilter =
 
   API.get(`objects?query=${encodeURIComponent(query)}`).then((objects) => {
     const objectsFiltered = objects.filter((object) => {
-      if (minPrice && object.price <= minPrice) {
+      if (minPrice && object.price < minPrice) {
         return false;
       }
 
       // Filter by maxPrice if provided
-      if (maxPrice && object.price >= maxPrice) {
+      if (maxPrice && object.price > maxPrice) {
+        return false;
+      }
+
+      // Filter by date if provided
+      if (date && invertDateFormat(object.receiptDate) !== date) {
         return false;
       }
 
@@ -273,6 +291,14 @@ function setButton(className, objects) {
       `;
     }
   }
+}
+
+function renderDatePicker(datePickerId, availabilities) {
+  flatpickr(datePickerId, {
+    locale: "fr",
+    dateFormat: "d-m-Y",
+    enable: availabilities,
+  });
 }
 
 export default AdminObjectsPage;
