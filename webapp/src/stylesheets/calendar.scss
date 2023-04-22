@@ -1,0 +1,40 @@
+@import 'flatpickr/dist/flatpickr';
+
+// Override flatpickr color scheme
+.flatpickr-day {
+  &.selected,
+  &.startRange,
+  &.endRange,
+  &.selected.inRange,
+  &.startRange.inRange,
+  &.endRange.inRange,
+  &.selected:focus,
+  &.startRange:focus,
+  &.endRange:focus,
+  &.selected:hover,
+  &.startRange:hover,
+  &.endRange:hover,
+  &.selected.prevMonthDay,
+  &.startRange.prevMonthDay,
+  &.endRange.prevMonthDay,
+  &.selected.nextMonthDay,
+  &.startRange.nextMonthDay,
+  &.endRange.nextMonthDay {
+    background: var(--bs-primary);
+    color: var(--bs-light);
+    border-color: var(--bs-primary);
+  }
+
+  &.selected.startRange + .endRange:not(:nth-child(7n + 1)),
+  &.startRange.startRange + .endRange:not(:nth-child(7n + 1)),
+  &.endRange.startRange + .endRange:not(:nth-child(7n + 1)) {
+    -webkit-box-shadow: -10px 0 0 var(--bs-primary);
+    box-shadow: -10px 0 0 var(--bs-primary);
+  }
+
+  &.week.selected {
+    border-radius: 0;
+    -webkit-box-shadow: -5px 0 0 var(--bs-primary), 5px 0 0 var(--bs-primary);
+    box-shadow: -5px 0 0 var(--bs-primary), 5px 0 0 var(--bs-primary);
+  }
+}

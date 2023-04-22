@@ -7,6 +7,12 @@ import API from '../../../utils/api';
 import {invertDateFormat, subtractDates} from '../../../utils/dates';
 import {setReceiptDate, setUserOrPhoneNumber} from '../../../utils/objects';
 
+import {subtractDates} from '../../../utils/dates';
+import {
+  encodingHelp,
+  setReceiptDate,
+  setUserOrPhoneNumber
+} from '../../../utils/objects';
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
 
 const AdminObjectsPage = () => {
@@ -23,6 +29,7 @@ const AdminObjectsPage = () => {
 };
 
 function renderAdminObjectsPage() {
+  let searchQuery = '';
   const main = document.querySelector('main');
   const div = document.createElement('div');
   div.className = 'container my-5';
@@ -32,7 +39,7 @@ function renderAdminObjectsPage() {
     <form class="input-group">
       <div class="row g-3 justify-content-md-center">
         <div class="col-md-12">
-          <input type="text" class="form-control" id="input-text" placeholder="Rechercher..." />
+          <input type="text" class="form-control autocomplete" id="search-bar" placeholder="Rechercher..." />
         </div>
         <div class="col-md-3">
           <div class="input-group">
@@ -101,6 +108,13 @@ function renderAdminObjectsPage() {
 
   main.appendChild(div);
 
+  const objectslist = document.getElementById('objects-list');
+
+  objectslist.innerHTML = `
+    <div class="text-center my-5">
+      <div class="spinner-border" role="status"></div>
+    </div>
+  `;
   const enableDates = [];
 
   API.get('/availabilities').then((availabilities) => {
@@ -111,90 +125,118 @@ function renderAdminObjectsPage() {
   }).catch((err) => {
     renderError(err.message);
   });
+
+  const descriptions = [];
+
+  API.get(`objects?query=${encodeURIComponent("")}`)
+  .then((objects) => {
+    if(objects !== null){
+      renderObjects(objects);
+
+      objects.forEach((object) => {
+        descriptions.push(object.description);
+      });
+    }
+
+    encodingHelp(descriptions);
+  })
+  .catch((err) => {
+    renderError(err.message);
+  });
+
+  div.querySelector('form').addEventListener('keyup', (e) => {
+    e.preventDefault();
+    const search = e.target.value;
+    const minPrice = document.getElementById('input-minPrice').value;
+    const maxPrice = document.getElementById('input-maxPrice').value;
+    const date = document.getElementById('input-receipt-date').value;
+    const type = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
+    e.currentTarget.dispatchEvent(new Event('submit'));
+    API.get(`objects?query=${encodeURIComponent(search)}`)
+    .then((objects) => {
+      if(objects !== null){
+        renderObjects(filterObjects(objects, minPrice, maxPrice, date, type));
+      }
+    })
+    .catch((err) => {
+      renderError(err.message);
+    });
+  });
+
+
+  div.querySelector('form').addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const search = e.target.querySelector('input').value;
+    const minPrice = document.getElementById('input-minPrice').value;
+    const maxPrice = document.getElementById('input-maxPrice').value;
+    const date = document.getElementById('input-receipt-date').value;
+    const type = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
+
+    if (search === searchQuery) return;
+    searchQuery = search;
+    API.get(`objects?query=${encodeURIComponent(searchQuery)}`)
+    .then((objects) => {
+      if(objects !== null){
+        renderObjects(filterObjects(objects, minPrice, maxPrice, date, type));
+      }
+    })
+    .catch((err) => {
+      renderError(err.message);
+    });
+  });
 }
 
-async function renderObjects(minPrice , maxPrice, date, query = '', typeFilter = []) {
+async function renderObjects(objectsFiltered) {
   const objectslist = document.getElementById('objects-list');
 
   objectslist.innerHTML = `
-    <div class="text-center my-5">
-      <div class="spinner-border" role="status"></div>
-    </div>
-  `;
-
-  API.get(`objects?query=${encodeURIComponent(query)}`).then((objects) => {
-    const objectsFiltered = objects.filter((object) => {
-      if (minPrice && object.price < minPrice) {
-        return false;
-      }
-
-      // Filter by maxPrice if provided
-      if (maxPrice && object.price > maxPrice) {
-        return false;
-      }
-
-      // Filter by date if provided
-      if (date && invertDateFormat(object.receiptDate) !== date) {
-        return false;
-      }
-
-      // Filter by type if provided
-      if (typeFilter.length > 0 && !typeFilter.includes(object.objectType)) {
-        return false;
-      }
-
-      return true;
-    });
-    document.getElementById('objects-list').innerHTML = `
-        <div class="container mt-5 mb-5">
-            <div class="d-flex justify-content-center row">
-                <div class="col-md-10">
-                    ${objectsFiltered
-                      .map(
-                        (object) => `
-                        <div class="row p-2 bg-white border rounded">
-                            <div class="col-md-3 mt-1">
-                                <img 
-                                    class="rounded product-image object-fit-cover" 
-                                    src="${API.getEndpoint(`objects/${object.id}/photo`)}"
-                                    width="180" height="180"
-                                    onerror="this.src='${noFurniturePhoto}'"
-                                    alt="${object.objectType}">
-                            </div>
-                            <div class="col-md-6 mt-1">
-                                <h5>${object.objectType}</h5>
-                               
-                                <div class="mt-1 mb-1 spec-1">
-                                    <h6>${object.description}</h6>
-                                </div>
-                                <br>
-                                <div class="div-receipt-date">
+      <div class="container mt-5 mb-5">
+          <div class="d-flex justify-content-center row">
+              <div class="col-md-10">
+                  ${objectsFiltered.map((object) => `
+                      <div class="row p-2 bg-white border rounded">
+                          <div class="col-md-3 mt-1">
+                              <img 
+                                  class="rounded product-image object-fit-cover" 
+                                  src="${API.getEndpoint(`objects/${object.id}/photo`)}"
+                                  width="180" height="180"
+                                  onerror="this.src='${noFurniturePhoto}'"
+                                  alt="${object.objectType}">
+                          </div>
+                          <div class="col-md-6 mt-1">
+                              <h5>${object.objectType}</h5>
+                             
+                              <div class="mt-1 mb-1 spec-1">
+                                  <h6>${object.description}</h6>
+                              </div>
+                              <br>
+                              <div class="div-receipt-date">
+                              </div>
+                              
+                              <div class="div-user">
+                              </div>
+                          </div>
+                          
+                          <div class="col-md-3 border-left mt-1 d-flex flex-column align-content-center justify-content-between">
+                              <div>
+                                <div class="div-state">
                                 </div>
                                 
-                                <div class="div-user">
+                                <div class="d-flex flex-row align-items-center div-price-time-remaining">
                                 </div>
-                            </div>
-                            
-                            <div class="col-md-3 border-left mt-1 d-flex flex-column align-content-center justify-content-between">
-                                <div>
-                                  <div class="div-state">
-                                  </div>
-                                  
-                                  <div class="d-flex flex-row align-items-center div-price-time-remaining">
-                                  </div>
-                                </div>
-                                                     
-                                <div class="d-flex flex-column mb-4 div-button">
-                                </div>
-                            </div>
-                        </div>
-                `,
-                      )
-                      .join('')}
-                </div>                     
-            </div>
-        </div>
-      `;
+                              </div>
+                                                   
+                              <div class="d-flex flex-column mb-4 div-button">
+                              </div>
+                          </div>
+                      </div>
+                      `
+                  ,).join('')}
+              </div>                     
+          </div>
+      </div>
+    `;
 
     setReceiptDate(document, 'div-receipt-date', objectsFiltered);
     setUserOrPhoneNumber(document, 'div-user', objectsFiltered);
@@ -212,11 +254,10 @@ async function renderObjects(minPrice , maxPrice, date, query = '', typeFilter =
     objectslist.querySelectorAll('button[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
-          Navigate(`/object/${e.target.dataset.id}`);
+        Navigate(`/object/${e.target.dataset.id}`);
       });
     });
-  });
-}
+  }
 
 function setPriceOrTimeRemaining(className, objects) {
   const elements = document.getElementsByClassName(className);
@@ -233,17 +274,17 @@ function setPriceOrTimeRemaining(className, objects) {
       if (timeRemaining <= 3) {
         element.innerHTML = `
           <p class="text-danger">${timeRemaining} jours restants pour répondre !</p>
-      `;
+        `;
       } else {
         element.innerHTML = `
           <p class="text-primary">${timeRemaining} jours restants pour répondre</p>
-      `;
+        `;
       }
     } else if (object.status === 'refusé') {
       element.innerHTML = ``;
     } else {
       element.innerHTML = `
-          <h4 class="mr-1">${object.price} €</h4>
+        <h4 class="mr-1">${object.price} €</h4>
       `;
     }
   }
@@ -257,15 +298,15 @@ function setStateColor(className, objects) {
 
     if (object.state === 'refusé') {
       element.innerHTML = `
-          <h6 class="text-danger">${object.state}</h6>
+        <h6 class="text-danger">${object.state}</h6>
       `;
     } else if (object.state === 'proposé') {
       element.innerHTML = `
-          <h6 class="text-primary">${object.state}</h6>
+        <h6 class="text-primary">${object.state}</h6>
       `;
     } else {
       element.innerHTML = `
-          <h6 class="text-success">${object.state}</h6>
+        <h6 class="text-success">${object.state}</h6>
       `;
     }
   }
@@ -278,15 +319,21 @@ function setButton(className, objects) {
     const element = elements.item(i);
     if (object.state === 'refusé') {
       element.innerHTML = `
-          <button class="btn btn-primary btn-sm button-see" type="button" data-id="${object.id}">Voir</button>
+          <button class="btn btn-primary btn-sm button-see" type="button" data-id="${object.id}">
+            Voir
+          </button>
       `;
     } else if (object.state === 'proposé') {
       element.innerHTML = `
-          <button class="btn btn-outline-primary btn-sm button-respond" type="button" data-id="${object.id}">Répondre</button>
+          <button class="btn btn-outline-primary btn-sm button-respond" type="button" data-id="${object.id}">
+            Répondre
+          </button>
       `;
     } else {
       element.innerHTML = `
-          <button class="btn btn-primary btn-sm button-modify" type="button" data-id="${object.id}">Modifier</button>
+          <button class="btn btn-primary btn-sm button-modify" type="button" data-id="${object.id}">
+            Modifier
+          </button>
       `;
     }
   }
@@ -297,6 +344,31 @@ function renderDatePicker(datePickerId, availabilities) {
     locale: "fr",
     dateFormat: "d-m-Y",
     enable: availabilities,
+  });
+}
+
+function filterObjects(objects, minPrice, maxPrice, types){
+  return objects.filter((object) => {
+    if (minPrice && object.price < minPrice) {
+      return false;
+    }
+
+    // Filter by maxPrice if provided
+    if (maxPrice && object.price > maxPrice) {
+      return false;
+    }
+
+    // Filter by date if provided
+    if (date && invertDateFormat(object.receiptDate) !== date) {
+      return false;
+    }
+
+    // Filter by type if provided
+    if (types.length > 0 && !types.includes(object.objectType)) {
+      return false;
+    }
+
+    return true;
   });
 }
 

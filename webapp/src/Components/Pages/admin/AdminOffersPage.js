@@ -6,6 +6,8 @@ import { clearPage, renderError } from '../../../utils/render';
 import API from '../../../utils/api';
 import { dateStringtoGoodFormat, subtractDates, invertDateFormat } from '../../../utils/dates';
 import { setUserOrPhoneNumber } from '../../../utils/objects';
+import { dateStringtoGoodFormat, subtractDates } from '../../../utils/dates';
+import {encodingHelp, setUserOrPhoneNumber} from '../../../utils/objects';
 
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
 
@@ -19,10 +21,10 @@ const AdminOffersPage = () => {
 
   clearPage();
   renderAdminOffersPage();
-  renderOffers();
 };
 
 function renderAdminOffersPage() {
+  let searchQuery = '';
   const main = document.querySelector('main');
   const div = document.createElement('div');
   div.className = 'container my-5';
@@ -32,7 +34,7 @@ function renderAdminOffersPage() {
     <form class="input-group">
       <div class="row g-3 justify-content-md-center">
         <div class="col-md-12">
-          <input type="text" class="form-control" id="input-text" placeholder="Rechercher..." />
+          <input type="text" class="form-control autocomplete" id="search-bar" placeholder="Rechercher..." />
         </div>
         <div class="col-md-3">
           <div class="input-group">
@@ -75,6 +77,15 @@ function renderAdminOffersPage() {
     <div id="offers-list"></div>
   `;
 
+  main.appendChild(div);
+
+  const offersList = document.getElementById('offers-list');
+
+  offersList.innerHTML = `
+    <div class="text-center my-5">
+      <div class="spinner-border" role="status"></div>
+    </div>
+  `;
   div.querySelector('form').addEventListener('keyup', (e) => {
     e.preventDefault();
 
@@ -100,7 +111,7 @@ function renderAdminOffersPage() {
     });
   });
 
-  main.appendChild(div);
+
 
   const enableDates = [];
 
@@ -113,110 +124,141 @@ function renderAdminOffersPage() {
     renderError(err.message);
   });
 
+
+  const descriptions = [];
+
+  API.get(`objects/offers?query=${encodeURIComponent("")}`)
+  .then((offers) => {
+    if(offers !== null){
+      renderOffers(offers);
+
+      offers.forEach((offer) => {
+        descriptions.push(offer.description);
+      });
+    }
+
+    encodingHelp(descriptions);
+  })
+  .catch((err) => {
+    renderError(err.message);
+  });
+
+  div.querySelector('form').addEventListener('keyup', (e) => {
+    e.preventDefault();
+    const search = e.target.value;
+    const minPrice = document.getElementById('input-minPrice').value;
+    const maxPrice = document.getElementById('input-maxPrice').value;
+    const date = document.getElementById('input-receipt-date').value;
+    const type = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
+
+    e.currentTarget.dispatchEvent(new Event('submit'));
+    API.get(`objects/offers?query=${encodeURIComponent(search)}`)
+    .then((objects) => {
+      if(objects !== null){
+        renderOffers(filterObjects(objects, minPrice, maxPrice, date, type));
+      }
+    })
+    .catch((err) => {
+      renderError(err.message);
+    });
+  });
+
+  div.querySelector('form').addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const search = e.target.querySelector('input').value;
+    const minPrice = document.getElementById('input-minPrice').value;
+    const maxPrice = document.getElementById('input-maxPrice').value;
+    const date = document.getElementById('input-receipt-date').value;
+    const type = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
+
+    if (search === searchQuery) return;
+    searchQuery = search;
+
+    API.get(`objects/offers?query=${encodeURIComponent(searchQuery)}`)
+    .then((offers) => {
+      if(offers !== null){
+        renderOffers(filterObjects(offers, minPrice, maxPrice, date, type));
+      }
+    })
+    .catch((err) => {
+      renderError(err.message);
+    });
+  });
 }
 
-async function renderOffers(minPrice, maxPrice, date, query = '', typeFilter = []) {
+async function renderOffers(offers) {
   const offersList = document.getElementById('offers-list');
 
   offersList.innerHTML = `
-    <div class="text-center my-5">
-      <div class="spinner-border" role="status"></div>
-    </div>
-  `;
+      <div class="container mt-5 mb-5">
+          <div class="d-flex justify-content-center row">
+              <div class="col-md-10">
+                  ${offers
+                    .map(
+                      (offer) => `
+                      <div class="row p-2 bg-white border rounded">
+                          <div class="col-md-3 mt-1">
+                              <img 
+                                  class="object-fit-cover rounded product-image" 
+                                  src="${API.getEndpoint(`objects/${offer.id}/photo`)}"
+                                  onerror="this.src='${noFurniturePhoto}'"
+                                  width="180"
+                                  height="180"
+                                  alt="${offer.objectType}">
+                          </div>
+                          <div class="col-md-6 mt-1">
+                              <h5>${offer.objectType}</h5>
+                             
+                              <div class="mt-1 mb-1 spec-1">
+                                  <h6>${offer.description}</h6>
+                              </div>
+                              <br>
+                              <p>
+                                  À récupérer le ${dateStringtoGoodFormat(offer.receiptDate)} ${
+                        offer.timeSlot === 'matin'
+                          ? ' au '.concat(offer.timeSlot)
+                          : " l'".concat(offer.timeSlot)
+                      }
+                              </p>
+                              
+                              <div class="div-user">
+                              </div>
+                          </div>
+                          
+                          <div class="col-md-3 border-left mt-1 d-flex flex-column align-content-center justify-content-between">                                
+                              <div class="div-remaining-time">
+                              </div>
+                                                              
+                              <div class="d-flex flex-column mb-4 div-button">
+                                  <button class="btn btn-outline-primary btn-sm button-respond" type="button" data-id="${
+                                    offer.id
+                                  }">Répondre</button>
+                              </div>
+                          </div>
+                      </div>
+              `,
+                    )
+                    .join('')}
+              </div>                     
+          </div>
+      </div>
+    `;
 
-  API.get(`objects/offers?query=${encodeURIComponent(query)}`).then((offers) => {
-    const offersFiltered = offers.filter((object) => {
-      if (minPrice && object.price < minPrice) {
-        return false;
-      }
+  setUserOrPhoneNumber(document, 'div-user', offers);
+  setRemainingTime('div-remaining-time', offers);
 
-      // Filter by maxPrice if provided
-      if (maxPrice && object.price > maxPrice) {
-        return false;
-      }
-
-      // Filter by date if provided
-      if (date && invertDateFormat(object.receiptDate) !== date) {
-        return false;
-      }
-
-      // Filter by type if provided
-      if (typeFilter.length > 0 && !typeFilter.includes(object.objectType)) {
-        return false;
-      }
-
-      return true;
+  offersList.querySelectorAll('a[data-id]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      Navigate(`/user/${e.target.dataset.id}`);
     });
-    document.getElementById('offers-list').innerHTML = `
-        <div class="container mt-5 mb-5">
-            <div class="d-flex justify-content-center row">
-                <div class="col-md-10">
-                    ${offersFiltered
-    .map(
-        (offer) => `
-                        <div class="row p-2 bg-white border rounded">
-                            <div class="col-md-3 mt-1">
-                                <img 
-                                    class="object-fit-cover rounded product-image" 
-                                    src="${API.getEndpoint(`objects/${offer.id}/photo`)}"
-                                    onerror="this.src='${noFurniturePhoto}'"
-                                    width="180"
-                                    height="180"
-                                    alt="${offer.objectType}">
-                            </div>
-                            <div class="col-md-6 mt-1">
-                                <h5>${offer.objectType}</h5>
-                               
-                                <div class="mt-1 mb-1 spec-1">
-                                    <h6>${offer.description}</h6>
-                                </div>
-                                <br>
-                                <p>
-                                    À récupérer le ${dateStringtoGoodFormat(offer.receiptDate)} ${
-            offer.timeSlot === 'matin'
-                ? ' au '.concat(offer.timeSlot)
-                : " l'".concat(offer.timeSlot)
-        }
-                                </p>
-                                
-                                <div class="div-user">
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-3 border-left mt-1 d-flex flex-column align-content-center justify-content-between">                                
-                                <div class="div-remaining-time">
-                                </div>
-                                                                
-                                <div class="d-flex flex-column mb-4 div-button">
-                                    <button class="btn btn-outline-primary btn-sm button-respond" type="button" data-id="${
-            offer.id
-        }">Répondre</button>
-                                </div>
-                            </div>
-                        </div>
-                `,
-    )
-    .join('')}
-                </div>                     
-            </div>
-        </div>
-      `;
+  });
 
-    setUserOrPhoneNumber(document, 'div-user', offersFiltered);
-    setRemainingTime('div-remaining-time', offersFiltered);
-
-    offersList.querySelectorAll('a[data-id]').forEach((link) => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        Navigate(`/user/${e.target.dataset.id}`);
-      });
-    });
-
-    offersList.querySelectorAll('button[data-id]').forEach((link) => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        Navigate(`/object/${e.target.dataset.id}`);
-      });
+  offersList.querySelectorAll('button[data-id]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      Navigate(`/object/${e.target.dataset.id}`);
     });
   });
 }
@@ -234,11 +276,11 @@ function setRemainingTime(className, offers) {
 
     if (timeRemaining <= 3) {
       element.innerHTML = `
-          <h6 class="text-danger">${timeRemaining} jours restants pour répondre !</h6>
+        <h6 class="text-danger">${timeRemaining} jours restants pour répondre !</h6>
       `;
     } else {
       element.innerHTML = `
-          <h6 class="text-primary">${timeRemaining} jours restants pour répondre</h6>
+        <h6 class="text-primary">${timeRemaining} jours restants pour répondre</h6>
       `;
     }
   }
@@ -250,6 +292,31 @@ function renderDatePicker(datePickerId, availabilities) {
     dateFormat: "d-m-Y",
     minDate: "today",
     enable: availabilities,
+  });
+}
+
+function filterObjects(objects, minPrice, maxPrice, date, type){
+  return  offers.filter((object) => {
+    if (minPrice && object.price < minPrice) {
+      return false;
+    }
+
+    // Filter by maxPrice if provided
+    if (maxPrice && object.price > maxPrice) {
+      return false;
+    }
+
+    // Filter by date if provided
+    if (date && invertDateFormat(object.receiptDate) !== date) {
+      return false;
+    }
+
+    // Filter by type if provided
+    if (type.length > 0 && !type.includes(object.objectType)) {
+      return false;
+    }
+
+    return true;
   });
 }
 
