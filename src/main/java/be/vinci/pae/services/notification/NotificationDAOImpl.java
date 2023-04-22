@@ -165,7 +165,7 @@ public class NotificationDAOImpl implements NotificationDAO {
   }
 
   public List<Integer> getAllHelperId() {
-    String request = "SELECT id_user FROM pae.users WHERE role=aidant OR role=responsable";
+    String request = "SELECT id_user FROM pae.users WHERE role='aidant' OR role='responsable'";
     ArrayList<Integer> helpers = new ArrayList<>();
 
     try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {

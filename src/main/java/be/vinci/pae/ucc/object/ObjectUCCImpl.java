@@ -276,7 +276,10 @@ public class ObjectUCCImpl implements ObjectUCC {
     myDalServices.startTransaction();
 
     try {
-      return myObjectDAO.insert(objectDTO);
+
+      ObjectDTO objectDTOReturn = myObjectDAO.insert(objectDTO);
+      myNotificationUCC.createNewObjectPropositionNotification(objectDTOReturn.getId());
+      return objectDTOReturn;
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
 
