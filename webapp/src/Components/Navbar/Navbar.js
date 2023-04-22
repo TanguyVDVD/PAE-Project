@@ -35,7 +35,7 @@ const Navbar = () => {
               <a class="nav-link" href="#" data-uri="/propose">Proposer un objet</a>
             </li>
             ${
-              authenticatedUser && authenticatedUser.role !== null
+              authenticatedUser && authenticatedUser.role !== 'utilisateur' && authenticatedUser.role !== null
                 ? `
                     <li class="nav-item">
                       <a class="nav-link" href="#" data-uri="/admin/availabilities">Disponibilités</a>

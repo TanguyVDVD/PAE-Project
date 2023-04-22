@@ -143,7 +143,7 @@ public class UserResource {
     userRegister.setPassword(password);
     userRegister.setPhoto(photoDetail != null && photoDetail.getFileName() != null);
     userRegister.setRegisterDate(LocalDate.now());
-    userRegister.setRole(null);
+    userRegister.setRole("utilisateur");
 
     UserDTO userAfterRegister = userUCC.register(userRegister);
 

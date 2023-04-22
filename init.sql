@@ -79,10 +79,10 @@ CREATE TABLE pae.users_notifications
 --------------- SEED ------------------
 
 
-INSERT INTO pae.users VALUES (DEFAULT, 1, 'Riez', 'Christophe', '0498183040', 'riez@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', true, '2023-02-01', 'responsable');
-INSERT INTO pae.users VALUES (DEFAULT, 1, 'Vdv', 'Constantine', '0498183041', 'constantine@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', true, '2023-02-01', 'aidant');
-INSERT INTO pae.users VALUES (DEFAULT, 1, 'lsh', 'Bernard', '0498183042', 'bernard@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', true, '2023-02-01', 'aidant');
-INSERT INTO pae.users VALUES (DEFAULT, 1, 'bdh', 'Lise', '0498183043', 'lise@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', true, '2023-02-01', null);
+INSERT INTO pae.users VALUES (DEFAULT, 'Riez', 'Christophe', '0498183040', 'riez@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', true, '2023-02-01', 'responsable');
+INSERT INTO pae.users VALUES (DEFAULT, 'Vdv', 'Constantine', '0498183041', 'constantine@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', true, '2023-02-01', 'aidant');
+INSERT INTO pae.users VALUES (DEFAULT, 'lsh', 'Bernard', '0498183042', 'bernard@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', true, '2023-02-01', 'aidant');
+INSERT INTO pae.users VALUES (DEFAULT, 'bdh', 'Lise', '0498183043', 'lise@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', true, '2023-02-01', 'utilisateur');
 
 INSERT INTO pae.object_types VALUES (DEFAULT,'Meuble');
 INSERT INTO pae.object_types VALUES (DEFAULT,'Table');
@@ -129,4 +129,3 @@ VALUES (DEFAULT, 1, 'Fauteuil design très confortable', true, 'après-midi', nu
 INSERT INTO pae.objects
 VALUES (DEFAULT, 1, 'Tabouret de bar en cuir', true, 'après-midi', null, 'proposé', null, null,
         true, '2023-03-01', null, null, null, null, null, null, null, null, 2, 5, 3);
-

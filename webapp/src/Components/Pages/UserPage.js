@@ -134,7 +134,7 @@ function renderUserPage(user) {
       e.target.disabled = true;
       e.target.checked = !e.target.checked;
 
-      API.patch(`users/${user.id}`, { body: { role: e.target.checked ? null : 'aidant', versionNbr: user.versionNumber } })
+      API.patch(`users/${user.id}`, { body: { role: e.target.checked ? 'utilisateur' : 'aidant' } })
         .then((updatedUser) => {
           user.versionNumber = updatedUser.versionNumber;
           e.target.checked = updatedUser.role === 'aidant';
