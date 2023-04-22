@@ -88,6 +88,9 @@ function renderAdminAvailabilitiesPage() {
         })
       }
     });
+  })
+  .catch((err) => {
+    renderError(err.message);
   });
 }
 
