@@ -47,6 +47,7 @@ public class ObjectDAOImpl implements ObjectDAO {
 
     try {
       object.setId(resultSet.getInt("id_object"));
+      object.setVersionNumber(resultSet.getInt("version_number"));
       object.setDescription(resultSet.getString("description"));
       object.setPhoneNumber(resultSet.getString("phone_number"));
       object.setIsVisible(resultSet.getBoolean("is_visible"));
@@ -229,68 +230,6 @@ public class ObjectDAOImpl implements ObjectDAO {
   }
 
   /**
-   * Set the status of an object to accepted.
-   *
-   * @param id             the id of the object
-   * @param acceptanceDate the acceptance date of the object
-   * @return the modified object
-   */
-  @Override
-  public ObjectDTO setStatusToAccepted(int id, LocalDate acceptanceDate) {
-    String request =
-        "UPDATE pae.objects SET state = 'accepté', status = 'accepté', acceptance_date = ? "
-            + "WHERE id_object = ?;";
-
-    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
-      ps.setDate(1, java.sql.Date.valueOf(acceptanceDate));
-
-      ps.setInt(2, id);
-      ps.executeUpdate();
-    } catch (SQLException e) {
-      throw new DALException("Error setting status to accepted", e);
-    }
-
-    ObjectDTO object = getOneById(id);
-    if (object.getStatus().equals("accepté")) {
-      return object;
-    }
-
-    return null;
-  }
-
-  /**
-   * Set the status of an object to "refused".
-   *
-   * @param id               the id of the object
-   * @param reasonForRefusal the reason for refusal
-   * @param refusalDate      the refusal date
-   * @return the modified object
-   */
-  @Override
-  public ObjectDTO setStatusToRefused(int id, String reasonForRefusal, LocalDate refusalDate) {
-    String request = "UPDATE pae.objects SET state = 'refusé', status = 'refusé', "
-        + "refusal_date = ?, reason_for_refusal = ? WHERE id_object = ?;";
-
-    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
-      ps.setDate(1, java.sql.Date.valueOf(refusalDate));
-
-      ps.setString(2, reasonForRefusal);
-      ps.setInt(3, id);
-      ps.executeUpdate();
-    } catch (SQLException e) {
-      throw new DALException("Error setting status to refused", e);
-    }
-
-    ObjectDTO object = getOneById(id);
-    if (object.getStatus().equals("refusé")) {
-      return object;
-    }
-
-    return null;
-
-  }
-
-  /**
    * Update the object in the db.
    *
    * @param id        the id of the object
@@ -300,14 +239,16 @@ public class ObjectDAOImpl implements ObjectDAO {
   public ObjectDTO updateObject(int id, ObjectDTO objectDTO) {
 
     String request =
-        "UPDATE pae.objects SET description = ?, id_object_type = ?, is_visible = ?, state = ?,  "
+        "UPDATE pae.objects SET description = ?, id_object_type = ?, is_visible = ?, state = ?, "
             + "price = ?, "
             + "workshop_date = ?, "
             + "deposit_date = ?, "
             + "on_sale_date = ?, "
-            + "selling_date =?, "
-            + "withdrawal_date = ? "
-            + "WHERE id_object = ?;";
+            + "selling_date = ?, "
+            + "withdrawal_date = ?, "
+            + "version_number = ? "
+            + "WHERE id_object = ? "
+            + "AND version_number = ?;";
 
     try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       ps.setString(1, objectDTO.getDescription());
@@ -325,13 +266,118 @@ public class ObjectDAOImpl implements ObjectDAO {
           : java.sql.Date.valueOf(objectDTO.getSellingDate()));
       ps.setDate(10, objectDTO.getWithdrawalDate() == null ? null
           : java.sql.Date.valueOf(objectDTO.getWithdrawalDate()));
-      ps.setInt(11, id);
+      ps.setInt(11, objectDTO.getVersionNumber() + 1);
+      ps.setInt(12, id);
+      ps.setInt(13, objectDTO.getVersionNumber());
+
       ps.executeUpdate();
-    } catch (SQLException e) {
-      throw new DALException("Error updating object", e);
+
+      if (ps.getUpdateCount() == 0) {
+        if (getOneById(objectDTO.getId()) == null) {
+          throw new NotFoundException("Objet non trouvé");
+        } else {
+          throw new SQLException(
+              "Conflit de version de l'objet - V" + objectDTO.getVersionNumber());
+        }
+      }
+    } catch (Exception e) {
+      throw new DALException(e.getMessage(), e);
     }
 
     return getOneById(id);
+  }
+
+  /**
+   * Set the status of an object to accepted.
+   *
+   * @param id             the id of the object
+   * @param acceptanceDate the acceptance date of the object
+   * @param versionNumber  the version number of the object
+   * @return the modified object
+   */
+  @Override
+  public ObjectDTO setStatusToAccepted(int id, LocalDate acceptanceDate, int versionNumber) {
+    String request =
+        "UPDATE pae.objects SET state = 'accepté', status = 'accepté', "
+            + "acceptance_date = ?, version_number = ? "
+            + "WHERE id_object = ? AND version_number = ?;";
+
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
+      ps.setDate(1, java.sql.Date.valueOf(acceptanceDate));
+
+      ps.setInt(3, id);
+      ps.setInt(4, versionNumber);
+
+      ps.executeUpdate();
+
+      if (ps.getUpdateCount() == 0) {
+        if (getOneById(id) == null) {
+          throw new NotFoundException("Objet non trouvé");
+        } else {
+          throw new SQLException(
+              "Conflit de version de l'objet - V" + versionNumber);
+        }
+      }
+
+    } catch (Exception e) {
+      throw new DALException(e.getMessage(), e);
+    }
+
+    ObjectDTO object = getOneById(id);
+    if (object.getStatus().equals("accepté")) {
+      return object;
+    }
+
+    return null;
+  }
+
+  /**
+   * Set the status of an object to "refused".
+   *
+   * @param id               the id of the object
+   * @param reasonForRefusal the reason for refusal
+   * @param refusalDate      the refusal date
+   * @param versionNumber    the version number of the object
+   * @return the modified object
+   */
+  @Override
+  public ObjectDTO setStatusToRefused(int id, String reasonForRefusal, LocalDate refusalDate,
+      int versionNumber) {
+    String request = "UPDATE pae.objects SET state = 'refusé', status = 'refusé', "
+        + "refusal_date = ?, reason_for_refusal = ?, version_number = ? "
+        + "WHERE id_object = ? AND version_number = ?;";
+
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
+      ps.setDate(1, java.sql.Date.valueOf(refusalDate));
+
+      ps.setString(2, reasonForRefusal);
+      ps.setInt(3, versionNumber + 1);
+
+      ps.setInt(4, id);
+      ps.setInt(5, versionNumber);
+
+      ps.executeUpdate();
+
+      if (ps.getUpdateCount() == 0) {
+        if (getOneById(id) == null) {
+          throw new NotFoundException("Objet non trouvé");
+        } else {
+          throw new SQLException(
+              "Conflit de version de l'objet - V" + versionNumber);
+        }
+      }
+
+    } catch (Exception e) {
+      throw new DALException(e.getMessage(), e);
+    }
+
+    ObjectDTO object = getOneById(id);
+    if (object.getStatus().equals("refusé")) {
+      return object;
+    }
+
+    return null;
+
   }
 
   /**
@@ -371,5 +417,4 @@ public class ObjectDAOImpl implements ObjectDAO {
 
     return null;
   }
-
 }

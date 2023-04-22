@@ -111,11 +111,12 @@ public class ObjectUCCImpl implements ObjectUCC {
   /**
    * Accept an offer.
    *
-   * @param id the id of the object to accept
+   * @param id            the id of the object to accept
+   * @param versionNumber the version number of the object
    * @return the object updated
    */
   @Override
-  public ObjectDTO accept(int id) {
+  public ObjectDTO accept(int id, int versionNumber) {
 
     myDalServices.startTransaction();
     try {
@@ -125,8 +126,7 @@ public class ObjectUCCImpl implements ObjectUCC {
       if (object.isStatusAlreadyDefined(status)) {
         return null;
       }
-
-      return myObjectDAO.setStatusToAccepted(id, LocalDate.now());
+      return myObjectDAO.setStatusToAccepted(id, LocalDate.now(), versionNumber);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
 
@@ -143,10 +143,11 @@ public class ObjectUCCImpl implements ObjectUCC {
    *
    * @param id               the id of the object to refuse
    * @param reasonForRefusal the reason for refusal
+   * @param versionNumber    the version number of the object
    * @return the object updated
    */
   @Override
-  public ObjectDTO refuse(int id, String reasonForRefusal) {
+  public ObjectDTO refuse(int id, String reasonForRefusal, int versionNumber) {
 
     myDalServices.startTransaction();
 
@@ -159,7 +160,7 @@ public class ObjectUCCImpl implements ObjectUCC {
         return null;
       }
 
-      return myObjectDAO.setStatusToRefused(id, reasonForRefusal, LocalDate.now());
+      return myObjectDAO.setStatusToRefused(id, reasonForRefusal, LocalDate.now(), versionNumber);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
 
@@ -199,6 +200,7 @@ public class ObjectUCCImpl implements ObjectUCC {
       objectFromDB.setPrice(objectDTO.getPrice());
       objectFromDB.setState(objectDTO.getState());
       objectFromDB.setIsVisible(objectDTO.getisVisible());
+      objectFromDB.setVersionNumber(objectDTO.getVersionNumber());
 
       return myObjectDAO.updateObject(objectFromDB.getId(), objectFromDB);
 

@@ -143,7 +143,7 @@ public class UserResource {
     userRegister.setPassword(password);
     userRegister.setPhoto(photoDetail != null && photoDetail.getFileName() != null);
     userRegister.setRegisterDate(LocalDate.now());
-    userRegister.setRole(null);
+    userRegister.setRole("utilisateur");
 
     UserDTO userAfterRegister = userUCC.register(userRegister);
 
@@ -206,9 +206,9 @@ public class UserResource {
     // Create a new DTO to only keep changes
     UserDTO userDTO = myDomainFactory.getUser();
     userDTO.setId(id);
+    userDTO.setVersionNumber(data.get("versionNbr").asInt());
 
     UserDTO dataDTO = jsonMapper.convertValue(data, UserDTO.class);
-
     if (authorizedUser.getId() == id) {
       // Only the user themselves can change their own information
 
@@ -250,6 +250,7 @@ public class UserResource {
       if (StringUtils.isNotBlank(dataDTO.getPassword())) {
         userDTO.setPassword(dataDTO.getPassword());
       }
+
     } else if (authorizedUser.getRole().equals("responsable")) {
       // Only the admin can change the helper status
       if (dataDTO.getRole() != null) {

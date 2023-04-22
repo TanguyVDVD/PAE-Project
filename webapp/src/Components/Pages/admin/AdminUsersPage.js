@@ -121,6 +121,7 @@ const columns = [
       const roleColors = {
         responsable: 'danger',
         aidant: 'success',
+        utilisateur: 'primary',
       };
 
       return user.role === null

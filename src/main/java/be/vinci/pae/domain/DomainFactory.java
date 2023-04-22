@@ -7,8 +7,8 @@ import be.vinci.pae.domain.objecttype.ObjectTypeDTO;
 import be.vinci.pae.domain.user.UserDTO;
 
 /**
- * DomainFactory interface. representing a factory tor create object objects from the domain The
- * interface contains all the BIZ methods
+ * DomainFactory interface. representing a factory to create objects from the domain The interface
+ * contains all the BIZ methods
  */
 public interface DomainFactory {
 

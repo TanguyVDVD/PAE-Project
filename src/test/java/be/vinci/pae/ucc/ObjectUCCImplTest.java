@@ -79,10 +79,12 @@ class ObjectUCCImplTest {
     Object object = Mockito.mock(ObjectImpl.class);
     Mockito.when(object.getId()).thenReturn(1);
     Mockito.when(object.getStatus()).thenReturn(null);
+    Mockito.when(object.getVersionNumber()).thenReturn(1);
     Mockito.when(objectDAO.getOneById(object.getId())).thenReturn(object);
     Mockito.when(object.isStatusAlreadyDefined(object.getStatus())).thenReturn(false);
-    Mockito.when(objectDAO.setStatusToAccepted(object.getId(), LocalDate.now())).thenReturn(object);
-    ObjectDTO objectDTO = objectUCC.accept(object.getId());
+    Mockito.when(objectDAO.setStatusToAccepted(object.getId(), LocalDate.now(),
+        object.getVersionNumber())).thenReturn(object);
+    ObjectDTO objectDTO = objectUCC.accept(object.getId(), object.getVersionNumber());
 
     assertAll(
         () -> assertNotNull(objectDTO, "Accept return null"),
@@ -98,11 +100,15 @@ class ObjectUCCImplTest {
     Object object = Mockito.mock(ObjectImpl.class);
     Mockito.when(object.getId()).thenReturn(1);
     Mockito.when(object.getStatus()).thenReturn("accepté");
+    Mockito.when(object.getVersionNumber()).thenReturn(1);
     Mockito.when(objectDAO.getOneById(object.getId())).thenReturn(object);
     Mockito.when(object.isStatusAlreadyDefined(object.getStatus())).thenReturn(true);
-    Mockito.when(objectDAO.setStatusToAccepted(object.getId(), LocalDate.now())).thenReturn(object);
+    Mockito.when(
+            objectDAO.setStatusToAccepted(object.getId(), LocalDate.now(),
+                object.getVersionNumber()))
+        .thenReturn(object);
 
-    ObjectDTO objectDTO = objectUCC.accept(object.getId());
+    ObjectDTO objectDTO = objectUCC.accept(object.getId(), object.getVersionNumber());
 
     assertNull(objectDTO, "Accept return is not null");
 
@@ -113,7 +119,7 @@ class ObjectUCCImplTest {
   void acceptAnObjectPropositionException() {
     Mockito.when(objectDAO.getOneById(1)).thenThrow(new DALException("Exception"));
 
-    assertThrows(DALException.class, () -> objectUCC.accept(1),
+    assertThrows(DALException.class, () -> objectUCC.accept(1, 1),
         "Exception not thrown");
   }
 
@@ -125,12 +131,15 @@ class ObjectUCCImplTest {
     Object object = Mockito.mock(ObjectImpl.class);
     Mockito.when(object.getId()).thenReturn(1);
     Mockito.when(object.getStatus()).thenReturn(null);
+    Mockito.when(object.getVersionNumber()).thenReturn(1);
     Mockito.when(objectDAO.getOneById(object.getId())).thenReturn(object);
     Mockito.when(object.isStatusAlreadyDefined(object.getStatus())).thenReturn(false);
-    Mockito.when(objectDAO.setStatusToRefused(object.getId(), reasonForRefusal, LocalDate.now()))
+    Mockito.when(objectDAO.setStatusToRefused(object.getId(), reasonForRefusal, LocalDate.now(),
+            object.getVersionNumber()))
         .thenReturn(object);
 
-    ObjectDTO objectDTO = objectUCC.refuse(object.getId(), reasonForRefusal);
+    ObjectDTO objectDTO = objectUCC.refuse(object.getId(), reasonForRefusal,
+        object.getVersionNumber());
 
     assertAll(
         () -> assertNotNull(objectDTO, "Refuse return null"),
@@ -147,12 +156,15 @@ class ObjectUCCImplTest {
     Object object = Mockito.mock(ObjectImpl.class);
     Mockito.when(object.getId()).thenReturn(1);
     Mockito.when(object.getStatus()).thenReturn("refusé");
+    Mockito.when(object.getVersionNumber()).thenReturn(1);
     Mockito.when(objectDAO.getOneById(object.getId())).thenReturn(object);
     Mockito.when(object.isStatusAlreadyDefined(object.getStatus())).thenReturn(true);
-    Mockito.when(objectDAO.setStatusToRefused(object.getId(), reasonForRefusal, LocalDate.now()))
+    Mockito.when(objectDAO.setStatusToRefused(object.getId(), reasonForRefusal, LocalDate.now(),
+            object.getVersionNumber()))
         .thenReturn(object);
 
-    ObjectDTO objectDTO = objectUCC.refuse(object.getId(), reasonForRefusal);
+    ObjectDTO objectDTO = objectUCC.refuse(object.getId(), reasonForRefusal,
+        object.getVersionNumber());
 
     assertNull(objectDTO, "Refuse return is not null");
 
@@ -163,7 +175,7 @@ class ObjectUCCImplTest {
   void refuseAnObjectPropositionException() {
     Mockito.when(objectDAO.getOneById(1)).thenThrow(new DALException("Exception"));
 
-    assertThrows(DALException.class, () -> objectUCC.refuse(1, "Reason for refusal"),
+    assertThrows(DALException.class, () -> objectUCC.refuse(1, "Reason for refusal", 1),
         "Exception not thrown");
   }
 
@@ -365,7 +377,7 @@ class ObjectUCCImplTest {
 
   }
 
-  @DisplayName("Exception while geting an object list by User id")
+  @DisplayName("Exception while getting an object list by User id")
   @Test
   void exceptionGetAllObjectsByUserID() {
     List<ObjectDTO> objects = new ArrayList<>();
@@ -423,4 +435,5 @@ class ObjectUCCImplTest {
     assertThrows(Exception.class, () -> objectUCC.updatePhoto(object, null),
         "updatePhoto did not throw an exception");
   }
+
 }

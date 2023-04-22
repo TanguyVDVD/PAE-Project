@@ -135,4 +135,18 @@ public interface UserDTO {
    * @param role the value
    */
   void setRole(String role);
+
+  /**
+   * Return the version number of a user.
+   *
+   * @return an int corresponding to the version of a user
+   */
+  int getVersionNumber();
+
+  /**
+   * set the version number of a user.
+   *
+   * @param version the version number of a user
+   */
+  void setVersionNumber(int version);
 }
