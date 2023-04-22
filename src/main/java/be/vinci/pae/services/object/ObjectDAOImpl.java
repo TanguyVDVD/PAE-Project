@@ -390,7 +390,7 @@ public class ObjectDAOImpl implements ObjectDAO {
   @Override
   public ObjectDTO insert(ObjectDTO objectDTO) {
     String request = "INSERT INTO pae.objects VALUES "
-        + "(DEFAULT, 1, ?, ?, null, 'proposé', null, null, false, ?, "
+        + "(DEFAULT, 0, ?, ?, null, 'proposé', null, null, false, ?, "
         + "null, null, null, null, null, null, null, ?, ?, ?, ?);";
 
     try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request, true)) {
