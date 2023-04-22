@@ -8,6 +8,7 @@ import be.vinci.pae.services.objecttype.ObjectTypeDAO;
 import be.vinci.pae.services.user.UserDAO;
 import be.vinci.pae.utils.exceptions.DALException;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.NotFoundException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -389,7 +390,7 @@ public class ObjectDAOImpl implements ObjectDAO {
   @Override
   public ObjectDTO insert(ObjectDTO objectDTO) {
     String request = "INSERT INTO pae.objects VALUES "
-        + "(DEFAULT, ?, ?, null, 'proposé', null, null, false, ?, "
+        + "(DEFAULT, 1, ?, ?, null, 'proposé', null, null, false, ?, "
         + "null, null, null, null, null, null, null, ?, ?, ?, ?);";
 
     try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request, true)) {
