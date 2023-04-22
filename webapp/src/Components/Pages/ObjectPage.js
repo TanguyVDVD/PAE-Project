@@ -234,9 +234,14 @@ function renderObjectPage(object, objectTypes) {
       const status = "accepté";
       const versionNbr = object.versionNumber;
 
-      API.patch(`objects/status/${object.id}`, { body: { status, versionNbr } });
-      AdminOffersPage();
-      Navigate('/admin/offers');
+      API.patch(`objects/status/${object.id}`, { body: { status, versionNbr } })
+      .then(() => {
+        AdminOffersPage();
+        Navigate('/admin/offers');
+      })
+      .catch((err) => {
+        renderError(err.message);
+      });
     });
 
     denyBtn.addEventListener('click', () => {
@@ -244,9 +249,14 @@ function renderObjectPage(object, objectTypes) {
       const reasonForRefusal = document.getElementById("reason-for-refusal").value;
       const versionNbr = object.versionNumber;
 
-      API.patch(`objects/status/${object.id}`, { body: { status, reasonForRefusal, versionNbr } });
-      AdminOffersPage();
-      Navigate('/admin/offers');
+      API.patch(`objects/status/${object.id}`, { body: { status, reasonForRefusal, versionNbr } })
+      .then(() => {
+        AdminOffersPage();
+        Navigate('/admin/offers');
+      })
+      .catch((err) => {
+        renderError(err.message);
+      });
     });
   }
 
