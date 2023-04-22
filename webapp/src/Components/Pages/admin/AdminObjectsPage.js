@@ -17,7 +17,6 @@ const AdminObjectsPage = () => {
 
   clearPage();
   renderAdminObjectsPage();
-  renderObjects();
 };
 
 function renderAdminObjectsPage() {
@@ -28,7 +27,7 @@ function renderAdminObjectsPage() {
   div.innerHTML = `
     <h2>Objets</h2>
     <form class="input-group">
-      <input type="text" class="form-control border-end-0" placeholder="Rechercher..." />
+      <input type="text" class="form-control border-end-0" placeholder="Rechercher..."/>
       <button class="btn border" type="submit">
         <i class="bi bi-search"></i>
       </button>
@@ -48,7 +47,9 @@ function renderAdminObjectsPage() {
 
   API.get(`objects?query=${encodeURIComponent("")}`)
   .then((objects) => {
-    renderObjects(objects);
+    if(objects !== null){
+      renderObjects(objects);
+    }
   })
   .catch((err) => {
     renderError(err.message);
@@ -60,7 +61,9 @@ function renderAdminObjectsPage() {
     const search = e.target.value;
     API.get(`objects?query=${encodeURIComponent(search)}`)
     .then((objects) => {
-      renderObjects(objects);
+      if(objects !== null){
+        renderObjects(objects);
+      }
     })
     .catch((err) => {
       renderError(err.message);
@@ -75,9 +78,7 @@ async function renderObjects(objects) {
       <div class="container mt-5 mb-5">
           <div class="d-flex justify-content-center row">
               <div class="col-md-10">
-                  ${objects
-                    .map(
-                      (object) => `
+                  ${objects.map((object) => `
                       <div class="row p-2 bg-white border rounded">
                           <div class="col-md-3 mt-1">
                               <img 
@@ -114,9 +115,8 @@ async function renderObjects(objects) {
                               </div>
                           </div>
                       </div>
-              `,
-                    )
-                    .join('')}
+                      `
+                  ,).join('')}
               </div>                     
           </div>
       </div>
