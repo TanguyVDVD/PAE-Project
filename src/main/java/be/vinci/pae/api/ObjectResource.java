@@ -347,7 +347,7 @@ public class ObjectResource {
       throw new WebApplicationException("Date invalide", Response.Status.BAD_REQUEST);
     }
 
-    if (timeSlot == null || (!timeSlot.equals("matin") && !timeSlot.equals("après-midi"))) {
+    if (timeSlot == null || !timeSlot.equals("matin") && !timeSlot.equals("après-midi")) {
       throw new WebApplicationException("Créneau invalide", Response.Status.BAD_REQUEST);
     }
 
