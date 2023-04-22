@@ -66,8 +66,8 @@ function renderAdminOffersPage() {
 
   div.querySelector('form').addEventListener('keyup', (e) => {
     e.preventDefault();
-
     const search = e.target.value;
+    e.currentTarget.dispatchEvent(new Event('submit'));
     API.get(`objects/offers?query=${encodeURIComponent(search)}`)
     .then((objects) => {
       if(objects !== null){
