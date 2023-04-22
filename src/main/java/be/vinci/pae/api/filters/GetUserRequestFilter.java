@@ -9,10 +9,8 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
-import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.ext.Provider;
 
 /**
@@ -38,14 +36,11 @@ public class GetUserRequestFilter implements ContainerRequestFilter {
 
       try {
         decodedToken = this.jwtVerifier.verify(token);
-      } catch (Exception e) {
-        throw new WebApplicationException("Token malformé : " + e.getMessage(),
-            Status.UNAUTHORIZED);
-      }
-
-      User authenticatedUser = (User) userUCC.getUserById(decodedToken.getClaim("user").asInt());
-      if (authenticatedUser != null) {
-        requestContext.setProperty("user", authenticatedUser);
+        User authenticatedUser = (User) userUCC.getUserById(decodedToken.getClaim("user").asInt());
+        if (authenticatedUser != null) {
+          requestContext.setProperty("user", authenticatedUser);
+        }
+      } catch (Exception ignored) {
       }
     }
   }
