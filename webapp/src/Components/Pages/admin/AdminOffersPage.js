@@ -82,7 +82,7 @@ function renderAdminOffersPage() {
     const minPrice = document.getElementById('input-minPrice').value;
     const maxPrice = document.getElementById('input-maxPrice').value;
     const date = document.getElementById('input-receipt-date').value;
-    const typeFilters = [...document.querySelectorAll('.type-filter:checked')].map((cb) => cb.value);
+    const typeFilters = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
 
     renderOffers(minPrice, maxPrice, date, search, typeFilters);
   });
@@ -94,7 +94,7 @@ function renderAdminOffersPage() {
       const minPrice = document.getElementById('input-minPrice').value;
       const maxPrice = document.getElementById('input-maxPrice').value;
       const date = document.getElementById('input-receipt-date').value;
-      const typeFilter = [...document.querySelectorAll('.type-filter:checked')].map((cb) => cb.value);
+      const typeFilter = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
 
       renderOffers(minPrice, maxPrice, date, search, typeFilter);
     });
