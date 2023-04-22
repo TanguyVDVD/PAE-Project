@@ -163,12 +163,14 @@ public class UserDAOImpl implements UserDAO {
    * @return the list of all users
    */
   public List<UserDTO> getAll(String query) {
-    String request = "SELECT * FROM pae.users WHERE LOWER(last_name || ' ' || first_name) "
-        + "LIKE CONCAT('%', ?, '%') ORDER BY id_user";
+    String request = "SELECT * FROM pae.users WHERE "
+        + "LOWER(first_name || ' ' || last_name) LIKE CONCAT('%', ?, '%') OR "
+        + "LOWER(last_name || ' ' || first_name) LIKE CONCAT('%', ?, '%') ORDER BY id_user";
     ArrayList<UserDTO> users = new ArrayList<>();
 
     try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       ps.setString(1, query == null ? "" : query.toLowerCase());
+      ps.setString(2, query == null ? "" : query.toLowerCase());
 
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
