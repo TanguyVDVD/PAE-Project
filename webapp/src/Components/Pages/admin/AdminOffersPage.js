@@ -21,6 +21,7 @@ const AdminOffersPage = () => {
 };
 
 function renderAdminOffersPage() {
+  let searchQuery = '';
   const main = document.querySelector('main');
   const div = document.createElement('div');
   div.className = 'container my-5';
@@ -72,6 +73,25 @@ function renderAdminOffersPage() {
     .then((objects) => {
       if(objects !== null){
         renderOffers(objects);
+      }
+    })
+    .catch((err) => {
+      renderError(err.message);
+    });
+  });
+
+  div.querySelector('form').addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const search = e.target.querySelector('input').value;
+
+    if (search === searchQuery) return;
+    searchQuery = search;
+
+    API.get(`objects/offers?query=${encodeURIComponent(searchQuery)}`)
+    .then((offers) => {
+      if(offers !== null){
+        renderOffers(offers);
       }
     })
     .catch((err) => {
@@ -169,11 +189,11 @@ function setRemainingTime(className, offers) {
 
     if (timeRemaining <= 3) {
       element.innerHTML = `
-          <h6 class="text-danger">${timeRemaining} jours restants pour répondre !</h6>
+        <h6 class="text-danger">${timeRemaining} jours restants pour répondre !</h6>
       `;
     } else {
       element.innerHTML = `
-          <h6 class="text-primary">${timeRemaining} jours restants pour répondre</h6>
+        <h6 class="text-primary">${timeRemaining} jours restants pour répondre</h6>
       `;
     }
   }

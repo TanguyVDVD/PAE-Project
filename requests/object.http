@@ -28,6 +28,9 @@ Content-Type: application/json
 GET {{baseUrl}}/objects
 Authorization: {{helperToken}}
 
+### Get a list of all public objects
+GET {{baseUrl}}/objects/public
+
 ### Get a list of all objects offered by a user
 GET {{baseUrl}}/objects/user/1
 Authorization: {{helperToken}}

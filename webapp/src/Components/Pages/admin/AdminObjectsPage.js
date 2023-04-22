@@ -8,6 +8,8 @@ import {
   setReceiptDate,
   setUserOrPhoneNumber
 } from '../../../utils/objects';
+import { subtractDates } from '../../../utils/dates';
+import { setReceiptDate, setUserOrPhoneNumber } from '../../../utils/objects';
 
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
 
@@ -24,6 +26,7 @@ const AdminObjectsPage = () => {
 };
 
 function renderAdminObjectsPage() {
+  let searchQuery = '';
   const main = document.querySelector('main');
   const div = document.createElement('div');
   div.className = 'container my-5';
@@ -72,6 +75,24 @@ function renderAdminObjectsPage() {
 
     const search = e.target.value;
     API.get(`objects?query=${encodeURIComponent(search)}`)
+    .then((objects) => {
+      if(objects !== null){
+        renderObjects(objects);
+      }
+    })
+    .catch((err) => {
+      renderError(err.message);
+    });
+  });
+
+
+  div.querySelector('form').addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const search = e.target.querySelector('input').value;
+    if (search === searchQuery) return;
+    searchQuery = search;
+    API.get(`objects?query=${encodeURIComponent(searchQuery)}`)
     .then((objects) => {
       if(objects !== null){
         renderObjects(objects);
@@ -134,26 +155,26 @@ async function renderObjects(objects) {
       </div>
     `;
 
-  setReceiptDate(document, 'div-receipt-date', objects);
-  setUserOrPhoneNumber(document, 'div-user', objects);
-  setPriceOrTimeRemaining('div-price-time-remaining', objects);
-  setStateColor('div-state', objects);
-  setButton('div-button', objects);
+    setReceiptDate(document, 'div-receipt-date', objects);
+    setUserOrPhoneNumber(document, 'div-user', objects);
+    setPriceOrTimeRemaining('div-price-time-remaining', objects);
+    setStateColor('div-state', objects);
+    setButton('div-button', objects);
 
-  objectslist.querySelectorAll('a[data-id]').forEach((link) => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      Navigate(`/user/${e.target.dataset.id}`);
+    objectslist.querySelectorAll('a[data-id]').forEach((link) => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        Navigate(`/user/${e.target.dataset.id}`);
+      });
     });
-  });
 
-  objectslist.querySelectorAll('button[data-id]').forEach((link) => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
+    objectslist.querySelectorAll('button[data-id]').forEach((link) => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
         Navigate(`/object/${e.target.dataset.id}`);
+      });
     });
-  });
-}
+  }
 
 function setPriceOrTimeRemaining(className, objects) {
   const elements = document.getElementsByClassName(className);
@@ -170,17 +191,17 @@ function setPriceOrTimeRemaining(className, objects) {
       if (timeRemaining <= 3) {
         element.innerHTML = `
           <p class="text-danger">${timeRemaining} jours restants pour répondre !</p>
-      `;
+        `;
       } else {
         element.innerHTML = `
           <p class="text-primary">${timeRemaining} jours restants pour répondre</p>
-      `;
+        `;
       }
     } else if (object.status === 'refusé') {
       element.innerHTML = ``;
     } else {
       element.innerHTML = `
-          <h4 class="mr-1">${object.price} €</h4>
+        <h4 class="mr-1">${object.price} €</h4>
       `;
     }
   }
@@ -194,15 +215,15 @@ function setStateColor(className, objects) {
 
     if (object.state === 'refusé') {
       element.innerHTML = `
-          <h6 class="text-danger">${object.state}</h6>
+        <h6 class="text-danger">${object.state}</h6>
       `;
     } else if (object.state === 'proposé') {
       element.innerHTML = `
-          <h6 class="text-primary">${object.state}</h6>
+        <h6 class="text-primary">${object.state}</h6>
       `;
     } else {
       element.innerHTML = `
-          <h6 class="text-success">${object.state}</h6>
+        <h6 class="text-success">${object.state}</h6>
       `;
     }
   }
@@ -215,15 +236,25 @@ function setButton(className, objects) {
     const element = elements.item(i);
     if (object.state === 'refusé') {
       element.innerHTML = `
-          <button class="btn btn-primary btn-sm button-see" type="button" data-id="${object.id}">Voir</button>
+        <button class="btn btn-primary btn-sm button-see" type="button" data-id="${object.id}">
+          Voir
+        </button>
       `;
     } else if (object.state === 'proposé') {
       element.innerHTML = `
-          <button class="btn btn-outline-primary btn-sm button-respond" type="button" data-id="${object.id}">Répondre</button>
+        <button
+          class="btn btn-outline-primary btn-sm button-respond"
+          type="button"
+          data-id="${object.id}"
+        >
+          Répondre
+        </button>
       `;
     } else {
       element.innerHTML = `
-          <button class="btn btn-primary btn-sm button-modify" type="button" data-id="${object.id}">Modifier</button>
+        <button class="btn btn-primary btn-sm button-modify" type="button" data-id="${object.id}">
+          Modifier
+        </button>
       `;
     }
   }

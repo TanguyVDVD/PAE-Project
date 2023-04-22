@@ -7,7 +7,11 @@ import API from '../../../utils/api';
 
 import noProfilePicture from '../../../img/no_profile_picture.svg';
 
+let searchQuery = '';
+
 const AdminUsersPage = () => {
+  searchQuery = '';
+
   const user = getAuthenticatedUser();
 
   if (!user || user.role === null) {
@@ -36,11 +40,20 @@ function renderAdminUsersPage() {
     <div id="users-table" class="table-responsive"></div>
   `;
 
+  div.querySelector('form').addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const search = e.target.querySelector('input').value;
+    if (search === searchQuery) return;
+    searchQuery = search;
+
+    searchUsers(searchQuery);
+  });
+
   div.querySelector('form').addEventListener('keyup', (e) => {
     e.preventDefault();
 
-    const search = e.target.value;
-    searchUsers(search);
+    e.currentTarget.dispatchEvent(new Event('submit'));
   });
 
   main.appendChild(div);

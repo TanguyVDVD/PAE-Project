@@ -196,7 +196,7 @@ class ObjectUCCImplTest {
     Mockito.when(object1.getStatus()).thenReturn("accepté");
     Mockito.when(object1.getState()).thenReturn("accepté");
 
-    Mockito.when(object1.setSateDate(object, object1, dateToday)).thenReturn(object);
+    Mockito.when(object1.setStateDate(object, object1, dateToday)).thenReturn(object);
 
     Mockito.when(objectDAO.updateObject(object1.getId(), object1)).thenReturn(object);
 
@@ -227,7 +227,7 @@ class ObjectUCCImplTest {
 
     LocalDate dateToday = LocalDate.now();
 
-    Mockito.when(object1.setSateDate(object, object1, dateToday)).thenReturn(object);
+    Mockito.when(object1.setStateDate(object, object1, dateToday)).thenReturn(object);
 
     Mockito.when(objectDAO.updateObject(object1.getId(), object1)).thenReturn(object);
 
@@ -256,7 +256,7 @@ class ObjectUCCImplTest {
     Mockito.when(object1.getStatus()).thenReturn("accepté");
     Mockito.when(object1.getState()).thenReturn("accepté");
 
-    Mockito.when(object1.setSateDate(object, object1, null)).thenReturn(null);
+    Mockito.when(object1.setStateDate(object, object1, null)).thenReturn(null);
 
     Mockito.when(objectDAO.updateObject(object1.getId(), object1)).thenReturn(object);
 
@@ -282,7 +282,7 @@ class ObjectUCCImplTest {
     Mockito.when(object1.getStatus()).thenReturn("refusé");
     Mockito.when(object1.getState()).thenReturn("refusé");
 
-    Mockito.when(object1.setSateDate(object, object1, null)).thenReturn(null);
+    Mockito.when(object1.setStateDate(object, object1, null)).thenReturn(null);
 
     Mockito.when(objectDAO.updateObject(object1.getId(), object1)).thenReturn(object);
 

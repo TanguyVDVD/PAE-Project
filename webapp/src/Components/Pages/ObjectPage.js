@@ -139,9 +139,10 @@ function renderObjectPage(object, objectTypes) {
                   <label class="form-check-label" for="helper-switch">Visible sur le site</label>
                 </div>
                 <br>
-                <button type="submit" class="btn btn-primary" id="save-btn">Sauvegarder</button>
-                <div class="bordure_verticale"></div>
-                <button type="submit" class="btn btn-outline-primary" id="cancel-btn">Annuler</button>
+                <div class="hstack gap-2">
+                  <button type="submit" class="btn btn-primary" id="save-btn">Sauvegarder</button>
+                  <button type="submit" class="btn btn-outline-primary" id="cancel-btn">Annuler</button>
+                </div>
               </form> 
               `
                 : `
@@ -168,9 +169,10 @@ function renderObjectPage(object, objectTypes) {
                   <textarea class="form-control" id="reason-for-refusal" rows="2"></textarea>
                 </div>   
                 
-                <a href="#" class="accept" id="accept-btn">Accepter l'objet<span class="fa fa-check"></span></a>
-                <div class="bordure_verticale"></div>
-                <a href="#" class="deny" id="deny-btn">Refuser l'objet<span class="fa fa-close"></span></a>
+                <div class="hstack gap-5 my-3">
+                  <button type="button" class="btn btn-lg btn-success" id="accept-btn">Accepter l'objet <i class="bi bi-check-lg"></i></button>
+                  <button type="button" class="btn btn-lg btn-danger" id="deny-btn">Refuser l'objet <i class="bi bi-x-lg"></i></button>
+                </div>
               `
                 : ''
             }
