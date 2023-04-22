@@ -22,4 +22,6 @@ public interface NotificationDAO {
 
   NotificationDTO markANotificationAsRead(NotificationDTO notificationDTO);
 
+  List<Integer> getAllHelperId();
+
 }

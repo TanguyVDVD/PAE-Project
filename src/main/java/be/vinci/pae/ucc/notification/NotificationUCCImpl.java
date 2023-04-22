@@ -98,9 +98,22 @@ public class NotificationUCCImpl implements NotificationUCC {
       NotificationDTO notificationDTO = domainFactory.getNotification();
 
       notificationDTO.setIdObject(idObject);
-      notificationDTO.setRead(false);
       notificationDTO.setNotificationText(
           "Un nouvel objet vient d'être proposé");
+
+      NotificationDTO notificationDTOWithoutUser = myNotificationDAO.createAcceptedObjectNotification(
+          notificationDTO);
+
+      List<Integer> listAllHelpers = myNotificationDAO.getAllHelperId();
+
+      for (int i = 0; i < listAllHelpers.size(); i++) {
+        notificationDTOWithoutUser.setIdUser(listAllHelpers.get(i));
+        notificationDTOWithoutUser.setRead(false);
+        myNotificationDAO.createAcceptedObjectUserNotification(notificationDTOWithoutUser);
+      }
+
+      return notificationDTOWithoutUser;
+
 
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
@@ -109,7 +122,6 @@ public class NotificationUCCImpl implements NotificationUCC {
     } finally {
       myDalServices.commitTransaction();
     }
-    return null;
   }
 
   /**
@@ -121,11 +133,12 @@ public class NotificationUCCImpl implements NotificationUCC {
    */
   @Override
   public NotificationDTO markANotificationAsRead(NotificationDTO notificationDTO) {
+
     myDalServices.startTransaction();
 
     try {
 
-      return null;
+      return myNotificationDAO.markANotificationAsRead(notificationDTO);
 
     } catch (Exception e) {
       myDalServices.rollbackTransaction();

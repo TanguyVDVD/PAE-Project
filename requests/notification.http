@@ -16,5 +16,5 @@ GET {{baseUrl}}/notifications/user/2
 Authorization: {{helperToken}}
 
 ### Set notification as read
-GET {{baseUrl}}/notifications/4/read
+PATCH {{baseUrl}}/notifications/1/read
 Authorization: {{helperToken}}

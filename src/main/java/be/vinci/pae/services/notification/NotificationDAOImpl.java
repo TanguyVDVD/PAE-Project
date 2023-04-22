@@ -147,6 +147,7 @@ public class NotificationDAOImpl implements NotificationDAO {
 
   @Override
   public NotificationDTO markANotificationAsRead(NotificationDTO notificationDTO) {
+
     String request =
         "UPDATE pae.users_notifications SET read = true WHERE id_notification = ? AND id_user = ?";
 
@@ -162,4 +163,24 @@ public class NotificationDAOImpl implements NotificationDAO {
 
     return notificationDTO;
   }
+
+  public List<Integer> getAllHelperId() {
+    String request = "SELECT id_user FROM pae.users WHERE role=aidant OR role=responsable";
+    ArrayList<Integer> helpers = new ArrayList<>();
+
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
+
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          helpers.add(rs.getInt("id_user"));
+        }
+      }
+    } catch (Exception e) {
+      throw new DALException("Error during getting all users", e);
+    }
+
+    return helpers;
+  }
+
+
 }

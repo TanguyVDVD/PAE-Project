@@ -72,7 +72,7 @@ public class NotificationResource {
 
     NotificationDTO notificationDTO = myDomainFactory.getNotification();
 
-    notificationDTO.setIdObject(id);
+    notificationDTO.setId(id);
     notificationDTO.setIdUser(user.getId());
 
     return myNotificationUCC.markANotificationAsRead(notificationDTO);
