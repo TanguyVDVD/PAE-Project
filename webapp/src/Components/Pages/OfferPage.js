@@ -9,7 +9,7 @@ import Navigate from "../Router/Navigate";
 const OfferPage = () => {
     clearPage();
 
-    API.get('/objectsTypes')
+    API.get('/objectTypes')
     .then((objectTypes) => {
         renderOfferPage(objectTypes);
     }).catch((err) => {

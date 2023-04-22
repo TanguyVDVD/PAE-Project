@@ -12,5 +12,5 @@ Content-Type: application/json
 %}
 
 ### Get a list of all object types
-GET {{baseUrl}}/objectsTypes
+GET {{baseUrl}}/objectTypes
 Authorization: {{adminToken}}

@@ -1,7 +1,9 @@
+import Autocomplete from "bootstrap5-autocomplete";
 import Navigate from '../Components/Router/Navigate';
-import API from './api';
 import { dateStringtoGoodFormat } from './dates';
 import { formatPhoneNumber } from './format';
+import API from "./api";
+import {renderError} from "./render";
 
 import noFurniturePhoto from '../img/no_furniture_photo.svg';
 
@@ -46,7 +48,7 @@ function setReceiptDate(document, className, objects) {
       element.innerHTML = `
           <p>
               À récupérer le ${dateStringtoGoodFormat(object.receiptDate)} ${
-        object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
+          object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
       }
           </p>
       `;
@@ -60,12 +62,35 @@ function setReceiptDate(document, className, objects) {
       element.innerHTML = `
           <p>
               Récupéré le ${dateStringtoGoodFormat(object.receiptDate)} ${
-        object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
+          object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
       }
           </p>
       `;
     }
   }
+}
+
+function encodingHelp(descriptions){
+  const objectTypes = [];
+
+  API.get('objectTypes').then((types) => {
+    types.forEach((item) => {
+      objectTypes.push(item.label);
+    });
+
+    const src = descriptions.concat(objectTypes);
+
+    Autocomplete.init("input.autocomplete", {
+      items: src,
+      fullWidth: true,
+      fixed: true,
+      autoselectFirst: false,
+      updateOnSelect: true,
+    });
+  })
+  .catch((err) => {
+    renderError(err.message);
+  });
 }
 
 function createObjectCard(_object) {
@@ -111,4 +136,4 @@ function createObjectCard(_object) {
   `;
 }
 
-export { setUserOrPhoneNumber, setReceiptDate, createObjectCard };
+export { setUserOrPhoneNumber, setReceiptDate, createObjectCard, encodingHelp };
