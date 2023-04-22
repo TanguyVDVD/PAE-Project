@@ -122,11 +122,7 @@ async function renderObjects(minPrice , maxPrice,query = '', typeFilter = []) {
                             <div class="col-md-3 mt-1">
                                 <img 
                                     class="rounded product-image object-fit-cover" 
-                                    src="${
-                                      object.photo
-                                        ? API.getEndpoint(`objects/${object.id}/photo`)
-                                        : noFurniturePhoto
-                                    }"
+                                    src="${API.getEndpoint(`objects/${object.id}/photo`)}"
                                     width="180" height="180"
                                     onerror="this.src='${noFurniturePhoto}'"
                                     alt="${object.objectType}">

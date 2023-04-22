@@ -11,16 +11,16 @@ CREATE SCHEMA pae;
 
 CREATE TABLE pae.users
 (
-    id_user       SERIAL PRIMARY KEY,
+    id_user        SERIAL PRIMARY KEY,
     version_number INTEGER NOT NULL,
-    last_name     VARCHAR(50)  NOT NULL,
-    first_name    VARCHAR(50)  NOT NULL,
-    phone_number  VARCHAR(12)  NOT NULL,
-    email         VARCHAR(100) NOT NULL,
-    password      VARCHAR(100) NOT NULL,
-    photo         BOOLEAN      NOT NULL,
-    register_date DATE         NOT NULL,
-    role          VARCHAR(12)
+    last_name      VARCHAR(50)  NOT NULL,
+    first_name     VARCHAR(50)  NOT NULL,
+    phone_number   VARCHAR(12)  NOT NULL,
+    email          VARCHAR(100) NOT NULL,
+    password       VARCHAR(100) NOT NULL,
+    photo          BOOLEAN      NOT NULL,
+    register_date  DATE         NOT NULL,
+    role           VARCHAR(12)
 );
 
 CREATE TABLE pae.object_types
@@ -39,14 +39,13 @@ CREATE TABLE pae.objects (
                              id_object SERIAL PRIMARY KEY,
                              version_number INTEGER NOT NULL,
                              description VARCHAR(120) NOT NULL,
-                             photo BOOLEAN NOT NULL,
                              time_slot VARCHAR(15) NOT NULL,
                              price FLOAT,
                              state VARCHAR(15),
                              status VARCHAR(15),
                              reason_for_refusal VARCHAR(120),
                              is_visible BOOLEAN NOT NULL,
-                             offer_date DATE                                    NOT NULL,
+                             offer_date DATE NOT NULL,
                              acceptance_date DATE,
                              refusal_date DATE,
                              workshop_date DATE,
@@ -103,29 +102,29 @@ INSERT INTO pae.availabilities VALUES (DEFAULT, '2023-04-15');
 INSERT INTO pae.availabilities VALUES (DEFAULT, '2023-04-22');
 
 INSERT INTO pae.objects
-VALUES (DEFAULT, 1, 'Chaise en bois brut avec cousin beige', true, 'matin', 2, 'en vente', 'accepté', null,
+VALUES (DEFAULT, 1, 'Chaise en bois brut avec cousin beige', 'matin', 2, 'en vente', 'accepté', null,
         true, '2023-03-01', '2023-03-15', null, null, '2023-03-18', '2023-03-20', null, null, null, 2, 3, 3);
 
 INSERT INTO pae.objects
-VALUES (DEFAULT, 1, 'Canapé 3 places blanc', true, 'matin', 3, 'vendu', 'accepté', null,
+VALUES (DEFAULT, 1, 'Canapé 3 places blanc', 'matin', 3, 'vendu', 'accepté', null,
         true, '2023-03-01', '2023-03-15', null, null, '2023-03-18', '2023-03-20', '2323-03-22', null, null, 3, 3, 4);
 
 INSERT INTO pae.objects
-VALUES (DEFAULT, 1, 'Secrétaire', true, 'après-midi', null, 'refusé', 'refusé', 'Ce meuble est magnifique mais fragile pour l’usage qui en sera fait.',
+VALUES (DEFAULT, 1, 'Secrétaire', 'après-midi', null, 'refusé', 'refusé', 'Ce meuble est magnifique mais fragile pour l’usage qui en sera fait.',
         true, '2023-03-01', null, '2023-03-04', null, null, null, null, null, '0496321654', null, 4, 1);
 
 INSERT INTO pae.objects
-VALUES (DEFAULT, 1, '100 assiettes blanches', true, 'après-midi', null, 'accepté', 'accepté', null,
+VALUES (DEFAULT, 1, '100 assiettes blanches', 'après-midi', null, 'accepté', 'accepté', null,
         true, '2023-03-01', '2023-03-20', null, null, null, null, null, null, null, 4, 4, 9);
 
 INSERT INTO pae.objects
-VALUES (DEFAULT, 1, 'Grand canapé 4 places bleu usé', true, 'après-midi', null, 'accepté', 'accepté', null,
+VALUES (DEFAULT, 1, 'Grand canapé 4 places bleu usé', 'après-midi', null, 'accepté', 'accepté', null,
         true, '2023-03-01', '2023-03-20', null, null, null, null, null, null, null, 2, 4, 4);
 
 INSERT INTO pae.objects
-VALUES (DEFAULT, 1, 'Fauteuil design très confortable', true, 'après-midi', null, 'proposé', null, null,
+VALUES (DEFAULT, 1, 'Fauteuil design très confortable', 'après-midi', null, 'proposé', null, null,
         true, '2023-03-01', null, null, null, null, null, null, null, null, 3, 5, 4);
 
 INSERT INTO pae.objects
-VALUES (DEFAULT, 1, 'Tabouret de bar en cuir', true, 'après-midi', null, 'proposé', null, null,
+VALUES (DEFAULT, 1, 'Tabouret de bar en cuir', 'après-midi', null, 'proposé', null, null,
         true, '2023-03-01', null, null, null, null, null, null, null, null, 2, 5, 3);
