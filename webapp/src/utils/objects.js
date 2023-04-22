@@ -1,6 +1,9 @@
+import Autocomplete from "bootstrap5-autocomplete";
 import Navigate from '../Components/Router/Navigate';
 import { dateStringtoGoodFormat } from './dates';
 import { formatPhoneNumber } from './format';
+import API from "./api";
+import {renderError} from "./render";
 
 function setUserOrPhoneNumber(document, className, objects) {
   const elements = document.getElementsByClassName(className);
@@ -65,7 +68,31 @@ function setReceiptDate(document, className, objects) {
   }
 }
 
+function encodingHelp(descriptions){
+  const objectTypes = [];
+
+  API.get('objectTypes').then((types) => {
+    types.forEach((item) => {
+      objectTypes.push(item.label);
+    });
+
+    const src = descriptions.concat(objectTypes);
+
+    Autocomplete.init("input.autocomplete", {
+      items: src,
+      fullWidth: true,
+      fixed: true,
+      autoselectFirst: false,
+      updateOnSelect: true,
+    });
+  })
+  .catch((err) => {
+    renderError(err.message);
+  });
+}
+
 export {
-  setUserOrPhoneNumber,
-  setReceiptDate
+    setUserOrPhoneNumber,
+    setReceiptDate,
+    encodingHelp,
 }
