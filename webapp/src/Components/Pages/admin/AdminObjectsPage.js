@@ -1,10 +1,13 @@
-import Autocomplete from "bootstrap5-autocomplete";
 import Navigate from '../../Router/Navigate';
 import { getAuthenticatedUser } from '../../../utils/auths';
 import {clearPage, renderError} from '../../../utils/render';
 import API from '../../../utils/api';
 import {subtractDates} from '../../../utils/dates';
-import {setReceiptDate, setUserOrPhoneNumber} from '../../../utils/objects';
+import {
+  encodingHelp,
+  setReceiptDate,
+  setUserOrPhoneNumber
+} from '../../../utils/objects';
 
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
 
@@ -58,22 +61,7 @@ function renderAdminObjectsPage() {
       });
     }
 
-    const objectTypes = [];
-
-    API.get('objectTypes').then((availabilities) => {
-      availabilities.forEach((item) => {
-        objectTypes.push(item.label);
-      });
-
-      const src = descriptions.concat(objectTypes);
-
-      Autocomplete.init("input.autocomplete", {
-        items: src,
-      });
-    })
-    .catch((err) => {
-      renderError(err.message);
-    });
+    encodingHelp(descriptions);
   })
   .catch((err) => {
     renderError(err.message);
