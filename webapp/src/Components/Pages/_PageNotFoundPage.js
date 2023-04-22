@@ -17,7 +17,9 @@ const PageNotFoundPage = () => {
     </div>
   `;
 
-  document.getElementById('home-btn').addEventListener('click', () => {
+  document.getElementById('home-btn').addEventListener('click', (e) => {
+    e.preventDefault();
+
     Navigate('/');
   });
 };
