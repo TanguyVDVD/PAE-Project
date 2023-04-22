@@ -80,4 +80,12 @@ public interface ObjectDAO {
    * @return null if there is an error then the object
    */
   ObjectDTO updateObject(int id, ObjectDTO objectDTO);
+
+  /**
+   * Insert a new object in the db.
+   *
+   * @param objectDTO the object to insert in the db
+   * @return the object inserted in the db
+   */
+  ObjectDTO insert(ObjectDTO objectDTO);
 }

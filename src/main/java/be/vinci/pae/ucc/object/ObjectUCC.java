@@ -88,4 +88,12 @@ public interface ObjectUCC {
    * @return the updated object
    */
   ObjectDTO updatePhoto(ObjectDTO objectDTO, InputStream file);
+
+  /**
+   * Add an object.
+   *
+   * @param objectDTO the object to add
+   * @return the object that has been added
+   */
+  ObjectDTO add(ObjectDTO objectDTO);
 }

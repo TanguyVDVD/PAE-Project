@@ -44,9 +44,7 @@ function renderObjectPage(object, objectTypes) {
         <div class="row gx-6 gx-lg-6 align-items-top">
           <div class="col-md-4">
             <img class="card-img-top mb-5 mb-md-0 object-fit-cover" 
-            src="${
-              object.photo ? API.getEndpoint(`objects/${object.id}/photo`) : noFurniturePhoto
-            }"
+            src="${API.getEndpoint(`objects/${object.id}/photo`)}"
             onerror="this.src='${noFurniturePhoto}'"
             width="400"
             height="400"
@@ -236,9 +234,14 @@ function renderObjectPage(object, objectTypes) {
       const status = "accepté";
       const versionNbr = object.versionNumber;
 
-      API.patch(`objects/status/${object.id}`, { body: { status, versionNbr } });
-      AdminOffersPage();
-      Navigate('/admin/offers');
+      API.patch(`objects/status/${object.id}`, { body: { status, versionNbr } })
+      .then(() => {
+        AdminOffersPage();
+        Navigate('/admin/offers');
+      })
+      .catch((err) => {
+        renderError(err.message);
+      });
     });
 
     denyBtn.addEventListener('click', () => {
@@ -246,9 +249,14 @@ function renderObjectPage(object, objectTypes) {
       const reasonForRefusal = document.getElementById("reason-for-refusal").value;
       const versionNbr = object.versionNumber;
 
-      API.patch(`objects/status/${object.id}`, { body: { status, reasonForRefusal, versionNbr } });
-      AdminOffersPage();
-      Navigate('/admin/offers');
+      API.patch(`objects/status/${object.id}`, { body: { status, reasonForRefusal, versionNbr } })
+      .then(() => {
+        AdminOffersPage();
+        Navigate('/admin/offers');
+      })
+      .catch((err) => {
+        renderError(err.message);
+      });
     });
   }
 

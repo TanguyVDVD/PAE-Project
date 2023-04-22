@@ -67,11 +67,7 @@ async function renderOffers(query = '') {
                             <div class="col-md-3 mt-1">
                                 <img 
                                     class="object-fit-cover rounded product-image" 
-                                    src="${
-                                      offer.photo
-                                        ? API.getEndpoint(`objects/${offer.id}/photo`)
-                                        : noFurniturePhoto
-                                    }"
+                                    src="${API.getEndpoint(`objects/${offer.id}/photo`)}"
                                     onerror="this.src='${noFurniturePhoto}'"
                                     width="180"
                                     height="180"

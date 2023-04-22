@@ -3,9 +3,11 @@ package be.vinci.pae.api;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeHelper;
 import be.vinci.pae.api.filters.AuthorizeManager;
+import be.vinci.pae.api.filters.GetUser;
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.domain.user.User;
+import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.ucc.object.ObjectUCC;
 import be.vinci.pae.utils.MyObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -17,6 +19,7 @@ import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PATCH;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -275,7 +278,6 @@ public class ObjectResource {
     ObjectDTO objectDTO = myDomainFactory.getObject();
 
     objectDTO.setId(id);
-    objectDTO.setPhoto(true);
 
     ObjectDTO objectAfterUpdate = objectUCC.updatePhoto(objectDTO, photo);
 
@@ -284,5 +286,89 @@ public class ObjectResource {
     }
 
     return objectAfterUpdate;
+  }
+
+  /**
+   * Offer an object.
+   *
+   * @param request     the request
+   * @param description the description of the object
+   * @param objectType  the object type
+   * @param receiptDate the day to receipt the object
+   * @param timeSlot    the time slot chosen
+   * @param phoneNumber the phone number used to offer the object
+   * @param photo       the photo of the user
+   * @return an object when added
+   */
+  @GetUser
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @Produces(MediaType.APPLICATION_JSON)
+  @POST
+  public ObjectDTO add(
+      @Context ContainerRequest request,
+      @FormDataParam("phoneNumber") String phoneNumber,
+      @FormDataParam("description") String description,
+      @FormDataParam("objectType") String objectType,
+      @FormDataParam("receiptDate") String receiptDate,
+      @FormDataParam("timeSlot") String timeSlot,
+      @FormDataParam("photo") InputStream photo
+  ) {
+    UserDTO authorizedUser = (UserDTO) request.getProperty("user");
+
+    // Check the user
+    if (authorizedUser == null) {
+      if (phoneNumber == null || phoneNumber.isBlank()) {
+        throw new WebApplicationException(
+            "Numéro de téléphonne manquant ou utilisateur non connecté",
+            Response.Status.BAD_REQUEST);
+      } else {
+        // Check phone number format
+        phoneNumber = User.formatPhoneNumber(phoneNumber);
+        if (phoneNumber == null) {
+          throw new WebApplicationException("Numéro de téléphone invalide",
+              Response.Status.BAD_REQUEST);
+        }
+      }
+    } else if (phoneNumber != null && !phoneNumber.isBlank()) {
+      throw new WebApplicationException(
+          "Impossible de proser un objet anonymement pour un utilisateur connecté",
+          Response.Status.BAD_REQUEST);
+    }
+
+    if (description == null || description.isBlank()) {
+      throw new WebApplicationException("Description manquante", Response.Status.BAD_REQUEST);
+    }
+
+    if (objectType == null || objectType.isBlank()) {
+      throw new WebApplicationException("Type de l'objet manquant", Response.Status.BAD_REQUEST);
+    }
+
+    if (receiptDate == null || LocalDate.parse(receiptDate).isBefore(LocalDate.now())) {
+      throw new WebApplicationException("Date invalide", Response.Status.BAD_REQUEST);
+    }
+
+    if (timeSlot == null || !timeSlot.equals("matin") && !timeSlot.equals("après-midi")) {
+      throw new WebApplicationException("Créneau invalide", Response.Status.BAD_REQUEST);
+    }
+
+    if (photo == null) {
+      throw new WebApplicationException("Photo manquante", Status.BAD_REQUEST);
+    }
+
+    ObjectDTO objectDTO = myDomainFactory.getObject();
+
+    objectDTO.setDescription(description);
+    objectDTO.setObjectType(objectType);
+    objectDTO.setReceiptDate(LocalDate.parse(receiptDate));
+    objectDTO.setTimeSlot(timeSlot);
+    objectDTO.setPhoneNumber(phoneNumber);
+    objectDTO.setUser(authorizedUser);
+    objectDTO.setOfferDate(LocalDate.now());
+
+    ObjectDTO objectAdded = objectUCC.add(objectDTO);
+
+    objectUCC.updatePhoto(objectAdded, photo);
+
+    return objectAdded;
   }
 }
