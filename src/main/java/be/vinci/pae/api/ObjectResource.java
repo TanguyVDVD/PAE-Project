@@ -319,8 +319,8 @@ public class ObjectResource {
     if (authorizedUser == null) {
       if (phoneNumber == null || phoneNumber.isBlank()) {
         throw new WebApplicationException(
-            "Numéro de téléphonne manquant ou utilisateur non connecté. user : " + authorizedUser +
-                ", phoneNumber : " + phoneNumber, Response.Status.BAD_REQUEST);
+            "Numéro de téléphonne manquant ou utilisateur non connecté",
+            Response.Status.BAD_REQUEST);
       } else {
         // Check phone number format
         phoneNumber = User.formatPhoneNumber(phoneNumber);
@@ -335,22 +335,20 @@ public class ObjectResource {
           Response.Status.BAD_REQUEST);
     }
 
-    String[] inputs = {description, objectType, timeSlot};
+    if (description == null || description.isBlank()) {
+      throw new WebApplicationException("Description manquante", Response.Status.BAD_REQUEST);
+    }
 
-    for (String input : inputs) {
-      if (input == null || input.isBlank()) {
-        throw new WebApplicationException("Paramètres manquants", Response.Status.BAD_REQUEST);
-      }
+    if (objectType == null || objectType.isBlank()) {
+      throw new WebApplicationException("Type de l'objet manquant", Response.Status.BAD_REQUEST);
     }
 
     if (receiptDate == null || LocalDate.parse(receiptDate).isBefore(LocalDate.now())) {
-      throw new WebApplicationException("Date invalide : " + receiptDate,
-          Response.Status.BAD_REQUEST);
+      throw new WebApplicationException("Date invalide", Response.Status.BAD_REQUEST);
     }
 
     if (timeSlot == null || (!timeSlot.equals("matin") && !timeSlot.equals("après-midi"))) {
-      throw new WebApplicationException("Créneau invalide : " + timeSlot,
-          Response.Status.BAD_REQUEST);
+      throw new WebApplicationException("Créneau invalide", Response.Status.BAD_REQUEST);
     }
 
     if (photo == null) {

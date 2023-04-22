@@ -180,8 +180,11 @@ function renderOfferPage(objectTypes) {
             formData.append("photo", file);
         }
 
-        formData.append("receiptDate",
-            invertDateFormat(document.getElementById("input-receipt-date").value));
+        const date = document.getElementById("input-receipt-date").value;
+
+        if (date){
+            formData.append("receiptDate", invertDateFormat(date));
+        }
 
         API.post('objects', { body: formData })
         .then(() => {
