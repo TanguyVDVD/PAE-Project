@@ -29,60 +29,60 @@ function renderAdminOffersPage() {
 
   div.innerHTML = `
     <h2>Propositions</h2>
-<form class="input-group">
-  <div class="row g-3 justify-content-md-center">
-    <div class="col-md-12">
-      <input type="text" class="form-control" id="input-text" placeholder="Rechercher..." />
-    </div>
-    <div class="col-md-3">
-      <div class="input-group">
-        <span class="input-group-text bg-white">Prix minimum</span>
-        <input type="number" class="form-control form-filter" id="input-minPrice" placeholder="" />
+    <form class="input-group">
+      <div class="row g-3 justify-content-md-center">
+        <div class="col-md-12">
+          <input type="text" class="form-control" id="input-text" placeholder="Rechercher..." />
+        </div>
+        <div class="col-md-3">
+          <div class="input-group">
+            <span class="input-group-text bg-white">Prix minimum</span>
+            <input type="number" class="form-control form-filter" id="input-minPrice" placeholder="" />
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="input-group">
+            <span class="input-group-text bg-white">Prix maximum</span>
+            <input type="number" class="form-control form-filter" id="input-maxPrice" placeholder="" />
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="input-group">
+            <span class="input-group-text bg-white">Date de réception</span>
+            <input type="text" class="form-control form-filter" id="input-receipt-date" placeholder="Date de réception"/>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="mx-0 dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="type-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+              Types d'objets
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="type-dropdown">
+              <li><label class="dropdown-item"><input type="checkbox" value="Meuble" class="form-filter"> Meuble</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="Table" class="form-filter"> Table</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="Chaise" class="form-filter"> Chaise</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="Fauteuil" class="form-filter"> Fauteuil</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="Lit/sommier" class="form-filter"> Lit/sommier</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="Matelas" class="form-filter"> Matelas</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="Couverture" class="form-filter"> Couverture</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="Materiel de cuisine" class="form-filter"> Materiel de cuisine</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="Vaisselle" class="form-filter"> Vaisselle</label></li>
+            </ul>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="col-md-3">
-      <div class="input-group">
-        <span class="input-group-text bg-white">Prix maximum</span>
-        <input type="number" class="form-control form-filter" id="input-maxPrice" placeholder="" />
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="input-group">
-        <span class="input-group-text bg-white">Date de réception</span>
-        <input type="text" class="form-control form-filter" id="input-receipt-date" placeholder="Date de réception"/>
-      </div>
-    </div>
-    <div class="col-md-2">
-      <div class="mx-0 dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="type-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
-          Types d'objets
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="type-dropdown">
-          <li><label class="dropdown-item"><input type="checkbox" value="Meuble" class="form-filter"> Meuble</label></li>
-          <li><label class="dropdown-item"><input type="checkbox" value="Table" class="form-filter"> Table</label></li>
-          <li><label class="dropdown-item"><input type="checkbox" value="Chaise" class="form-filter"> Chaise</label></li>
-          <li><label class="dropdown-item"><input type="checkbox" value="Fauteuil" class="form-filter"> Fauteuil</label></li>
-          <li><label class="dropdown-item"><input type="checkbox" value="Lit/sommier" class="form-filter"> Lit/sommier</label></li>
-          <li><label class="dropdown-item"><input type="checkbox" value="Matelas" class="form-filter"> Matelas</label></li>
-          <li><label class="dropdown-item"><input type="checkbox" value="Couverture" class="form-filter"> Couverture</label></li>
-          <li><label class="dropdown-item"><input type="checkbox" value="Materiel de cuisine" class="form-filter"> Materiel de cuisine</label></li>
-          <li><label class="dropdown-item"><input type="checkbox" value="Vaisselle" class="form-filter"> Vaisselle</label></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</form>
-<div id="offers-list"></div>
+    </form>
+    <div id="offers-list"></div>
   `;
 
   div.querySelector('form').addEventListener('keyup', (e) => {
     e.preventDefault();
 
-    const search = document.getElementById('input-text').value; // Get search filter value
-    const minPrice = document.getElementById('input-minPrice').value; // Get min price filter value
-    const maxPrice = document.getElementById('input-maxPrice').value; // Get max price filter value
-    const date = document.getElementById('input-receipt-date').value; // Get date filter value
-    const typeFilters = [...document.querySelectorAll('.type-filter:checked')].map((cb) => cb.value); // Get type filter values
+    const search = document.getElementById('input-text').value;
+    const minPrice = document.getElementById('input-minPrice').value;
+    const maxPrice = document.getElementById('input-maxPrice').value;
+    const date = document.getElementById('input-receipt-date').value;
+    const typeFilters = [...document.querySelectorAll('.type-filter:checked')].map((cb) => cb.value);
 
     renderOffers(minPrice, maxPrice, date, search, typeFilters);
   });
@@ -90,11 +90,11 @@ function renderAdminOffersPage() {
   const checkboxes = div.querySelectorAll('.form-filter');
   checkboxes.forEach((checkbox) => {
     checkbox.addEventListener('change', () => {
-      const search = document.getElementById('input-text').value; // Get search filter value
-      const minPrice = document.getElementById('input-minPrice').value; // Get min price filter value
-      const maxPrice = document.getElementById('input-maxPrice').value; // Get max price filter value
-      const date = document.getElementById('input-receipt-date').value; // Get date filter value
-      const typeFilter = [...document.querySelectorAll('.type-filter:checked')].map((cb) => cb.value); // Get type filter values
+      const search = document.getElementById('input-text').value;
+      const minPrice = document.getElementById('input-minPrice').value;
+      const maxPrice = document.getElementById('input-maxPrice').value;
+      const date = document.getElementById('input-receipt-date').value;
+      const typeFilter = [...document.querySelectorAll('.type-filter:checked')].map((cb) => cb.value);
 
       renderOffers(minPrice, maxPrice, date, search, typeFilter);
     });
@@ -202,8 +202,8 @@ async function renderOffers(minPrice, maxPrice, date, query = '', typeFilter = [
         </div>
       `;
 
-    setUserOrPhoneNumber(document, 'div-user', offers);
-    setRemainingTime('div-remaining-time', offers);
+    setUserOrPhoneNumber(document, 'div-user', offersFiltered);
+    setRemainingTime('div-remaining-time', offersFiltered);
 
     offersList.querySelectorAll('a[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
