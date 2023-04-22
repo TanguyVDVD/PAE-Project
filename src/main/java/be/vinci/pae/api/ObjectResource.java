@@ -3,6 +3,7 @@ package be.vinci.pae.api;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeHelper;
 import be.vinci.pae.api.filters.AuthorizeManager;
+import be.vinci.pae.api.filters.GetUser;
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.domain.user.User;
@@ -299,6 +300,7 @@ public class ObjectResource {
    * @param photo       the photo of the user
    * @return an object when added
    */
+  @GetUser
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
   @POST
