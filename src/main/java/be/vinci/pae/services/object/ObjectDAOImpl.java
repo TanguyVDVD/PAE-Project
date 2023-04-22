@@ -98,7 +98,8 @@ public class ObjectDAOImpl implements ObjectDAO {
   @Override
   public List<ObjectDTO> getAll(String query) {
     String request = "SELECT * FROM pae.objects o, pae.object_types ot "
-        + "WHERE o.id_object_type = ot.id_object_type AND LOWER(o.description || ' ' || ot.label) "
+        + "WHERE o.id_object_type = ot.id_object_type "
+        + "AND LOWER(o.description || ' ' || ot.label) "
         + "LIKE CONCAT('%', ?, '%') ORDER BY id_object;";
 
     ArrayList<ObjectDTO> objects = new ArrayList<>();
@@ -114,7 +115,6 @@ public class ObjectDAOImpl implements ObjectDAO {
     } catch (SQLException e) {
       throw new DALException("Error getting all objects", e);
     }
-
     return objects;
   }
 

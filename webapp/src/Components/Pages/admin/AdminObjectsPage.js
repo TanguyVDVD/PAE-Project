@@ -28,7 +28,22 @@ function renderAdminObjectsPage() {
   div.innerHTML = `
     <h2>Objets</h2>
     <form class="input-group">
-      <input type="text" class="form-control border-end-0" placeholder="Rechercher..." />
+      <input type="text" class="form-control border-end-0" id="input-text" placeholder="Rechercher..." />
+      <input type="number" class="form-control mx-2" id="input-minPrice" placeholder="Prix minimum" />
+      <input type="number" class="form-control mx-2" id="input-maxPrice" placeholder="Prix maximum" />
+      <select multiple class="form-select border-start-0" id="input-type">
+        <option value="">Tous les types</option>
+        <option value="Meuble">Meuble</option>
+        <option value="Table">Table</option>
+        <option value="Chaise">Chaise</option>
+        <option value="Fauteuil">Fauteuil</option>
+        <option value="Lit/sommier">Lit/sommier</option>
+        <option value="Matelas">Matelas</option>
+        <option value="Couverture">Couverture</option>
+        <option value="Materiel de cuisine">Materiel de cuisine</option>
+        <option value="Vaisselle">Vaisselle</option>
+      </select>
+      
       <button class="btn border" type="submit">
         <i class="bi bi-search"></i>
       </button>
@@ -39,14 +54,19 @@ function renderAdminObjectsPage() {
   div.querySelector('form').addEventListener('keyup', (e) => {
     e.preventDefault();
 
-    const search = e.target.value;
-    renderObjects(search);
+    const search = document.getElementById('input-text').value; // Get search filter value
+    const minPrice = document.getElementById('input-minPrice').value; // Get min price filter value
+    const maxPrice = document.getElementById('input-maxPrice').value; // Get max price filter value
+    const typeFilter = document.getElementById('input-type').value; // Get type filter value
+    // eslint-disable no-console
+
+    renderObjects(search, minPrice, maxPrice, typeFilter);
   });
 
   main.appendChild(div);
 }
 
-async function renderObjects(query = '') {
+async function renderObjects(query = '',minPrice = -1 , maxPrice = 10, typeFilter = '') {
   const objectslist = document.getElementById('objects-list');
 
   objectslist.innerHTML = `
@@ -55,12 +75,17 @@ async function renderObjects(query = '') {
     </div>
   `;
 
+  console.log("query", query);
+  console.log("min", minPrice);
+  console.log("max", maxPrice);
+  console.log("type", typeFilter);
+
   API.get(`objects?query=${encodeURIComponent(query)}`).then((objects) => {
     document.getElementById('objects-list').innerHTML = `
         <div class="container mt-5 mb-5">
             <div class="d-flex justify-content-center row">
                 <div class="col-md-10">
-                    ${objects
+                    ${objects.filter((object) => object.price >= minPrice && object.price <= maxPrice)
                       .map(
                         (object) => `
                         <div class="row p-2 bg-white border rounded">

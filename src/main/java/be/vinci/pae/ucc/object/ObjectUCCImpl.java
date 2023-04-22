@@ -30,7 +30,6 @@ public class ObjectUCCImpl implements ObjectUCC {
    */
   @Override
   public List<ObjectDTO> getObjects(String query) {
-
     myDalServices.startTransaction();
     try {
       return myObjectDAO.getAll(query);
