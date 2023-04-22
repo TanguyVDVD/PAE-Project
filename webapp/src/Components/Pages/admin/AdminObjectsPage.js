@@ -5,14 +5,8 @@ import { getAuthenticatedUser } from '../../../utils/auths';
 import {clearPage, renderError} from '../../../utils/render';
 import API from '../../../utils/api';
 import {invertDateFormat, subtractDates} from '../../../utils/dates';
-import {setReceiptDate, setUserOrPhoneNumber} from '../../../utils/objects';
+import {encodingHelp, setReceiptDate, setUserOrPhoneNumber} from '../../../utils/objects';
 
-import {subtractDates} from '../../../utils/dates';
-import {
-  encodingHelp,
-  setReceiptDate,
-  setUserOrPhoneNumber
-} from '../../../utils/objects';
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
 
 const AdminObjectsPage = () => {
@@ -81,31 +75,31 @@ function renderAdminObjectsPage() {
     </form>
     <div id="objects-list"></div>
   `;
+  /*
+    div.querySelector('form').addEventListener('keyup', (e) => {
+      e.preventDefault();
 
-  div.querySelector('form').addEventListener('keyup', (e) => {
-    e.preventDefault();
-
-    const search = document.getElementById('input-text').value;
-    const minPrice = document.getElementById('input-minPrice').value;
-    const maxPrice = document.getElementById('input-maxPrice').value;
-    const date = document.getElementById('input-receipt-date').value;
-    const typeFilters = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
-
-    renderObjects(minPrice, maxPrice, date, search, typeFilters);
-  });
-
-  div.querySelectorAll('.form-filter').forEach((checkbox) => {
-    checkbox.addEventListener('change', () => {
       const search = document.getElementById('input-text').value;
       const minPrice = document.getElementById('input-minPrice').value;
       const maxPrice = document.getElementById('input-maxPrice').value;
       const date = document.getElementById('input-receipt-date').value;
-      const typeFilter = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
+      const typeFilters = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
 
-      renderObjects(minPrice, maxPrice, date, search, typeFilter);
+      renderObjects(minPrice, maxPrice, date, search, typeFilters);
     });
-  });
 
+    div.querySelectorAll('.form-filter').forEach((checkbox) => {
+      checkbox.addEventListener('change', () => {
+        const search = document.getElementById('input-text').value;
+        const minPrice = document.getElementById('input-minPrice').value;
+        const maxPrice = document.getElementById('input-maxPrice').value;
+        const date = document.getElementById('input-receipt-date').value;
+        const typeFilter = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
+
+        renderObjects(minPrice, maxPrice, date, search, typeFilter);
+      });
+    });
+  */
   main.appendChild(div);
 
   const objectslist = document.getElementById('objects-list');
@@ -115,6 +109,7 @@ function renderAdminObjectsPage() {
       <div class="spinner-border" role="status"></div>
     </div>
   `;
+
   const enableDates = [];
 
   API.get('/availabilities').then((availabilities) => {
@@ -146,12 +141,14 @@ function renderAdminObjectsPage() {
 
   div.querySelector('form').addEventListener('keyup', (e) => {
     e.preventDefault();
-    const search = e.target.value;
+    const search = document.getElementById('search-bar').value;
     const minPrice = document.getElementById('input-minPrice').value;
     const maxPrice = document.getElementById('input-maxPrice').value;
     const date = document.getElementById('input-receipt-date').value;
     const type = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
+
     e.currentTarget.dispatchEvent(new Event('submit'));
+
     API.get(`objects?query=${encodeURIComponent(search)}`)
     .then((objects) => {
       if(objects !== null){
@@ -163,11 +160,34 @@ function renderAdminObjectsPage() {
     });
   });
 
+  div.querySelectorAll('.form-filter').forEach((e) => {
+    e.addEventListener('change', () => {
+
+    const search = document.getElementById('search-bar').value;
+    const minPrice = document.getElementById('input-minPrice').value;
+    const maxPrice = document.getElementById('input-maxPrice').value;
+    const date = document.getElementById('input-receipt-date').value;
+    const type = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
+
+    e.dispatchEvent(new Event('submit'));
+
+    API.get(`objects?query=${encodeURIComponent(search)}`)
+      .then((objects) => {
+        if(objects !== null){
+          renderObjects(filterObjects(objects, minPrice, maxPrice, date, type));
+        }
+      })
+      .catch((err) => {
+        renderError(err.message);
+      });
+    });
+  });
+
 
   div.querySelector('form').addEventListener('submit', (e) => {
     e.preventDefault();
 
-    const search = e.target.querySelector('input').value;
+    const search = document.getElementById('search-bar').value;
     const minPrice = document.getElementById('input-minPrice').value;
     const maxPrice = document.getElementById('input-maxPrice').value;
     const date = document.getElementById('input-receipt-date').value;
@@ -232,32 +252,32 @@ async function renderObjects(objectsFiltered) {
                           </div>
                       </div>
                       `
-                  ,).join('')}
+      ,).join('')}
               </div>                     
           </div>
       </div>
     `;
 
-    setReceiptDate(document, 'div-receipt-date', objectsFiltered);
-    setUserOrPhoneNumber(document, 'div-user', objectsFiltered);
-    setPriceOrTimeRemaining('div-price-time-remaining', objectsFiltered);
-    setStateColor('div-state', objectsFiltered);
-    setButton('div-button', objectsFiltered);
+  setReceiptDate(document, 'div-receipt-date', objectsFiltered);
+  setUserOrPhoneNumber(document, 'div-user', objectsFiltered);
+  setPriceOrTimeRemaining('div-price-time-remaining', objectsFiltered);
+  setStateColor('div-state', objectsFiltered);
+  setButton('div-button', objectsFiltered);
 
-    objectslist.querySelectorAll('a[data-id]').forEach((link) => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        Navigate(`/user/${e.target.dataset.id}`);
-      });
+  objectslist.querySelectorAll('a[data-id]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      Navigate(`/user/${e.target.dataset.id}`);
     });
+  });
 
-    objectslist.querySelectorAll('button[data-id]').forEach((link) => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        Navigate(`/object/${e.target.dataset.id}`);
-      });
+  objectslist.querySelectorAll('button[data-id]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      Navigate(`/object/${e.target.dataset.id}`);
     });
-  }
+  });
+}
 
 function setPriceOrTimeRemaining(className, objects) {
   const elements = document.getElementsByClassName(className);
@@ -347,7 +367,7 @@ function renderDatePicker(datePickerId, availabilities) {
   });
 }
 
-function filterObjects(objects, minPrice, maxPrice, types){
+function filterObjects(objects, minPrice, date,maxPrice, types){
   return objects.filter((object) => {
     if (minPrice && object.price < minPrice) {
       return false;

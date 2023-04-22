@@ -5,9 +5,7 @@ import { getAuthenticatedUser } from '../../../utils/auths';
 import { clearPage, renderError } from '../../../utils/render';
 import API from '../../../utils/api';
 import { dateStringtoGoodFormat, subtractDates, invertDateFormat } from '../../../utils/dates';
-import { setUserOrPhoneNumber } from '../../../utils/objects';
-import { dateStringtoGoodFormat, subtractDates } from '../../../utils/dates';
-import {encodingHelp, setUserOrPhoneNumber} from '../../../utils/objects';
+import { encodingHelp, setUserOrPhoneNumber } from '../../../utils/objects';
 
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
 
@@ -295,7 +293,7 @@ function renderDatePicker(datePickerId, availabilities) {
   });
 }
 
-function filterObjects(objects, minPrice, maxPrice, date, type){
+function filterObjects(offers, minPrice, maxPrice, date, type){
   return  offers.filter((object) => {
     if (minPrice && object.price < minPrice) {
       return false;
