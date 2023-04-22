@@ -8,6 +8,8 @@ public class NotificationImpl implements Notification {
 
   private int id;
   private String notificationText;
+  private Boolean isRead;
+  private int userId;
   private int objectId;
 
 
@@ -52,12 +54,52 @@ public class NotificationImpl implements Notification {
   }
 
   /**
+   * Returns a boolean value indicating whether the notification has been read.
+   *
+   * @return true if the notification has been read, false otherwise.
+   */
+  @Override
+  public Boolean getRead() {
+    return isRead;
+  }
+
+  /**
+   * Sets the read status of the notification.
+   *
+   * @param isRead the boolean value to set the read status of the notification
+   */
+  @Override
+  public void setRead(Boolean isRead) {
+    this.isRead = isRead;
+  }
+
+  /**
+   * Returns the ID of the user who receive the notification.
+   *
+   * @return the ID of the user who receive the notification
+   */
+  @Override
+  public int getIdUser() {
+    return userId;
+  }
+
+  /**
+   * Sets the ID of the user who receive the notification.
+   *
+   * @param idUser the ID of the user who reveive the notification
+   */
+  @Override
+  public void setIdUser(int idUser) {
+    this.userId = idUser;
+  }
+
+  /**
    * Get the ID of the object.
    *
    * @return The ID of the object
    */
   @Override
-  public int getIDObject() {
+  public int getIdObject() {
     return objectId;
   }
 

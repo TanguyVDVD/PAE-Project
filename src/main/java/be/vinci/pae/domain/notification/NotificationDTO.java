@@ -38,11 +38,39 @@ public interface NotificationDTO {
   void setNotificationText(String notificationText);
 
   /**
+   * Returns a boolean value indicating whether the notification has been read.
+   *
+   * @return true if the notification has been read, false otherwise.
+   */
+  Boolean getRead();
+
+  /**
+   * Sets the read status of the notification.
+   *
+   * @param isRead the boolean value to set the read status of the notification
+   */
+  void setRead(Boolean isRead);
+
+  /**
+   * Returns the ID of the user who receive the notification.
+   *
+   * @return the ID of the user who receive the notification
+   */
+  int getIdUser();
+
+  /**
+   * Sets the ID of the user who receive the notification.
+   *
+   * @param idUser the ID of the user who reveive the notification
+   */
+  void setIdUser(int idUser);
+
+  /**
    * Get the ID of the object.
    *
    * @return The ID of the object
    */
-  int getIDObject();
+  int getIdObject();
 
   /**
    * Set the ID of the object.

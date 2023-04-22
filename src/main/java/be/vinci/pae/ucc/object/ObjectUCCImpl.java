@@ -4,6 +4,7 @@ import be.vinci.pae.domain.object.Object;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.object.ObjectDAO;
+import be.vinci.pae.ucc.notification.NotificationUCC;
 import jakarta.inject.Inject;
 import java.io.File;
 import java.io.InputStream;
@@ -21,6 +22,9 @@ public class ObjectUCCImpl implements ObjectUCC {
 
   @Inject
   private DALServices myDalServices;
+
+  @Inject
+  private NotificationUCC myNotificationUCC;
 
   /**
    * Returns a list of all objects.
@@ -126,6 +130,11 @@ public class ObjectUCCImpl implements ObjectUCC {
       if (object.isStatusAlreadyDefined(status)) {
         return null;
       }
+
+      System.out.println("////////////" + object.getUser().getId());
+
+      myNotificationUCC.createAcceptedObjectNotification(id, object.getUser().getId());
+
       return myObjectDAO.setStatusToAccepted(id, LocalDate.now(), versionNumber);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();

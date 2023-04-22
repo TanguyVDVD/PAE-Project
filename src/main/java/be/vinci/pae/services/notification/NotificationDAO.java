@@ -16,4 +16,8 @@ public interface NotificationDAO {
    */
   List<NotificationDTO> getNotificationsByUserID(int id);
 
+  NotificationDTO createAcceptedObjectNotification(NotificationDTO notificationDTO);
+
+  NotificationDTO createAcceptedObjectUserNotification(NotificationDTO notificationDTO);
+
 }

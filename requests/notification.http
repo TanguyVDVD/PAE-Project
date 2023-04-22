@@ -1,0 +1,16 @@
+### Login as user/helper
+POST {{baseUrl}}/users/login
+Content-Type: application/json
+
+{
+  "email": "constantine@ressourcerie.be",
+  "password": "password"
+}
+
+> {%
+  client.global.set("helperToken", response.body.token);
+%}
+
+### Get all notifications
+GET {{baseUrl}}/notifications/user/2
+Authorization: {{helperToken}}
