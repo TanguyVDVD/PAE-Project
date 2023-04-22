@@ -90,7 +90,7 @@ function renderHomePage() {
     e.target.form.dispatchEvent(new Event('submit'));
   });
 
-  API.get('/objectsTypes').then((response) => {
+  API.get('/objectTypes').then((response) => {
     filterSelect.innerHTML += `
       ${response
         .map(
@@ -117,7 +117,7 @@ function renderHomePage() {
 
   const objectsCarousel = document.getElementById('objects-carousel');
   objectsCarousel.replaceChildren(renderObjectsCarousel([null, null, null, null]));
-  API.get('/objects/public').then((response) => {
+  API.get('objects/public').then((response) => {
     objectsCarousel.replaceChildren(renderObjectsCarousel(response));
   });
 
