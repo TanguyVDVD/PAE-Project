@@ -1,10 +1,10 @@
+import Autocomplete from "bootstrap5-autocomplete";
 import Navigate from '../../Router/Navigate';
 import { getAuthenticatedUser } from '../../../utils/auths';
-import { clearPage } from '../../../utils/render';
+import {clearPage, renderError} from '../../../utils/render';
 import { formatPhoneNumber } from '../../../utils/format';
 import { dateStringtoGoodFormat } from '../../../utils/dates';
 import API from '../../../utils/api';
-
 import noProfilePicture from '../../../img/no_profile_picture.svg';
 
 let searchQuery = '';
@@ -32,13 +32,35 @@ function renderAdminUsersPage() {
   div.innerHTML = `
     <h2>Utilisateurs</h2>
     <form class="input-group">
-      <input type="text" class="form-control border-end-0" placeholder="Rechercher..." />
+      <input type="text" class="form-control autocomplete border-end-0" placeholder="Rechercher..." />
       <button class="btn border" type="submit">
         <i class="bi bi-search"></i>
       </button>
     </form>
     <div id="users-table" class="table-responsive"></div>
   `;
+
+  const fullNames = [];
+
+  API.get(`users?query=${encodeURIComponent("")}`)
+  .then((users) => {
+    if(users !== null){
+      users.forEach((user) => {
+        fullNames.push(user.firstName.concat(" ", user.lastName));
+      });
+    }
+
+    Autocomplete.init("input.autocomplete", {
+      items: fullNames,
+      fullWidth: true,
+      fixed: true,
+      autoselectFirst: false,
+      updateOnSelect: true,
+    });
+  })
+  .catch((err) => {
+    renderError(err.message);
+  });
 
   div.querySelector('form').addEventListener('submit', (e) => {
     e.preventDefault();
