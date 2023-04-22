@@ -11,16 +11,16 @@ CREATE SCHEMA pae;
 
 CREATE TABLE pae.users
 (
-    id_user       SERIAL PRIMARY KEY,
+    id_user        SERIAL PRIMARY KEY,
     version_number INTEGER NOT NULL,
-    last_name     VARCHAR(50)  NOT NULL,
-    first_name    VARCHAR(50)  NOT NULL,
-    phone_number  VARCHAR(12)  NOT NULL,
-    email         VARCHAR(100) NOT NULL,
-    password      VARCHAR(100) NOT NULL,
-    photo         BOOLEAN      NOT NULL,
-    register_date DATE         NOT NULL,
-    role          VARCHAR(12)
+    last_name      VARCHAR(50)  NOT NULL,
+    first_name     VARCHAR(50)  NOT NULL,
+    phone_number   VARCHAR(12)  NOT NULL,
+    email          VARCHAR(100) NOT NULL,
+    password       VARCHAR(100) NOT NULL,
+    photo          BOOLEAN      NOT NULL,
+    register_date  DATE         NOT NULL,
+    role           VARCHAR(12)
 );
 
 CREATE TABLE pae.object_types
@@ -78,10 +78,10 @@ CREATE TABLE pae.users_notifications
 --------------- SEED ------------------
 
 
-INSERT INTO pae.users VALUES (DEFAULT, 'Riez', 'Christophe', '0498183040', 'riez@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', true, '2023-02-01', 'responsable');
-INSERT INTO pae.users VALUES (DEFAULT, 'Vdv', 'Constantine', '0498183041', 'constantine@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', true, '2023-02-01', 'aidant');
-INSERT INTO pae.users VALUES (DEFAULT, 'lsh', 'Bernard', '0498183042', 'bernard@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', true, '2023-02-01', 'aidant');
-INSERT INTO pae.users VALUES (DEFAULT, 'bdh', 'Lise', '0498183043', 'lise@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', true, '2023-02-01', null);
+INSERT INTO pae.users VALUES (DEFAULT, 1, 'Riez', 'Christophe', '0498183040', 'riez@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', true, '2023-02-01', 'responsable');
+INSERT INTO pae.users VALUES (DEFAULT, 1, 'Vdv', 'Constantine', '0498183041', 'constantine@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', true, '2023-02-01', 'aidant');
+INSERT INTO pae.users VALUES (DEFAULT, 1, 'lsh', 'Bernard', '0498183042', 'bernard@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', true, '2023-02-01', 'aidant');
+INSERT INTO pae.users VALUES (DEFAULT, 1, 'bdh', 'Lise', '0498183043', 'lise@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', true, '2023-02-01', null);
 
 INSERT INTO pae.object_types VALUES (DEFAULT,'Meuble');
 INSERT INTO pae.object_types VALUES (DEFAULT,'Table');
