@@ -44,9 +44,7 @@ function renderObjectPage(object, objectTypes) {
         <div class="row gx-6 gx-lg-6 align-items-top">
           <div class="col-md-4">
             <img class="card-img-top mb-5 mb-md-0 object-fit-cover" 
-            src="${
-              object.photo ? API.getEndpoint(`objects/${object.id}/photo`) : noFurniturePhoto
-            }"
+            src="${API.getEndpoint(`objects/${object.id}/photo`)}"
             onerror="this.src='${noFurniturePhoto}'"
             width="400"
             height="400"
