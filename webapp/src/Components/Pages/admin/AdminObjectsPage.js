@@ -87,14 +87,13 @@ function renderAdminObjectsPage() {
     renderObjects(minPrice, maxPrice, date, search, typeFilters);
   });
 
-  const checkboxes = div.querySelectorAll('.form-filter');
-  checkboxes.forEach((checkbox) => {
+  div.querySelectorAll('.form-filter').forEach((checkbox) => {
     checkbox.addEventListener('change', () => {
       const search = document.getElementById('input-text').value;
       const minPrice = document.getElementById('input-minPrice').value;
       const maxPrice = document.getElementById('input-maxPrice').value;
       const date = document.getElementById('input-receipt-date').value;
-      const typeFilter = [...document.querySelectorAll('.type-filter:checked')].map((cb) => cb.value);
+      const typeFilter = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
 
       renderObjects(minPrice, maxPrice, date, search, typeFilter);
     });
