@@ -8,9 +8,6 @@ import {
   setReceiptDate,
   setUserOrPhoneNumber
 } from '../../../utils/objects';
-import { subtractDates } from '../../../utils/dates';
-import { setReceiptDate, setUserOrPhoneNumber } from '../../../utils/objects';
-
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
 
 const AdminObjectsPage = () => {

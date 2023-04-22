@@ -17,7 +17,6 @@ const AdminOffersPage = () => {
 
   clearPage();
   renderAdminOffersPage();
-  renderOffers();
 };
 
 function renderAdminOffersPage() {
