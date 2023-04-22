@@ -31,19 +31,22 @@ function renderAdminObjectsPage() {
       <input type="text" class="form-control border-end-0" id="input-text" placeholder="Rechercher..." />
       <input type="number" class="form-control mx-2" id="input-minPrice" placeholder="Prix minimum" />
       <input type="number" class="form-control mx-2" id="input-maxPrice" placeholder="Prix maximum" />
-      <select multiple class="form-select border-start-0" id="input-type">
-        <option value="">Tous les types</option>
-        <option value="Meuble">Meuble</option>
-        <option value="Table">Table</option>
-        <option value="Chaise">Chaise</option>
-        <option value="Fauteuil">Fauteuil</option>
-        <option value="Lit/sommier">Lit/sommier</option>
-        <option value="Matelas">Matelas</option>
-        <option value="Couverture">Couverture</option>
-        <option value="Materiel de cuisine">Materiel de cuisine</option>
-        <option value="Vaisselle">Vaisselle</option>
-      </select>
-      
+      <div class="form-check dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="type-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          Tous les types
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="type-dropdown">
+          <li><label class="dropdown-item"><input type="checkbox" value="Meuble" class="type-filter"> Meuble</label></li>
+          <li><label class="dropdown-item"><input type="checkbox" value="Table" class="type-filter"> Table</label></li>
+          <li><label class="dropdown-item"><input type="checkbox" value="Chaise" class="type-filter"> Chaise</label></li>
+          <li><label class="dropdown-item"><input type="checkbox" value="Fauteuil" class="type-filter"> Fauteuil</label></li>
+          <li><label class="dropdown-item"><input type="checkbox" value="Lit/sommier" class="type-filter"> Lit/sommier</label></li>
+          <li><label class="dropdown-item"><input type="checkbox" value="Matelas" class="type-filter"> Matelas</label></li>
+          <li><label class="dropdown-item"><input type="checkbox" value="Couverture" class="type-filter"> Couverture</label></li>
+          <li><label class="dropdown-item"><input type="checkbox" value="Materiel de cuisine" class="type-filter"> Materiel de cuisine</label></li>
+          <li><label class="dropdown-item"><input type="checkbox" value="Vaisselle" class="type-filter"> Vaisselle</label></li>
+        </ul>
+      </div>
       <button class="btn border" type="submit">
         <i class="bi bi-search"></i>
       </button>
@@ -57,16 +60,27 @@ function renderAdminObjectsPage() {
     const search = document.getElementById('input-text').value; // Get search filter value
     const minPrice = document.getElementById('input-minPrice').value; // Get min price filter value
     const maxPrice = document.getElementById('input-maxPrice').value; // Get max price filter value
-    const typeFilter = document.getElementById('input-type').value; // Get type filter value
-    // eslint-disable no-console
+    const typeFilters = [...document.querySelectorAll('.type-filter:checked')].map((cb) => cb.value); // Get type filter values
 
-    renderObjects(search, minPrice, maxPrice, typeFilter);
+    renderObjects(minPrice, maxPrice, search, typeFilters);
+  });
+
+  const checkboxes = div.querySelectorAll('.type-filter');
+  checkboxes.forEach((checkbox) => {
+    checkbox.addEventListener('change', () => {
+      const search = document.getElementById('input-text').value; // Get search filter value
+      const minPrice = document.getElementById('input-minPrice').value; // Get min price filter value
+      const maxPrice = document.getElementById('input-maxPrice').value; // Get max price filter value
+      const typeFilters = [...document.querySelectorAll('.type-filter:checked')].map((cb) => cb.value); // Get type filter values
+
+      renderObjects(minPrice, maxPrice, search, typeFilters);
+    });
   });
 
   main.appendChild(div);
 }
 
-async function renderObjects(query = '',minPrice = -1 , maxPrice = 10, typeFilter = '') {
+async function renderObjects(minPrice , maxPrice,query = '', typeFilter = []) {
   const objectslist = document.getElementById('objects-list');
 
   objectslist.innerHTML = `
@@ -75,17 +89,33 @@ async function renderObjects(query = '',minPrice = -1 , maxPrice = 10, typeFilte
     </div>
   `;
 
-  console.log("query", query);
   console.log("min", minPrice);
   console.log("max", maxPrice);
   console.log("type", typeFilter);
 
   API.get(`objects?query=${encodeURIComponent(query)}`).then((objects) => {
+    const objectsF = objects.filter((object) => {
+      if (minPrice && object.price <= minPrice) {
+        return false;
+      }
+
+      // Filter by maxPrice if provided
+      if (maxPrice && object.price >= maxPrice) {
+        return false;
+      }
+
+      // Filter by type if provided
+      if (typeFilter.length > 0 && !typeFilter.includes(object.objectType)) {
+        return false;
+      }
+
+      return true;
+    });
     document.getElementById('objects-list').innerHTML = `
         <div class="container mt-5 mb-5">
             <div class="d-flex justify-content-center row">
                 <div class="col-md-10">
-                    ${objects.filter((object) => object.price >= minPrice && object.price <= maxPrice)
+                    ${objectsF
                       .map(
                         (object) => `
                         <div class="row p-2 bg-white border rounded">
@@ -136,11 +166,11 @@ async function renderObjects(query = '',minPrice = -1 , maxPrice = 10, typeFilte
         </div>
       `;
 
-    setReceiptDate(document, 'div-receipt-date', objects);
-    setUserOrPhoneNumber(document, 'div-user', objects);
-    setPriceOrTimeRemaining('div-price-time-remaining', objects);
-    setStateColor('div-state', objects);
-    setButton('div-button', objects);
+    setReceiptDate(document, 'div-receipt-date', objectsF);
+    setUserOrPhoneNumber(document, 'div-user', objectsF);
+    setPriceOrTimeRemaining('div-price-time-remaining', objectsF);
+    setStateColor('div-state', objectsF);
+    setButton('div-button', objectsF);
 
     objectslist.querySelectorAll('a[data-id]').forEach((link) => {
       link.addEventListener('click', (e) => {
