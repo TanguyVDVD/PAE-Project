@@ -1,6 +1,5 @@
 import Autocomplete from "bootstrap5-autocomplete";
 import Navigate from '../Components/Router/Navigate';
-import API from './api';
 import { dateStringtoGoodFormat } from './dates';
 import { formatPhoneNumber } from './format';
 import API from "./api";
@@ -94,10 +93,6 @@ function encodingHelp(descriptions){
   });
 }
 
-export {
-    setUserOrPhoneNumber,
-    setReceiptDate,
-    encodingHelp,
 function createObjectCard(_object) {
   const randomPlaceHolder = () => {
     const random = Math.floor(Math.random() * 3);
