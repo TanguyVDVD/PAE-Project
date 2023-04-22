@@ -1,9 +1,9 @@
 import Navigate from '../../Router/Navigate';
 import { getAuthenticatedUser } from '../../../utils/auths';
-import { clearPage } from '../../../utils/render';
+import {clearPage, renderError} from '../../../utils/render';
 import API from '../../../utils/api';
 import { dateStringtoGoodFormat, subtractDates } from '../../../utils/dates';
-import { setUserOrPhoneNumber } from '../../../utils/objects';
+import {encodingHelp, setUserOrPhoneNumber} from '../../../utils/objects';
 
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
 
@@ -28,7 +28,7 @@ function renderAdminOffersPage() {
   div.innerHTML = `
     <h2>Propositions</h2>
     <form class="input-group">
-      <input type="text" class="form-control border-end-0" placeholder="Rechercher..." />
+      <input type="text" class="form-control autocomplete border-end-0" id="search-bar" placeholder="Rechercher..."/>
       <button class="btn border" type="submit">
         <i class="bi bi-search"></i>
       </button>
@@ -36,17 +36,8 @@ function renderAdminOffersPage() {
     <div id="offers-list"></div>
   `;
 
-  div.querySelector('form').addEventListener('keyup', (e) => {
-    e.preventDefault();
-
-    const search = e.target.value;
-    renderOffers(search);
-  });
-
   main.appendChild(div);
-}
 
-async function renderOffers(query = '') {
   const offersList = document.getElementById('offers-list');
 
   offersList.innerHTML = `
@@ -55,77 +46,112 @@ async function renderOffers(query = '') {
     </div>
   `;
 
-  API.get(`objects/offers?query=${encodeURIComponent(query)}`).then((offers) => {
-    document.getElementById('offers-list').innerHTML = `
-        <div class="container mt-5 mb-5">
-            <div class="d-flex justify-content-center row">
-                <div class="col-md-10">
-                    ${offers
-                      .map(
-                        (offer) => `
-                        <div class="row p-2 bg-white border rounded">
-                            <div class="col-md-3 mt-1">
-                                <img 
-                                    class="object-fit-cover rounded product-image" 
-                                    src="${API.getEndpoint(`objects/${offer.id}/photo`)}"
-                                    onerror="this.src='${noFurniturePhoto}'"
-                                    width="180"
-                                    height="180"
-                                    alt="${offer.objectType}">
-                            </div>
-                            <div class="col-md-6 mt-1">
-                                <h5>${offer.objectType}</h5>
-                               
-                                <div class="mt-1 mb-1 spec-1">
-                                    <h6>${offer.description}</h6>
-                                </div>
-                                <br>
-                                <p>
-                                    À récupérer le ${dateStringtoGoodFormat(offer.receiptDate)} ${
-                          offer.timeSlot === 'matin'
-                            ? ' au '.concat(offer.timeSlot)
-                            : " l'".concat(offer.timeSlot)
-                        }
-                                </p>
-                                
-                                <div class="div-user">
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-3 border-left mt-1 d-flex flex-column align-content-center justify-content-between">                                
-                                <div class="div-remaining-time">
-                                </div>
-                                                                
-                                <div class="d-flex flex-column mb-4 div-button">
-                                    <button class="btn btn-outline-primary btn-sm button-respond" type="button" data-id="${
-                                      offer.id
-                                    }">Répondre</button>
-                                </div>
-                            </div>
-                        </div>
-                `,
-                      )
-                      .join('')}
-                </div>                     
-            </div>
-        </div>
-      `;
+  const descriptions = [];
 
-    setUserOrPhoneNumber(document, 'div-user', offers);
-    setRemainingTime('div-remaining-time', offers);
+  API.get(`objects/offers?query=${encodeURIComponent("")}`)
+  .then((offers) => {
+    if(offers !== null){
+      renderOffers(offers);
 
-    offersList.querySelectorAll('a[data-id]').forEach((link) => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        Navigate(`/user/${e.target.dataset.id}`);
+      offers.forEach((offer) => {
+        descriptions.push(offer.description);
       });
+    }
+
+    encodingHelp(descriptions);
+  })
+  .catch((err) => {
+    renderError(err.message);
+  });
+
+  div.querySelector('form').addEventListener('keyup', (e) => {
+    e.preventDefault();
+
+    const search = e.target.value;
+    API.get(`objects/offers?query=${encodeURIComponent(search)}`)
+    .then((objects) => {
+      if(objects !== null){
+        renderOffers(objects);
+      }
+    })
+    .catch((err) => {
+      renderError(err.message);
     });
+  });
+}
 
-    offersList.querySelectorAll('button[data-id]').forEach((link) => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        Navigate(`/object/${e.target.dataset.id}`);
-      });
+async function renderOffers(offers) {
+  const offersList = document.getElementById('offers-list');
+
+  offersList.innerHTML = `
+      <div class="container mt-5 mb-5">
+          <div class="d-flex justify-content-center row">
+              <div class="col-md-10">
+                  ${offers
+                    .map(
+                      (offer) => `
+                      <div class="row p-2 bg-white border rounded">
+                          <div class="col-md-3 mt-1">
+                              <img 
+                                  class="object-fit-cover rounded product-image" 
+                                  src="${API.getEndpoint(`objects/${offer.id}/photo`)}"
+                                  onerror="this.src='${noFurniturePhoto}'"
+                                  width="180"
+                                  height="180"
+                                  alt="${offer.objectType}">
+                          </div>
+                          <div class="col-md-6 mt-1">
+                              <h5>${offer.objectType}</h5>
+                             
+                              <div class="mt-1 mb-1 spec-1">
+                                  <h6>${offer.description}</h6>
+                              </div>
+                              <br>
+                              <p>
+                                  À récupérer le ${dateStringtoGoodFormat(offer.receiptDate)} ${
+                        offer.timeSlot === 'matin'
+                          ? ' au '.concat(offer.timeSlot)
+                          : " l'".concat(offer.timeSlot)
+                      }
+                              </p>
+                              
+                              <div class="div-user">
+                              </div>
+                          </div>
+                          
+                          <div class="col-md-3 border-left mt-1 d-flex flex-column align-content-center justify-content-between">                                
+                              <div class="div-remaining-time">
+                              </div>
+                                                              
+                              <div class="d-flex flex-column mb-4 div-button">
+                                  <button class="btn btn-outline-primary btn-sm button-respond" type="button" data-id="${
+                                    offer.id
+                                  }">Répondre</button>
+                              </div>
+                          </div>
+                      </div>
+              `,
+                    )
+                    .join('')}
+              </div>                     
+          </div>
+      </div>
+    `;
+
+  setUserOrPhoneNumber(document, 'div-user', offers);
+  setRemainingTime('div-remaining-time', offers);
+
+  offersList.querySelectorAll('a[data-id]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      Navigate(`/user/${e.target.dataset.id}`);
+    });
+  });
+
+  offersList.querySelectorAll('button[data-id]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      Navigate(`/object/${e.target.dataset.id}`);
     });
   });
 }
