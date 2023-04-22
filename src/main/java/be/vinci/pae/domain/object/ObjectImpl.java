@@ -577,7 +577,8 @@ public class ObjectImpl implements Object {
         objectDTOFromDb.setOnSaleDate(dateChange);
       }
 
-      // If the object is being put in the shop, the previous state must be "accepted", or "in workshop"
+      // If the object is being put in the shop, the previous state must be "accepted",
+      // or "in workshop"
       if (objectDTO.getState().equals("en magasin")) {
         if (!objectDTOFromDb.getState().equals("accepté") && !objectDTOFromDb.getState()
             .equals("à l'atelier")) {
