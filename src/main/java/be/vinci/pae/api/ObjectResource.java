@@ -33,6 +33,7 @@ import jakarta.ws.rs.core.Response.Status;
 import java.io.File;
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.util.List;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.server.ContainerRequest;
@@ -62,6 +63,23 @@ public class ObjectResource {
   @Produces(MediaType.APPLICATION_JSON)
   public ArrayNode getObjects(@QueryParam("query") String query) {
     return jsonMapper.valueToTree(objectUCC.getObjects(query));
+  }
+
+  /**
+   * Get a list of all public objects.
+   *
+   * @param query query to filter objects
+   * @return a list of objects
+   */
+  @GET
+  @Path("/public")
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<ObjectDTO> getPublicObjects(@QueryParam("query") String query) {
+    List<ObjectDTO> objects = objectUCC.getObjects(query);
+
+    return objects.stream().filter(
+        object -> object.getisVisible() && (object.getState().equals("en vente")
+            || object.getState().equals("vendu"))).toList();
   }
 
   /**

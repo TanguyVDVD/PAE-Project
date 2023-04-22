@@ -5,7 +5,7 @@ import { getAuthenticatedUser } from '../../utils/auths';
 import Navigate from '../Router/Navigate';
 import API from '../../utils/api';
 
-import logo from '../../img/RieCochet_Logo.png';
+import logo from '../../img/RieCochet_Logo.svg';
 import noProfilePicture from '../../img/no_profile_picture.svg';
 
 /**
@@ -21,7 +21,7 @@ const Navbar = () => {
   const authenticatedUser = getAuthenticatedUser();
 
   const navbar = `
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light">
       <div class="container-fluid">
         <a class="navbar-brand nav-link" href="#" data-uri="/">
           <img src="${logo}" alt="RieCochet Logo" height="40" />
@@ -150,8 +150,29 @@ const Navbar = () => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
       Navigate(link.dataset.uri);
+
+      // Add the active class to the clicked link
+      setActiveLink();
     });
   });
+
+  // Set the active link (this is ran before any transitions)
+  setActiveLink();
 };
+
+function setActiveLink() {
+  // Remove the active class from all links
+  document.querySelectorAll('#navbarWrapper .active[data-uri]').forEach((activeLink) => {
+    activeLink.classList.remove('active');
+  });
+
+  const activeLink = document.querySelectorAll(
+    `#navbarWrapper [data-uri="${window.location.pathname}"]`,
+  );
+
+  if (activeLink.length > 0) activeLink.forEach((link) => link.classList.add('active'));
+}
+
+export { setActiveLink };
 
 export default Navbar;
