@@ -191,7 +191,7 @@ public class ObjectUCCImpl implements ObjectUCC {
         return null;
       }
 
-      if (objectFromDB.setSateDate(objectDTO, objectFromDB, date) == null) {
+      if (objectFromDB.setStateDate(objectDTO, objectFromDB, date) == null) {
         return null;
       }
 
