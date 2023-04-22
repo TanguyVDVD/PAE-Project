@@ -23,7 +23,7 @@ const ObjectPage = (params) => {
   `;
 
   API.get(`/objects/${id}`).then((object) => {
-    API.get('/objectsTypes').then((objectTypes) => {
+    API.get('/objectTypes').then((objectTypes) => {
       renderObjectPage(object, objectTypes);
     });
   });

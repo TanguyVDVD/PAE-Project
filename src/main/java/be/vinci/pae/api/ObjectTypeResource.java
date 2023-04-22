@@ -15,7 +15,7 @@ import jakarta.ws.rs.core.MediaType;
  * ObjectTypeResource class.
  */
 @Singleton
-@Path("/objectsTypes")
+@Path("/objectTypes")
 public class ObjectTypeResource {
 
   private final ObjectMapper jsonMapper = new ObjectMapper();

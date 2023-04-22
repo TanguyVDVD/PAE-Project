@@ -1,3 +1,4 @@
+import Autocomplete from "bootstrap5-autocomplete";
 import Navigate from '../../Router/Navigate';
 import { getAuthenticatedUser } from '../../../utils/auths';
 import {clearPage, renderError} from '../../../utils/render';
@@ -27,7 +28,7 @@ function renderAdminObjectsPage() {
   div.innerHTML = `
     <h2>Objets</h2>
     <form class="input-group">
-      <input type="text" class="form-control border-end-0" placeholder="Rechercher..."/>
+      <input type="text" class="form-control autocomplete border-end-0" id="search-bar" placeholder="Rechercher..."/>
       <button class="btn border" type="submit">
         <i class="bi bi-search"></i>
       </button>
@@ -45,11 +46,34 @@ function renderAdminObjectsPage() {
     </div>
   `;
 
+  const descriptions = [];
+
   API.get(`objects?query=${encodeURIComponent("")}`)
   .then((objects) => {
     if(objects !== null){
       renderObjects(objects);
+
+      objects.forEach((object) => {
+        descriptions.push(object.description);
+      });
     }
+
+    const objectTypes = [];
+
+    API.get('objectTypes').then((availabilities) => {
+      availabilities.forEach((item) => {
+        objectTypes.push(item.label);
+      });
+
+      const src = descriptions.concat(objectTypes);
+
+      Autocomplete.init("input.autocomplete", {
+        items: src,
+      });
+    })
+    .catch((err) => {
+      renderError(err.message);
+    });
   })
   .catch((err) => {
     renderError(err.message);
