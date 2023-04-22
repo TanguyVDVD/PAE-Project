@@ -1,4 +1,5 @@
 import routes from './routes';
+import { setActiveLink } from '../Navbar/Navbar';
 
 const Router = () => {
   onFrontendLoad();
@@ -39,6 +40,8 @@ function renderRoute() {
 
     componentToRender(params);
   }
+
+  setActiveLink();
 }
 
 export default Router;

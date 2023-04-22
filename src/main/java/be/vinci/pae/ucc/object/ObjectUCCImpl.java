@@ -200,7 +200,7 @@ public class ObjectUCCImpl implements ObjectUCC {
         return null;
       }
 
-      if (objectFromDB.setSateDate(objectDTO, objectFromDB, date) == null) {
+      if (objectFromDB.setStateDate(objectDTO, objectFromDB, date) == null) {
         return null;
       }
 
@@ -255,9 +255,28 @@ public class ObjectUCCImpl implements ObjectUCC {
 
       object.savePhoto(file);
 
-      object.setPhoto(true);
-
       return myObjectDAO.updateObject(object.getId(), object);
+    } catch (Exception e) {
+      myDalServices.rollbackTransaction();
+
+      throw e;
+    } finally {
+      myDalServices.commitTransaction();
+    }
+  }
+
+  /**
+   * Add an object.
+   *
+   * @param objectDTO the object to add
+   * @return the object that has been added
+   */
+  @Override
+  public ObjectDTO add(ObjectDTO objectDTO) {
+    myDalServices.startTransaction();
+
+    try {
+      return myObjectDAO.insert(objectDTO);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
 

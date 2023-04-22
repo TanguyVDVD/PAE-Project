@@ -39,15 +39,15 @@ public interface Object extends ObjectDTO {
    * @param objectDTO the object to check the state
    * @return true if the state correspond else false
    */
-  boolean isSateWorkshopOrShop(ObjectDTO objectDTO);
+  boolean isStateWorkshopOrShop(ObjectDTO objectDTO);
 
   /**
-   * Set the correct change sate date.
+   * Set the correct change state date.
    *
-   * @param objectDTO       the object after the sate change
+   * @param objectDTO       the object after the state change
    * @param objectDTOFromDb the object before the state change
    * @param dateChange      the date of de change
    * @return the objectDTO change, null if there is a problem
    */
-  ObjectDTO setSateDate(ObjectDTO objectDTO, ObjectDTO objectDTOFromDb, LocalDate dateChange);
+  ObjectDTO setStateDate(ObjectDTO objectDTO, ObjectDTO objectDTOFromDb, LocalDate dateChange);
 }

@@ -1,39 +1,180 @@
-$primary: #444444;
-$primary-bg-subtle: #888;
-$primary-border-subtle: #aaa;
-$input-placeholder-color: rgba(0, 0, 0, 0.4);
+// Writing your own styles should be the last resort.
+// Please try your best to use the existing Bootstrap classes first.
 
-:root {
-  --bs-link-opacity: 0.75;
-}
+// From the "spring colors" palette given by the client
+$primary: #7cba46;
+$success: #619746;
+$danger: #d0292a;
+$warning: #fdae56;
+$info: #145c9b;
+
+// Bootstrap doesn't do this for some reason
+// No need to touch this
+$primary-text: mix(black, $primary, 20%);
+$success-text: mix(black, $success, 20%);
+$danger-text: mix(black, $danger, 20%);
+$warning-text: mix(black, $warning, 20%);
+$info-text: mix(black, $info, 20%);
+
+$primary-bg-subtle: mix(white, $primary, 80%);
+$success-bg-subtle: mix(white, $success, 80%);
+$danger-bg-subtle: mix(white, $danger, 80%);
+$warning-bg-subtle: mix(white, $warning, 80%);
+$info-bg-subtle: mix(white, $info, 80%);
+
+$primary-border-subtle: mix(white, $primary, 60%);
+$success-border-subtle: mix(white, $success, 60%);
+$danger-border-subtle: mix(white, $danger, 60%);
+$warning-border-subtle: mix(white, $warning, 60%);
+$info-border-subtle: mix(white, $info, 60%);
+
+$link-color: #212529;
+
+$input-placeholder-color: rgba(0, 0, 0, 0.4);
 
 $enable-negative-margins: true;
 
 @import '~bootstrap/scss/bootstrap';
 $bootstrap-icons-font-dir: '~bootstrap-icons/font/fonts';
 @import '~bootstrap-icons/font/bootstrap-icons';
-@import "flatpickr/dist/flatpickr";
+@import 'calendar';
 
-// Writing your own styles should be the last resort.
-// Please try your best to use the existing Bootstrap classes first.
+:root {
+  --bs-link-opacity: 0.75;
 
-body {
-  padding-top: 60px;
+  --bs-font-sans-serif: 'Inter', sans-serif;
+
+  --bs-border-width: 2px;
 }
 
-.card-object {
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  letter-spacing: -0.011em;
+}
+
+main {
+  flex-grow: 1;
+}
+
+.navbar {
+  background-color: rgba(251, 251, 253, 0.8);
+  backdrop-filter: saturate(180%) blur(20px);
+}
+
+// Hero (homepage)
+.hero {
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url('../img/hero.webp') no-repeat center center;
+  background-size: cover;
+  padding: 3rem 1rem;
+
+  .ressourcerie-brand {
+    filter: invert(1);
+  }
+
+  > * {
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+  }
+}
+
+// RessourceRie brand
+.ressourcerie-brand {
+  height: calc(var(--bs-body-font-size) * var(--bs-body-line-height) * 1.1);
+  vertical-align: bottom;
+  -webkit-user-drag: none;
+
+  &::selection {
+    background-color: transparent;
+  }
+}
+
+footer img {
+  opacity: 0.75;
+}
+
+input {
+  letter-spacing: inherit;
+}
+
+::selection {
+  background-color: rgba(var(--bs-primary-rgb), 0.25);
+}
+
+// Fix for Bootstrap's input autofill styles
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px var(--bs-primary-bg-subtle) inset !important;
+}
+
+.object-card {
+  position: relative;
   width: 200px;
   height: 100%;
   margin: auto;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  word-wrap: break-word;
+  overflow: hidden;
+  font-size: 0.9rem;
 
-  img {
+  justify-content: space-between;
+
+  background-color: var(--bs-body-bg);
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+
+  .object-card-img {
+    overflow: hidden;
+    justify-self: start;
     height: 200px;
-    object-fit: cover;
+    background-color: #868e96;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    & + div {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      flex-grow: 1;
+      padding: 0.5rem;
+    }
   }
 
-  .card-body {
-    padding: 0.5rem;
+  &:hover img {
+    transform: scale(1.1);
+  }
+
+  .object-card-title {
+    font-weight: bold;
+  }
+
+  &.sold {
+    &:before {
+      content: 'Vendu';
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.75);
+      font-size: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1;
+    }
   }
 }
 
@@ -72,34 +213,7 @@ body {
 a {
   text-decoration: none;
 }
-.accept {
-  color: #fff;
-  background: rgba(93, 150, 93, 0.82);
-  padding: 15px 20px;
-  border-radius: 15px;
-}
-.accept:hover {
-  background: #517051;
-}
-.deny {
-  color: #fff;
-  background: rgba(208, 101, 78, 0.83);
-  padding: 15px 20px;
-  border-radius: 15px;
-}
-.deny:hover {
-  background: rgb(176, 86, 69);
-}
 
-.bordure_verticale {
-  height: 50px;
-  margin: 20px;
-  display: inline-block;
-  vertical-align: middle;
-}
-
-#refuse {
-  border-radius: 10px;
-  vertical-align: middle;
-  width: 400px;
+main > .alert:first-child {
+  margin: 2rem 4rem 1rem;
 }

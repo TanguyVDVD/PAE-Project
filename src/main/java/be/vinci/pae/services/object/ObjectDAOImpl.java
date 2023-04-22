@@ -12,6 +12,7 @@ import jakarta.ws.rs.NotFoundException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,6 @@ public class ObjectDAOImpl implements ObjectDAO {
       object.setId(resultSet.getInt("id_object"));
       object.setVersionNumber(resultSet.getInt("version_number"));
       object.setDescription(resultSet.getString("description"));
-      object.setPhoto(resultSet.getBoolean("photo"));
       object.setPhoneNumber(resultSet.getString("phone_number"));
       object.setIsVisible(resultSet.getBoolean("is_visible"));
       object.setPrice(resultSet.getDouble("price"));
@@ -306,7 +306,6 @@ public class ObjectDAOImpl implements ObjectDAO {
     try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       ps.setDate(1, java.sql.Date.valueOf(acceptanceDate));
       ps.setInt(2, versionNumber + 1);
-
       ps.setInt(3, id);
       ps.setInt(4, versionNumber);
 
@@ -380,5 +379,43 @@ public class ObjectDAOImpl implements ObjectDAO {
 
     return null;
 
+  }
+
+  /**
+   * Insert a new object in the db.
+   *
+   * @param objectDTO the object to insert in the db
+   * @return the object inserted in the db
+   */
+  @Override
+  public ObjectDTO insert(ObjectDTO objectDTO) {
+    String request = "INSERT INTO pae.objects VALUES "
+        + "(DEFAULT, 0, ?, ?, null, 'proposé', null, null, false, ?, "
+        + "null, null, null, null, null, null, null, ?, ?, ?, ?);";
+
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request, true)) {
+      ps.setString(1, objectDTO.getDescription());
+      ps.setString(2, objectDTO.getTimeSlot());
+      ps.setDate(3, java.sql.Date.valueOf(objectDTO.getOfferDate()));
+      ps.setString(4, objectDTO.getPhoneNumber());
+      if (objectDTO.getUser() != null) {
+        ps.setInt(5, objectDTO.getUser().getId());
+      } else {
+        ps.setNull(5, Types.INTEGER);
+      }
+      ps.setInt(6, myAvailabilityDao.getOneByDate(objectDTO.getReceiptDate()).getId());
+      ps.setInt(7, myObjectTypeDAO.getIdByLabel(objectDTO.getObjectType()));
+      ps.executeUpdate();
+
+      // Get the id of the new object
+      ResultSet rs = ps.getGeneratedKeys();
+      if (rs.next()) {
+        return getOneById(rs.getInt(1));
+      }
+    } catch (Exception e) {
+      throw new DALException("Error during the insertion of the object", e);
+    }
+
+    return null;
   }
 }

@@ -44,9 +44,7 @@ function renderObjectPage(object, objectTypes) {
         <div class="row gx-6 gx-lg-6 align-items-top">
           <div class="col-md-4">
             <img class="card-img-top mb-5 mb-md-0 object-fit-cover" 
-            src="${
-              object.photo ? API.getEndpoint(`objects/${object.id}/photo`) : noFurniturePhoto
-            }"
+            src="${API.getEndpoint(`objects/${object.id}/photo`)}"
             onerror="this.src='${noFurniturePhoto}'"
             width="400"
             height="400"
@@ -141,9 +139,10 @@ function renderObjectPage(object, objectTypes) {
                   <label class="form-check-label" for="helper-switch">Visible sur le site</label>
                 </div>
                 <br>
-                <button type="submit" class="btn btn-primary" id="save-btn">Sauvegarder</button>
-                <div class="bordure_verticale"></div>
-                <button type="submit" class="btn btn-outline-primary" id="cancel-btn">Annuler</button>
+                <div class="hstack gap-2">
+                  <button type="submit" class="btn btn-primary" id="save-btn">Sauvegarder</button>
+                  <button type="submit" class="btn btn-outline-primary" id="cancel-btn">Annuler</button>
+                </div>
               </form> 
               `
                 : `
@@ -170,9 +169,10 @@ function renderObjectPage(object, objectTypes) {
                   <textarea class="form-control" id="reason-for-refusal" rows="2"></textarea>
                 </div>   
                 
-                <a href="#" class="accept" id="accept-btn">Accepter l'objet<span class="fa fa-check"></span></a>
-                <div class="bordure_verticale"></div>
-                <a href="#" class="deny" id="deny-btn">Refuser l'objet<span class="fa fa-close"></span></a>
+                <div class="hstack gap-5 my-3">
+                  <button type="button" class="btn btn-lg btn-success" id="accept-btn">Accepter l'objet <i class="bi bi-check-lg"></i></button>
+                  <button type="button" class="btn btn-lg btn-danger" id="deny-btn">Refuser l'objet <i class="bi bi-x-lg"></i></button>
+                </div>
               `
                 : ''
             }
@@ -236,9 +236,14 @@ function renderObjectPage(object, objectTypes) {
       const status = "accepté";
       const versionNbr = object.versionNumber;
 
-      API.patch(`objects/status/${object.id}`, { body: { status, versionNbr } });
-      AdminOffersPage();
-      Navigate('/admin/offers');
+      API.patch(`objects/status/${object.id}`, { body: { status, versionNbr } })
+      .then(() => {
+        AdminOffersPage();
+        Navigate('/admin/offers');
+      })
+      .catch((err) => {
+        renderError(err.message);
+      });
     });
 
     denyBtn.addEventListener('click', () => {
@@ -246,9 +251,14 @@ function renderObjectPage(object, objectTypes) {
       const reasonForRefusal = document.getElementById("reason-for-refusal").value;
       const versionNbr = object.versionNumber;
 
-      API.patch(`objects/status/${object.id}`, { body: { status, reasonForRefusal, versionNbr } });
-      AdminOffersPage();
-      Navigate('/admin/offers');
+      API.patch(`objects/status/${object.id}`, { body: { status, reasonForRefusal, versionNbr } })
+      .then(() => {
+        AdminOffersPage();
+        Navigate('/admin/offers');
+      })
+      .catch((err) => {
+        renderError(err.message);
+      });
     });
   }
 

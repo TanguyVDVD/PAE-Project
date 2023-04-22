@@ -5,9 +5,9 @@ import API from '../../utils/api';
 import { getAuthenticatedUser, setAuthenticatedUser } from '../../utils/auths';
 import { clearPage, renderError } from '../../utils/render';
 import { formatDate, formatPhoneNumber } from '../../utils/format';
+import { createObjectCard } from '../../utils/objects';
 
 import noProfilePicture from '../../img/no_profile_picture.svg';
-import noFurniturePhoto from '../../img/no_furniture_photo.svg';
 
 const objects = [];
 
@@ -43,6 +43,7 @@ const UserPage = (params) => {
       renderUserPage(user);
     })
     .catch((error) => {
+      main.innerHTML = '';
       renderError(error.message);
     });
 };
@@ -114,9 +115,6 @@ function renderUserPage(user) {
     <h2 class="my-5">Objets proposés</h2>
 
     <div id="objects">
-      <div class="text-center my-5">
-        <div class="spinner-border" role="status"></div>
-      </div>
     </div>
   `;
 
@@ -134,7 +132,9 @@ function renderUserPage(user) {
       e.target.disabled = true;
       e.target.checked = !e.target.checked;
 
-      API.patch(`users/${user.id}`, { body: { role: e.target.checked ? null : 'aidant', versionNbr: user.versionNumber } })
+      API.patch(`users/${user.id}`, {
+        body: { role: e.target.checked ? 'utilisateur' : 'aidant', versionNbr: user.versionNumber },
+      })
         .then((updatedUser) => {
           user.versionNumber = updatedUser.versionNumber;
           e.target.checked = updatedUser.role === 'aidant';
@@ -150,6 +150,7 @@ function renderUserPage(user) {
 
   main.replaceChildren(userPage);
 
+  renderObjects(true);
   fetchObjects(user);
 }
 
@@ -159,55 +160,45 @@ async function fetchObjects(user) {
       .then((result) => {
         objects.push(...result);
 
-        const obj = document.querySelector('#objects');
-
-        if (objects.length === 0) {
-          obj.innerHTML = `
-            <div class="text-center text-muted my-5">
-              <p>Aucun objet proposé</p>
-            </div>
-          `;
-          return;
-        }
-
-        obj.className = 'row row-cols-1 row-cols-md-2 row-cols-lg-4 g-5 text-center';
-
-        obj.innerHTML = objects
-          .map(
-            (object) => `
-              <div class="col">
-                <div class="card card-object" data-id="${object.id}" role="button">
-                  <img
-                    src="${
-                      object.photo
-                        ? API.getEndpoint(`objects/${object.id}/photo`)
-                        : noFurniturePhoto
-                    }"
-                    onerror="this.src='${noFurniturePhoto}'"
-                    class="card-img-top"
-                    alt="Photo : ${object.description}"
-                  />
-                  <div class="card-title fw-bold m-0">${object.objectType}</div>
-                  <div class="card-body pt-0">
-                    ${object.description}
-                  </div>
-                </div>
-              </div>
-            `,
-          )
-          .join('');
-
-        const cards = document.querySelectorAll('.card-object');
-        cards.forEach((card) => {
-          card.addEventListener('click', (e) => {
-            const { id } = e.currentTarget.dataset;
-            Navigate(`/object/${id}`);
-          });
-        });
+        renderObjects();
       })
       .catch((error) => {
         renderError(error.message);
       });
+}
+
+function renderObjects(placeholder = false) {
+  const obj = document.querySelector('#objects');
+
+  if (!placeholder && objects.length === 0) {
+    obj.innerHTML = `
+      <div class="text-center text-muted my-5 w-100">
+        <p>Aucun objet proposé</p>
+      </div>
+    `;
+
+    return;
+  }
+
+  obj.className = 'row row-cols-1 row-cols-md-2 row-cols-lg-4 g-5 text-center';
+
+  obj.innerHTML = (placeholder ? [null, null, null, null] : objects)
+    .map(
+      (object) => `
+        <div class="col">
+          ${createObjectCard(object)}
+        </div>
+      `,
+    )
+    .join('');
+
+  const cards = document.querySelectorAll('.object-card');
+  cards.forEach((card) => {
+    card.addEventListener('click', (e) => {
+      const { id } = e.currentTarget.dataset;
+      if (id !== 'undefined') Navigate(`/object/${id}`);
+    });
+  });
 }
 
 function renderEditProfile(user) {
@@ -217,8 +208,7 @@ function renderEditProfile(user) {
   editProfile.className = 'modal fade';
   editProfile.tabIndex = -1;
 
-  const html = String.raw;
-  editProfile.innerHTML = html`
+  editProfile.innerHTML = `
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
         <div class="modal-header">
@@ -305,8 +295,9 @@ function renderEditProfile(user) {
                 <div class="col mb-3">
                   <div class="hstack gap-2 justify-content-between">
                     <label for="input-photo" class="form-label">Photo de profil</label>
-                    ${user.photo
-                      ? html`
+                    ${
+                      user.photo
+                        ? `
                           <div class="form-check form-check-reverse form-switch">
                             <label class="form-check-label" for="input-removePhoto"
                               >Supprimer</label
@@ -320,7 +311,8 @@ function renderEditProfile(user) {
                             />
                           </div>
                         `
-                      : ''}
+                        : ''
+                    }
                   </div>
                   <input
                     type="file"
@@ -333,9 +325,9 @@ function renderEditProfile(user) {
                 </div>
                 <div class="col mb-3">
                   <img
-                    src="${user.photo
-                      ? API.getEndpoint(`users/${user.id}/photo`)
-                      : noProfilePicture}"
+                    src="${
+                      user.photo ? API.getEndpoint(`users/${user.id}/photo`) : noProfilePicture
+                    }"
                     onerror="this.src='${noProfilePicture}'"
                     class="rounded-circle object-fit-cover"
                     width="70"
@@ -486,6 +478,8 @@ function renderEditProfile(user) {
   main.appendChild(editProfile);
 
   editProfileModal.show();
+
+  editProfile.addEventListener('hidden.bs.modal', editProfile.remove);
 }
 
 export default UserPage;

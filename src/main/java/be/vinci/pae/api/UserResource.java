@@ -143,7 +143,7 @@ public class UserResource {
     userRegister.setPassword(password);
     userRegister.setPhoto(photoDetail != null && photoDetail.getFileName() != null);
     userRegister.setRegisterDate(LocalDate.now());
-    userRegister.setRole(null);
+    userRegister.setRole("utilisateur");
 
     UserDTO userAfterRegister = userUCC.register(userRegister);
 
@@ -180,7 +180,13 @@ public class UserResource {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeHelper
   public UserDTO getUserInfo(@PathParam("id") int id) {
-    return userUCC.getUserById(id);
+    UserDTO userDTO = userUCC.getUserById(id);
+
+    if (userDTO == null) {
+      throw new WebApplicationException("Utilisateur introuvable", Response.Status.NOT_FOUND);
+    }
+
+    return userDTO;
   }
 
   /**
