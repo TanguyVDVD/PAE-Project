@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.List;
+import org.apache.commons.text.StringEscapeUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.server.ContainerRequest;
@@ -197,8 +198,8 @@ public class ObjectResource {
 
     ObjectDTO objectUpdated = myDomainFactory.getObject();
 
-    objectUpdated.setObjectType(typeObject);
-    objectUpdated.setDescription(descriptionObject);
+    objectUpdated.setObjectType(StringEscapeUtils.escapeHtml4(typeObject));
+    objectUpdated.setDescription(StringEscapeUtils.escapeHtml4(descriptionObject));
     objectUpdated.setState(stateObject);
     objectUpdated.setIsVisible(isVisibleObject);
     objectUpdated.setPrice(priceObject);
@@ -239,8 +240,9 @@ public class ObjectResource {
     } else {
       String reasonForRefusal = "";
       if (json.get("reasonForRefusal") != null) {
-        reasonForRefusal = json.get("reasonForRefusal").asText("");
+        reasonForRefusal = StringEscapeUtils.escapeHtml4(json.get("reasonForRefusal").asText(""));
       }
+
       objectDTO = objectUCC.refuse(id, reasonForRefusal, versionNumber);
     }
 
@@ -375,7 +377,7 @@ public class ObjectResource {
 
     ObjectDTO objectDTO = myDomainFactory.getObject();
 
-    objectDTO.setDescription(description);
+    objectDTO.setDescription(StringEscapeUtils.escapeHtml4(description));
     objectDTO.setObjectType(objectType);
     objectDTO.setReceiptDate(LocalDate.parse(receiptDate));
     objectDTO.setTimeSlot(timeSlot);

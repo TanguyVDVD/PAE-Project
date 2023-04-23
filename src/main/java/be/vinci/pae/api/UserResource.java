@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.Date;
+import org.apache.commons.text.StringEscapeUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.server.ContainerRequest;
@@ -136,8 +137,8 @@ public class UserResource {
 
     UserDTO userRegister = myDomainFactory.getUser();
 
-    userRegister.setLastName(lastName);
-    userRegister.setFirstName(firstName);
+    userRegister.setLastName(StringEscapeUtils.escapeHtml4(lastName));
+    userRegister.setFirstName(StringEscapeUtils.escapeHtml4(firstName));
     userRegister.setEmail(email);
     userRegister.setPhoneNumber(phone);
     userRegister.setPassword(password);
@@ -228,11 +229,11 @@ public class UserResource {
       }
 
       if (StringUtils.isNotBlank(dataDTO.getFirstName())) {
-        userDTO.setFirstName(dataDTO.getFirstName());
+        userDTO.setFirstName(StringEscapeUtils.escapeHtml4(dataDTO.getFirstName()));
       }
 
       if (StringUtils.isNotBlank(dataDTO.getLastName())) {
-        userDTO.setLastName(dataDTO.getLastName());
+        userDTO.setLastName(StringEscapeUtils.escapeHtml4(dataDTO.getLastName()));
       }
 
       if (StringUtils.isNotBlank(dataDTO.getEmail())) {
