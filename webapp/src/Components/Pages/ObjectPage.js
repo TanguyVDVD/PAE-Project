@@ -1,11 +1,11 @@
-import { clearPage, renderError } from '../../utils/render';
-import { getAuthenticatedUser } from '../../utils/auths';
+import {clearPage, renderError} from '../../utils/render';
+import {getAuthenticatedUser} from '../../utils/auths';
 import API from '../../utils/api';
-import { dateStringtoGoodFormat, getTodaySDate } from '../../utils/dates';
+import {dateStringtoGoodFormat, getTodaySDate} from '../../utils/dates';
 import Navigate from '../Router/Navigate';
 import AdminOffersPage from './admin/AdminOffersPage';
 import AdminObjectsPage from './admin/AdminObjectsPage';
-import {setUserOrPhoneNumber, setReceiptDate} from '../../utils/objects';
+import {setReceiptDate, setUserOrPhoneNumber} from '../../utils/objects';
 
 import noFurniturePhoto from '../../img/no_furniture_photo.svg';
 
@@ -52,8 +52,8 @@ function renderObjectPage(object, objectTypes) {
             
             
             ${authenticatedUser && authenticatedUser.role !== null
-              && object.state !== 'proposé' && object.state !== "refusé"
-                ? `
+  && object.state !== 'proposé' && object.state !== "refusé"
+      ? `
                 <form>
                   <div class="row row-cols-1 row-cols-md-2 m-1">
                     <input
@@ -67,32 +67,32 @@ function renderObjectPage(object, objectTypes) {
                   </div>
                 </form>
               `
-                : ''
-            }
+      : ''
+  }
           </div>
 
           <div class="col-md-8">
             ${authenticatedUser && authenticatedUser.role !== null
-              && object.state !== 'proposé' && object.state !== "refusé"
-              ? `
+  && object.state !== 'proposé' && object.state !== "refusé"
+      ? `
               <form id="object-form">
                 <div class="form-group" id="object-type-form">
                   <label>Type</label>
                   <select class="form-control" id="object-type-select">
                     ${objectTypes.map(
-                      (objectType) =>
-                        `
+          (objectType) =>
+              `
                         <option>${objectType.label}</option>
                       `,
-                    )}
+      )}
                   </select>
                 </div>
                 <br>
                 <div class="form-group" id="object-description-form">
                   <label>Description</label>
                   <textarea class="form-control" id="object-description-textarea" rows="2">${
-                    object.description
-                  }</textarea>
+          object.description
+      }</textarea>
                 </div>
                 <br>
                 <div class="form-group div-user" id="object-user-form">
@@ -109,10 +109,10 @@ function renderObjectPage(object, objectTypes) {
                   <label>État</label>
                   <select class="form-control" id="object-state-select">
                     ${getAvailableStates(object).map(
-                    (state) => `
+          (state) => `
                         <option>${state}</option>
                       `,
-                    )}
+      )}
                   </select>
                 </div>
                 
@@ -145,19 +145,20 @@ function renderObjectPage(object, objectTypes) {
                 </div>
               </form> 
               `
-                : `
+      : `
                 <h2>${object.objectType}</h2>
                 <p>Description : ${object.description}</p>
               `
-            }
+  }
             
             ${authenticatedUser && authenticatedUser.role !== null
-              && object.state === "proposé" ?
-              `
+  && object.state === "proposé" ?
+      `
                 <div class="div-user" id="object-user-offer"></div>
                 
                 <div class="form-group" id="object-receipt-date-offer">
-                  <p>À récupérer le ${dateStringtoGoodFormat(object.receiptDate)}</p>
+                  <p>À récupérer le ${dateStringtoGoodFormat(
+          object.receiptDate)}</p>
                 </div>
                 
                 <div id="object-time-slot-offer">
@@ -174,12 +175,12 @@ function renderObjectPage(object, objectTypes) {
                   <button type="button" class="btn btn-lg btn-danger" id="deny-btn">Refuser l'objet <i class="bi bi-x-lg"></i></button>
                 </div>
               `
-                : ''
-            }
+      : ''
+  }
             
             ${authenticatedUser && authenticatedUser.role !== null
-              && object.state === "refusé" ? 
-            `
+  && object.state === "refusé" ?
+      `
               <div id="object-state-refused">
                 <h6 class="text-danger">Refusé</h6>
               </div>
@@ -199,10 +200,10 @@ function renderObjectPage(object, objectTypes) {
                 <p>Créneau choisi : ${object.timeSlot}</p>
               </div>
             ` : ''
-            }
+  }
             
             ${authenticatedUser && authenticatedUser.role === null
-              ? `
+      ? `
               <div id="object-state-non-helper">
                 <p>État : ${object.state}</p>
               </div>
@@ -211,7 +212,7 @@ function renderObjectPage(object, objectTypes) {
                 <p>Prix : ${object.price}€</p>
               </div>
             ` : ''
-            }
+  }
           </div>
         </div>
     </section>
@@ -223,11 +224,11 @@ function renderObjectPage(object, objectTypes) {
    * Réponse à une proposition
    */
   if (authenticatedUser && authenticatedUser.role !== null
-      && object.state === "proposé"){
+      && object.state === "proposé") {
     const acceptBtn = document.getElementById("accept-btn");
     const denyBtn = document.getElementById("deny-btn");
 
-    if (authenticatedUser.role !== "responsable"){
+    if (authenticatedUser.role !== "responsable") {
       acceptBtn.disabled = true;
       denyBtn.disabled = true;
     }
@@ -236,7 +237,7 @@ function renderObjectPage(object, objectTypes) {
       const status = "accepté";
       const versionNbr = object.versionNumber;
 
-      API.patch(`objects/status/${object.id}`, { body: { status, versionNbr } })
+      API.patch(`objects/status/${object.id}`, {body: {status, versionNbr}})
       .then(() => {
         AdminOffersPage();
         Navigate('/admin/offers');
@@ -248,10 +249,12 @@ function renderObjectPage(object, objectTypes) {
 
     denyBtn.addEventListener('click', () => {
       const status = "refusé";
-      const reasonForRefusal = document.getElementById("reason-for-refusal").value;
+      const reasonForRefusal = document.getElementById(
+          "reason-for-refusal").value;
       const versionNbr = object.versionNumber;
 
-      API.patch(`objects/status/${object.id}`, { body: { status, reasonForRefusal, versionNbr } })
+      API.patch(`objects/status/${object.id}`,
+          {body: {status, reasonForRefusal, versionNbr}})
       .then(() => {
         AdminOffersPage();
         Navigate('/admin/offers');
@@ -270,7 +273,7 @@ function renderObjectPage(object, objectTypes) {
       authenticatedUser.role !== null &&
       object.state !== "proposé" &&
       object.state !== "refusé"
-  ){
+  ) {
     setUserOrPhoneNumber(document, "div-user", [object]);
     setReceiptDate(document, "div-receipt-date", [object]);
     setDefaultValues(object);
@@ -285,35 +288,45 @@ function renderObjectPage(object, objectTypes) {
       setSwitch(state, object);
     });
 
-    document.getElementById('object-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
+    document.getElementById('object-form').addEventListener('submit',
+        async (e) => {
+          e.preventDefault();
 
-      const description = document.getElementById('object-description-textarea').value;
-      const type = document.getElementById('object-type-select').value;
-      const state = document.getElementById('object-state-select').value;
-      const date = document.getElementById('object-state-date-input').value;
-      const price = document.getElementById('object-price-input').value;
-      const isVisible = document.getElementById('visible-switch').checked;
-      const versionNbr = object.versionNumber;
+          const description = document.getElementById(
+              'object-description-textarea').value;
+          const type = document.getElementById('object-type-select').value;
+          const state = document.getElementById('object-state-select').value;
+          const date = document.getElementById('object-state-date-input').value;
+          const price = document.getElementById('object-price-input').value;
+          const isVisible = document.getElementById('visible-switch').checked;
+          const versionNbr = object.versionNumber;
 
-      try {
-        await API.put(`objects/${object.id}`, {
-          body: { description, type, state, date, price, isVisible, versionNbr },
+          try {
+            await API.put(`objects/${object.id}`, {
+              body: {
+                description,
+                type,
+                state,
+                date,
+                price,
+                isVisible,
+                versionNbr
+              },
+            });
+
+            const photo = document.getElementById('input-photo');
+            if (photo.files.length > 0) {
+              const formData = new FormData();
+              formData.append('photo', photo.files[0]);
+              await API.put(`objects/${object.id}/photo`, {body: formData});
+            }
+
+            AdminObjectsPage();
+            Navigate('/admin/objects');
+          } catch (error) {
+            renderError(error);
+          }
         });
-
-        const photo = document.getElementById('input-photo');
-        if (photo.files.length > 0) {
-          const formData = new FormData();
-          formData.append('photo', photo.files[0]);
-          await API.put(`objects/${object.id}/photo`, { body: formData });
-        }
-
-        AdminObjectsPage();
-        Navigate('/admin/objects');
-      } catch (error) {
-        renderError(error);
-      }
-    });
 
     document.getElementById('cancel-btn').addEventListener('click', () => {
       AdminObjectsPage();
@@ -325,7 +338,7 @@ function renderObjectPage(object, objectTypes) {
    * Page objet si objet refusé
    */
   if (authenticatedUser && authenticatedUser.role !== null
-      && object.state === "refusé"){
+      && object.state === "refusé") {
     setUserOrPhoneNumber(document, "div-user", [object]);
     setReceiptDate(document, "div-receipt-date", [object]);
   }
@@ -340,52 +353,47 @@ function setDefaultValues(object) {
   setSwitch(object.state, object);
 }
 
-function setStateDate(state, object){
+function setStateDate(state, object) {
   const dateInput = document.getElementById('object-state-date-input');
   const label = document.getElementById('object-state-date-label');
 
   if (state === "accepté") {
-    if (state === object.state){
+    if (state === object.state) {
       dateInput.value = object.acceptanceDate;
     } else {
       dateInput.value = getTodaySDate();
     }
     label.innerHTML = "Accepté le : ";
-  }
-  else if (state === "à l'atelier") {
-    if (state === object.state){
+  } else if (state === "à l'atelier") {
+    if (state === object.state) {
       dateInput.value = object.workshopDate;
     } else {
       dateInput.value = getTodaySDate();
     }
     label.innerHTML = "Mis à l'atelier le : ";
-  }
-  else if (state === "en magasin") {
-    if (state === object.state){
+  } else if (state === "en magasin") {
+    if (state === object.state) {
       dateInput.value = object.depositDate;
     } else {
       dateInput.value = getTodaySDate();
     }
     label.innerHTML = "Déposé en magasin le : ";
-  }
-  else if (state === "en vente") {
-    if (state === object.state){
+  } else if (state === "en vente") {
+    if (state === object.state) {
       dateInput.value = object.onSaleDate;
     } else {
       dateInput.value = getTodaySDate();
     }
     label.innerHTML = "Mis en vente le : ";
-  }
-  else if (state === "vendu") {
-    if (state === object.state){
+  } else if (state === "vendu") {
+    if (state === object.state) {
       dateInput.value = object.sellingDate;
     } else {
       dateInput.value = getTodaySDate();
     }
     label.innerHTML = "Vendu le : ";
-  }
-  else if (state === "retiré") {
-    if (state === object.state){
+  } else if (state === "retiré") {
+    if (state === object.state) {
       dateInput.value = object.withdrawalDate;
     } else {
       dateInput.value = getTodaySDate();
@@ -394,8 +402,8 @@ function setStateDate(state, object){
   }
 }
 
-function getAvailableStates(object){
-  if (object.state === "accepté"){
+function getAvailableStates(object) {
+  if (object.state === "accepté") {
     return ["accepté", "à l'atelier", "en magasin"];
   }
   if (object.state === "à l'atelier") {
@@ -416,11 +424,12 @@ function getAvailableStates(object){
   return null;
 }
 
-function setPrice(state, object){
+function setPrice(state, object) {
   const priceInput = document.getElementById('object-price-input');
   const priceLabel = document.getElementById('object-price-label');
 
-  if (state === "accepté" || state === "à l'atelier" || state === "en magasin") {
+  if (state === "accepté" || state === "à l'atelier" || state
+      === "en magasin") {
     priceInput.value = null;
     priceInput.disabled = true;
     priceLabel.style.color = "#909294";
@@ -435,7 +444,7 @@ function setPrice(state, object){
   }
 }
 
-function setSwitch(state, object){
+function setSwitch(state, object) {
   const visibleSwitch = document.getElementById('visible-switch');
 
   if (state === "en magasin") {

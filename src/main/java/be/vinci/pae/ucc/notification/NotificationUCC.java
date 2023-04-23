@@ -1,6 +1,7 @@
 package be.vinci.pae.ucc.notification;
 
 import be.vinci.pae.domain.notification.NotificationDTO;
+import be.vinci.pae.domain.object.ObjectDTO;
 import java.util.List;
 
 /**
@@ -18,13 +19,12 @@ public interface NotificationUCC {
   List<NotificationDTO> getNotificationsByUserID(int id);
 
   /**
-   * Creates a NotificationDTO to notify the user that the object with the given ID has been
-   * accepted.
+   * Creates a NotificationDTO to notify the user that the object as been accepted or refused. * *
    *
-   * @param idObject the ID of the object that has been accepted
+   * @param objectDTO the object to create a notification from
    * @return a NotificationDTO object containing the notification message
    */
-  NotificationDTO createAcceptedObjectNotification(int idObject, int idUser);
+  NotificationDTO createAcceptedRefusedObjectNotification(ObjectDTO objectDTO);
 
   /**
    * Creates a NotificationDTO to notify that a new object has been proposed.

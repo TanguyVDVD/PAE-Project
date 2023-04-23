@@ -133,7 +133,7 @@ public class ObjectUCCImpl implements ObjectUCC {
 
       System.out.println("////////////" + object.getUser().getId());
 
-      myNotificationUCC.createAcceptedObjectNotification(id, object.getUser().getId());
+      myNotificationUCC.createAcceptedRefusedObjectNotification(object);
 
       return myObjectDAO.setStatusToAccepted(id, LocalDate.now(), versionNumber);
     } catch (Exception e) {

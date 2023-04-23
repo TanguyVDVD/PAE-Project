@@ -1,12 +1,12 @@
 // eslint-disable-next-line no-unused-vars
-import { Navbar as BootstrapNavbar } from 'bootstrap';
 // eslint-disable-next-line import/no-cycle
-import { getAuthenticatedUser } from '../../utils/auths';
+import {getAuthenticatedUser} from '../../utils/auths';
 import Navigate from '../Router/Navigate';
 import API from '../../utils/api';
 
 import logo from '../../img/RieCochet_Logo.svg';
 import noProfilePicture from '../../img/no_profile_picture.svg';
+import {renderError} from "../../utils/render";
 
 /**
  * Render the Navbar which is styled by using Bootstrap
@@ -35,8 +35,9 @@ const Navbar = () => {
               <a class="nav-link" href="#" data-uri="/propose">Proposer un objet</a>
             </li>
             ${
-              authenticatedUser && authenticatedUser.role !== 'utilisateur' && authenticatedUser.role !== null
-                ? `
+      authenticatedUser && authenticatedUser.role !== 'utilisateur'
+      && authenticatedUser.role !== null
+          ? `
                     <li class="nav-item">
                       <a class="nav-link" href="#" data-uri="/admin/availabilities">Disponibilités</a>
                     </li>
@@ -53,48 +54,15 @@ const Navbar = () => {
                       <a class="nav-link" href="#" data-uri="/admin">Tableau de bord</a>
                     </li>
                   `
-                : ''
-            }
+          : ''
+  }
           </ul>
         </div>
         ${
-          authenticatedUser
-            ? `
+      authenticatedUser
+          ? `
                 <div class="d-flex gap-4">
-                  <div class="dropdown align-self-center">
-                    <a
-                      href="#"
-                      class="nav-link"
-                      data-bs-toggle="dropdown"
-                      data-bs-auto-close="outside"
-                      aria-expanded="false"
-                    >
-                      <i class="bi bi-bell" style="font-size: 1.5em"></i>
-                      <span
-                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                      >
-                        1
-                      </span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end shadow">
-                      <li>
-                        <span class="dropdown-item"
-                          >Votre proposition d'objet "Bmw 335I" a été refusée : “Objet trop
-                          grand”.</span
-                        >
-                      </li>
-                      <li>
-                        <span class="dropdown-item text-muted"
-                          >Votre proposition d'objet "Chaise" a été acceptée.</span
-                        >
-                      </li>
-                      <li>
-                        <span class="dropdown-item text-muted"
-                          >Votre proposition d'objet "Guitare" a été acceptée.</span
-                        >
-                      </li>
-                    </ul>
-                  </div>
+                <div id="notifications-list"></div>
 
                   <div class="flex-shrink-0 dropdown">
                     <a
@@ -105,10 +73,10 @@ const Navbar = () => {
                     >
                       <img
                         src="${
-                          authenticatedUser.photo
-                            ? API.getEndpoint(`users/${authenticatedUser.id}/photo`)
-                            : noProfilePicture
-                        }"
+              authenticatedUser.photo
+                  ? API.getEndpoint(`users/${authenticatedUser.id}/photo`)
+                  : noProfilePicture
+          }"
                         onerror="this.src='${noProfilePicture}'"
                         alt="avatar"
                         width="32"
@@ -119,8 +87,8 @@ const Navbar = () => {
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow">
                       <li><a class="dropdown-item" href="#" data-uri="/user/${
-                        authenticatedUser.id
-                      }">Mon profil</a></li>
+              authenticatedUser.id
+          }">Mon profil</a></li>
                       <li>
                         <a class="dropdown-item" href="#" data-uri="/logout">Se déconnecter</a>
                       </li>
@@ -128,7 +96,7 @@ const Navbar = () => {
                   </div>
                 </div>
               `
-            : `
+          : `
                 <div class="d-flex align-items-center">
                   <ul class="navbar-nav">
                     <li class="nav-item">
@@ -140,11 +108,85 @@ const Navbar = () => {
                   </ul>
                 </div>
               `
-        }
+  }
       </div>
     </nav>
   `;
+
   navbarWrapper.innerHTML = navbar;
+
+  if (authenticatedUser) {
+
+    API.get(`notifications/user/${authenticatedUser.id}`).then(
+        notificationsAPI => {
+          if (notificationsAPI !== null) {
+            renderNotifications(notificationsAPI);
+          }
+        })
+    .catch((err) => {
+      renderError(err.message);
+    });
+  }
+
+  async function renderNotifications(notifications) {
+
+    const numberNotificationsUnSeen = notifications.filter(
+        notification => !notification.read).length;
+
+    const notificationsList = document.getElementById('notifications-list');
+
+    notificationsList.innerHTML = `
+      <div class="dropdown align-self-center">
+      <a
+                      href="#"
+                      class="nav-link"
+                      data-bs-toggle="dropdown"
+                      data-bs-auto-close="outside"
+                      aria-expanded="false"
+                    >
+                      <i class="bi bi-bell" style="font-size: 1.5em"></i>
+                      ${numberNotificationsUnSeen >= 1 ?
+        `<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        ${numberNotificationsUnSeen}
+                      </span>` : ''}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow">
+                    ${notifications
+    .map(
+        (notification) => `
+                      <li>
+  ${notification.read === true
+            ? `<a href="#" data-id="${notification.idObject}" data-id-read="${notification.id}" class="dropdown-item text-muted">${notification.notificationText}</a>`
+            : `<a href="#" data-id="${notification.idObject}" data-id-read="${notification.id}" class="dropdown-item ">${notification.notificationText}</a>`
+        }
+</li>
+
+                      `,)
+    .join('')}
+                    </ul>
+                    </div>
+    `;
+
+    notificationsList.querySelectorAll('li a[data-id]').forEach((link) => {
+      link.addEventListener('click', (e) => {
+
+        e.preventDefault();
+
+        const idNotification = e.target.dataset.idRead;
+
+        API.patch(`notifications/${idNotification}/read`)
+        .then(() => {
+          Navbar();
+          Navigate(`/object/${e.target.dataset.id}`);
+        })
+        .catch((err) => {
+          renderError(err.message);
+        });
+
+      });
+    });
+
+  }
 
   navbarWrapper.querySelectorAll('[data-uri]').forEach((link) => {
     link.addEventListener('click', (e) => {
@@ -162,17 +204,21 @@ const Navbar = () => {
 
 function setActiveLink() {
   // Remove the active class from all links
-  document.querySelectorAll('#navbarWrapper .active[data-uri]').forEach((activeLink) => {
-    activeLink.classList.remove('active');
-  });
+  document.querySelectorAll('#navbarWrapper .active[data-uri]').forEach(
+      (activeLink) => {
+        activeLink.classList.remove('active');
+      });
 
   const activeLink = document.querySelectorAll(
-    `#navbarWrapper [data-uri="${window.location.pathname}"]`,
+      `#navbarWrapper [data-uri="${window.location.pathname}"]`,
   );
 
-  if (activeLink.length > 0) activeLink.forEach((link) => link.classList.add('active'));
+  if (activeLink.length > 0) {
+    activeLink.forEach(
+        (link) => link.classList.add('active'));
+  }
 }
 
-export { setActiveLink };
+export {setActiveLink};
 
 export default Navbar;

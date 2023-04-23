@@ -2,6 +2,7 @@ package be.vinci.pae.ucc.notification;
 
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.notification.NotificationDTO;
+import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.notification.NotificationDAO;
 import jakarta.inject.Inject;
@@ -43,14 +44,13 @@ public class NotificationUCCImpl implements NotificationUCC {
   }
 
   /**
-   * Creates a NotificationDTO to notify the user that the object with the given ID has been
-   * accepted.
+   * Creates a NotificationDTO to notify the user that the object as been accepted or refused.
    *
-   * @param idObject the ID of the object that has been accepted
+   * @param objectDTO the object to create a notification from
    * @return a NotificationDTO object containing the notification message
    */
   @Override
-  public NotificationDTO createAcceptedObjectNotification(int idObject, int idUser) {
+  public NotificationDTO createAcceptedRefusedObjectNotification(ObjectDTO objectDTO) {
 
     myDalServices.startTransaction();
 
@@ -58,19 +58,30 @@ public class NotificationUCCImpl implements NotificationUCC {
 
       NotificationDTO notificationDTO = domainFactory.getNotification();
 
-      notificationDTO.setIdObject(idObject);
-      notificationDTO.setNotificationText("Votre objet a été accepté !");
+      notificationDTO.setIdObject(objectDTO.getId());
+
+      if (!objectDTO.getStatus().equals("accepté") && !objectDTO.getStatus().equals("refusé")) {
+        return null;
+      }
+
+      if (objectDTO.getStatus().equals("accepté")) {
+        notificationDTO.setNotificationText("Votre objet a été accepté !");
+      } else {
+        notificationDTO.setNotificationText(
+            "Malheureusement votre objet a été refusé : " + objectDTO.getReasonForRefusal());
+      }
 
       NotificationDTO notificationDTOFromDb = myNotificationDAO.createAcceptedObjectNotification(
           notificationDTO);
 
       notificationDTOFromDb.setRead(false);
-      notificationDTOFromDb.setIdUser(idUser);
+      notificationDTOFromDb.setIdUser(objectDTO.getUser().getId());
       NotificationDTO notificationDTOReturn = myNotificationDAO.createAcceptedObjectUserNotification(
           notificationDTOFromDb);
 
       notificationDTOReturn.setNotificationText(notificationDTOFromDb.getNotificationText());
       notificationDTOReturn.setIdObject(notificationDTOFromDb.getIdObject());
+
       return notificationDTOReturn;
 
     } catch (Exception e) {
@@ -98,8 +109,7 @@ public class NotificationUCCImpl implements NotificationUCC {
       NotificationDTO notificationDTO = domainFactory.getNotification();
 
       notificationDTO.setIdObject(idObject);
-      notificationDTO.setNotificationText(
-          "Un nouvel objet vient d'être proposé");
+      notificationDTO.setNotificationText("Un nouvel objet vient d'être proposé");
 
       NotificationDTO notificationDTOWithoutUser = myNotificationDAO.createAcceptedObjectNotification(
           notificationDTO);

@@ -55,6 +55,11 @@ public class NotificationResource {
     return jsonMapper.valueToTree(myNotificationUCC.getNotificationsByUserID(id));
   }
 
+  /**
+   * Mark a notification as read.
+   *
+   * @return a NotificationDTO
+   */
   @PATCH
   @Path("/{id}/read")
   @Produces(MediaType.APPLICATION_JSON)

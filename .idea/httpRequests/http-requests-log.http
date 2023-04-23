@@ -1,4 +1,30 @@
 GET http://localhost:3000/notifications/user/2
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4Mjg1ODE1NSwidXNlciI6Mn0.P4YvwAjhLGpNq3cfPWze0ELcJyLPXEvWh0L4iyDhqzM
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-04-23T143559.200.json
+
+###
+
+POST http://localhost:3000/users/login
+Content-Type: application/json
+Content-Length: 70
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "email": "constantine@ressourcerie.be",
+  "password": "password"
+}
+
+<> 2023-04-23T143555.200.json
+
+###
+
+GET http://localhost:3000/notifications/user/2
 Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4MjgwMjQ5NiwidXNlciI6Mn0.sKrS-BzFl5V1RSGtG_RY8bCXrh_mVEi0RTFG5vtw2iU
 Connection: Keep-Alive
 User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
@@ -558,39 +584,6 @@ Accept-Encoding: br,deflate,gzip,x-gzip
 }
 
 <> 2023-04-22T180740.200.json
-
-###
-
-PATCH http://localhost:3000/objects/status/7
-Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTY4Mjc4MTY3MSwidXNlciI6MX0.aJpvUqSxnxgFq5Am1bWV5pLAI879ESHVq4ChGrR-1kA
-Content-Length: 45
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-{
-  "status": "accepté",
-  "versionNbr": 1
-}
-
-<> 2023-04-22T172115.200.json
-
-###
-
-POST http://localhost:3000/users/login
-Content-Type: application/json
-Content-Length: 63
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-{
-  "email": "riez@ressourcerie.be",
-  "password": "password"
-}
-
-<> 2023-04-22T172111.200.json
 
 ###
 
