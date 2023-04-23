@@ -22,7 +22,7 @@ const AdminOffersPage = () => {
 };
 
 function renderAdminOffersPage() {
-  let searchQuery = '';
+  // let searchQuery = '';
   const main = document.querySelector('main');
   const div = document.createElement('div');
   div.className = 'container my-5';
@@ -84,32 +84,6 @@ function renderAdminOffersPage() {
       <div class="spinner-border" role="status"></div>
     </div>
   `;
-  div.querySelector('form').addEventListener('keyup', (e) => {
-    e.preventDefault();
-
-    const search = document.getElementById('input-text').value;
-    const minPrice = document.getElementById('input-minPrice').value;
-    const maxPrice = document.getElementById('input-maxPrice').value;
-    const date = document.getElementById('input-receipt-date').value;
-    const typeFilters = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
-
-    renderOffers(minPrice, maxPrice, date, search, typeFilters);
-  });
-
-  const checkboxes = div.querySelectorAll('.form-filter');
-  checkboxes.forEach((checkbox) => {
-    checkbox.addEventListener('change', () => {
-      const search = document.getElementById('input-text').value;
-      const minPrice = document.getElementById('input-minPrice').value;
-      const maxPrice = document.getElementById('input-maxPrice').value;
-      const date = document.getElementById('input-receipt-date').value;
-      const typeFilter = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
-
-      renderOffers(minPrice, maxPrice, date, search, typeFilter);
-    });
-  });
-
-
 
   const enableDates = [];
 
@@ -121,7 +95,6 @@ function renderAdminOffersPage() {
   }).catch((err) => {
     renderError(err.message);
   });
-
 
   const descriptions = [];
 
@@ -143,17 +116,19 @@ function renderAdminOffersPage() {
 
   div.querySelector('form').addEventListener('keyup', (e) => {
     e.preventDefault();
-    const search = e.target.value;
+
+    const search = document.getElementById('search-bar').value;
     const minPrice = document.getElementById('input-minPrice').value;
     const maxPrice = document.getElementById('input-maxPrice').value;
     const date = document.getElementById('input-receipt-date').value;
     const type = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
 
-    e.currentTarget.dispatchEvent(new Event('submit'));
+    // e.currentTarget.dispatchEvent(new Event('submit'));
+
     API.get(`objects/offers?query=${encodeURIComponent(search)}`)
-    .then((objects) => {
-      if(objects !== null){
-        renderOffers(filterObjects(objects, minPrice, maxPrice, date, type));
+    .then((offers) => {
+      if(offers !== null){
+        renderOffers(filterOffers(offers, minPrice, maxPrice, date, type));
       }
     })
     .catch((err) => {
@@ -161,6 +136,30 @@ function renderAdminOffersPage() {
     });
   });
 
+  div.querySelectorAll('.form-filter').forEach((e) => {
+    e.addEventListener('change', () => {
+
+      const search = document.getElementById('search-bar').value;
+      const minPrice = document.getElementById('input-minPrice').value;
+      const maxPrice = document.getElementById('input-maxPrice').value;
+      const date = document.getElementById('input-receipt-date').value;
+      const type = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
+
+      // e.dispatchEvent(new Event('submit'));
+
+      API.get(`objects/offers?query=${encodeURIComponent(search)}`)
+      .then((offers) => {
+        if(offers !== null){
+          renderOffers(filterOffers(offers, minPrice, maxPrice, date, type));
+        }
+      })
+      .catch((err) => {
+        renderError(err.message);
+      });
+    });
+  });
+
+/*
   div.querySelector('form').addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -176,23 +175,25 @@ function renderAdminOffersPage() {
     API.get(`objects/offers?query=${encodeURIComponent(searchQuery)}`)
     .then((offers) => {
       if(offers !== null){
-        renderOffers(filterObjects(offers, minPrice, maxPrice, date, type));
+        renderOffers(filterOffers(offers, minPrice, maxPrice, date, type));
       }
     })
     .catch((err) => {
       renderError(err.message);
     });
   });
+
+ */
 }
 
-async function renderOffers(offers) {
+async function renderOffers(offersFiltered) {
   const offersList = document.getElementById('offers-list');
 
   offersList.innerHTML = `
       <div class="container mt-5 mb-5">
           <div class="d-flex justify-content-center row">
               <div class="col-md-10">
-                  ${offers
+                  ${offersFiltered
                     .map(
                       (offer) => `
                       <div class="row p-2 bg-white border rounded">
@@ -243,8 +244,8 @@ async function renderOffers(offers) {
       </div>
     `;
 
-  setUserOrPhoneNumber(document, 'div-user', offers);
-  setRemainingTime('div-remaining-time', offers);
+  setUserOrPhoneNumber(document, 'div-user', offersFiltered);
+  setRemainingTime('div-remaining-time', offersFiltered);
 
   offersList.querySelectorAll('a[data-id]').forEach((link) => {
     link.addEventListener('click', (e) => {
@@ -293,7 +294,7 @@ function renderDatePicker(datePickerId, availabilities) {
   });
 }
 
-function filterObjects(offers, minPrice, maxPrice, date, type){
+function filterOffers(offers, minPrice, maxPrice, date, type){
   return  offers.filter((object) => {
     if (minPrice && object.price < minPrice) {
       return false;
