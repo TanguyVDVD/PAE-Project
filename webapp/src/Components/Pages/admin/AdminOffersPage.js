@@ -123,8 +123,6 @@ function renderAdminOffersPage() {
     const date = document.getElementById('input-receipt-date').value;
     const type = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
 
-    // e.currentTarget.dispatchEvent(new Event('submit'));
-
     API.get(`objects/offers?query=${encodeURIComponent(search)}`)
     .then((offers) => {
       if(offers !== null){
@@ -145,8 +143,6 @@ function renderAdminOffersPage() {
       const date = document.getElementById('input-receipt-date').value;
       const type = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
 
-      // e.dispatchEvent(new Event('submit'));
-
       API.get(`objects/offers?query=${encodeURIComponent(search)}`)
       .then((offers) => {
         if(offers !== null){
@@ -159,31 +155,6 @@ function renderAdminOffersPage() {
     });
   });
 
-/*
-  div.querySelector('form').addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const search = e.target.querySelector('input').value;
-    const minPrice = document.getElementById('input-minPrice').value;
-    const maxPrice = document.getElementById('input-maxPrice').value;
-    const date = document.getElementById('input-receipt-date').value;
-    const type = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
-
-    if (search === searchQuery) return;
-    searchQuery = search;
-
-    API.get(`objects/offers?query=${encodeURIComponent(searchQuery)}`)
-    .then((offers) => {
-      if(offers !== null){
-        renderOffers(filterOffers(offers, minPrice, maxPrice, date, type));
-      }
-    })
-    .catch((err) => {
-      renderError(err.message);
-    });
-  });
-
- */
 }
 
 async function renderOffers(offersFiltered) {
