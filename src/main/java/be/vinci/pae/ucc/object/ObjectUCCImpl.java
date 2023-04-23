@@ -131,11 +131,12 @@ public class ObjectUCCImpl implements ObjectUCC {
         return null;
       }
 
-      System.out.println("////////////" + object.getUser().getId());
+      ObjectDTO objectDTOToReturn = myObjectDAO.setStatusToAccepted(id, LocalDate.now(),
+          versionNumber);
 
-      myNotificationUCC.createAcceptedRefusedObjectNotification(object);
+      myNotificationUCC.createAcceptedRefusedObjectNotification(objectDTOToReturn);
 
-      return myObjectDAO.setStatusToAccepted(id, LocalDate.now(), versionNumber);
+      return objectDTOToReturn;
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
 
@@ -169,7 +170,12 @@ public class ObjectUCCImpl implements ObjectUCC {
         return null;
       }
 
-      return myObjectDAO.setStatusToRefused(id, reasonForRefusal, LocalDate.now(), versionNumber);
+      ObjectDTO objectDTOToReturn = myObjectDAO.setStatusToRefused(id, reasonForRefusal,
+          LocalDate.now(), versionNumber);
+
+      myNotificationUCC.createAcceptedRefusedObjectNotification(objectDTOToReturn);
+
+      return objectDTOToReturn;
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
 

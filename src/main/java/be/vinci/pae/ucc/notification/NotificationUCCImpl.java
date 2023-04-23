@@ -71,12 +71,12 @@ public class NotificationUCCImpl implements NotificationUCC {
             "Malheureusement votre objet a été refusé : " + objectDTO.getReasonForRefusal());
       }
 
-      NotificationDTO notificationDTOFromDb = myNotificationDAO.createAcceptedObjectNotification(
+      NotificationDTO notificationDTOFromDb = myNotificationDAO.createObjectNotification(
           notificationDTO);
 
       notificationDTOFromDb.setRead(false);
       notificationDTOFromDb.setIdUser(objectDTO.getUser().getId());
-      NotificationDTO notificationDTOReturn = myNotificationDAO.createAcceptedObjectUserNotification(
+      NotificationDTO notificationDTOReturn = myNotificationDAO.createObjectUserNotification(
           notificationDTOFromDb);
 
       notificationDTOReturn.setNotificationText(notificationDTOFromDb.getNotificationText());
@@ -111,7 +111,7 @@ public class NotificationUCCImpl implements NotificationUCC {
       notificationDTO.setIdObject(idObject);
       notificationDTO.setNotificationText("Un nouvel objet vient d'être proposé");
 
-      NotificationDTO notificationDTOWithoutUser = myNotificationDAO.createAcceptedObjectNotification(
+      NotificationDTO notificationDTOWithoutUser = myNotificationDAO.createObjectNotification(
           notificationDTO);
 
       List<Integer> listAllHelpers = myNotificationDAO.getAllHelperId();
@@ -119,7 +119,7 @@ public class NotificationUCCImpl implements NotificationUCC {
       for (int i = 0; i < listAllHelpers.size(); i++) {
         notificationDTOWithoutUser.setIdUser(listAllHelpers.get(i));
         notificationDTOWithoutUser.setRead(false);
-        myNotificationDAO.createAcceptedObjectUserNotification(notificationDTOWithoutUser);
+        myNotificationDAO.createObjectUserNotification(notificationDTOWithoutUser);
       }
 
       return notificationDTOWithoutUser;

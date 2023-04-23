@@ -22,6 +22,12 @@ public class NotificationDAOImpl implements NotificationDAO {
   @Inject
   private DomainFactory myDomainFactory;
 
+  /**
+   * Map a ResultSet to a NotificationDTO from notifications tables.
+   *
+   * @param resultSet the ResultSet
+   * @return the NotificationDTO
+   */
   public NotificationDTO dtoFromRS(ResultSet resultSet) {
 
     NotificationDTO notificationDTO = myDomainFactory.getNotification();
@@ -37,6 +43,12 @@ public class NotificationDAOImpl implements NotificationDAO {
     return notificationDTO;
   }
 
+  /**
+   * Map a ResultSet to a NotificationDTO from notifications tables and user_notifications tables.
+   *
+   * @param resultSet the ResultSet
+   * @return the NotificationDTO
+   */
   public NotificationDTO dtoFromRSAll(ResultSet resultSet) {
 
     NotificationDTO notificationDTO = myDomainFactory.getNotification();
@@ -55,6 +67,12 @@ public class NotificationDAOImpl implements NotificationDAO {
   }
 
 
+  /**
+   * Map a ResultSet to a NotificationDTO from notifications_users tables.
+   *
+   * @param resultSet the ResultSet
+   * @return the NotificationDTO
+   */
   public NotificationDTO dtoFromRSUser(ResultSet resultSet) {
 
     NotificationDTO notificationDTO = myDomainFactory.getNotification();
@@ -98,8 +116,15 @@ public class NotificationDAOImpl implements NotificationDAO {
     return objects;
   }
 
+  /**
+   * Creates a new object notification with the provided notification data and returns the created
+   * notification.
+   *
+   * @param notificationDTO the data of the notification to be created
+   * @return the created notification
+   */
   @Override
-  public NotificationDTO createAcceptedObjectNotification(NotificationDTO notificationDTO) {
+  public NotificationDTO createObjectNotification(NotificationDTO notificationDTO) {
 
     String request = "INSERT INTO pae.notifications VALUES (DEFAULT, ?, ?);";
 
@@ -121,8 +146,14 @@ public class NotificationDAOImpl implements NotificationDAO {
 
   }
 
-  @Override
-  public NotificationDTO createAcceptedObjectUserNotification(NotificationDTO notificationDTO) {
+  /**
+   * Creates a new user notification with the provided notification data and returns the created
+   * notification.
+   *
+   * @param notificationDTO the data of the notification to be created
+   * @return the created notification
+   */
+  public NotificationDTO createObjectUserNotification(NotificationDTO notificationDTO) {
 
     String request = "INSERT INTO pae.users_notifications VALUES (?, ?, ?);";
 
@@ -145,6 +176,12 @@ public class NotificationDAOImpl implements NotificationDAO {
 
   }
 
+  /**
+   * Marks the provided notification as read and returns the updated notification data.
+   *
+   * @param notificationDTO the notification data to be marked as read
+   * @return the updated notification data
+   */
   @Override
   public NotificationDTO markANotificationAsRead(NotificationDTO notificationDTO) {
 
@@ -164,6 +201,11 @@ public class NotificationDAOImpl implements NotificationDAO {
     return notificationDTO;
   }
 
+  /**
+   * Returns a list of all helper IDs.
+   *
+   * @return a list of all helper IDs
+   */
   public List<Integer> getAllHelperId() {
     String request = "SELECT id_user FROM pae.users WHERE role='aidant' OR role='responsable'";
     ArrayList<Integer> helpers = new ArrayList<>();
