@@ -436,4 +436,23 @@ class ObjectUCCImplTest {
         "updatePhoto did not throw an exception");
   }
 
+  @DisplayName("Add new object")
+  @Test
+  void addObject() {
+    ObjectDTO object = Mockito.mock(ObjectImpl.class);
+    Mockito.when(objectDAO.insert(object)).thenReturn(object);
+
+    assertEquals(object, objectUCC.add(object), "addObject did not return the correct object");
+  }
+
+  @DisplayName("Exception when adding new object")
+  @Test
+  void exceptionAddObject() {
+    ObjectDTO object = Mockito.mock(ObjectImpl.class);
+    Mockito.when(objectDAO.insert(object)).thenThrow(new DALException(""));
+
+    assertThrows(DALException.class, () -> objectUCC.add(object),
+        "addObject did not throw an exception");
+  }
+
 }
