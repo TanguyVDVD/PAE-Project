@@ -19,11 +19,11 @@ const AdminObjectsPage = () => {
 
   clearPage();
   renderAdminObjectsPage();
-  renderObjects();
+  // renderObjects();
 };
 
 function renderAdminObjectsPage() {
-  let searchQuery = '';
+  // let searchQuery = '';
   const main = document.querySelector('main');
   const div = document.createElement('div');
   div.className = 'container my-5';
@@ -75,31 +75,7 @@ function renderAdminObjectsPage() {
     </form>
     <div id="objects-list"></div>
   `;
-  /*
-    div.querySelector('form').addEventListener('keyup', (e) => {
-      e.preventDefault();
 
-      const search = document.getElementById('input-text').value;
-      const minPrice = document.getElementById('input-minPrice').value;
-      const maxPrice = document.getElementById('input-maxPrice').value;
-      const date = document.getElementById('input-receipt-date').value;
-      const typeFilters = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
-
-      renderObjects(minPrice, maxPrice, date, search, typeFilters);
-    });
-
-    div.querySelectorAll('.form-filter').forEach((checkbox) => {
-      checkbox.addEventListener('change', () => {
-        const search = document.getElementById('input-text').value;
-        const minPrice = document.getElementById('input-minPrice').value;
-        const maxPrice = document.getElementById('input-maxPrice').value;
-        const date = document.getElementById('input-receipt-date').value;
-        const typeFilter = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
-
-        renderObjects(minPrice, maxPrice, date, search, typeFilter);
-      });
-    });
-  */
   main.appendChild(div);
 
   const objectslist = document.getElementById('objects-list');
@@ -110,27 +86,24 @@ function renderAdminObjectsPage() {
     </div>
   `;
 
-  const enableDates = [];
+  let enableDates = [];
 
-  API.get('/availabilities').then((availabilities) => {
-    availabilities.forEach((item) => {
-      enableDates.push(invertDateFormat(item.date));
-    });
-    renderDatePicker("#input-receipt-date",enableDates);
+  API.get('/availabilities')
+    .then((availabilities) => {
+      enableDates = availabilities.map((item) => invertDateFormat(item.date));
+      renderDatePicker("#input-receipt-date",enableDates);
   }).catch((err) => {
     renderError(err.message);
   });
 
-  const descriptions = [];
+  let descriptions = [];
 
   API.get(`objects?query=${encodeURIComponent("")}`)
   .then((objects) => {
-    if(objects !== null){
+    if (objects !== null) {
       renderObjects(objects);
-
-      objects.forEach((object) => {
-        descriptions.push(object.description);
-      });
+      descriptions = objects.map((object) => object.description);
+      encodingHelp(descriptions);
     }
 
     encodingHelp(descriptions);
@@ -141,13 +114,14 @@ function renderAdminObjectsPage() {
 
   div.querySelector('form').addEventListener('keyup', (e) => {
     e.preventDefault();
+
     const search = document.getElementById('search-bar').value;
     const minPrice = document.getElementById('input-minPrice').value;
     const maxPrice = document.getElementById('input-maxPrice').value;
     const date = document.getElementById('input-receipt-date').value;
     const type = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
 
-    e.currentTarget.dispatchEvent(new Event('submit'));
+    // e.currentTarget.dispatchEvent(new Event('submit'));
 
     API.get(`objects?query=${encodeURIComponent(search)}`)
     .then((objects) => {
@@ -169,7 +143,7 @@ function renderAdminObjectsPage() {
     const date = document.getElementById('input-receipt-date').value;
     const type = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
 
-    e.dispatchEvent(new Event('submit'));
+    // e.dispatchEvent(new Event('submit'));
 
     API.get(`objects?query=${encodeURIComponent(search)}`)
       .then((objects) => {
@@ -183,7 +157,7 @@ function renderAdminObjectsPage() {
     });
   });
 
-
+/*
   div.querySelector('form').addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -205,6 +179,8 @@ function renderAdminObjectsPage() {
       renderError(err.message);
     });
   });
+
+ */
 }
 
 async function renderObjects(objectsFiltered) {
@@ -367,7 +343,7 @@ function renderDatePicker(datePickerId, availabilities) {
   });
 }
 
-function filterObjects(objects, minPrice, date,maxPrice, types){
+function filterObjects(objects, minPrice,maxPrice, date, types){
   return objects.filter((object) => {
     if (minPrice && object.price < minPrice) {
       return false;
