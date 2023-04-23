@@ -93,13 +93,21 @@ public class ObjectDAOImpl implements ObjectDAO {
    * Get all objects.
    *
    * @param query query to filter objects
+   * @param type  type of the object
    * @return the list of objects
    */
   @Override
-  public List<ObjectDTO> getAll(String query) {
+  public List<ObjectDTO> getAll(String query, Integer type) {
     String request = "SELECT * FROM pae.objects o, pae.object_types ot "
-        + "WHERE o.id_object_type = ot.id_object_type AND LOWER(o.description || ' ' || ot.label) "
-        + "LIKE CONCAT('%', ?, '%') ORDER BY id_object;";
+        + "WHERE o.id_object_type = ot.id_object_type ";
+
+    request += "AND LOWER(o.description || ' ' || ot.label) LIKE CONCAT('%', ?, '%') ";
+
+    if (type != null) {
+      request += "AND o.id_object_type = " + type + " ";
+    }
+
+    request += "ORDER BY id_object;";
 
     ArrayList<ObjectDTO> objects = new ArrayList<>();
 
