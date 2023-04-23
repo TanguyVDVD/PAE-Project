@@ -1,5 +1,7 @@
 package be.vinci.pae.domain.notification;
 
+import be.vinci.pae.domain.object.ObjectDTO;
+
 /**
  * NotificationImpl class that implements the NotificationDTO interface Contains all the attribute
  * of a notification.
@@ -113,4 +115,30 @@ public class NotificationImpl implements Notification {
     this.objectId = id;
   }
 
+  @Override
+  public NotificationDTO setUpNotificationText(ObjectDTO objectDTO,
+      NotificationDTO notificationDTO) {
+
+    notificationDTO.setIdObject(objectDTO.getId());
+
+    if (!objectDTO.getStatus().equals("accepté") && !objectDTO.getStatus().equals("refusé")) {
+      return null;
+    }
+
+    if (objectDTO.getStatus().equals("accepté")) {
+      notificationDTO.setNotificationText("Votre objet a été accepté !");
+    } else {
+      notificationDTO.setNotificationText(
+          "Malheureusement votre objet a été refusé : " + objectDTO.getReasonForRefusal());
+    }
+    return notificationDTO;
+  }
+
+  @Override
+  public NotificationDTO setUpNotificationUser(NotificationDTO notificationDTO, int idObject) {
+    System.out.println("///////////" + notificationDTO);
+    notificationDTO.setRead(false);
+    notificationDTO.setIdUser(idObject);
+    return notificationDTO;
+  }
 }

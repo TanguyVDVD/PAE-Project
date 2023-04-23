@@ -1,6 +1,7 @@
 package be.vinci.pae.ucc.notification;
 
 import be.vinci.pae.domain.DomainFactory;
+import be.vinci.pae.domain.notification.Notification;
 import be.vinci.pae.domain.notification.NotificationDTO;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.services.DALServices;
@@ -58,26 +59,35 @@ public class NotificationUCCImpl implements NotificationUCC {
 
       NotificationDTO notificationDTO = domainFactory.getNotification();
 
-      notificationDTO.setIdObject(objectDTO.getId());
-
-      if (!objectDTO.getStatus().equals("accepté") && !objectDTO.getStatus().equals("refusé")) {
-        return null;
-      }
-
-      if (objectDTO.getStatus().equals("accepté")) {
-        notificationDTO.setNotificationText("Votre objet a été accepté !");
-      } else {
-        notificationDTO.setNotificationText(
-            "Malheureusement votre objet a été refusé : " + objectDTO.getReasonForRefusal());
-      }
-
-      NotificationDTO notificationDTOFromDb = myNotificationDAO.createObjectNotification(
+      NotificationDTO notificationDTO1 = ((Notification) notificationDTO).setUpNotificationText(
+          objectDTO,
           notificationDTO);
 
-      notificationDTOFromDb.setRead(false);
-      notificationDTOFromDb.setIdUser(objectDTO.getUser().getId());
+      /**
+       notificationDTO.setIdObject(objectDTO.getId());
+
+       if (!objectDTO.getStatus().equals("accepté") && !objectDTO.getStatus().equals("refusé")) {
+       return null;
+       }
+
+       if (objectDTO.getStatus().equals("accepté")) {
+       notificationDTO.setNotificationText("Votre objet a été accepté !");
+       } else {
+       notificationDTO.setNotificationText(
+       "Malheureusement votre objet a été refusé : " + objectDTO.getReasonForRefusal());
+       }
+       */
+
+      NotificationDTO notificationDTOFromDb = myNotificationDAO.createObjectNotification(
+          notificationDTO1);
+
+      System.out.println("///////////////////" + notificationDTO1.toString());
+
+      NotificationDTO notificationDTO2 = ((Notification) notificationDTO1).setUpNotificationUser(
+          notificationDTOFromDb, objectDTO.getUser().getId());
+
       NotificationDTO notificationDTOReturn = myNotificationDAO.createObjectUserNotification(
-          notificationDTOFromDb);
+          notificationDTO2);
 
       notificationDTOReturn.setNotificationText(notificationDTOFromDb.getNotificationText());
       notificationDTOReturn.setIdObject(notificationDTOFromDb.getIdObject());
