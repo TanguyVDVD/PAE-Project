@@ -10,7 +10,7 @@ import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
 const AdminOffersPage = () => {
   const authenticatedUser = getAuthenticatedUser();
 
-  if (!authenticatedUser || authenticatedUser.role === null) {
+  if (!authenticatedUser || authenticatedUser.role === 'utilisateur') {
     Navigate('/');
     return;
   }
