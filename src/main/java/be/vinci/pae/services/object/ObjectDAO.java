@@ -13,9 +13,10 @@ public interface ObjectDAO {
    * Get all objects.
    *
    * @param query query to filter objects
+   * @param type  type of the object
    * @return the list of objects
    */
-  List<ObjectDTO> getAll(String query);
+  List<ObjectDTO> getAll(String query, Integer type);
 
   /**
    * Get all objects by user.
