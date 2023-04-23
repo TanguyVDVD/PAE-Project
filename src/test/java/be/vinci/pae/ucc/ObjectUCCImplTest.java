@@ -327,17 +327,18 @@ class ObjectUCCImplTest {
     ObjectDTO object = Mockito.mock(ObjectImpl.class);
 
     objects.add(object);
-    Mockito.when(objectDAO.getAll("")).thenReturn(objects);
+    Mockito.when(objectDAO.getAll("", null)).thenReturn(objects);
 
-    assertEquals(objects, objectUCC.getObjects(""), "getObjects() did not return the correct list");
+    assertEquals(objects, objectUCC.getObjects("", null),
+        "getObjects() did not return the correct list");
   }
 
   @DisplayName("Exception when getting list of all objects")
   @Test
   void exceptionWhenGettingAllObjects() {
-    Mockito.when(objectDAO.getAll("")).thenThrow(new DALException(""));
+    Mockito.when(objectDAO.getAll("", null)).thenThrow(new DALException(""));
 
-    assertThrows(Exception.class, () -> objectUCC.getObjects(""),
+    assertThrows(Exception.class, () -> objectUCC.getObjects("", null),
         "getObjects() did not throw an exception");
   }
 
