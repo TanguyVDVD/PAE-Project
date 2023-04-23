@@ -234,7 +234,10 @@ main > .alert:first-child {
   --scroller-hover-factor: 0.8;
   --scroller-thumb: hsl(var(--scroller-color), var(--scroller-color-lightness));
   /* Replicate hover for webkit */
-  --scroller-thumb-hover: hsl(var(--scroller-color), calc(var(--scroller-color-lightness) * var(--scroller-hover-factor)));
+  --scroller-thumb-hover: hsl(
+    var(--scroller-color),
+    calc(var(--scroller-color-lightness) * var(--scroller-hover-factor))
+  );
   --scroller-background: hsl(var(--scroller-color), calc(var(--scroller-bg-lightness)));
   scrollbar-color: var(--scroller-thumb) var(--scroller-background);
   scrollbar-width: thin;
@@ -254,4 +257,21 @@ main > .alert:first-child {
 
 .autocomplete-menu::-webkit-scrollbar-thumb:hover {
   background: var(--scroller-thumb-hover);
+}
+
+// Styles for the loading state of a form
+.loading {
+  button[type='submit'] {
+    @extend :disabled;
+
+    &::before {
+      content: '';
+      width: 1em;
+      height: 1em;
+      margin-right: 0.5em;
+      border-width: 0.15em;
+
+      @extend .spinner-border;
+    }
+  }
 }

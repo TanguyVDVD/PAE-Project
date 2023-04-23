@@ -133,6 +133,7 @@ function renderRegisterForm() {
 
     if (isSubmitting) return;
     isSubmitting = true;
+    registerForm.classList.add('loading');
 
     renderError();
 
@@ -154,6 +155,7 @@ function renderRegisterForm() {
       })
       .finally(() => {
         isSubmitting = false;
+        registerForm.classList.remove('loading');
       });
   });
 

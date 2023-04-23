@@ -150,12 +150,12 @@ function renderUserPage(user) {
 
   main.replaceChildren(userPage);
 
-  renderObjects(true);
   fetchObjects(user);
 }
 
 async function fetchObjects(user) {
-  if (objects.length === 0)
+  if (objects.length === 0) {
+    renderObjects(true);
     API.get(`objects/user/${user.id}`)
       .then((result) => {
         objects.push(...result);
@@ -165,6 +165,9 @@ async function fetchObjects(user) {
       .catch((error) => {
         renderError(error.message);
       });
+  } else {
+    renderObjects();
+  }
 }
 
 function renderObjects(placeholder = false) {
@@ -457,6 +460,7 @@ function renderEditProfile(user) {
     }
 
     formIsSubmitting = true;
+    editProfileForm.classList.add('loading');
     promises
       .reduce((p, next) => p.then(next), Promise.resolve())
       .then((res) => {
@@ -472,6 +476,7 @@ function renderEditProfile(user) {
       })
       .finally(() => {
         formIsSubmitting = false;
+        editProfileForm.classList.remove('loading');
       });
   });
 
