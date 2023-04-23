@@ -1,6 +1,6 @@
 import Navigate from '../Router/Navigate';
 import { clearPage } from '../../utils/render';
-import { createObjectCard } from '../../utils/objects';
+import { createObjectCard, getObjectTypes } from '../../utils/objects';
 import API from '../../utils/api';
 
 import RessourceRieBrand from '../../img/ressourcerie_brand.svg';
@@ -67,7 +67,7 @@ function renderHomePage() {
             <i class="bi bi-funnel"></i>
           </label>
           <select class="form-select" id="filter-select">
-            <option selected value="">Filtrer par</option>
+            <option selected value="">Tous les types</option>
           </select>
         </div>
       </form>
@@ -90,9 +90,9 @@ function renderHomePage() {
     e.target.form.dispatchEvent(new Event('submit'));
   });
 
-  API.get('/objectTypes').then((response) => {
+  getObjectTypes().then((types) => {
     filterSelect.innerHTML += `
-      ${response
+      ${types
         .map(
           (objectType) => `
           <option value="${objectType.id}">${objectType.label}</option>
@@ -106,11 +106,11 @@ function renderHomePage() {
     e.preventDefault();
 
     const query = searchInput.value;
-    const filter = filterSelect.value;
+    const type = filterSelect.value;
 
     const params = new URLSearchParams();
-    if (query) params.set('search', query);
-    if (filter) params.set('filter', filter);
+    if (query) params.set('query', query);
+    if (type) params.set('type', type);
 
     if (params.toString()) Navigate(`/objects?${params}`);
   });
