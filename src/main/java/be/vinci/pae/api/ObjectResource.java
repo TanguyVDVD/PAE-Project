@@ -96,7 +96,8 @@ public class ObjectResource {
   public ArrayNode getObjectsByUser(@Context ContainerRequest request, @PathParam("id") int id) {
     User authorizedUser = (User) request.getProperty("user");
 
-    if (authorizedUser.getId() != id && authorizedUser.getRole() == null) {
+    if (authorizedUser.getId() != id && !authorizedUser.getRole().equals("aidant")
+        && !authorizedUser.getRole().equals("responsable")) {
       throw new WebApplicationException(
           "Vous n'avez pas le droit de voir les objets de cet utilisateur",
           Status.FORBIDDEN);

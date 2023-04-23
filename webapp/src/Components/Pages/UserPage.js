@@ -26,7 +26,7 @@ const UserPage = (params) => {
     return;
   }
 
-  if (authenticatedUser.role === null && authenticatedUser.id !== id) {
+  if (authenticatedUser.role === 'utilisateur' && authenticatedUser.id !== id) {
     Navigate('/');
     return;
   }

@@ -9,7 +9,7 @@ import {invertDateFormat} from "../../../utils/dates";
 const AdminAvailabilitiesPage = () => {
   const authenticatedUser = getAuthenticatedUser();
 
-  if (!authenticatedUser || authenticatedUser.role === null) {
+  if (!authenticatedUser || authenticatedUser.role === 'utilisateur') {
     Navigate('/');
     return;
   }
