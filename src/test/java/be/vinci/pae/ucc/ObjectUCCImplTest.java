@@ -93,6 +93,7 @@ class ObjectUCCImplTest {
   void cleanUp() {
     Mockito.reset(objectDAO);
     Mockito.reset(notificationDAO);
+    Mockito.reset(notificationUCC);
   }
 
 
