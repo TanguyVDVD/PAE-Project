@@ -78,10 +78,6 @@ class ObjectTypeUCCImplTest {
   @DisplayName("Try to get list of all object types")
   @Test
   void getAllObjectTypesException() {
-    List<ObjectTypeDTO> objectTypes = new ArrayList<>();
-    ObjectTypeDTO objectType = Mockito.mock(ObjectTypeImpl.class);
-
-    objectTypes.add(objectType);
     Mockito.when(objectTypeDAO.getAll()).thenThrow(new DALException(""));
 
     assertThrows(DALException.class, () -> objectTypeUCC.getObjectTypes(),
