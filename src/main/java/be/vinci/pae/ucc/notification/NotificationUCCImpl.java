@@ -57,8 +57,6 @@ public class NotificationUCCImpl implements NotificationUCC {
       return null;
     }
 
-    System.out.println("pas de passage");
-
     myDalServices.startTransaction();
 
     try {
