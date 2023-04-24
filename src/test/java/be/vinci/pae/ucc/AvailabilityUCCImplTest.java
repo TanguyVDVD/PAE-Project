@@ -155,4 +155,17 @@ class AvailabilityUCCImplTest {
     assertThrows(UserException.class, () -> availabilityUCC.deleteOne(availability.getId()),
         "deleteGoodOneButLinked did not throw an exception");
   }
+
+  @DisplayName("Try to delete an availability that it is impossible to know if it is linked")
+  @Test
+  void deleteGoodOneButLinkedReturnsNull() {
+    AvailabilityDTO availability = Mockito.mock(AvailabilityImpl.class);
+
+    Mockito.when(availabilityDAO.deleteOne(availability.getId())).thenReturn(availability);
+    Mockito.when(availabilityDAO.isLinked(availability)).thenReturn(null);
+    Mockito.when(availabilityDAO.getOneById(availability.getId())).thenReturn(availability);
+
+    assertThrows(UserException.class, () -> availabilityUCC.deleteOne(availability.getId()),
+        "deleteGoodOneButLinked did not throw an exception");
+  }
 }
