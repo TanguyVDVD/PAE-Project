@@ -28,6 +28,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+
+/**
+ * Test class for NotificationUCCImpl.
+ */
 public class NotificationUCCImplTest {
 
 
@@ -92,7 +96,7 @@ public class NotificationUCCImplTest {
     Mockito.when(user.getId()).thenReturn(1);
 
     Notification notificationDTOStart = Mockito.mock(NotificationImpl.class);
-    
+
     Mockito.when(domainFactory.getNotification()).thenReturn(notificationDTOStart);
 
     Mockito.when(notificationDTOStart.setUpNotificationText(object, notificationDTOStart))

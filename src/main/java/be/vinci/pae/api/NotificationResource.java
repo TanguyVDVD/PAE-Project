@@ -39,6 +39,7 @@ public class NotificationResource {
   /**
    * Get a list of all notification of a user.
    *
+   * @param id the id of the user
    * @return a list of notifications
    */
   @GET
@@ -58,6 +59,8 @@ public class NotificationResource {
   /**
    * Mark a notification as read.
    *
+   * @param request the request
+   * @param id      the id of the notif
    * @return a NotificationDTO
    */
   @PATCH

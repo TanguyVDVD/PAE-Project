@@ -115,6 +115,13 @@ public class NotificationImpl implements Notification {
     this.objectId = id;
   }
 
+  /**
+   * Set up the notification text based on the object.
+   *
+   * @param objectDTO       the object the notification is from
+   * @param notificationDTO the notification to set up
+   * @return the notification when all attributes are set
+   */
   @Override
   public NotificationDTO setUpNotificationText(ObjectDTO objectDTO,
       NotificationDTO notificationDTO) {
@@ -134,10 +141,17 @@ public class NotificationImpl implements Notification {
     return notificationDTO;
   }
 
+  /**
+   * Set up the notification based on the user.
+   *
+   * @param notificationDTO the notification to set attributes up
+   * @param idUser          the id of the user who receive the notification
+   * @return the notification
+   */
   @Override
-  public NotificationDTO setUpNotificationUser(NotificationDTO notificationDTO, int idObject) {
+  public NotificationDTO setUpNotificationUser(NotificationDTO notificationDTO, int idUser) {
     notificationDTO.setRead(false);
-    notificationDTO.setIdUser(idObject);
+    notificationDTO.setIdUser(idUser);
     return notificationDTO;
   }
 }
