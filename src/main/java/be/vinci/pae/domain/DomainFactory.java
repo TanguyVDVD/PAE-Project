@@ -2,13 +2,14 @@ package be.vinci.pae.domain;
 
 
 import be.vinci.pae.domain.availability.AvailabilityDTO;
+import be.vinci.pae.domain.notification.NotificationDTO;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.domain.objecttype.ObjectTypeDTO;
 import be.vinci.pae.domain.user.UserDTO;
 
 /**
- * DomainFactory interface. representing a factory tor create object objects from the domain The
- * interface contains all the BIZ methods
+ * DomainFactory interface. representing a factory to create objects from the domain The interface
+ * contains all the BIZ methods
  */
 public interface DomainFactory {
 
@@ -39,5 +40,12 @@ public interface DomainFactory {
    * @return a AvailabilityImpl
    */
   AvailabilityDTO getAvailability();
+
+  /**
+   * Returns a new instance of a NotificationDTO.
+   *
+   * @return a NotificationImpl
+   */
+  NotificationDTO getNotification();
 
 }

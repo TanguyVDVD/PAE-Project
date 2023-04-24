@@ -3,8 +3,9 @@ package be.vinci.pae.services.user;
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.services.DalBackendServices;
-import be.vinci.pae.utils.MyLogger;
+import be.vinci.pae.utils.exceptions.DALException;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.NotFoundException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,7 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 
@@ -38,6 +38,7 @@ public class UserDAOImpl implements UserDAO {
 
     try {
       user.setId(resultSet.getInt("id_user"));
+      user.setVersionNumber(resultSet.getInt("version_number"));
       user.setLastName(resultSet.getString("last_name"));
       user.setFirstName(resultSet.getString("first_name"));
       user.setPhoneNumber(resultSet.getString("phone_number"));
@@ -46,9 +47,8 @@ public class UserDAOImpl implements UserDAO {
       user.setPhoto(resultSet.getBoolean("photo"));
       user.setRegisterDate(resultSet.getDate("register_date").toLocalDate());
       user.setRole(resultSet.getString("role"));
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "error dto from RS USer");
-      se.printStackTrace();
+    } catch (Exception e) {
+      throw new DALException("Error during the mapping of the user", e);
     }
 
     return user;
@@ -58,35 +58,35 @@ public class UserDAOImpl implements UserDAO {
    * Insert a new user in the db.
    *
    * @param userDTO the user to insert in the db
-   * @return id of the new user if succeeded, -1 if not
+   * @return the user inserted in the db
    */
   @Override
-  public int insert(UserDTO userDTO) {
-    String request = "INSERT INTO" + " pae.users VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?);";
+  public UserDTO insert(UserDTO userDTO) {
+    String request = "INSERT INTO" + " pae.users VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request, true)) {
-      ps.setString(1, userDTO.getLastName());
-      ps.setString(2, userDTO.getFirstName());
-      ps.setString(3, userDTO.getPhoneNumber());
-      ps.setString(4, userDTO.getEmail());
-      ps.setString(5, userDTO.getPassword());
-      ps.setBoolean(6, userDTO.getPhoto());
+      ps.setInt(1, userDTO.getVersionNumber());
+      ps.setString(2, userDTO.getLastName());
+      ps.setString(3, userDTO.getFirstName());
+      ps.setString(4, userDTO.getPhoneNumber());
+      ps.setString(5, userDTO.getEmail());
+      ps.setString(6, userDTO.getPassword());
+      ps.setBoolean(7, userDTO.getPhoto());
 
-      ps.setDate(7, java.sql.Date.valueOf(userDTO.getRegisterDate()));
-      ps.setString(8, userDTO.getRole());
+      ps.setDate(8, java.sql.Date.valueOf(userDTO.getRegisterDate()));
+      ps.setString(9, userDTO.getRole());
       ps.executeUpdate();
 
       // Get the id of the new user
       ResultSet rs = ps.getGeneratedKeys();
       if (rs.next()) {
-        return rs.getInt(1);
+        return getOneById(rs.getInt(1));
       }
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "error insert user");
-      se.printStackTrace();
+    } catch (Exception e) {
+      throw new DALException("Error during the insertion of the user", e);
     }
 
-    return -1;
+    return null;
   }
 
   /**
@@ -106,9 +106,8 @@ public class UserDAOImpl implements UserDAO {
           return dtoFromRS(rs);
         }
       }
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "error get a user by email");
-      se.printStackTrace();
+    } catch (Exception e) {
+      throw new DALException("Error during getting user by email", e);
     }
 
     return null;
@@ -126,9 +125,8 @@ public class UserDAOImpl implements UserDAO {
           return dtoFromRS(rs);
         }
       }
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "get a user by phone number");
-      se.printStackTrace();
+    } catch (Exception e) {
+      throw new DALException("Error during getting user by phone number", e);
     }
 
     return null;
@@ -151,9 +149,8 @@ public class UserDAOImpl implements UserDAO {
           return dtoFromRS(rs);
         }
       }
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "get a user by id");
-      se.printStackTrace();
+    } catch (Exception e) {
+      throw new DALException("Error during getting user by id", e);
     }
 
     return null;
@@ -166,21 +163,22 @@ public class UserDAOImpl implements UserDAO {
    * @return the list of all users
    */
   public List<UserDTO> getAll(String query) {
-    String request = "SELECT * FROM pae.users WHERE LOWER(last_name || ' ' || first_name) "
-        + "LIKE CONCAT('%', ?, '%') ORDER BY id_user";
+    String request = "SELECT * FROM pae.users WHERE "
+        + "LOWER(first_name || ' ' || last_name) LIKE CONCAT('%', ?, '%') OR "
+        + "LOWER(last_name || ' ' || first_name) LIKE CONCAT('%', ?, '%') ORDER BY id_user";
     ArrayList<UserDTO> users = new ArrayList<>();
 
     try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       ps.setString(1, query == null ? "" : query.toLowerCase());
+      ps.setString(2, query == null ? "" : query.toLowerCase());
 
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           users.add(dtoFromRS(rs));
         }
       }
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "get all user");
-      se.printStackTrace();
+    } catch (Exception e) {
+      throw new DALException("Error during getting all users", e);
     }
 
     return users;
@@ -190,12 +188,13 @@ public class UserDAOImpl implements UserDAO {
    * Update a user.
    *
    * @param userDTO the user to update
-   * @return true if succeeded, false if not
+   * @return user updated
    */
   @Override
-  public boolean update(UserDTO userDTO) {
+  public UserDTO update(UserDTO userDTO) {
     // Only update the fields that are not null
     Map<String, Object> fields = new HashMap<>();
+    fields.put("version_number", userDTO.getVersionNumber() + 1);
     if (userDTO.getLastName() != null) {
       fields.put("last_name", userDTO.getLastName());
     }
@@ -217,18 +216,19 @@ public class UserDAOImpl implements UserDAO {
     if (userDTO.getRegisterDate() != null) {
       fields.put("register_date", userDTO.getRegisterDate());
     }
-    if (userDTO.getRole() == null
+    if (userDTO.getRole().equals("utilisateur")
         || userDTO.getRole().equals("aidant")
         || userDTO.getRole().equals("responsable")) {
       fields.put("role", userDTO.getRole());
     }
 
     if (fields.isEmpty()) {
-      return false;
+      return userDTO;
     }
 
     String request = "UPDATE pae.users SET " + fields.keySet().stream()
-        .map(key -> key + " = ?").collect(Collectors.joining(", ")) + " WHERE id_user = ?";
+        .map(key -> key + " = ?").collect(Collectors.joining(", "))
+        + " WHERE id_user = ? AND version_number = ?";
 
     try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
       int i = 1;
@@ -236,16 +236,23 @@ public class UserDAOImpl implements UserDAO {
         ps.setObject(i++, value);
       }
       ps.setInt(i, userDTO.getId());
+      ps.setInt(i + 1, userDTO.getVersionNumber());
 
       ps.executeUpdate();
 
-      return true;
-    } catch (SQLException se) {
-      MyLogger.log(Level.INFO, "error update user");
-      se.printStackTrace();
-    }
+      if (ps.getUpdateCount() == 0) {
+        if (getOneById(userDTO.getId()) == null) {
+          throw new NotFoundException("Utilisateur non trouvé");
+        } else {
+          throw new SQLException(
+              "Conflit de version d'utilisateur - V" + userDTO.getVersionNumber());
+        }
+      }
 
-    return false;
+      return getOneById(userDTO.getId());
+    } catch (Exception se) {
+      throw new DALException(se.getMessage(), se);
+    }
   }
 }
 

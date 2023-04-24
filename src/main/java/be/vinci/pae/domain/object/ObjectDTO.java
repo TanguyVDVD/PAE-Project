@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.time.LocalDate;
 
 /**
- * ObjectDTO interface. Representing a data transfer object (DTO) for a object in the domain The
+ * ObjectDTO interface. Representing a data transfer object (DTO) for an object in the domain The
  * interface only contains getter and setter.
  */
 @JsonDeserialize(as = ObjectImpl.class)
@@ -38,20 +38,6 @@ public interface ObjectDTO {
    * @param description the description of an object
    */
   void setDescription(String description);
-
-  /**
-   * Return the path of the photo of an object.
-   *
-   * @return a String corresponding to the path of the photo of an object
-   */
-  boolean getPhoto();
-
-  /**
-   * set the description of an object.
-   *
-   * @param photo the path of the photo of an object
-   */
-  void setPhoto(boolean photo);
 
   /**
    * Return the visibility of an object.
@@ -304,5 +290,19 @@ public interface ObjectDTO {
    * @param workshopDate the date to set
    */
   void setWorkshopDate(LocalDate workshopDate);
+
+  /**
+   * Return the version number of the object.
+   *
+   * @return an int corresponding to the version number of the object
+   */
+  int getVersionNumber();
+
+  /**
+   * Set the version number of the object.
+   *
+   * @param versionNumber the version number of the object
+   */
+  void setVersionNumber(int versionNumber);
 
 }

@@ -2,6 +2,7 @@ package be.vinci.pae.domain.object;
 
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.utils.Config;
+import be.vinci.pae.utils.exceptions.UserException;
 import java.awt.Color;
 import java.io.File;
 import java.io.InputStream;
@@ -20,7 +21,6 @@ public class ObjectImpl implements Object {
 
   private int id;
   private String description;
-  private boolean photo;
   private boolean isVisible;
   private double price;
   private String state;
@@ -39,6 +39,7 @@ public class ObjectImpl implements Object {
   private LocalDate receiptDate;
   private UserDTO user;
   private String objectType;
+  private int versionNumber;
 
   /**
    * Return the id of an object.
@@ -78,26 +79,6 @@ public class ObjectImpl implements Object {
   @Override
   public void setDescription(String description) {
     this.description = description;
-  }
-
-  /**
-   * Return the path of the photo of an object.
-   *
-   * @return a String corresponding to the path of the photo of an object
-   */
-  @Override
-  public boolean getPhoto() {
-    return photo;
-  }
-
-  /**
-   * set the description of an object.
-   *
-   * @param photo the path of the photo of an object
-   */
-  @Override
-  public void setPhoto(boolean photo) {
-    this.photo = photo;
   }
 
   /**
@@ -452,6 +433,26 @@ public class ObjectImpl implements Object {
   }
 
   /**
+   * Return the version number of the object.
+   *
+   * @return an int corresponding to the version number of the object
+   */
+  @Override
+  public int getVersionNumber() {
+    return versionNumber;
+  }
+
+  /**
+   * Set the version number of the object.
+   *
+   * @param versionNumber the version number of the object
+   */
+  @Override
+  public void setVersionNumber(int versionNumber) {
+    this.versionNumber = versionNumber;
+  }
+
+  /**
    * Check if the object is already accepted or rejected.
    *
    * @param status the status of the object
@@ -506,6 +507,92 @@ public class ObjectImpl implements Object {
     }
 
     return true;
+  }
+
+  /**
+   * Check if the state is "en magasain" of "à l'atelier".
+   *
+   * @param objectDTO the object to check the state
+   * @return true if the state correspond else false
+   */
+  @Override
+  public boolean isStateWorkshopOrShop(ObjectDTO objectDTO) {
+    return objectDTO.getState().equals("à l'atelier") || objectDTO.getState().equals("en magasin");
+  }
+
+  /**
+   * Set the correct change state date.
+   *
+   * @param objectDTO       the object after the state change
+   * @param objectDTOFromDb the object before the state change
+   * @param dateChange      the date of de change
+   * @return the objectDTO change, null if there is a problem
+   */
+  @Override
+  public ObjectDTO setStateDate(ObjectDTO objectDTO, ObjectDTO objectDTOFromDb,
+      LocalDate dateChange) {
+
+    if (objectDTO == null || objectDTOFromDb == null || dateChange == null) {
+      return null;
+    }
+
+    if (!objectDTO.getState().equals(objectDTOFromDb.getState())) {
+      // Check if the object is already refused
+      if (objectDTOFromDb.getState().equals("refusé")) {
+        throw new UserException("L'objet est déjà refusé");
+      }
+
+      // Check if the object is already sold or withdrawn
+      if (objectDTOFromDb.getState().equals("vendu") || objectDTOFromDb.getState()
+          .equals("retiré")) {
+        throw new UserException("L'objet est déjà vendu ou retiré");
+      }
+
+      if (objectDTO.getState().equals("vendu")) {
+        // If the object is being sold, the previous state must be "on sale"
+        if (!objectDTOFromDb.getState()
+            .equals("en vente")) {
+          throw new UserException("L'objet n'est pas en vente");
+        }
+
+        objectDTOFromDb.setSellingDate(dateChange);
+      } else if (objectDTO.getState().equals("retiré")) {
+        // If the object is being withdrawn, the previous state must be "on sale", or "in shop"
+        if (!objectDTOFromDb.getState().equals("en vente") && !objectDTOFromDb.getState()
+            .equals("en magasin")) {
+          throw new UserException("L'objet n'est pas en vente ou en magasin");
+        }
+
+        objectDTOFromDb.setWithdrawalDate(dateChange);
+      } else if (objectDTO.getState().equals("en vente")) {
+        // If the object is being put on sale, the previous state must be "in shop"
+        if (!objectDTOFromDb.getState().equals("en magasin")) {
+          throw new UserException("L'objet n'est pas en magasin");
+        }
+
+        objectDTOFromDb.setOnSaleDate(dateChange);
+      } else if (objectDTO.getState().equals("en magasin")) {
+        // If the object is being put in the shop, the previous state must be "accepted",
+        // or "in workshop"
+        if (!objectDTOFromDb.getState().equals("accepté") && !objectDTOFromDb.getState()
+            .equals("à l'atelier")) {
+          throw new UserException("L'objet n'est pas accepté ou à l'atelier");
+        }
+
+        objectDTOFromDb.setDepositDate(dateChange);
+      } else if (objectDTO.getState().equals("à l'atelier")) {
+        // If the object is being put in the workshop, the previous state must be "accepted"
+        if (!objectDTOFromDb.getState().equals("accepté")) {
+          throw new UserException("L'objet n'est pas accepté");
+        }
+
+        objectDTOFromDb.setWorkshopDate(dateChange);
+      } else {
+        throw new UserException("L'état de l'objet n'est pas valide");
+      }
+    }
+
+    return objectDTO;
   }
 
 }

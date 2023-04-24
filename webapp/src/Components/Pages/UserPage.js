@@ -1,17 +1,20 @@
-import { Modal } from 'bootstrap';
+import {Modal} from 'bootstrap';
 
 import Navigate from '../Router/Navigate';
 import API from '../../utils/api';
-import { getAuthenticatedUser, setAuthenticatedUser } from '../../utils/auths';
-import { clearPage, renderError } from '../../utils/render';
-import { formatDate, formatPhoneNumber } from '../../utils/format';
+import {getAuthenticatedUser, setAuthenticatedUser} from '../../utils/auths';
+import {clearPage, renderError} from '../../utils/render';
+import {formatDate, formatPhoneNumber} from '../../utils/format';
+import {createObjectCard} from '../../utils/objects';
 
 import noProfilePicture from '../../img/no_profile_picture.svg';
-import noFurniturePhoto from '../../img/no_furniture_photo.svg';
+import Navbar from "../Navbar/Navbar";
 
 const objects = [];
 
 const UserPage = (params) => {
+  Navbar();
+
   objects.splice(0, objects.length);
 
   const id = parseInt(params.id, 10);
@@ -26,7 +29,7 @@ const UserPage = (params) => {
     return;
   }
 
-  if (authenticatedUser.role === null && authenticatedUser.id !== id) {
+  if (authenticatedUser.role === 'utilisateur' && authenticatedUser.id !== id) {
     Navigate('/');
     return;
   }
@@ -37,14 +40,15 @@ const UserPage = (params) => {
     </div>
   `;
 
-  // Use the my endpoint if the user is looking at their own profile
+  // Use the 'my' endpoint if the user is looking at their own profile
   API.get(`users/${authenticatedUser.id === id ? 'my' : id}`)
-    .then((user) => {
-      renderUserPage(user);
-    })
-    .catch((error) => {
-      renderError(error.message);
-    });
+  .then((user) => {
+    renderUserPage(user);
+  })
+  .catch((error) => {
+    main.innerHTML = '';
+    renderError(error.message);
+  });
 };
 
 function renderUserPage(user) {
@@ -59,7 +63,8 @@ function renderUserPage(user) {
     <div class="d-flex gap-3 flex-column flex-md-row align-items-center">
       <div>
         <img
-          src="${user.photo ? API.getEndpoint(`users/${user.id}/photo`) : noProfilePicture}"
+          src="${user.photo ? API.getEndpoint(`users/${user.id}/photo`)
+      : noProfilePicture}"
           onerror="this.src='${noProfilePicture}'"
           alt="user avatar"
           class="rounded-circle object-fit-cover"
@@ -72,14 +77,14 @@ function renderUserPage(user) {
           <h1 class="m-0">${user.firstName} ${user.lastName}</h1>
 
           ${
-            authenticatedUser.id === user.id
-              ? `
+      authenticatedUser.id === user.id
+          ? `
                 <a href="#" id="edit-profile-btn">
                   Modifier mes données
                 </a>
               `
-              : ''
-          }
+          : ''
+  }
         </div>
         <div class="d-flex gap-3 flex-wrap justify-content-center justify-content-md-start">
           <div><a href="mailto:${user.email}">${user.email}</a></div>
@@ -91,8 +96,9 @@ function renderUserPage(user) {
           </div>
         </div>
         ${
-          authenticatedUser.role === 'responsable' && authenticatedUser.id !== user.id
-            ? `
+      authenticatedUser.role === 'responsable' && authenticatedUser.id
+      !== user.id
+          ? `
               <div>
                 <div class="form-check form-switch">
                   <input
@@ -106,17 +112,14 @@ function renderUserPage(user) {
                 </div>
               </div>
             `
-            : ''
-        }
+          : ''
+  }
       </div>
     </div>
 
     <h2 class="my-5">Objets proposés</h2>
 
     <div id="objects">
-      <div class="text-center my-5">
-        <div class="spinner-border" role="status"></div>
-      </div>
     </div>
   `;
 
@@ -134,16 +137,22 @@ function renderUserPage(user) {
       e.target.disabled = true;
       e.target.checked = !e.target.checked;
 
-      API.patch(`users/${user.id}`, { body: { role: e.target.checked ? null : 'aidant' } })
-        .then((updatedUser) => {
-          e.target.checked = updatedUser.role === 'aidant';
-        })
-        .catch((error) => {
-          renderError(error.message);
-        })
-        .finally(() => {
-          e.target.disabled = false;
-        });
+      API.patch(`users/${user.id}`, {
+        body: {
+          role: e.target.checked ? 'utilisateur' : 'aidant',
+          versionNbr: user.versionNumber
+        },
+      })
+      .then((updatedUser) => {
+        user.versionNumber = updatedUser.versionNumber;
+        e.target.checked = updatedUser.role === 'aidant';
+      })
+      .catch((error) => {
+        renderError(error.message);
+      })
+      .finally(() => {
+        e.target.disabled = false;
+      });
     });
   }
 
@@ -153,60 +162,54 @@ function renderUserPage(user) {
 }
 
 async function fetchObjects(user) {
-  if (objects.length === 0)
+  if (objects.length === 0) {
+    renderObjects(true);
     API.get(`objects/user/${user.id}`)
-      .then((result) => {
-        objects.push(...result);
+    .then((result) => {
+      objects.push(...result);
 
-        const obj = document.querySelector('#objects');
+      renderObjects();
+    })
+    .catch((error) => {
+      renderError(error.message);
+    });
+  } else {
+    renderObjects();
+  }
+}
 
-        if (objects.length === 0) {
-          obj.innerHTML = `
-            <div class="text-center text-muted my-5">
-              <p>Aucun objet proposé</p>
-            </div>
-          `;
-          return;
-        }
+function renderObjects(placeholder = false) {
+  const obj = document.querySelector('#objects');
 
-        obj.className = 'row row-cols-1 row-cols-md-2 row-cols-lg-4 g-5 text-center';
+  if (!placeholder && objects.length === 0) {
+    obj.innerHTML = `
+      <div class="text-center text-muted my-5 w-100">
+        <p>Aucun objet proposé</p>
+      </div>
+    `;
 
-        obj.innerHTML = objects
-          .map(
-            (object) => `
-              <div class="col">
-                <div class="card card-object" data-id="${object.id}" role="button">
-                  <img
-                    src="${
-                      object.photo
-                        ? API.getEndpoint(`objects/${object.id}/photo`)
-                        : noFurniturePhoto
-                    }"
-                    onerror="this.src='${noFurniturePhoto}'"
-                    class="card-img-top"
-                    alt="Photo : ${object.description}"
-                  />
-                  <div class="card-title fw-bold m-0">${object.objectType}</div>
-                  <div class="card-body pt-0">
-                    ${object.description}
-                  </div>
-                </div>
-              </div>
-            `,
-          )
-          .join('');
+    return;
+  }
 
-        const cards = document.querySelectorAll('.card-object');
-        cards.forEach((card) => {
-          card.addEventListener('click', (e) => {
-            const { id } = e.currentTarget.dataset;
-            Navigate(`/object/${id}`);
-          });
-        });
-      })
-      .catch((error) => {
-        renderError(error.message);
-      });
+  obj.className = 'row row-cols-1 row-cols-md-2 row-cols-lg-4 g-5 text-center';
+
+  obj.innerHTML = (placeholder ? [null, null, null, null] : objects)
+  .map(
+      (object) => `
+        <div class="col">
+          ${createObjectCard(object)}
+        </div>
+      `,
+  )
+  .join('');
+
+  const cards = document.querySelectorAll('.object-card');
+  cards.forEach((card) => {
+    card.addEventListener('click', (e) => {
+      const {id} = e.currentTarget.dataset;
+      if (id !== 'undefined') Navigate(`/object/${id}`);
+    });
+  });
 }
 
 function renderEditProfile(user) {
@@ -216,8 +219,7 @@ function renderEditProfile(user) {
   editProfile.className = 'modal fade';
   editProfile.tabIndex = -1;
 
-  const html = String.raw;
-  editProfile.innerHTML = html`
+  editProfile.innerHTML = `
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
         <div class="modal-header">
@@ -304,8 +306,9 @@ function renderEditProfile(user) {
                 <div class="col mb-3">
                   <div class="hstack gap-2 justify-content-between">
                     <label for="input-photo" class="form-label">Photo de profil</label>
-                    ${user.photo
-                      ? html`
+                    ${
+      user.photo
+          ? `
                           <div class="form-check form-check-reverse form-switch">
                             <label class="form-check-label" for="input-removePhoto"
                               >Supprimer</label
@@ -319,7 +322,8 @@ function renderEditProfile(user) {
                             />
                           </div>
                         `
-                      : ''}
+          : ''
+  }
                   </div>
                   <input
                     type="file"
@@ -332,9 +336,9 @@ function renderEditProfile(user) {
                 </div>
                 <div class="col mb-3">
                   <img
-                    src="${user.photo
-                      ? API.getEndpoint(`users/${user.id}/photo`)
-                      : noProfilePicture}"
+                    src="${
+      user.photo ? API.getEndpoint(`users/${user.id}/photo`) : noProfilePicture
+  }"
                     onerror="this.src='${noProfilePicture}'"
                     class="rounded-circle object-fit-cover"
                     width="70"
@@ -375,18 +379,21 @@ function renderEditProfile(user) {
   ['firstName', 'lastName', 'email'].forEach((field) => {
     editProfile.querySelector(`#input-${field}`).value = user[field];
   });
-  editProfile.querySelector(`#input-phoneNumber`).value = formatPhoneNumber(user.phoneNumber);
+  editProfile.querySelector(`#input-phoneNumber`).value = formatPhoneNumber(
+      user.phoneNumber);
 
   // Handle the photo preview
   const currentProfilePicture = user.photo
-    ? API.getEndpoint(`users/${user.id}/photo`)
-    : noProfilePicture;
+      ? API.getEndpoint(`users/${user.id}/photo`)
+      : noProfilePicture;
   const photoInput = editProfile.querySelector('#input-photo');
-  const profilePicturePreview = editProfile.querySelector('#profile-picture-preview');
+  const profilePicturePreview = editProfile.querySelector(
+      '#profile-picture-preview');
   const removePhoto = editProfile.querySelector('#input-removePhoto');
   if (removePhoto)
     removePhoto.addEventListener('change', (e) => {
-      profilePicturePreview.src = e.target.checked ? noProfilePicture : currentProfilePicture;
+      profilePicturePreview.src = e.target.checked ? noProfilePicture
+          : currentProfilePicture;
 
       if (e.target.checked) {
         photoInput.value = '';
@@ -421,8 +428,8 @@ function renderEditProfile(user) {
 
     if (form.password !== form.passwordConfirm) {
       renderError(
-        'Le nouveau mot de passe et sa confirmation ne correspondent pas.',
-        editProfileForm,
+          'Le nouveau mot de passe et sa confirmation ne correspondent pas.',
+          editProfileForm,
       );
       return;
     }
@@ -444,16 +451,18 @@ function renderEditProfile(user) {
 
     if (Object.keys(body).length > 0) {
       body.currentPassword = form.currentPassword;
-      promises.push(() => API.patch(`users/${user.id}`, { body }));
+      body.versionNbr = user.versionNumber;
+      promises.push(() => API.patch(`users/${user.id}`, {body}));
     }
 
-    if (form.removePhoto) {
-      promises.push(() => API.delete(`users/${user.id}/photo`));
-    } else if (form.photo && form.photo.size > 0) {
+    // HTTP DELETE requests cannot have a body, so we use the same endpoint as the PUT request
+    // but with an empty photo
+    if (form.removePhoto || (form.photo && form.photo.size > 0)) {
       const formData = new FormData();
-      formData.append('photo', form.photo);
+      formData.append('photo', form.removePhoto ? null : form.photo);
       formData.append('password', form.currentPassword);
-      promises.push(() => API.put(`users/${user.id}/photo`, { body: formData }));
+      formData.append('versionNbr', user.versionNumber);
+      promises.push(() => API.put(`users/${user.id}/photo`, {body: formData}));
     }
 
     if (promises.length === 0) {
@@ -462,27 +471,31 @@ function renderEditProfile(user) {
     }
 
     formIsSubmitting = true;
+    editProfileForm.classList.add('loading');
     promises
-      .reduce((p, next) => p.then(next), Promise.resolve())
-      .then((res) => {
-        if (res) {
-          setAuthenticatedUser(res);
-          renderUserPage(res);
-        }
+    .reduce((p, next) => p.then(next), Promise.resolve())
+    .then((res) => {
+      if (res) {
+        setAuthenticatedUser(res);
+        renderUserPage(res);
+      }
 
-        editProfileModal.hide();
-      })
-      .catch((err) => {
-        renderError(err.message, editProfileForm);
-      })
-      .finally(() => {
-        formIsSubmitting = false;
-      });
+      editProfileModal.hide();
+    })
+    .catch((err) => {
+      renderError(err.message, editProfileForm);
+    })
+    .finally(() => {
+      formIsSubmitting = false;
+      editProfileForm.classList.remove('loading');
+    });
   });
 
   main.appendChild(editProfile);
 
   editProfileModal.show();
+
+  editProfile.addEventListener('hidden.bs.modal', editProfile.remove);
 }
 
 export default UserPage;

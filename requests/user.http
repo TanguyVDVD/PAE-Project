@@ -127,15 +127,17 @@ Authorization: {{nonHelperToken}}
 Content-Type: application/json
 
 {
-  "firstName": "Bart",
-  "currentPassword": "password"
+  "firstName": "Barteeeeee",
+  "currentPassword": "password",
+  "versionNbr": 3
 }
 
 ### Update a user's role as helper
-PATCH {{baseUrl}}/users/4
+PATCH {{baseUrl}}/users/6
 Authorization: {{helperToken}}
 Content-Type: application/json
 
 {
-  "role": "aidant"
+  "role": "aidant",
+  "versionNbr": 4
 }

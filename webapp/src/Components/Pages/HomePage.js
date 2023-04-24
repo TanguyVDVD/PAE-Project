@@ -1,15 +1,22 @@
 import Navigate from '../Router/Navigate';
-import { clearPage } from '../../utils/render';
+import {clearPage} from '../../utils/render';
+import {createObjectCard, getObjectTypes} from '../../utils/objects';
+import API from '../../utils/api';
+
+import RessourceRieBrand from '../../img/ressourcerie_brand.svg';
+import Navbar from "../Navbar/Navbar";
 
 const HomePage = () => {
+  Navbar();
   clearPage();
   renderHomePage();
 };
 
 function renderHomePage() {
   const main = document.querySelector('main');
+
   const hero = document.createElement('div');
-  hero.className = 'p-4 bg-dark-subtle text-black mb-5';
+  hero.className = 'bg-dark text-white mb-5 hero';
 
   hero.innerHTML = `
     <div class="container">
@@ -20,8 +27,16 @@ function renderHomePage() {
         acheter des objets à bas prix dans notre ressourcerie.
       </p>
       <div class="hstack gap-3 justify-content-between flex-column flex-md-row">
-        <p class="mb-0">RessourceRie se situe Rue de Heuseux 77ter, 4671 Blégny.</p>
-        <a class="btn btn-primary btn-lg" href="#" role="button" id="propose-btn">
+        <p class="mb-0">
+          <img src="${RessourceRieBrand}" alt="RessourceRie" class="ressourcerie-brand" /> se situe
+          <a
+            href="http://maps.apple.com/?address=Rue+de+Heuseux+77ter,+4671+Blégny,+Belgium&t=m"
+            target="_blank"
+            class="link-light text-decoration-underline"
+          >
+          Rue de Heuseux 77ter, 4671 Blégny</a>.
+        </p>
+        <a class="btn btn-light text-secondary btn-lg" href="#" role="button" id="propose-btn">
           Proposer un objet
         </a>
       </div>
@@ -30,7 +45,9 @@ function renderHomePage() {
 
   main.appendChild(hero);
 
-  document.getElementById('propose-btn').addEventListener('click', () => {
+  document.getElementById('propose-btn').addEventListener('click', (e) => {
+    e.preventDefault();
+
     Navigate('/propose');
   });
 
@@ -40,7 +57,7 @@ function renderHomePage() {
   objects.innerHTML = `
     <div class="my-3 hstack gap-3 justify-content-between flex-column flex-md-row">
       <h2>Objets proposés</h2>
-      <form class="hstack flex-column flex-md-row gap-3">
+      <form class="hstack flex-column flex-md-row gap-3" id="objects-filter-form">
         <div class="input-group">
           <input type="text" class="form-control border-end-0" placeholder="Rechercher..." />
           <button class="btn border" type="submit">
@@ -52,8 +69,7 @@ function renderHomePage() {
             <i class="bi bi-funnel"></i>
           </label>
           <select class="form-select" id="filter-select">
-            <option selected>Filtrer par</option>
-            <option value="1">TODO</option>
+            <option selected value="">Tous les types</option>
           </select>
         </div>
       </form>
@@ -68,61 +84,55 @@ function renderHomePage() {
 
   main.appendChild(objects);
 
-  const objectsCarousel = document.getElementById('objects-carousel');
-  objectsCarousel.appendChild(
-    renderObjectsCarousel([
-      {
-        id: 1,
-        type: 'Fauteuil',
-        name: 'fauteuil tapissé',
-        image: '',
-      },
-      {
-        id: 2,
-        type: 'Matériel de cuisine',
-        name: '3 casseroles',
-        image: '',
-      },
-      {
-        id: 3,
-        type: 'Matériel de cuisine',
-        name: '4 poêles',
-        image: '',
-      },
-      {
-        id: 4,
-        type: 'Couvertures',
-        name: 'couvertures en bon état',
-        image: '',
-      },
-      {
-        id: 5,
-        type: 'Meuble',
-        name: 'anciens tableaux',
-        image: '',
-      },
-      {
-        id: 6,
-        type: 'Meuble',
-        name: 'décoration de cactus',
-        image: '',
-      },
-      {
-        id: 7,
-        type: 'Matelas',
-        name: 'matelas blanc',
-        image: '',
-      },
-      {
-        id: 8,
-        type: 'Matériel de cuisine',
-        name: '4 poêles',
-        image: '',
-      },
-    ]),
-  );
+  const objectsFilterForm = document.getElementById('objects-filter-form');
+  const searchInput = objectsFilterForm.querySelector('input');
+  const filterSelect = objectsFilterForm.querySelector('select');
 
-  document.getElementById('more-btn').addEventListener('click', () => {
+  filterSelect.addEventListener('change', (e) => {
+    e.target.form.dispatchEvent(new Event('submit'));
+  });
+
+  getObjectTypes().then((types) => {
+    filterSelect.innerHTML += `
+      ${types
+    .map(
+        (objectType) => `
+          <option value="${objectType.id}">${objectType.label}</option>
+        `,
+    )
+    .join('')}
+    `;
+  });
+
+  objectsFilterForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const query = searchInput.value;
+    const type = filterSelect.value;
+
+    const params = new URLSearchParams();
+    if (query) {
+      params.set('query', query);
+    }
+    if (type) {
+      params.set('type', type);
+    }
+
+    if (params.toString()) {
+      Navigate(`/objects?${params}`);
+    }
+  });
+
+  const objectsCarousel = document.getElementById('objects-carousel');
+  objectsCarousel.replaceChildren(
+      renderObjectsCarousel([null, null, null, null]));
+  API.get('objects/public').then((response) => {
+    objectsCarousel.replaceChildren(renderObjectsCarousel(response));
+  });
+
+  document.getElementById('more-btn').addEventListener('click', (e) => {
+    e.preventDefault();
+
     Navigate('/objects');
   });
 }
@@ -131,6 +141,16 @@ function renderObjectsCarousel(objects = []) {
   const div = document.createElement('div');
   div.id = 'objects-carousel';
   div.className = 'carousel carousel-dark slide';
+
+  if (objects.length === 0) {
+    div.innerHTML = `
+      <div class="text-center text-muted my-5 w-100">
+        <p>Aucun objet proposé</p>
+      </div>
+    `;
+
+    return div;
+  }
 
   // Split objects into groups of 4
   const objectsGroups = [];
@@ -141,40 +161,30 @@ function renderObjectsCarousel(objects = []) {
   div.innerHTML = `
     <div class="carousel-inner">
       ${
-        objectsGroups.length > 0
+      objectsGroups.length > 0
           ? `
             ${objectsGroups
-              .map(
-                (objectsGroup, index) => `
+          .map(
+              (objectsGroup, index) => `
                 <div class="carousel-item ${index === 0 ? 'active' : ''}">
                   <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-5 text-center">
                     ${objectsGroup
-                      .map(
-                        (object) => `
+              .map(
+                  (object) => `
                         <div class="col">
-                          <div class="card card-object" data-id="${object.id}" role="button">
-                            <img
-                              src="${object.image}"
-                              class="card-img-top"
-                              alt="Photo : ${object.name}"
-                            />
-                            <div class="card-title fw-bold m-0">${object.type}</div>
-                            <div class="card-body pt-0">
-                              ${object.name}
-                            </div>
-                          </div>
+                          ${createObjectCard(object)}
                         </div>
                       `,
-                      )
-                      .join('')}
+              )
+              .join('')}
                   </div>
                 </div>
               `,
-              )
-              .join('')}
+          )
+          .join('')}
           `
           : ''
-      }
+  }
     </div>
     <button
       class="carousel-control-prev w-auto"
@@ -196,9 +206,14 @@ function renderObjectsCarousel(objects = []) {
     </button>
   `;
 
-  div.querySelectorAll('.card-object').forEach((card) => {
-    card.addEventListener('click', () => {
-      Navigate(`/object/${card.dataset.id}`);
+  div.querySelectorAll('.object-card').forEach((card) => {
+    card.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      if (card.dataset.id !== 'undefined') {
+        Navigate(
+            `/object/${card.dataset.id}`);
+      }
     });
   });
 

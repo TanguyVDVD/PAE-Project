@@ -1,6 +1,11 @@
+import Autocomplete from 'bootstrap5-autocomplete';
 import Navigate from '../Components/Router/Navigate';
 import { dateStringtoGoodFormat } from './dates';
 import { formatPhoneNumber } from './format';
+import API from './api';
+import { renderError } from './render';
+
+import noFurniturePhoto from '../img/no_furniture_photo.svg';
 
 function setUserOrPhoneNumber(document, className, objects) {
   const elements = document.getElementsByClassName(className);
@@ -9,7 +14,7 @@ function setUserOrPhoneNumber(document, className, objects) {
     const element = elements.item(i);
     if (object.user === null) {
       element.innerHTML = `
-          <p>Proposé anonymement au ${formatPhoneNumber(
+          <p>Proposé au ${formatPhoneNumber(
             object.phoneNumber,
           )} le ${dateStringtoGoodFormat(object.offerDate)}</p>
       `;
@@ -43,7 +48,7 @@ function setReceiptDate(document, className, objects) {
       element.innerHTML = `
           <p>
               À récupérer le ${dateStringtoGoodFormat(object.receiptDate)} ${
-          object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
+        object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
       }
           </p>
       `;
@@ -57,7 +62,7 @@ function setReceiptDate(document, className, objects) {
       element.innerHTML = `
           <p>
               Récupéré le ${dateStringtoGoodFormat(object.receiptDate)} ${
-          object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
+        object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
       }
           </p>
       `;
@@ -65,7 +70,84 @@ function setReceiptDate(document, className, objects) {
   }
 }
 
-export {
-  setUserOrPhoneNumber,
-  setReceiptDate
+function encodingHelp(descriptions) {
+  const objectTypes = [];
+
+  API.get('objectTypes')
+    .then((types) => {
+      types.forEach((item) => {
+        objectTypes.push(item.label);
+      });
+
+      const src = descriptions.concat(objectTypes);
+
+      Autocomplete.init('input.autocomplete', {
+        items: src,
+        fullWidth: true,
+        fixed: true,
+        autoselectFirst: false,
+        updateOnSelect: true,
+      });
+    })
+    .catch((err) => {
+      renderError(err.message);
+    });
 }
+
+function createObjectCard(_object) {
+  const randomPlaceHolder = () => {
+    const random = Math.floor(Math.random() * 3);
+    return `
+      <span class="placeholder-glow"><span class="placeholder col-${random + 3}"></span></span>
+    `;
+  };
+
+  const object = _object || {
+    id: undefined,
+    objectType: `${randomPlaceHolder()}`,
+    description: `${randomPlaceHolder()} ${randomPlaceHolder()} ${randomPlaceHolder()}`,
+  };
+
+  return `
+    <div
+      class="object-card ${object.state === 'vendu' ? 'sold' : ''}"
+      data-id="${object.id}"
+      role="button"
+    >
+      <div class="object-card-img">
+        ${
+          object.id !== undefined
+            ? `
+              <img
+                src="${API.getEndpoint(`objects/${object.id}/photo`)}"
+                onerror="this.src='${noFurniturePhoto}'"
+                alt="${object.description ? `Photo : ${object.description}` : ''}"
+              />
+            `
+            : ''
+        }
+      </div>
+      <div>
+        <div class="object-card-title">${object.objectType}</div>
+        <div>
+          ${object.description}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Because object types are used in multiple places, we cache them
+const objectTypes = [];
+
+async function getObjectTypes() {
+  if (objectTypes.length !== 0) return objectTypes;
+
+  const types = await API.get('objectTypes');
+
+  objectTypes.splice(0, objectTypes.length, ...types);
+
+  return objectTypes;
+}
+
+export { setUserOrPhoneNumber, setReceiptDate, createObjectCard, encodingHelp, getObjectTypes };

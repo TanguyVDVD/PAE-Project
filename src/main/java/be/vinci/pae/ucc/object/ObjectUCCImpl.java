@@ -4,15 +4,13 @@ import be.vinci.pae.domain.object.Object;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.object.ObjectDAO;
-import be.vinci.pae.utils.MyLogger;
+import be.vinci.pae.ucc.notification.NotificationUCC;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response.Status;
 import java.io.File;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.logging.Level;
+
 
 /**
  * UserUCCImpl class that implements the ObjectUCC interface.
@@ -25,6 +23,9 @@ public class ObjectUCCImpl implements ObjectUCC {
   @Inject
   private DALServices myDalServices;
 
+  @Inject
+  private NotificationUCC myNotificationUCC;
+
   /**
    * Returns a list of all objects.
    *
@@ -33,15 +34,13 @@ public class ObjectUCCImpl implements ObjectUCC {
    */
   @Override
   public List<ObjectDTO> getObjects(String query) {
-
     myDalServices.startTransaction();
     try {
       return myObjectDAO.getAll(query);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      MyLogger.log(Level.INFO, "Erreur lors de la récupération de la liste des objets");
-      throw new WebApplicationException("Erreur lors de la récupération de la liste des objets",
-          Status.INTERNAL_SERVER_ERROR);
+
+      throw e;
     } finally {
       myDalServices.commitTransaction();
     }
@@ -60,9 +59,8 @@ public class ObjectUCCImpl implements ObjectUCC {
       return myObjectDAO.getAllByUser(id);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      MyLogger.log(Level.INFO, "Erreur lors de la récupération de la liste des objets");
-      throw new WebApplicationException("Erreur lors de la récupération de la liste des objets",
-          Status.INTERNAL_SERVER_ERROR);
+
+      throw e;
     } finally {
       myDalServices.commitTransaction();
     }
@@ -82,9 +80,8 @@ public class ObjectUCCImpl implements ObjectUCC {
       return myObjectDAO.getOffers(query);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      MyLogger.log(Level.INFO, "Erreur lors de la récupération de la liste des offres");
-      throw new WebApplicationException("Erreur lors de la récupération de la liste des offres",
-          Status.INTERNAL_SERVER_ERROR);
+
+      throw e;
     } finally {
       myDalServices.commitTransaction();
     }
@@ -106,9 +103,8 @@ public class ObjectUCCImpl implements ObjectUCC {
       return myObjectDAO.getOneById(id);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      MyLogger.log(Level.INFO, "Erreur lors de la récupération de l'objet");
-      throw new WebApplicationException("Erreur lors de la récupération de l'objet",
-          Status.INTERNAL_SERVER_ERROR);
+
+      throw e;
     } finally {
       myDalServices.commitTransaction();
     }
@@ -118,11 +114,12 @@ public class ObjectUCCImpl implements ObjectUCC {
   /**
    * Accept an offer.
    *
-   * @param id the id of the object to accept
+   * @param id            the id of the object to accept
+   * @param versionNumber the version number of the object
    * @return the object updated
    */
   @Override
-  public ObjectDTO accept(int id) {
+  public ObjectDTO accept(int id, int versionNumber) {
 
     myDalServices.startTransaction();
     try {
@@ -133,12 +130,16 @@ public class ObjectUCCImpl implements ObjectUCC {
         return null;
       }
 
-      return myObjectDAO.setStatusToAccepted(id, LocalDate.now());
+      ObjectDTO objectDTOToReturn = myObjectDAO.setStatusToAccepted(id, LocalDate.now(),
+          versionNumber);
+
+      myNotificationUCC.createAcceptedRefusedObjectNotification(objectDTOToReturn);
+
+      return objectDTOToReturn;
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      MyLogger.log(Level.INFO, "Erreur lors de l'acceptation de l'offre");
-      throw new WebApplicationException("Erreur lors de l'acceptation de l'offre",
-          Status.INTERNAL_SERVER_ERROR);
+
+      throw e;
     } finally {
       myDalServices.commitTransaction();
 
@@ -151,10 +152,11 @@ public class ObjectUCCImpl implements ObjectUCC {
    *
    * @param id               the id of the object to refuse
    * @param reasonForRefusal the reason for refusal
+   * @param versionNumber    the version number of the object
    * @return the object updated
    */
   @Override
-  public ObjectDTO refuse(int id, String reasonForRefusal) {
+  public ObjectDTO refuse(int id, String reasonForRefusal, int versionNumber) {
 
     myDalServices.startTransaction();
 
@@ -167,12 +169,16 @@ public class ObjectUCCImpl implements ObjectUCC {
         return null;
       }
 
-      return myObjectDAO.setStatusToRefused(id, reasonForRefusal, LocalDate.now());
+      ObjectDTO objectDTOToReturn = myObjectDAO.setStatusToRefused(id, reasonForRefusal,
+          LocalDate.now(), versionNumber);
+
+      myNotificationUCC.createAcceptedRefusedObjectNotification(objectDTOToReturn);
+
+      return objectDTOToReturn;
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      MyLogger.log(Level.INFO, "Erreur lors du refus de l'offre");
-      throw new WebApplicationException("Erreur lors du refus de l'offre",
-          Status.INTERNAL_SERVER_ERROR);
+
+      throw e;
     } finally {
       myDalServices.commitTransaction();
     }
@@ -180,7 +186,7 @@ public class ObjectUCCImpl implements ObjectUCC {
   }
 
   /**
-   * Update the iformation and the state of an object.
+   * Update the information and the state of an object.
    *
    * @param id        the id of the object
    * @param objectDTO the object
@@ -199,20 +205,8 @@ public class ObjectUCCImpl implements ObjectUCC {
         return null;
       }
 
-      if (objectDTO.getState().equals("à l'atelier")) {
-        objectFromDB.setWorkshopDate(date);
-      }
-      if (objectDTO.getState().equals("en magasin")) {
-        objectFromDB.setDepositDate(date);
-      }
-      if (objectDTO.getState().equals("en vente")) {
-        objectFromDB.setOnSaleDate(date);
-      }
-      if (objectDTO.getState().equals("vendu")) {
-        objectFromDB.setSellingDate(date);
-      }
-      if (objectDTO.getState().equals("retiré")) {
-        objectFromDB.setWithdrawalDate(date);
+      if (objectFromDB.setStateDate(objectDTO, objectFromDB, date) == null) {
+        return null;
       }
 
       objectFromDB.setObjectType(objectDTO.getObjectType());
@@ -220,14 +214,14 @@ public class ObjectUCCImpl implements ObjectUCC {
       objectFromDB.setPrice(objectDTO.getPrice());
       objectFromDB.setState(objectDTO.getState());
       objectFromDB.setIsVisible(objectDTO.getisVisible());
+      objectFromDB.setVersionNumber(objectDTO.getVersionNumber());
 
       return myObjectDAO.updateObject(objectFromDB.getId(), objectFromDB);
 
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      MyLogger.log(Level.INFO, "Erreur lors de la mise à jour de l'objet");
-      throw new WebApplicationException("Erreur lors de la mise à jour de l'objet",
-          Status.INTERNAL_SERVER_ERROR);
+
+      throw e;
     } finally {
       myDalServices.commitTransaction();
     }
@@ -266,18 +260,35 @@ public class ObjectUCCImpl implements ObjectUCC {
 
       object.savePhoto(file);
 
-      object.setPhoto(true);
-
-      if (myObjectDAO.updateObject(object.getId(), object) == null) {
-        return null;
-      }
-
-      return myObjectDAO.getOneById(objectDTO.getId());
+      return myObjectDAO.updateObject(object.getId(), object);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
-      MyLogger.log(Level.INFO, "Erreur lors de la mise à jour de la photo de l'objet");
-      throw new WebApplicationException("Erreur lors de la mise à jour de la photo de l'objet",
-          Status.INTERNAL_SERVER_ERROR);
+
+      throw e;
+    } finally {
+      myDalServices.commitTransaction();
+    }
+  }
+
+  /**
+   * Add an object.
+   *
+   * @param objectDTO the object to add
+   * @return the object that has been added
+   */
+  @Override
+  public ObjectDTO add(ObjectDTO objectDTO) {
+    myDalServices.startTransaction();
+
+    try {
+
+      ObjectDTO objectDTOReturn = myObjectDAO.insert(objectDTO);
+      myNotificationUCC.createNewObjectPropositionNotification(objectDTOReturn.getId());
+      return objectDTOReturn;
+    } catch (Exception e) {
+      myDalServices.rollbackTransaction();
+
+      throw e;
     } finally {
       myDalServices.commitTransaction();
     }

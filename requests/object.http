@@ -28,6 +28,9 @@ Content-Type: application/json
 GET {{baseUrl}}/objects
 Authorization: {{helperToken}}
 
+### Get a list of all public objects
+GET {{baseUrl}}/objects/public
+
 ### Get a list of all objects offered by a user
 GET {{baseUrl}}/objects/user/1
 Authorization: {{helperToken}}
@@ -40,7 +43,7 @@ Authorization: {{helperToken}}
 GET {{baseUrl}}/objects/1
 
 ### Set a object in the workshop
-PUT {{baseUrl}}/objects/1
+PUT {{baseUrl}}/objects/4
 Content-Type: application/json
 Authorization: {{helperToken}}
 
@@ -50,11 +53,12 @@ Authorization: {{helperToken}}
   "price": null,
   "state": "en atelier",
   "date": null,
-  "isVisible": true
+  "isVisible": true,
+  "versionNbr": 1
 }
 
 ### Set a object on sale with a price
-PUT {{baseUrl}}/objects/3
+PUT {{baseUrl}}/objects/4
 Content-Type: application/json
 Authorization: {{helperToken}}
 
@@ -64,7 +68,8 @@ Authorization: {{helperToken}}
   "price": 9,
   "state": "mis en vente",
   "date": null,
-  "isVisible": true
+  "isVisible": true,
+  "versionNbr": 2
 }
 
 ### Try to accept an offer as helper
@@ -77,12 +82,13 @@ Authorization: {{helperToken}}
 }
 
 ### Accept an offer as manager
-PATCH {{baseUrl}}/objects/status/2
+PATCH {{baseUrl}}/objects/status/7
 Content-Type: application/json
 Authorization: {{managerToken}}
 
 {
-  "status": "accepté"
+  "status": "accepté",
+  "versionNbr": 1
 }
 
 ### Refuse an offer without reason for refusal
@@ -106,11 +112,12 @@ Authorization: {{managerToken}}
 }
 
 ### Refuse an offer with a reason for refusal
-PATCH {{baseUrl}}/objects/status/1
+PATCH {{baseUrl}}/objects/status/7
 Content-Type: application/json
 Authorization: {{helperToken}}
 
 {
   "status": "refusé",
-  "reasonForRefusal": "Meuble en trop mauvais état"
+  "reasonForRefusal": "Meuble en trop mauvais état",
+  "versionNbr": 1
 }

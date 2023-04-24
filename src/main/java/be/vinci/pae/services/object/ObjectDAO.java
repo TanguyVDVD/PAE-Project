@@ -25,13 +25,6 @@ public interface ObjectDAO {
    */
   List<ObjectDTO> getAllByUser(int id);
 
-  /**
-   * Get all objects by availability.
-   *
-   * @param id the id of the availability
-   * @return the list of objects
-   */
-  List<ObjectDTO> getAllByAvailability(int id);
 
   /**
    * Get all offers.
@@ -54,20 +47,23 @@ public interface ObjectDAO {
    *
    * @param id             the id of the object
    * @param acceptanceDate the acceptance date of the object
+   * @param versionNumber  the version number of the object
    * @return the modified object
    */
 
-  ObjectDTO setStatusToAccepted(int id, LocalDate acceptanceDate);
+  ObjectDTO setStatusToAccepted(int id, LocalDate acceptanceDate, int versionNumber);
 
   /**
-   * Set the status of an object to refused.
+   * Set the status of an object to "refused".
    *
    * @param id               the id of the object
    * @param reasonForRefusal the reason for refusal
    * @param refusalDate      the refusal date of the object
+   * @param versionNumber    the version number of the object
    * @return the modified object
    */
-  ObjectDTO setStatusToRefused(int id, String reasonForRefusal, LocalDate refusalDate);
+  ObjectDTO setStatusToRefused(int id, String reasonForRefusal, LocalDate refusalDate,
+      int versionNumber);
 
   /**
    * Update the object in the db.
@@ -77,4 +73,12 @@ public interface ObjectDAO {
    * @return null if there is an error then the object
    */
   ObjectDTO updateObject(int id, ObjectDTO objectDTO);
+
+  /**
+   * Insert a new object in the db.
+   *
+   * @param objectDTO the object to insert in the db
+   * @return the object inserted in the db
+   */
+  ObjectDTO insert(ObjectDTO objectDTO);
 }

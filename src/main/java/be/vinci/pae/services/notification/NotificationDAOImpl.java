@@ -1,0 +1,229 @@
+package be.vinci.pae.services.notification;
+
+import be.vinci.pae.domain.DomainFactory;
+import be.vinci.pae.domain.notification.NotificationDTO;
+import be.vinci.pae.services.DalBackendServices;
+import be.vinci.pae.utils.exceptions.DALException;
+import jakarta.inject.Inject;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * NotificationDAO class that implements NotificationDAO interface Provide the different methods.
+ */
+public class NotificationDAOImpl implements NotificationDAO {
+
+  @Inject
+  private DalBackendServices dalBackendServices;
+
+  @Inject
+  private DomainFactory myDomainFactory;
+
+  /**
+   * Map a ResultSet to a NotificationDTO from notifications tables.
+   *
+   * @param resultSet the ResultSet
+   * @return the NotificationDTO
+   */
+  public NotificationDTO dtoFromRS(ResultSet resultSet) {
+
+    NotificationDTO notificationDTO = myDomainFactory.getNotification();
+
+    try {
+      notificationDTO.setId(resultSet.getInt("id_notification"));
+      notificationDTO.setNotificationText(resultSet.getString("notification_text"));
+      notificationDTO.setIdObject(resultSet.getInt("id_object"));
+    } catch (SQLException e) {
+      throw new DALException("Error during the mapping of the notification", e);
+    }
+
+    return notificationDTO;
+  }
+
+  /**
+   * Map a ResultSet to a NotificationDTO from notifications tables and user_notifications tables.
+   *
+   * @param resultSet the ResultSet
+   * @return the NotificationDTO
+   */
+  public NotificationDTO dtoFromRSAll(ResultSet resultSet) {
+
+    NotificationDTO notificationDTO = myDomainFactory.getNotification();
+
+    try {
+      notificationDTO.setId(resultSet.getInt("id_notification"));
+      notificationDTO.setNotificationText(resultSet.getString("notification_text"));
+      notificationDTO.setIdObject(resultSet.getInt("id_object"));
+      notificationDTO.setRead(resultSet.getBoolean("read"));
+      notificationDTO.setIdUser(resultSet.getInt("id_user"));
+    } catch (SQLException e) {
+      throw new DALException("Error during the mapping of the notification", e);
+    }
+
+    return notificationDTO;
+  }
+
+
+  /**
+   * Map a ResultSet to a NotificationDTO from notifications_users tables.
+   *
+   * @param resultSet the ResultSet
+   * @return the NotificationDTO
+   */
+  public NotificationDTO dtoFromRSUser(ResultSet resultSet) {
+
+    NotificationDTO notificationDTO = myDomainFactory.getNotification();
+
+    try {
+      notificationDTO.setRead(resultSet.getBoolean("read"));
+      notificationDTO.setId(resultSet.getInt("id_notification"));
+      notificationDTO.setIdUser(resultSet.getInt("id_user"));
+    } catch (SQLException e) {
+      throw new DALException("Error during the mapping of the notification", e);
+    }
+
+    return notificationDTO;
+  }
+
+  /**
+   * Returns a list of NotificationDTO objects for a given user ID.
+   *
+   * @param id the ID of the user whose notifications are to be retrieved
+   * @return a list of NotificationDTO objects associated with the specified user ID
+   */
+  @Override
+  public List<NotificationDTO> getNotificationsByUserID(int id) {
+    String request = "SELECT * FROM pae.notifications n, pae.users_notifications un "
+        + "WHERE n.id_notification = un.id_notification AND un.id_user = "
+        + "? ORDER BY un.id_notification DESC;";
+
+    ArrayList<NotificationDTO> objects = new ArrayList<>();
+
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
+      ps.setInt(1, id);
+
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          objects.add(dtoFromRSAll(rs));
+        }
+      }
+    } catch (SQLException e) {
+      throw new DALException("Error getting all notifications by user", e);
+    }
+
+    return objects;
+  }
+
+  /**
+   * Creates a new object notification with the provided notification data and returns the created
+   * notification.
+   *
+   * @param notificationDTO the data of the notification to be created
+   * @return the created notification
+   */
+  @Override
+  public NotificationDTO createObjectNotification(NotificationDTO notificationDTO) {
+
+    String request = "INSERT INTO pae.notifications VALUES (DEFAULT, ?, ?);";
+
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request, true)) {
+
+      ps.setString(1, notificationDTO.getNotificationText());
+      ps.setInt(2, notificationDTO.getIdObject());
+      ps.executeUpdate();
+
+      ResultSet rs = ps.getGeneratedKeys();
+      if (rs.next()) {
+        return dtoFromRS(rs);
+      } else {
+        throw new DALException("Error during the add of a notification");
+      }
+    } catch (SQLException e) {
+      throw new DALException("Error during the add of a notification", e);
+    }
+
+  }
+
+  /**
+   * Creates a new user notification with the provided notification data and returns the created
+   * notification.
+   *
+   * @param notificationDTO the data of the notification to be created
+   * @return the created notification
+   */
+  public NotificationDTO createObjectUserNotification(NotificationDTO notificationDTO) {
+
+    String request = "INSERT INTO pae.users_notifications VALUES (?, ?, ?);";
+
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request, true)) {
+
+      ps.setBoolean(1, notificationDTO.getRead());
+      ps.setInt(2, notificationDTO.getId());
+      ps.setInt(3, notificationDTO.getIdUser());
+      ps.executeUpdate();
+
+      ResultSet rs = ps.getGeneratedKeys();
+      if (rs.next()) {
+        return dtoFromRSUser(rs);
+      } else {
+        throw new DALException("Error during the add of a notification");
+      }
+    } catch (SQLException e) {
+      throw new DALException("Error during the add of a notification", e);
+    }
+
+  }
+
+  /**
+   * Marks the provided notification as read and returns the updated notification data.
+   *
+   * @param notificationDTO the notification data to be marked as read
+   * @return the updated notification data
+   */
+  @Override
+  public NotificationDTO markANotificationAsRead(NotificationDTO notificationDTO) {
+
+    String request =
+        "UPDATE pae.users_notifications SET read = true WHERE id_notification = ? AND id_user = ?";
+
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
+      ps.setInt(1, notificationDTO.getId());
+      ps.setInt(2, notificationDTO.getIdUser());
+
+      ps.executeUpdate();
+
+    } catch (Exception e) {
+      throw new DALException(e.getMessage(), e);
+    }
+
+    return notificationDTO;
+  }
+
+  /**
+   * Returns a list of all helper IDs.
+   *
+   * @return a list of all helper IDs
+   */
+  public List<Integer> getAllHelperId() {
+    String request = "SELECT id_user FROM pae.users WHERE role='aidant' OR role='responsable'";
+    ArrayList<Integer> helpers = new ArrayList<>();
+
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
+
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          helpers.add(rs.getInt("id_user"));
+        }
+      }
+    } catch (Exception e) {
+      throw new DALException("Error during getting all users", e);
+    }
+
+    return helpers;
+  }
+
+
+}
