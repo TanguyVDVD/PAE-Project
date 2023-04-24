@@ -548,53 +548,47 @@ public class ObjectImpl implements Object {
         throw new UserException("L'objet est déjà vendu ou retiré");
       }
 
-      // If the object is being sold, the previous state must be "on sale"
       if (objectDTO.getState().equals("vendu")) {
+        // If the object is being sold, the previous state must be "on sale"
         if (!objectDTOFromDb.getState()
             .equals("en vente")) {
           throw new UserException("L'objet n'est pas en vente");
         }
 
         objectDTOFromDb.setSellingDate(dateChange);
-      }
-
-      // If the object is being withdrawn, the previous state must be "on sale", or "in shop"
-      if (objectDTO.getState().equals("retiré")) {
+      } else if (objectDTO.getState().equals("retiré")) {
+        // If the object is being withdrawn, the previous state must be "on sale", or "in shop"
         if (!objectDTOFromDb.getState().equals("en vente") && !objectDTOFromDb.getState()
             .equals("en magasin")) {
           throw new UserException("L'objet n'est pas en vente ou en magasin");
         }
 
         objectDTOFromDb.setWithdrawalDate(dateChange);
-      }
-
-      // If the object is being put on sale, the previous state must be "in shop"
-      if (objectDTO.getState().equals("en vente")) {
+      } else if (objectDTO.getState().equals("en vente")) {
+        // If the object is being put on sale, the previous state must be "in shop"
         if (!objectDTOFromDb.getState().equals("en magasin")) {
           throw new UserException("L'objet n'est pas en magasin");
         }
 
         objectDTOFromDb.setOnSaleDate(dateChange);
-      }
-
-      // If the object is being put in the shop, the previous state must be "accepted",
-      // or "in workshop"
-      if (objectDTO.getState().equals("en magasin")) {
+      } else if (objectDTO.getState().equals("en magasin")) {
+        // If the object is being put in the shop, the previous state must be "accepted",
+        // or "in workshop"
         if (!objectDTOFromDb.getState().equals("accepté") && !objectDTOFromDb.getState()
             .equals("à l'atelier")) {
           throw new UserException("L'objet n'est pas accepté ou à l'atelier");
         }
 
         objectDTOFromDb.setDepositDate(dateChange);
-      }
-
-      // If the object is being put in the workshop, the previous state must be "accepted"
-      if (objectDTO.getState().equals("à l'atelier")) {
+      } else if (objectDTO.getState().equals("à l'atelier")) {
+        // If the object is being put in the workshop, the previous state must be "accepted"
         if (!objectDTOFromDb.getState().equals("accepté")) {
           throw new UserException("L'objet n'est pas accepté");
         }
 
         objectDTOFromDb.setWorkshopDate(dateChange);
+      } else {
+        throw new UserException("L'état de l'objet n'est pas valide");
       }
     }
 

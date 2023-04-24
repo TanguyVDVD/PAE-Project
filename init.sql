@@ -20,7 +20,7 @@ CREATE TABLE pae.users
     password       VARCHAR(100) NOT NULL,
     photo          BOOLEAN      NOT NULL,
     register_date  DATE         NOT NULL,
-    role           VARCHAR(12)
+    role           VARCHAR(12)  NOT NULL
 );
 
 CREATE TABLE pae.object_types
@@ -81,7 +81,7 @@ CREATE TABLE pae.users_notifications
 INSERT INTO pae.users VALUES (DEFAULT, 1, 'Riez', 'Christophe', '0498183040', 'riez@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', true, '2023-02-01', 'responsable');
 INSERT INTO pae.users VALUES (DEFAULT, 1, 'Vdv', 'Constantine', '0498183041', 'constantine@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', true, '2023-02-01', 'aidant');
 INSERT INTO pae.users VALUES (DEFAULT, 1, 'lsh', 'Bernard', '0498183042', 'bernard@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', true, '2023-02-01', 'aidant');
-INSERT INTO pae.users VALUES (DEFAULT, 1, 'bdh', 'Lise', '0498183043', 'lise@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', true, '2023-02-01', null);
+INSERT INTO pae.users VALUES (DEFAULT, 1, 'bdh', 'Lise', '0498183043', 'lise@ressourcerie.be', '$2a$12$zEcrRmtOvT3Kyx7Jc.YYPu7rf3BKfDEjlNZXbEY9QVs6dqzOprEWi', true, '2023-02-01', 'utilisateur');
 
 INSERT INTO pae.object_types VALUES (DEFAULT,'Meuble');
 INSERT INTO pae.object_types VALUES (DEFAULT,'Table');

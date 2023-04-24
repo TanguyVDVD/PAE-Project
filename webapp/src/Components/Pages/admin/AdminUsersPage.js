@@ -1,7 +1,7 @@
-import Autocomplete from "bootstrap5-autocomplete";
+import Autocomplete from 'bootstrap5-autocomplete';
 import Navigate from '../../Router/Navigate';
 import { getAuthenticatedUser } from '../../../utils/auths';
-import {clearPage, renderError} from '../../../utils/render';
+import { clearPage, renderError } from '../../../utils/render';
 import { formatPhoneNumber } from '../../../utils/format';
 import { dateStringtoGoodFormat } from '../../../utils/dates';
 import API from '../../../utils/api';
@@ -14,7 +14,7 @@ const AdminUsersPage = () => {
 
   const user = getAuthenticatedUser();
 
-  if (!user || user.role === null) {
+  if (!user || user.role === 'utilisateur') {
     Navigate('/');
     return;
   }
@@ -42,25 +42,25 @@ function renderAdminUsersPage() {
 
   const fullNames = [];
 
-  API.get(`users?query=${encodeURIComponent("")}`)
-  .then((users) => {
-    if(users !== null){
-      users.forEach((user) => {
-        fullNames.push(user.firstName.concat(" ", user.lastName));
-      });
-    }
+  API.get(`users?query=${encodeURIComponent('')}`)
+    .then((users) => {
+      if (users !== null) {
+        users.forEach((user) => {
+          fullNames.push(user.firstName.concat(' ', user.lastName));
+        });
+      }
 
-    Autocomplete.init("input.autocomplete", {
-      items: fullNames,
-      fullWidth: true,
-      fixed: true,
-      autoselectFirst: false,
-      updateOnSelect: true,
+      Autocomplete.init('input.autocomplete', {
+        items: fullNames,
+        fullWidth: true,
+        fixed: true,
+        autoselectFirst: false,
+        updateOnSelect: true,
+      });
+    })
+    .catch((err) => {
+      renderError(err.message);
     });
-  })
-  .catch((err) => {
-    renderError(err.message);
-  });
 
   div.querySelector('form').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -159,12 +159,10 @@ const columns = [
         utilisateur: 'primary',
       };
 
-      return user.role === null
-        ? `<div class="badge bg-primary">Utilisateur</div>`
-        : `<div class="badge bg-${roleColors[user.role]}">${user.role
-            .charAt(0)
-            .toUpperCase()
-            .concat(user.role.slice(1))}</div>`;
+      return `<div class="badge bg-${roleColors[user.role]}">${user.role
+        .charAt(0)
+        .toUpperCase()
+        .concat(user.role.slice(1))}</div>`;
     },
   },
   {

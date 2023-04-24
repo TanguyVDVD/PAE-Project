@@ -49,7 +49,7 @@ function renderLoginForm() {
           <input class="form-check-input" type="checkbox" value="" id="input-remember" />
           <label class="form-check-label" for="input-remember">Se souvenir de moi</label>
         </div>
-        <input type="submit" value="S'identifier" class="btn btn-primary w-100" />
+        <button type="submit" class="btn btn-primary text-secondary w-100">S'identifier</button>
         <div class="hstack gap-2 mt-3 justify-content-between">
           <span>Pas de compte ?</span>
           <a href="#" id="register-link">Inscrivez-vous ici</a>
@@ -68,6 +68,7 @@ function renderLoginForm() {
 
     if (isSubmitting) return;
     isSubmitting = true;
+    loginForm.classList.add('loading');
 
     renderError();
 
@@ -85,6 +86,7 @@ function renderLoginForm() {
       })
       .finally(() => {
         isSubmitting = false;
+        loginForm.classList.remove('loading');
       });
   });
 
