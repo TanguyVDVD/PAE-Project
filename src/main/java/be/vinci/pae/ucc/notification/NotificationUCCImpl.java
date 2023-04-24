@@ -63,25 +63,8 @@ public class NotificationUCCImpl implements NotificationUCC {
           objectDTO,
           notificationDTO);
 
-      /**
-       notificationDTO.setIdObject(objectDTO.getId());
-
-       if (!objectDTO.getStatus().equals("accepté") && !objectDTO.getStatus().equals("refusé")) {
-       return null;
-       }
-
-       if (objectDTO.getStatus().equals("accepté")) {
-       notificationDTO.setNotificationText("Votre objet a été accepté !");
-       } else {
-       notificationDTO.setNotificationText(
-       "Malheureusement votre objet a été refusé : " + objectDTO.getReasonForRefusal());
-       }
-       */
-
       NotificationDTO notificationDTOFromDb = myNotificationDAO.createObjectNotification(
           notificationDTO1);
-
-      System.out.println("///////////////////" + notificationDTO1.toString());
 
       NotificationDTO notificationDTO2 = ((Notification) notificationDTO1).setUpNotificationUser(
           notificationDTOFromDb, objectDTO.getUser().getId());

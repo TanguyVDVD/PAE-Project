@@ -136,7 +136,6 @@ public class NotificationImpl implements Notification {
 
   @Override
   public NotificationDTO setUpNotificationUser(NotificationDTO notificationDTO, int idObject) {
-    System.out.println("///////////" + notificationDTO);
     notificationDTO.setRead(false);
     notificationDTO.setIdUser(idObject);
     return notificationDTO;
