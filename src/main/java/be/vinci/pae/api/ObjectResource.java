@@ -57,30 +57,26 @@ public class ObjectResource {
    * Get a list of all objects.
    *
    * @param query query to filter objects
-   * @param type  type of the object
    * @return a list of objects
    */
   @GET
   @AuthorizeHelper
   @Produces(MediaType.APPLICATION_JSON)
-  public ArrayNode getObjects(@QueryParam("query") String query,
-      @QueryParam("type") Integer type) {
-    return jsonMapper.valueToTree(objectUCC.getObjects(query, type));
+  public ArrayNode getObjects(@QueryParam("query") String query) {
+    return jsonMapper.valueToTree(objectUCC.getObjects(query));
   }
 
   /**
    * Get a list of all public objects.
    *
    * @param query query to filter objects
-   * @param type  type of the object
    * @return a list of objects
    */
   @GET
   @Path("/public")
   @Produces(MediaType.APPLICATION_JSON)
-  public List<ObjectDTO> getPublicObjects(@QueryParam("query") String query,
-      @QueryParam("type") Integer type) {
-    List<ObjectDTO> objects = objectUCC.getObjects(query, type);
+  public List<ObjectDTO> getPublicObjects(@QueryParam("query") String query) {
+    List<ObjectDTO> objects = objectUCC.getObjects(query);
 
     return objects.stream().filter(
         object -> object.getisVisible() && (object.getState().equals("en magasin")
