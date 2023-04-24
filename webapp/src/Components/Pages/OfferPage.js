@@ -2,7 +2,11 @@ import flatpickr from 'flatpickr';
 import "flatpickr/dist/l10n/fr";
 import {clearPage, renderError} from '../../utils/render';
 import API from "../../utils/api";
-import {invertDateFormat} from "../../utils/dates";
+import {
+    getTodaySDate,
+    invertDateFormat,
+    subtractDates
+} from "../../utils/dates";
 import {getAuthenticatedUser} from "../../utils/auths";
 import Navigate from "../Router/Navigate";
 
@@ -200,12 +204,32 @@ function renderOfferPage(objectTypes) {
 }
 
 function renderDatePicker(datePickerId, availabilities) {
-    flatpickr(datePickerId, {
-        locale: "fr",
-        dateFormat: "d-m-Y",
-        minDate: "today",
-        enable: availabilities,
-    });
+    if (isThereEnableDate(availabilities)){
+        flatpickr(datePickerId, {
+            locale: "fr",
+            dateFormat: "d-m-Y",
+            minDate: "today",
+            enable: availabilities,
+        });
+    } else {
+        document.getElementById("div-date-picker").innerHTML = `
+            <p class="text-danger">Aucune date disponible : Réessayez ultérieurement</p>
+        `;
+    }
+
+}
+
+function isThereEnableDate(dates){
+    const today = new Date(getTodaySDate());
+    let bool = false;
+
+    dates.forEach((date) => {
+        if (subtractDates(today, new Date(invertDateFormat(date))) > 0){
+            bool = true;
+        }
+    })
+
+    return bool;
 }
 
 export default OfferPage;
