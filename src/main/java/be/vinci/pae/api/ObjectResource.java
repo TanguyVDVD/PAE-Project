@@ -122,7 +122,7 @@ public class ObjectResource {
   @Path("/offers")
   @AuthorizeHelper
   @Produces(MediaType.APPLICATION_JSON)
-  public ArrayNode getoffers(@QueryParam("query") String query) {
+  public ArrayNode getOffers(@QueryParam("query") String query) {
     return jsonMapper.valueToTree(objectUCC.getOffers(query));
   }
 
