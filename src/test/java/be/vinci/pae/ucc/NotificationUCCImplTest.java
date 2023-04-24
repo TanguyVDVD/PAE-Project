@@ -3,6 +3,8 @@ package be.vinci.pae.ucc;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.notification.Notification;
@@ -17,8 +19,10 @@ import be.vinci.pae.services.notification.NotificationDAO;
 import be.vinci.pae.services.notification.NotificationDAOImpl;
 import be.vinci.pae.ucc.notification.NotificationUCC;
 import be.vinci.pae.ucc.notification.NotificationUCCImpl;
+import be.vinci.pae.utils.exceptions.DALException;
 import jakarta.inject.Singleton;
 import java.util.ArrayList;
+import java.util.List;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -30,7 +34,7 @@ import org.mockito.Mockito;
 
 
 /**
- * Test class for NotificationUCCImpl.
+ * Test class for NotificationUCCImpl .
  */
 public class NotificationUCCImplTest {
 
@@ -157,6 +161,55 @@ public class NotificationUCCImplTest {
     );
 
 
+  }
+
+  @DisplayName("get all the notification of a user")
+  @Test
+  void getNotificationUserWorking() {
+
+    NotificationDTO notificationDTONumber1 = Mockito.mock(NotificationImpl.class);
+    NotificationDTO notificationDTONumber2 = Mockito.mock(NotificationImpl.class);
+    List<NotificationDTO> notificationDTOList = new ArrayList<>();
+    notificationDTOList.add(notificationDTONumber1);
+    notificationDTOList.add(notificationDTONumber2);
+    Mockito.when(notificationDAO.getNotificationsByUserID(1)).thenReturn(notificationDTOList);
+
+    List<NotificationDTO> notificationDTOS = notificationUCC.getNotificationsByUserID(1);
+
+    assertAll(() -> assertNotNull(notificationDTOS, "Get all notifications have not return a list"),
+        () -> assertEquals(2, notificationDTOS.size(),
+            "Get all notifications have not return the correct number of notification"));
+
+  }
+
+  @DisplayName("get all the notification of a user with exception")
+  @Test
+  void getNotificationUserWithException() {
+    Mockito.when(notificationDAO.getNotificationsByUserID(-1)).thenThrow(new DALException(""));
+
+    assertThrows(Exception.class, () -> notificationUCC.getNotificationsByUserID(-1));
+  }
+
+  @DisplayName("mark a notification as read correctly working")
+  @Test
+  void markANotificationAsReadWorking() {
+    NotificationDTO notificationDTO = Mockito.mock(NotificationImpl.class);
+    Mockito.when(notificationDAO.markANotificationAsRead(notificationDTO))
+        .thenReturn(notificationDTO);
+
+    assertEquals(notificationDTO, notificationUCC.markANotificationAsRead(notificationDTO),
+        "Mark as read has not returned the same notification");
+  }
+
+  @DisplayName("mark a notification as read correctly not working")
+  @Test
+  void markANotificationAsReadNotWorking() {
+    NotificationDTO notificationDTO = Mockito.mock(NotificationImpl.class);
+    Mockito.when(notificationDAO.markANotificationAsRead(notificationDTO))
+        .thenReturn(null);
+
+    assertNull(notificationUCC.markANotificationAsRead(notificationDTO),
+        "Mark as read do not return null notification");
   }
 
 }
