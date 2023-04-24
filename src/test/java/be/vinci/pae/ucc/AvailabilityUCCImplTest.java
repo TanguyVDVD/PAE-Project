@@ -5,11 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import be.vinci.pae.domain.availability.AvailabilityDTO;
 import be.vinci.pae.domain.availability.AvailabilityImpl;
-import be.vinci.pae.domain.object.ObjectDTO;
-import be.vinci.pae.domain.object.ObjectImpl;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.availability.AvailabilityDAO;
-import be.vinci.pae.services.object.ObjectDAO;
 import be.vinci.pae.ucc.availability.AvailabilityUCC;
 import be.vinci.pae.ucc.availability.AvailabilityUCCImpl;
 import be.vinci.pae.utils.exceptions.UserException;
@@ -32,10 +29,6 @@ class AvailabilityUCCImplTest {
    */
   private static AvailabilityDAO availabilityDAO;
 
-  /**
-   * Mocked objectDAO.
-   */
-  private static ObjectDAO objectDAO;
 
   /**
    * availabilityUCC to test.
@@ -48,7 +41,6 @@ class AvailabilityUCCImplTest {
   @BeforeAll
   static void setUp() {
     availabilityDAO = Mockito.mock(AvailabilityDAO.class);
-    objectDAO = Mockito.mock(ObjectDAO.class);
 
     DALServices myDalServices = Mockito.mock(DALServices.class);
 
@@ -58,7 +50,6 @@ class AvailabilityUCCImplTest {
         bind(AvailabilityUCCImpl.class).to(AvailabilityUCC.class).in(Singleton.class);
 
         bind(availabilityDAO).to(AvailabilityDAO.class);
-        bind(objectDAO).to(ObjectDAO.class);
         bind(myDalServices).to(DALServices.class);
       }
     });
@@ -100,8 +91,7 @@ class AvailabilityUCCImplTest {
     AvailabilityDTO availability = Mockito.mock(AvailabilityImpl.class);
 
     Mockito.when(availabilityDAO.deleteOne(availability.getId())).thenReturn(availability);
-    Mockito.when(objectDAO.getAllByAvailability(availability.getId()))
-        .thenReturn(new ArrayList<>());
+    Mockito.when(availabilityDAO.isLinked(availability)).thenReturn(false);
     Mockito.when(availabilityDAO.getOneById(availability.getId())).thenReturn(availability);
 
     assertEquals(availability, availabilityUCC.deleteOne(availability.getId()),
@@ -114,8 +104,7 @@ class AvailabilityUCCImplTest {
     AvailabilityDTO availability = Mockito.mock(AvailabilityImpl.class);
 
     Mockito.when(availabilityDAO.deleteOne(availability.getId())).thenReturn(availability);
-    Mockito.when(objectDAO.getAllByAvailability(availability.getId()))
-        .thenReturn(new ArrayList<>());
+    Mockito.when(availabilityDAO.isLinked(availability)).thenReturn(false);
     Mockito.when(availabilityDAO.getOneById(availability.getId())).thenReturn(null);
 
     assertThrows(UserException.class, () -> availabilityUCC.deleteOne(availability.getId()),
@@ -126,15 +115,10 @@ class AvailabilityUCCImplTest {
   @Test
   void deleteGoodOneButLinked() {
     AvailabilityDTO availability = Mockito.mock(AvailabilityImpl.class);
-    ObjectDTO object = Mockito.mock(ObjectImpl.class);
-    ArrayList<ObjectDTO> objects = new ArrayList<>();
-    objects.add(object);
 
     Mockito.when(availabilityDAO.deleteOne(availability.getId())).thenReturn(availability);
-    Mockito.when(objectDAO.getAllByAvailability(availability.getId()))
-        .thenReturn(new ArrayList<>());
+    Mockito.when(availabilityDAO.isLinked(availability)).thenReturn(true);
     Mockito.when(availabilityDAO.getOneById(availability.getId())).thenReturn(availability);
-    Mockito.when(objectDAO.getAllByAvailability(availability.getId())).thenReturn(objects);
 
     assertThrows(UserException.class, () -> availabilityUCC.deleteOne(availability.getId()),
         "deleteGoodOneButLinked did not throw an exception");
