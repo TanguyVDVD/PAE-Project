@@ -12,6 +12,8 @@ import be.vinci.pae.domain.notification.NotificationImpl;
 import be.vinci.pae.domain.object.Object;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.domain.object.ObjectImpl;
+import be.vinci.pae.domain.user.User;
+import be.vinci.pae.domain.user.UserImpl;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.object.ObjectDAO;
 import be.vinci.pae.services.object.ObjectDAOImpl;
@@ -98,6 +100,7 @@ class ObjectUCCImplTest {
   @Test
   void acceptACorrectObjectProposition() {
 
+    User user = Mockito.mock(UserImpl.class);
     Object object = Mockito.mock(ObjectImpl.class);
     Mockito.when(object.getId()).thenReturn(1);
     Mockito.when(object.getStatus()).thenReturn(null);
@@ -111,6 +114,9 @@ class ObjectUCCImplTest {
     Notification notification = Mockito.mock(NotificationImpl.class);
 
     Mockito.when(domainFactory.getNotification()).thenReturn(notification);
+
+    Mockito.when(object.getUser()).thenReturn(user);
+    Mockito.when(user.getId()).thenReturn(1);
 
     Mockito.when(notificationUCC.createAcceptedRefusedObjectNotification(
         object)).thenReturn(notification);
@@ -157,6 +163,7 @@ class ObjectUCCImplTest {
   @DisplayName("Refuse an object")
   @Test
   void refuseAnObjectProposition() {
+    User user = Mockito.mock(UserImpl.class);
 
     String reasonForRefusal = "Reason for refusal";
     Object object = Mockito.mock(ObjectImpl.class);
@@ -171,6 +178,9 @@ class ObjectUCCImplTest {
 
     Notification notification = Mockito.mock(NotificationImpl.class);
     Mockito.when(domainFactory.getNotification()).thenReturn(notification);
+
+    Mockito.when(object.getUser()).thenReturn(user);
+    Mockito.when(user.getId()).thenReturn(1);
 
     Mockito.when(notificationUCC.createAcceptedRefusedObjectNotification(
         object)).thenReturn(notification);
