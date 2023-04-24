@@ -53,6 +53,12 @@ public class NotificationUCCImpl implements NotificationUCC {
   @Override
   public NotificationDTO createAcceptedRefusedObjectNotification(ObjectDTO objectDTO) {
 
+    if (objectDTO.getUser() == null) {
+      return null;
+    }
+
+    System.out.println("pas de passage");
+
     myDalServices.startTransaction();
 
     try {
