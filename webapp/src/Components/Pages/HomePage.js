@@ -1,11 +1,13 @@
 import Navigate from '../Router/Navigate';
-import { clearPage } from '../../utils/render';
-import { createObjectCard, getObjectTypes } from '../../utils/objects';
+import {clearPage} from '../../utils/render';
+import {createObjectCard, getObjectTypes} from '../../utils/objects';
 import API from '../../utils/api';
 
 import RessourceRieBrand from '../../img/ressourcerie_brand.svg';
+import Navbar from "../Navbar/Navbar";
 
 const HomePage = () => {
+  Navbar();
   clearPage();
   renderHomePage();
 };
@@ -93,12 +95,12 @@ function renderHomePage() {
   getObjectTypes().then((types) => {
     filterSelect.innerHTML += `
       ${types
-        .map(
-          (objectType) => `
+    .map(
+        (objectType) => `
           <option value="${objectType.id}">${objectType.label}</option>
         `,
-        )
-        .join('')}
+    )
+    .join('')}
     `;
   });
 
@@ -109,14 +111,21 @@ function renderHomePage() {
     const type = filterSelect.value;
 
     const params = new URLSearchParams();
-    if (query) params.set('query', query);
-    if (type) params.set('type', type);
+    if (query) {
+      params.set('query', query);
+    }
+    if (type) {
+      params.set('type', type);
+    }
 
-    if (params.toString()) Navigate(`/objects?${params}`);
+    if (params.toString()) {
+      Navigate(`/objects?${params}`);
+    }
   });
 
   const objectsCarousel = document.getElementById('objects-carousel');
-  objectsCarousel.replaceChildren(renderObjectsCarousel([null, null, null, null]));
+  objectsCarousel.replaceChildren(
+      renderObjectsCarousel([null, null, null, null]));
   API.get('objects/public').then((response) => {
     objectsCarousel.replaceChildren(renderObjectsCarousel(response));
   });
@@ -152,30 +161,30 @@ function renderObjectsCarousel(objects = []) {
   div.innerHTML = `
     <div class="carousel-inner">
       ${
-        objectsGroups.length > 0
+      objectsGroups.length > 0
           ? `
             ${objectsGroups
-              .map(
-                (objectsGroup, index) => `
+          .map(
+              (objectsGroup, index) => `
                 <div class="carousel-item ${index === 0 ? 'active' : ''}">
                   <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-5 text-center">
                     ${objectsGroup
-                      .map(
-                        (object) => `
+              .map(
+                  (object) => `
                         <div class="col">
                           ${createObjectCard(object)}
                         </div>
                       `,
-                      )
-                      .join('')}
+              )
+              .join('')}
                   </div>
                 </div>
               `,
-              )
-              .join('')}
+          )
+          .join('')}
           `
           : ''
-      }
+  }
     </div>
     <button
       class="carousel-control-prev w-auto"
@@ -201,7 +210,10 @@ function renderObjectsCarousel(objects = []) {
     card.addEventListener('click', (e) => {
       e.preventDefault();
 
-      if (card.dataset.id !== 'undefined') Navigate(`/object/${card.dataset.id}`);
+      if (card.dataset.id !== 'undefined') {
+        Navigate(
+            `/object/${card.dataset.id}`);
+      }
     });
   });
 

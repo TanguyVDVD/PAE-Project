@@ -1,15 +1,19 @@
 import Autocomplete from 'bootstrap5-autocomplete';
 import Navigate from '../../Router/Navigate';
-import { getAuthenticatedUser } from '../../../utils/auths';
-import { clearPage, renderError } from '../../../utils/render';
-import { formatPhoneNumber } from '../../../utils/format';
-import { dateStringtoGoodFormat } from '../../../utils/dates';
+import {getAuthenticatedUser} from '../../../utils/auths';
+import {clearPage, renderError} from '../../../utils/render';
+import {formatPhoneNumber} from '../../../utils/format';
+import {dateStringtoGoodFormat} from '../../../utils/dates';
 import API from '../../../utils/api';
 import noProfilePicture from '../../../img/no_profile_picture.svg';
+import Navbar from "../../Navbar/Navbar";
 
 let searchQuery = '';
 
 const AdminUsersPage = () => {
+
+  Navbar();
+
   searchQuery = '';
 
   const user = getAuthenticatedUser();
@@ -43,24 +47,24 @@ function renderAdminUsersPage() {
   const fullNames = [];
 
   API.get(`users?query=${encodeURIComponent('')}`)
-    .then((users) => {
-      if (users !== null) {
-        users.forEach((user) => {
-          fullNames.push(user.firstName.concat(' ', user.lastName));
-        });
-      }
-
-      Autocomplete.init('input.autocomplete', {
-        items: fullNames,
-        fullWidth: true,
-        fixed: true,
-        autoselectFirst: false,
-        updateOnSelect: true,
+  .then((users) => {
+    if (users !== null) {
+      users.forEach((user) => {
+        fullNames.push(user.firstName.concat(' ', user.lastName));
       });
-    })
-    .catch((err) => {
-      renderError(err.message);
+    }
+
+    Autocomplete.init('input.autocomplete', {
+      items: fullNames,
+      fullWidth: true,
+      fixed: true,
+      autoselectFirst: false,
+      updateOnSelect: true,
     });
+  })
+  .catch((err) => {
+    renderError(err.message);
+  });
 
   div.querySelector('form').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -108,7 +112,8 @@ const columns = [
     render: (user) => `
       <a href="#" role="button" data-id="${user.id}">
         <img
-          src="${user.photo ? API.getEndpoint(`users/${user.id}/photo`) : noProfilePicture}"
+          src="${user.photo ? API.getEndpoint(`users/${user.id}/photo`)
+        : noProfilePicture}"
           onerror="this.src='${noProfilePicture}'"
           width="64"
           height="64"
@@ -160,9 +165,9 @@ const columns = [
       };
 
       return `<div class="badge bg-${roleColors[user.role]}">${user.role
-        .charAt(0)
-        .toUpperCase()
-        .concat(user.role.slice(1))}</div>`;
+      .charAt(0)
+      .toUpperCase()
+      .concat(user.role.slice(1))}</div>`;
     },
   },
   {
@@ -184,8 +189,8 @@ function renderUsersTable(table, users) {
       <thead>
         <tr>
           ${columns
-            .map(
-              (column, i) => `
+  .map(
+      (column, i) => `
                 <th
                   scope="col"
                   class="
@@ -197,28 +202,29 @@ function renderUsersTable(table, users) {
                   ${column.label}
                 </th>
               `,
-            )
-            .join('')}
+  )
+  .join('')}
         </tr>
       </thead>
       <tbody>
         ${users
-          .map(
-            (user) => `
+  .map(
+      (user) => `
               <tr>
                 ${columns
-                  .map(
-                    (column) => `
+      .map(
+          (column) => `
                       <td class="${column.monospace ? 'font-monospace' : ''}">
-                        ${column.render ? column.render(user) : user[column.name]}
+                        ${column.render ? column.render(user)
+              : user[column.name]}
                       </td>
                     `,
-                  )
-                  .join('')}
+      )
+      .join('')}
               </tr>
             `,
-          )
-          .join('')}
+  )
+  .join('')}
       </tbody>
     </table>
   `;
@@ -254,10 +260,11 @@ function renderUsersTable(table, users) {
 
         // use localeCompare to sort strings
         const sortedUsers = users.sort(
-          (a, b) =>
-            (typeof a[column.name] === 'string'
-              ? a[column.name].localeCompare(b[column.name])
-              : a[column.name] - b[column.name]) * (sortingDirection === 'asc' ? 1 : -1),
+            (a, b) =>
+                (typeof a[column.name] === 'string'
+                    ? a[column.name].localeCompare(b[column.name])
+                    : a[column.name] - b[column.name]) * (sortingDirection
+                === 'asc' ? 1 : -1),
         );
 
         renderUsersTable(table, sortedUsers);

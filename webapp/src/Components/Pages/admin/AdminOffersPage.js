@@ -1,15 +1,18 @@
 import flatpickr from 'flatpickr';
 import "flatpickr/dist/l10n/fr";
 import Navigate from '../../Router/Navigate';
-import { getAuthenticatedUser } from '../../../utils/auths';
-import { clearPage, renderError } from '../../../utils/render';
+import {getAuthenticatedUser} from '../../../utils/auths';
+import {clearPage, renderError} from '../../../utils/render';
 import API from '../../../utils/api';
-import { dateStringtoGoodFormat, subtractDates, invertDateFormat } from '../../../utils/dates';
-import { encodingHelp, setUserOrPhoneNumber } from '../../../utils/objects';
+import {dateStringtoGoodFormat, subtractDates} from '../../../utils/dates';
+import {encodingHelp, setUserOrPhoneNumber} from '../../../utils/objects';
 
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
 
+import Navbar from "../../Navbar/Navbar";
+
 const AdminOffersPage = () => {
+  Navbar();
   const authenticatedUser = getAuthenticatedUser();
 
   if (!authenticatedUser || authenticatedUser.role === 'utilisateur') {
@@ -186,10 +189,10 @@ async function renderOffers(offersFiltered) {
                               <br>
                               <p>
                                   À récupérer le ${dateStringtoGoodFormat(offer.receiptDate)} ${
-                        offer.timeSlot === 'matin'
-                          ? ' au '.concat(offer.timeSlot)
-                          : " l'".concat(offer.timeSlot)
-                      }
+                                    offer.timeSlot === 'matin'
+                                      ? ' au '.concat(offer.timeSlot)
+                                      : " l'".concat(offer.timeSlot)
+                                  }
                               </p>
                               
                               <div class="div-user">
@@ -242,15 +245,15 @@ function setRemainingTime(className, offers) {
     const receiptDate = new Date(offer.receiptDate);
     const todaySDate = new Date();
 
-    const timeRemaining = subtractDates(receiptDate, todaySDate);
+    const timeRemaining = subtractDates(todaySDate, receiptDate);
 
-    if (timeRemaining <= 3) {
-      element.innerHTML = `
-        <h6 class="text-danger">${timeRemaining} jours restants pour répondre !</h6>
-      `;
-    } else if (timeRemaining < 0) {
+    if (timeRemaining < 0) {
       element.innerHTML = `
         <h6 class="text-danger">Date pour récupérer l'objet dépassée !</h6>
+      `;
+    } else if (timeRemaining <= 3) {
+      element.innerHTML = `
+        <h6 class="text-danger">${timeRemaining} jours restants pour répondre !</h6>
       `;
     } else {
       element.innerHTML = `

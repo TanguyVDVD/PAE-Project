@@ -4,6 +4,7 @@ import be.vinci.pae.domain.object.Object;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.object.ObjectDAO;
+import be.vinci.pae.ucc.notification.NotificationUCC;
 import jakarta.inject.Inject;
 import java.io.File;
 import java.io.InputStream;
@@ -21,6 +22,9 @@ public class ObjectUCCImpl implements ObjectUCC {
 
   @Inject
   private DALServices myDalServices;
+
+  @Inject
+  private NotificationUCC myNotificationUCC;
 
   /**
    * Returns a list of all objects.
@@ -125,7 +129,13 @@ public class ObjectUCCImpl implements ObjectUCC {
       if (object.isStatusAlreadyDefined(status)) {
         return null;
       }
-      return myObjectDAO.setStatusToAccepted(id, LocalDate.now(), versionNumber);
+
+      ObjectDTO objectDTOToReturn = myObjectDAO.setStatusToAccepted(id, LocalDate.now(),
+          versionNumber);
+
+      myNotificationUCC.createAcceptedRefusedObjectNotification(objectDTOToReturn);
+
+      return objectDTOToReturn;
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
 
@@ -159,7 +169,12 @@ public class ObjectUCCImpl implements ObjectUCC {
         return null;
       }
 
-      return myObjectDAO.setStatusToRefused(id, reasonForRefusal, LocalDate.now(), versionNumber);
+      ObjectDTO objectDTOToReturn = myObjectDAO.setStatusToRefused(id, reasonForRefusal,
+          LocalDate.now(), versionNumber);
+
+      myNotificationUCC.createAcceptedRefusedObjectNotification(objectDTOToReturn);
+
+      return objectDTOToReturn;
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
 
@@ -266,7 +281,10 @@ public class ObjectUCCImpl implements ObjectUCC {
     myDalServices.startTransaction();
 
     try {
-      return myObjectDAO.insert(objectDTO);
+
+      ObjectDTO objectDTOReturn = myObjectDAO.insert(objectDTO);
+      myNotificationUCC.createNewObjectPropositionNotification(objectDTOReturn.getId());
+      return objectDTOReturn;
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
 

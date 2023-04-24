@@ -1,15 +1,15 @@
-import flatpickr from 'flatpickr';
-import "flatpickr/dist/l10n/fr";
 import Navigate from '../../Router/Navigate';
-import { getAuthenticatedUser } from '../../../utils/auths';
+import {getAuthenticatedUser} from '../../../utils/auths';
 import {clearPage, renderError} from '../../../utils/render';
 import API from '../../../utils/api';
 import {invertDateFormat, subtractDates} from '../../../utils/dates';
 import {encodingHelp, setReceiptDate, setUserOrPhoneNumber} from '../../../utils/objects';
 
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
+import Navbar from "../../Navbar/Navbar";
 
 const AdminObjectsPage = () => {
+  Navbar();
   const authenticatedUser = getAuthenticatedUser();
 
   if (!authenticatedUser || authenticatedUser.role === 'utilisateur') {
@@ -19,7 +19,6 @@ const AdminObjectsPage = () => {
 
   clearPage();
   renderAdminObjectsPage();
-  // renderObjects();
 };
 
 function renderAdminObjectsPage() {
@@ -199,7 +198,7 @@ async function renderObjects(objectsFiltered) {
                           </div>
                       </div>
                       `
-      ,).join('')}
+                  ,).join('')}
               </div>                     
           </div>
       </div>
@@ -236,15 +235,15 @@ function setPriceOrTimeRemaining(className, objects) {
       const receiptDate = new Date(object.receiptDate);
       const todaySDate = new Date();
 
-      const timeRemaining = subtractDates(receiptDate, todaySDate);
+      const timeRemaining = subtractDates(todaySDate, receiptDate);
 
-      if (timeRemaining <= 3) {
-        element.innerHTML = `
-        <h6 class="text-danger">${timeRemaining} jours restants pour répondre !</h6>
-      `;
-      } else if (timeRemaining < 0) {
+      if (timeRemaining < 0) {
         element.innerHTML = `
         <h6 class="text-danger">Date pour récupérer l'objet dépassée !</h6>
+      `;
+      } else if (timeRemaining <= 3) {
+        element.innerHTML = `
+        <h6 class="text-danger">${timeRemaining} jours restants pour répondre !</h6>
       `;
       } else {
         element.innerHTML = `
@@ -290,9 +289,9 @@ function setButton(className, objects) {
     const element = elements.item(i);
     if (object.state === 'refusé') {
       element.innerHTML = `
-          <button class="btn btn-primary btn-sm button-see" type="button" data-id="${object.id}">
-            Voir
-          </button>
+        <button class="btn btn-primary btn-sm button-see" type="button" data-id="${object.id}">
+          Voir
+        </button>
       `;
     } else if (object.state === 'proposé') {
       element.innerHTML = `

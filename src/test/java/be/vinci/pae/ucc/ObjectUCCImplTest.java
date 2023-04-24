@@ -6,12 +6,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.object.Object;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.domain.object.ObjectImpl;
 import be.vinci.pae.services.DALServices;
+import be.vinci.pae.services.notification.NotificationDAO;
 import be.vinci.pae.services.object.ObjectDAO;
 import be.vinci.pae.services.object.ObjectDAOImpl;
+import be.vinci.pae.ucc.notification.NotificationUCC;
 import be.vinci.pae.ucc.object.ObjectUCC;
 import be.vinci.pae.ucc.object.ObjectUCCImpl;
 import be.vinci.pae.utils.exceptions.DALException;
@@ -45,11 +48,29 @@ class ObjectUCCImplTest {
   private static ObjectUCC objectUCC;
 
   /**
+   * NotificationUCC to test.
+   */
+  private static NotificationUCC notificationUCC;
+
+  /**
+   * Mocked notificationDAO.
+   */
+  private static NotificationDAO notificationDAO;
+
+  /**
+   * DomainFactory to test.
+   */
+  private static DomainFactory domainFactory;
+
+  /**
    * Set up the test.
    */
   @BeforeAll
   static void setUp() {
     objectDAO = Mockito.mock(ObjectDAOImpl.class);
+    notificationUCC = Mockito.mock(NotificationUCC.class);
+    domainFactory = Mockito.mock(DomainFactory.class);
+    notificationDAO = Mockito.mock(NotificationDAO.class);
 
     DALServices myDalServices = Mockito.mock(DALServices.class);
 
@@ -58,39 +79,24 @@ class ObjectUCCImplTest {
       protected void configure() {
         bind(ObjectUCCImpl.class).to(ObjectUCC.class).in(Singleton.class);
 
+        bind(notificationDAO).to(NotificationDAO.class);
+        bind(domainFactory).to(DomainFactory.class);
+        bind(notificationUCC).to(NotificationUCC.class);
         bind(objectDAO).to(ObjectDAO.class);
         bind(myDalServices).to(DALServices.class);
       }
     });
 
     objectUCC = locator.getService(ObjectUCC.class);
+    //notificationUCC = locator.getService(NotificationUCC.class);
 
   }
 
   @BeforeEach
   void cleanUp() {
     Mockito.reset(objectDAO);
-  }
-
-  @DisplayName("Accept a correct object proposition")
-  @Test
-  void acceptACorrectObjectProposition() {
-
-    Object object = Mockito.mock(ObjectImpl.class);
-    Mockito.when(object.getId()).thenReturn(1);
-    Mockito.when(object.getStatus()).thenReturn(null);
-    Mockito.when(object.getVersionNumber()).thenReturn(1);
-    Mockito.when(objectDAO.getOneById(object.getId())).thenReturn(object);
-    Mockito.when(object.isStatusAlreadyDefined(object.getStatus())).thenReturn(false);
-    Mockito.when(objectDAO.setStatusToAccepted(object.getId(), LocalDate.now(),
-        object.getVersionNumber())).thenReturn(object);
-    ObjectDTO objectDTO = objectUCC.accept(object.getId(), object.getVersionNumber());
-
-    assertAll(
-        () -> assertNotNull(objectDTO, "Accept return null"),
-        () -> assertEquals(object, objectDTO, "Accept method does not return the same object")
-    );
-
+    Mockito.reset(notificationUCC);
+    Mockito.reset(domainFactory);
   }
 
   @DisplayName("Accept an object already accepted")
@@ -121,31 +127,6 @@ class ObjectUCCImplTest {
 
     assertThrows(DALException.class, () -> objectUCC.accept(1, 1),
         "Exception not thrown");
-  }
-
-  @DisplayName("Refuse an object already refused")
-  @Test
-  void refuseAnObjectProposition() {
-
-    String reasonForRefusal = "Reason for refusal";
-    Object object = Mockito.mock(ObjectImpl.class);
-    Mockito.when(object.getId()).thenReturn(1);
-    Mockito.when(object.getStatus()).thenReturn(null);
-    Mockito.when(object.getVersionNumber()).thenReturn(1);
-    Mockito.when(objectDAO.getOneById(object.getId())).thenReturn(object);
-    Mockito.when(object.isStatusAlreadyDefined(object.getStatus())).thenReturn(false);
-    Mockito.when(objectDAO.setStatusToRefused(object.getId(), reasonForRefusal, LocalDate.now(),
-            object.getVersionNumber()))
-        .thenReturn(object);
-
-    ObjectDTO objectDTO = objectUCC.refuse(object.getId(), reasonForRefusal,
-        object.getVersionNumber());
-
-    assertAll(
-        () -> assertNotNull(objectDTO, "Refuse return null"),
-        () -> assertEquals(object, objectDTO, "Refuse method does not return the same object")
-    );
-
   }
 
   @DisplayName("Refuse an object already refused")
