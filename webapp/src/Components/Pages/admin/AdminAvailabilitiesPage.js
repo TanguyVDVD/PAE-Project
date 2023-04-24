@@ -57,6 +57,10 @@ function renderAdminAvailabilitiesPage() {
 
     defaultAvailabilities = datePicker.value.split(", ");
 
+    if (defaultAvailabilities[0] === ""){
+      defaultAvailabilities = [];
+    }
+
     datePicker.addEventListener("change", (event) => {
       const datesAfterChange = event.target.value.split(", ");
 
