@@ -153,6 +153,19 @@ public class NotificationUCCImplTest {
 
   }
 
+  @DisplayName("do not create a notification no user")
+  @Test
+  void createAcceptedRefusedObjectNotificationNReturnNullNoUser() {
+
+    ObjectDTO object = Mockito.mock(ObjectImpl.class);
+
+    Mockito.when(object.getUser()).thenReturn(null);
+
+    assertNull(notificationUCC.createAcceptedRefusedObjectNotification(object),
+        "it should return null");
+
+  }
+
 
   @DisplayName("create correct new object notification")
   @Test
