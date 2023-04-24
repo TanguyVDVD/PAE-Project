@@ -169,4 +169,29 @@ public class AvailabilityDAOImpl implements AvailabilityDAO {
     }
   }
 
+  /**
+   * Check if the availability is linked to objects.
+   *
+   * @param availability the availability to check in the db
+   * @return true if linked else false
+   */
+  @Override
+  public Boolean isLinked(AvailabilityDTO availability) {
+    String request = "SELECT EXISTS( SELECT * FROM pae.objects o WHERE o.receipt_date = ? );";
+
+    try (PreparedStatement ps = dalBackendServices.getPreparedStatement(request)) {
+      ps.setInt(1, availability.getId());
+
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          return rs.getBoolean(1);
+        }
+      }
+    } catch (SQLException e) {
+      throw new DALException("Error during the check of availability", e);
+    }
+
+    return null;
+  }
+
 }

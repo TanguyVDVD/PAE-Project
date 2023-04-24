@@ -47,4 +47,12 @@ public interface AvailabilityDAO {
    * @return the availability deleted if succeeded
    */
   AvailabilityDTO deleteOne(int id);
+
+  /**
+   * Check if the availability is linked to objects.
+   *
+   * @param availability the availability to check in the db
+   * @return true if linked else false
+   */
+  Boolean isLinked(AvailabilityDTO availability);
 }
