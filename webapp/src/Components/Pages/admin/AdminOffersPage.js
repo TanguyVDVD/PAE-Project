@@ -4,7 +4,7 @@ import Navigate from '../../Router/Navigate';
 import {getAuthenticatedUser} from '../../../utils/auths';
 import {clearPage, renderError} from '../../../utils/render';
 import API from '../../../utils/api';
-import {dateStringtoGoodFormat, subtractDates} from '../../../utils/dates';
+import {invertDateFormat,dateStringtoGoodFormat, subtractDates} from '../../../utils/dates';
 import {encodingHelp, setUserOrPhoneNumber} from '../../../utils/objects';
 
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';

@@ -1,3 +1,5 @@
+import flatpickr from 'flatpickr';
+import "flatpickr/dist/l10n/fr";
 import Navigate from '../../Router/Navigate';
 import {getAuthenticatedUser} from '../../../utils/auths';
 import {clearPage, renderError} from '../../../utils/render';
