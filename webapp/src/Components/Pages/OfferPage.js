@@ -44,10 +44,10 @@ function renderOfferPage(objectTypes) {
                         <br>
                         
                         <input type="radio" class="btn-check" name="options-outlined" id="input-morning" autocomplete="off" >
-                        <label class="btn btn-outline-secondary" for="input-morning">11h à 13h</label>
+                        <label class="btn btn-outline-primary text-secondary" for="input-morning">11h à 13h</label>
                         
                         <input type="radio" class="btn-check" name="options-outlined" id="input-afternoon" autocomplete="off">
-                        <label class="btn btn-outline-secondary" for="input-afternoon">14h à 16h</label>
+                        <label class="btn btn-outline-primary text-secondary" for="input-afternoon">14h à 16h</label>
 
                         <br>
 
@@ -98,14 +98,14 @@ function renderOfferPage(objectTypes) {
                     `
                         <div class="form-group text-center">
                             <br>
-                            <button type="submit" class="btn btn-secondary btn-lg btn-block" id="submit-btn">Soumettre</button>
+                            <button type="submit" class="btn btn-primary btn-lg btn-block" id="submit-btn">Soumettre</button>
                         </div>
                     ` : 
                     `
                         <div class="form-group text-center">
                             <br>
-                            <button type="button" class="btn btn-secondary btn-lg btn-block" id="register">S'inscrire</button>
-                            <button type="button" class="btn btn-secondary btn-lg btn-block" id="login">Se connecter</button>
+                            <button type="button" class="btn btn-primary btn-lg btn-block" id="register">S'inscrire</button>
+                            <button type="button" class="btn btn-primary btn-lg btn-block" id="login">Se connecter</button>
                         </div>
         
                         <br>
@@ -115,7 +115,7 @@ function renderOfferPage(objectTypes) {
                         <div class="form-group">
                             <div class="input-group w-auto">
                                 <input type="text" class="form-control" placeholder="Numéro de téléphone" id="input-phone-number"/>
-                                <button class="btn btn-secondary" type="submit" id="submit-btn-anonymous" data-mdb-ripple-color="dark">Soumettre anonymement</button>
+                                <button class="btn btn-primary" type="submit" id="submit-btn-anonymous" data-mdb-ripple-color="dark">Soumettre anonymement</button>
                             </div>
                         </div> 
                     `

@@ -139,11 +139,11 @@ async function renderOffers(offers) {
                           </div>
                           
                           <div class="col-md-3 border-left mt-1 d-flex flex-column align-content-center justify-content-between">                                
-                              <div class="div-remaining-time">
+                              <div class="div-remaining-time pt-1">
                               </div>
                                                               
                               <div class="d-flex flex-column mb-4 div-button">
-                                  <button class="btn btn-outline-primary btn-sm button-respond" type="button" data-id="${
+                                  <button class="btn btn-primary btn-sm button-respond" type="button" data-id="${
                                     offer.id
                                   }">Répondre</button>
                               </div>
@@ -190,9 +190,13 @@ function setRemainingTime(className, offers) {
       element.innerHTML = `
         <h6 class="text-danger">${timeRemaining} jours restants pour répondre !</h6>
       `;
+    } else if (timeRemaining < 0) {
+      element.innerHTML = `
+        <h6 class="text-danger">Date pour récupérer l'objet dépassée !</h6>
+      `;
     } else {
       element.innerHTML = `
-        <h6 class="text-primary">${timeRemaining} jours restants pour répondre</h6>
+        <h6>${timeRemaining} jours restants pour répondre</h6>
       `;
     }
   }
