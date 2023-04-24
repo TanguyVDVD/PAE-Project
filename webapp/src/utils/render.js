@@ -4,7 +4,9 @@ const clearPage = () => {
 };
 
 const renderPageTitle = (title) => {
-  if (!title) return;
+  if (!title) {
+    return;
+  }
   const main = document.querySelector('main');
   const pageTitle = document.createElement('h4');
   pageTitle.innerText = title;
@@ -12,9 +14,14 @@ const renderPageTitle = (title) => {
 };
 
 const renderError = (error, container = document.querySelector('main')) => {
-  if (container.querySelector('.alert')) container.querySelector('.alert').remove();
+  if (container.querySelector('.alert')) {
+    container.querySelector(
+        '.alert').remove();
+  }
 
-  if (!error) return;
+  if (!error) {
+    return;
+  }
 
   const alert = document.createElement('div');
   alert.className = 'alert alert-danger alert-dismissible d-flex align-items-center';
@@ -32,4 +39,4 @@ const renderError = (error, container = document.querySelector('main')) => {
   container.prepend(alert);
 };
 
-export { clearPage, renderPageTitle, renderError };
+export {clearPage, renderPageTitle, renderError};

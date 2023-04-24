@@ -1,13 +1,16 @@
 import Navigate from '../../Router/Navigate';
-import { getAuthenticatedUser } from '../../../utils/auths';
+import {getAuthenticatedUser} from '../../../utils/auths';
 import {clearPage, renderError} from '../../../utils/render';
 import API from '../../../utils/api';
-import { dateStringtoGoodFormat, subtractDates } from '../../../utils/dates';
+import {dateStringtoGoodFormat, subtractDates} from '../../../utils/dates';
 import {encodingHelp, setUserOrPhoneNumber} from '../../../utils/objects';
 
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
 
+import Navbar from "../../Navbar/Navbar";
+
 const AdminOffersPage = () => {
+  Navbar();
   const authenticatedUser = getAuthenticatedUser();
 
   if (!authenticatedUser || authenticatedUser.role === 'utilisateur') {
@@ -50,7 +53,7 @@ function renderAdminOffersPage() {
 
   API.get(`objects/offers?query=${encodeURIComponent("")}`)
   .then((offers) => {
-    if(offers !== null){
+    if (offers !== null) {
       renderOffers(offers);
 
       offers.forEach((offer) => {
@@ -70,7 +73,7 @@ function renderAdminOffersPage() {
     e.currentTarget.dispatchEvent(new Event('submit'));
     API.get(`objects/offers?query=${encodeURIComponent(search)}`)
     .then((objects) => {
-      if(objects !== null){
+      if (objects !== null) {
         renderOffers(objects);
       }
     })
@@ -84,12 +87,14 @@ function renderAdminOffersPage() {
 
     const search = e.target.querySelector('input').value;
 
-    if (search === searchQuery) return;
+    if (search === searchQuery) {
+      return;
+    }
     searchQuery = search;
 
     API.get(`objects/offers?query=${encodeURIComponent(searchQuery)}`)
     .then((offers) => {
-      if(offers !== null){
+      if (offers !== null) {
         renderOffers(offers);
       }
     })
@@ -107,13 +112,14 @@ async function renderOffers(offers) {
           <div class="d-flex justify-content-center row">
               <div class="col-md-10">
                   ${offers
-                    .map(
-                      (offer) => `
+  .map(
+      (offer) => `
                       <div class="row p-2 bg-white border rounded">
                           <div class="col-md-3 mt-1">
                               <img 
                                   class="object-fit-cover rounded product-image" 
-                                  src="${API.getEndpoint(`objects/${offer.id}/photo`)}"
+                                  src="${API.getEndpoint(
+          `objects/${offer.id}/photo`)}"
                                   onerror="this.src='${noFurniturePhoto}'"
                                   width="180"
                                   height="180"
@@ -127,11 +133,12 @@ async function renderOffers(offers) {
                               </div>
                               <br>
                               <p>
-                                  À récupérer le ${dateStringtoGoodFormat(offer.receiptDate)} ${
-                        offer.timeSlot === 'matin'
-                          ? ' au '.concat(offer.timeSlot)
-                          : " l'".concat(offer.timeSlot)
-                      }
+                                  À récupérer le ${dateStringtoGoodFormat(
+          offer.receiptDate)} ${
+          offer.timeSlot === 'matin'
+              ? ' au '.concat(offer.timeSlot)
+              : " l'".concat(offer.timeSlot)
+      }
                               </p>
                               
                               <div class="div-user">
@@ -144,14 +151,14 @@ async function renderOffers(offers) {
                                                               
                               <div class="d-flex flex-column mb-4 div-button">
                                   <button class="btn btn-primary text-secondary btn-sm button-respond" type="button" data-id="${
-                                    offer.id
-                                  }">Répondre</button>
+          offer.id
+      }">Répondre</button>
                               </div>
                           </div>
                       </div>
               `,
-                    )
-                    .join('')}
+  )
+  .join('')}
               </div>                     
           </div>
       </div>

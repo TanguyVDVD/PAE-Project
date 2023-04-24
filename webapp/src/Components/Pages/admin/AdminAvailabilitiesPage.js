@@ -5,8 +5,10 @@ import Navigate from "../../Router/Navigate";
 import {clearPage, renderError} from "../../../utils/render";
 import API from "../../../utils/api";
 import {invertDateFormat} from "../../../utils/dates";
+import Navbar from "../../Navbar/Navbar";
 
 const AdminAvailabilitiesPage = () => {
+  Navbar();
   const authenticatedUser = getAuthenticatedUser();
 
   if (!authenticatedUser || authenticatedUser.role === 'utilisateur') {
@@ -57,29 +59,30 @@ function renderAdminAvailabilitiesPage() {
 
     defaultAvailabilities = datePicker.value.split(", ");
 
-    if (defaultAvailabilities[0] === ""){
+    if (defaultAvailabilities[0] === "") {
       defaultAvailabilities = [];
     }
 
     datePicker.addEventListener("change", (event) => {
       const datesAfterChange = event.target.value.split(", ");
 
-      if (defaultAvailabilities.length < datesAfterChange.length){
-        const lastDate = invertDateFormat(datesAfterChange[datesAfterChange.length-1]);
-        API.post('/availabilities', { body: { date: lastDate } })
+      if (defaultAvailabilities.length < datesAfterChange.length) {
+        const lastDate = invertDateFormat(
+            datesAfterChange[datesAfterChange.length - 1]);
+        API.post('/availabilities', {body: {date: lastDate}})
         .catch((err) => {
           renderError(err.message);
         })
         .finally(AdminAvailabilitiesPage);
-      }
-      else if (defaultAvailabilities.length > datesAfterChange.length || datesAfterChange[0] === ""){
+      } else if (defaultAvailabilities.length > datesAfterChange.length
+          || datesAfterChange[0] === "") {
         defaultAvailabilities.forEach((availability) => {
           // Finding missing date to delete
-          if (!datesAfterChange.includes(availability)){
+          if (!datesAfterChange.includes(availability)) {
             availabilities.forEach((item) => {
               const date = invertDateFormat(item.date);
               // Finding the id to delete
-              if (date === availability){
+              if (date === availability) {
                 API.delete(`/availabilities/${item.id}`)
                 .then(AdminAvailabilitiesPage)
                 .catch((err) => {
@@ -101,7 +104,7 @@ function renderAdminAvailabilitiesPage() {
 function renderDatePicker(datePickerId, defaultAvailabilities) {
   flatpickr(datePickerId, {
     altInput: true,
-    altInputClass : "invisible",
+    altInputClass: "invisible",
     static: true,
     position: "center",
     inline: true,

@@ -1,9 +1,11 @@
-import { clearPage } from '../../utils/render';
-import { isAuthenticated, setAuthenticatedUser } from '../../utils/auths';
+import {clearPage} from '../../utils/render';
+import {isAuthenticated, setAuthenticatedUser} from '../../utils/auths';
 import Navigate from '../Router/Navigate';
 import API from '../../utils/api';
+import Navbar from "../Navbar/Navbar";
 
 const LoginPage = () => {
+  Navbar();
   if (isAuthenticated()) {
     Navigate('/');
     return;
@@ -66,7 +68,9 @@ function renderLoginForm() {
   loginForm.querySelector('form').addEventListener('submit', (e) => {
     e.preventDefault();
 
-    if (isSubmitting) return;
+    if (isSubmitting) {
+      return;
+    }
     isSubmitting = true;
     loginForm.classList.add('loading');
 
@@ -76,18 +80,18 @@ function renderLoginForm() {
     const password = document.querySelector('#input-password').value;
     const remember = document.querySelector('#input-remember').checked;
 
-    API.post('users/login', { body: { email, password } })
-      .then((data) => {
-        setAuthenticatedUser(data, remember);
-        Navigate('/');
-      })
-      .catch((err) => {
-        renderError(err.message);
-      })
-      .finally(() => {
-        isSubmitting = false;
-        loginForm.classList.remove('loading');
-      });
+    API.post('users/login', {body: {email, password}})
+    .then((data) => {
+      setAuthenticatedUser(data, remember);
+      Navigate('/');
+    })
+    .catch((err) => {
+      renderError(err.message);
+    })
+    .finally(() => {
+      isSubmitting = false;
+      loginForm.classList.remove('loading');
+    });
   });
 
   main.appendChild(loginForm);
@@ -100,7 +104,9 @@ function renderError(error) {
     container.querySelector('.alert').remove();
   }
 
-  if (!error) return;
+  if (!error) {
+    return;
+  }
 
   const alert = document.createElement('div');
   alert.className = 'alert alert-danger d-flex align-items-center';

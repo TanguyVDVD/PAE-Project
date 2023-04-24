@@ -1,5 +1,5 @@
 import Navigate from '../../Router/Navigate';
-import { getAuthenticatedUser } from '../../../utils/auths';
+import {getAuthenticatedUser} from '../../../utils/auths';
 import {clearPage, renderError} from '../../../utils/render';
 import API from '../../../utils/api';
 import {subtractDates} from '../../../utils/dates';
@@ -9,8 +9,10 @@ import {
   setUserOrPhoneNumber
 } from '../../../utils/objects';
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
+import Navbar from "../../Navbar/Navbar";
 
 const AdminObjectsPage = () => {
+  Navbar();
   const authenticatedUser = getAuthenticatedUser();
 
   if (!authenticatedUser || authenticatedUser.role === 'utilisateur') {
@@ -53,7 +55,7 @@ function renderAdminObjectsPage() {
 
   API.get(`objects?query=${encodeURIComponent("")}`)
   .then((objects) => {
-    if(objects !== null){
+    if (objects !== null) {
       renderObjects(objects);
 
       objects.forEach((object) => {
@@ -73,7 +75,7 @@ function renderAdminObjectsPage() {
     e.currentTarget.dispatchEvent(new Event('submit'));
     API.get(`objects?query=${encodeURIComponent(search)}`)
     .then((objects) => {
-      if(objects !== null){
+      if (objects !== null) {
         renderObjects(objects);
       }
     })
@@ -82,16 +84,17 @@ function renderAdminObjectsPage() {
     });
   });
 
-
   div.querySelector('form').addEventListener('submit', (e) => {
     e.preventDefault();
 
     const search = e.target.querySelector('input').value;
-    if (search === searchQuery) return;
+    if (search === searchQuery) {
+      return;
+    }
     searchQuery = search;
     API.get(`objects?query=${encodeURIComponent(searchQuery)}`)
     .then((objects) => {
-      if(objects !== null){
+      if (objects !== null) {
         renderObjects(objects);
       }
     })
@@ -113,7 +116,8 @@ async function renderObjects(objects) {
                           <div class="col-md-3 mt-1">
                               <img 
                                   class="rounded product-image object-fit-cover" 
-                                  src="${API.getEndpoint(`objects/${object.id}/photo`)}"
+                                  src="${API.getEndpoint(
+          `objects/${object.id}/photo`)}"
                                   width="180" height="180"
                                   onerror="this.src='${noFurniturePhoto}'"
                                   alt="${object.objectType}">
@@ -146,32 +150,32 @@ async function renderObjects(objects) {
                           </div>
                       </div>
                       `
-                  ,).join('')}
+      ,).join('')}
               </div>                     
           </div>
       </div>
     `;
 
-    setReceiptDate(document, 'div-receipt-date', objects);
-    setUserOrPhoneNumber(document, 'div-user', objects);
-    setPriceOrTimeRemaining('div-price-time-remaining', objects);
-    setStateColor('div-state', objects);
-    setButton('div-button', objects);
+  setReceiptDate(document, 'div-receipt-date', objects);
+  setUserOrPhoneNumber(document, 'div-user', objects);
+  setPriceOrTimeRemaining('div-price-time-remaining', objects);
+  setStateColor('div-state', objects);
+  setButton('div-button', objects);
 
-    objectslist.querySelectorAll('a[data-id]').forEach((link) => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        Navigate(`/user/${e.target.dataset.id}`);
-      });
+  objectslist.querySelectorAll('a[data-id]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      Navigate(`/user/${e.target.dataset.id}`);
     });
+  });
 
-    objectslist.querySelectorAll('button[data-id]').forEach((link) => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        Navigate(`/object/${e.target.dataset.id}`);
-      });
+  objectslist.querySelectorAll('button[data-id]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      Navigate(`/object/${e.target.dataset.id}`);
     });
-  }
+  });
+}
 
 function setPriceOrTimeRemaining(className, objects) {
   const elements = document.getElementsByClassName(className);

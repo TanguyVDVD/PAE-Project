@@ -2,6 +2,8 @@ package be.vinci.pae.domain;
 
 import be.vinci.pae.domain.availability.AvailabilityDTO;
 import be.vinci.pae.domain.availability.AvailabilityImpl;
+import be.vinci.pae.domain.notification.NotificationDTO;
+import be.vinci.pae.domain.notification.NotificationImpl;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.domain.object.ObjectImpl;
 import be.vinci.pae.domain.objecttype.ObjectTypeDTO;
@@ -52,6 +54,16 @@ public class DomainFactoryImpl implements DomainFactory {
   @Override
   public AvailabilityDTO getAvailability() {
     return new AvailabilityImpl();
+  }
+
+  /**
+   * Returns a new instance of a NotificationDTO.
+   *
+   * @return a NotificationImpl
+   */
+  @Override
+  public NotificationDTO getNotification() {
+    return new NotificationImpl();
   }
 
 }

@@ -2,6 +2,7 @@ package be.vinci.pae.domain;
 
 
 import be.vinci.pae.domain.availability.AvailabilityDTO;
+import be.vinci.pae.domain.notification.NotificationDTO;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.domain.objecttype.ObjectTypeDTO;
 import be.vinci.pae.domain.user.UserDTO;
@@ -39,5 +40,12 @@ public interface DomainFactory {
    * @return a AvailabilityImpl
    */
   AvailabilityDTO getAvailability();
+
+  /**
+   * Returns a new instance of a NotificationDTO.
+   *
+   * @return a NotificationImpl
+   */
+  NotificationDTO getNotification();
 
 }

@@ -1,13 +1,15 @@
 import Navigate from '../Router/Navigate';
-import { clearPage, renderError } from '../../utils/render';
-import { createObjectCard, getObjectTypes } from '../../utils/objects';
+import {clearPage, renderError} from '../../utils/render';
+import {createObjectCard, getObjectTypes} from '../../utils/objects';
 // import { getAuthenticatedUser } from '../../utils/auths';
 import API from '../../utils/api';
+import Navbar from "../Navbar/Navbar";
 
 const objects = [];
 let params = null;
 
 const ObjectsPage = () => {
+  Navbar();
   objects.splice(0, objects.length);
   params = new URLSearchParams(window.location.search);
 
@@ -58,12 +60,12 @@ function renderObjectsPage() {
   getObjectTypes().then((types) => {
     filterSelect.innerHTML += `
       ${types
-        .map(
-          (objectType) => `
+    .map(
+        (objectType) => `
           <option value="${objectType.id}">${objectType.label}</option>
         `,
-        )
-        .join('')}
+    )
+    .join('')}
     `;
 
     filterSelect.value = params.get('type') || '';
@@ -78,7 +80,8 @@ function renderObjectsPage() {
     params.set('query', query);
     params.set('type', type);
 
-    window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
+    window.history.pushState({}, '',
+        `${window.location.pathname}?${params.toString()}`);
 
     document.getElementById('objects').classList.add('opacity-25');
     getObjects();
@@ -90,17 +93,17 @@ function renderObjectsPage() {
 
 function getObjects() {
   API.get(`objects/public?${params.toString()}`)
-    .then((response) => {
-      objects.splice(0, objects.length, ...response);
-      renderObjects();
-    })
-    .catch((err) => {
-      renderError(err);
-    })
+  .then((response) => {
+    objects.splice(0, objects.length, ...response);
+    renderObjects();
+  })
+  .catch((err) => {
+    renderError(err);
+  })
 
-    .finally(() => {
-      document.getElementById('objects').classList.remove('opacity-25');
-    });
+  .finally(() => {
+    document.getElementById('objects').classList.remove('opacity-25');
+  });
 }
 
 function renderObjects(_objects = objects) {
@@ -117,20 +120,23 @@ function renderObjects(_objects = objects) {
   }
 
   div.innerHTML = _objects
-    .map(
+  .map(
       (object) => `
         <div class="col">
           ${createObjectCard(object)}
         </div>
       `,
-    )
-    .join('');
+  )
+  .join('');
 
   div.querySelectorAll('.object-card').forEach((card) => {
     card.addEventListener('click', (e) => {
       e.preventDefault();
 
-      if (card.dataset.id !== 'undefined') Navigate(`/object/${card.dataset.id}`);
+      if (card.dataset.id !== 'undefined') {
+        Navigate(
+            `/object/${card.dataset.id}`);
+      }
     });
   });
 }
