@@ -121,6 +121,11 @@
       <groupId>net.coobird</groupId>
       <version>[0.4, 0.5)</version>
     </dependency>
+    <dependency>
+      <artifactId>commons-text</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <version>1.10.0</version>
+    </dependency>
   </dependencies>
   <dependencyManagement>
     <dependencies>

@@ -1,9 +1,9 @@
-import Autocomplete from "bootstrap5-autocomplete";
+import Autocomplete from 'bootstrap5-autocomplete';
 import Navigate from '../Components/Router/Navigate';
 import { dateStringtoGoodFormat } from './dates';
 import { formatPhoneNumber } from './format';
-import API from "./api";
-import {renderError} from "./render";
+import API from './api';
+import { renderError } from './render';
 
 import noFurniturePhoto from '../img/no_furniture_photo.svg';
 
@@ -14,7 +14,7 @@ function setUserOrPhoneNumber(document, className, objects) {
     const element = elements.item(i);
     if (object.user === null) {
       element.innerHTML = `
-          <p>Proposé anonymement au ${formatPhoneNumber(
+          <p>Proposé au ${formatPhoneNumber(
             object.phoneNumber,
           )} le ${dateStringtoGoodFormat(object.offerDate)}</p>
       `;
@@ -48,7 +48,7 @@ function setReceiptDate(document, className, objects) {
       element.innerHTML = `
           <p>
               À récupérer le ${dateStringtoGoodFormat(object.receiptDate)} ${
-          object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
+        object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
       }
           </p>
       `;
@@ -62,7 +62,7 @@ function setReceiptDate(document, className, objects) {
       element.innerHTML = `
           <p>
               Récupéré le ${dateStringtoGoodFormat(object.receiptDate)} ${
-          object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
+        object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
       }
           </p>
       `;
@@ -70,27 +70,28 @@ function setReceiptDate(document, className, objects) {
   }
 }
 
-function encodingHelp(descriptions){
+function encodingHelp(descriptions) {
   const objectTypes = [];
 
-  API.get('objectTypes').then((types) => {
-    types.forEach((item) => {
-      objectTypes.push(item.label);
-    });
+  API.get('objectTypes')
+    .then((types) => {
+      types.forEach((item) => {
+        objectTypes.push(item.label);
+      });
 
-    const src = descriptions.concat(objectTypes);
+      const src = descriptions.concat(objectTypes);
 
-    Autocomplete.init("input.autocomplete", {
-      items: src,
-      fullWidth: true,
-      fixed: true,
-      autoselectFirst: false,
-      updateOnSelect: true,
+      Autocomplete.init('input.autocomplete', {
+        items: src,
+        fullWidth: true,
+        fixed: true,
+        autoselectFirst: false,
+        updateOnSelect: true,
+      });
+    })
+    .catch((err) => {
+      renderError(err.message);
     });
-  })
-  .catch((err) => {
-    renderError(err.message);
-  });
 }
 
 function createObjectCard(_object) {
@@ -136,4 +137,17 @@ function createObjectCard(_object) {
   `;
 }
 
-export { setUserOrPhoneNumber, setReceiptDate, createObjectCard, encodingHelp };
+// Because object types are used in multiple places, we cache them
+const objectTypes = [];
+
+async function getObjectTypes() {
+  if (objectTypes.length !== 0) return objectTypes;
+
+  const types = await API.get('objectTypes');
+
+  objectTypes.splice(0, objectTypes.length, ...types);
+
+  return objectTypes;
+}
+
+export { setUserOrPhoneNumber, setReceiptDate, createObjectCard, encodingHelp, getObjectTypes };

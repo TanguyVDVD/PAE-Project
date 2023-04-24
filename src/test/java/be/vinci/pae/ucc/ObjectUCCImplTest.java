@@ -327,17 +327,18 @@ class ObjectUCCImplTest {
     ObjectDTO object = Mockito.mock(ObjectImpl.class);
 
     objects.add(object);
-    Mockito.when(objectDAO.getAll("")).thenReturn(objects);
+    Mockito.when(objectDAO.getAll("", null)).thenReturn(objects);
 
-    assertEquals(objects, objectUCC.getObjects(""), "getObjects() did not return the correct list");
+    assertEquals(objects, objectUCC.getObjects("", null),
+        "getObjects() did not return the correct list");
   }
 
   @DisplayName("Exception when getting list of all objects")
   @Test
   void exceptionWhenGettingAllObjects() {
-    Mockito.when(objectDAO.getAll("")).thenThrow(new DALException(""));
+    Mockito.when(objectDAO.getAll("", null)).thenThrow(new DALException(""));
 
-    assertThrows(Exception.class, () -> objectUCC.getObjects(""),
+    assertThrows(Exception.class, () -> objectUCC.getObjects("", null),
         "getObjects() did not throw an exception");
   }
 
@@ -434,6 +435,25 @@ class ObjectUCCImplTest {
 
     assertThrows(Exception.class, () -> objectUCC.updatePhoto(object, null),
         "updatePhoto did not throw an exception");
+  }
+
+  @DisplayName("Add new object")
+  @Test
+  void addObject() {
+    ObjectDTO object = Mockito.mock(ObjectImpl.class);
+    Mockito.when(objectDAO.insert(object)).thenReturn(object);
+
+    assertEquals(object, objectUCC.add(object), "addObject did not return the correct object");
+  }
+
+  @DisplayName("Exception when adding new object")
+  @Test
+  void exceptionAddObject() {
+    ObjectDTO object = Mockito.mock(ObjectImpl.class);
+    Mockito.when(objectDAO.insert(object)).thenThrow(new DALException(""));
+
+    assertThrows(DALException.class, () -> objectUCC.add(object),
+        "addObject did not throw an exception");
   }
 
 }

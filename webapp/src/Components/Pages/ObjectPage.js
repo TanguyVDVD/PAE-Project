@@ -51,7 +51,7 @@ function renderObjectPage(object, objectTypes) {
              />
             
             
-            ${authenticatedUser && authenticatedUser.role !== null
+            ${authenticatedUser && authenticatedUser.role !== "utilisateur"
               && object.state !== 'proposé' && object.state !== "refusé"
                 ? `
                 <form>
@@ -72,7 +72,7 @@ function renderObjectPage(object, objectTypes) {
           </div>
 
           <div class="col-md-8">
-            ${authenticatedUser && authenticatedUser.role !== null
+            ${authenticatedUser && authenticatedUser.role !== "utilisateur"
               && object.state !== 'proposé' && object.state !== "refusé"
               ? `
               <form id="object-form">
@@ -140,8 +140,8 @@ function renderObjectPage(object, objectTypes) {
                 </div>
                 <br>
                 <div class="hstack gap-2">
-                  <button type="submit" class="btn btn-primary" id="save-btn">Sauvegarder</button>
-                  <button type="submit" class="btn btn-outline-primary" id="cancel-btn">Annuler</button>
+                  <button type="submit" class="btn btn-primary text-secondary" id="save-btn">Sauvegarder</button>
+                  <button type="submit" class="btn btn-outline-primary text-secondary" id="cancel-btn">Annuler</button>
                 </div>
               </form> 
               `
@@ -151,7 +151,7 @@ function renderObjectPage(object, objectTypes) {
               `
             }
             
-            ${authenticatedUser && authenticatedUser.role !== null
+            ${authenticatedUser && authenticatedUser.role !== "utilisateur"
               && object.state === "proposé" ?
               `
                 <div class="div-user" id="object-user-offer"></div>
@@ -170,14 +170,14 @@ function renderObjectPage(object, objectTypes) {
                 </div>   
                 
                 <div class="hstack gap-5 my-3">
-                  <button type="button" class="btn btn-lg btn-success" id="accept-btn">Accepter l'objet <i class="bi bi-check-lg"></i></button>
-                  <button type="button" class="btn btn-lg btn-danger" id="deny-btn">Refuser l'objet <i class="bi bi-x-lg"></i></button>
+                  <button type="button" class="btn btn-lg btn-success text-secondary" id="accept-btn">Accepter l'objet <i class="bi bi-check-lg"></i></button>
+                  <button type="button" class="btn btn-lg btn-danger text-secondary" id="deny-btn">Refuser l'objet <i class="bi bi-x-lg"></i></button>
                 </div>
               `
                 : ''
             }
             
-            ${authenticatedUser && authenticatedUser.role !== null
+            ${authenticatedUser && authenticatedUser.role !== "utilisateur"
               && object.state === "refusé" ? 
             `
               <div id="object-state-refused">
@@ -222,7 +222,7 @@ function renderObjectPage(object, objectTypes) {
   /**
    * Réponse à une proposition
    */
-  if (authenticatedUser && authenticatedUser.role !== null
+  if (authenticatedUser && authenticatedUser.role !== "utilisateur"
       && object.state === "proposé"){
     const acceptBtn = document.getElementById("accept-btn");
     const denyBtn = document.getElementById("deny-btn");
@@ -267,7 +267,7 @@ function renderObjectPage(object, objectTypes) {
    */
   if (
       authenticatedUser &&
-      authenticatedUser.role !== null &&
+      authenticatedUser.role !== "utilisateur" &&
       object.state !== "proposé" &&
       object.state !== "refusé"
   ){
@@ -324,7 +324,7 @@ function renderObjectPage(object, objectTypes) {
   /**
    * Page objet si objet refusé
    */
-  if (authenticatedUser && authenticatedUser.role !== null
+  if (authenticatedUser && authenticatedUser.role !== "utilisateur"
       && object.state === "refusé"){
     setUserOrPhoneNumber(document, "div-user", [object]);
     setReceiptDate(document, "div-receipt-date", [object]);

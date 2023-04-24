@@ -26,13 +26,14 @@ public class ObjectUCCImpl implements ObjectUCC {
    * Returns a list of all objects.
    *
    * @param query query to filter objects
+   * @param type  type of the object
    * @return a list of all objects
    */
   @Override
   public List<ObjectDTO> getObjects(String query) {
     myDalServices.startTransaction();
     try {
-      return myObjectDAO.getAll(query);
+      return myObjectDAO.getAll(query, type);
     } catch (Exception e) {
       myDalServices.rollbackTransaction();
 

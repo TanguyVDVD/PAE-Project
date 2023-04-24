@@ -9,7 +9,7 @@ import {invertDateFormat} from "../../../utils/dates";
 const AdminAvailabilitiesPage = () => {
   const authenticatedUser = getAuthenticatedUser();
 
-  if (!authenticatedUser || authenticatedUser.role === null) {
+  if (!authenticatedUser || authenticatedUser.role === 'utilisateur') {
     Navigate('/');
     return;
   }
@@ -56,6 +56,10 @@ function renderAdminAvailabilitiesPage() {
     renderDatePicker("#date-picker", defaultAvailabilities);
 
     defaultAvailabilities = datePicker.value.split(", ");
+
+    if (defaultAvailabilities[0] === ""){
+      defaultAvailabilities = [];
+    }
 
     datePicker.addEventListener("change", (event) => {
       const datesAfterChange = event.target.value.split(", ");

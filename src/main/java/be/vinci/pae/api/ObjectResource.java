@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.List;
+import org.apache.commons.text.StringEscapeUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.server.ContainerRequest;
@@ -56,29 +57,34 @@ public class ObjectResource {
    * Get a list of all objects.
    *
    * @param query query to filter objects
+   * @param type  type of the object
    * @return a list of objects
    */
   @GET
   @AuthorizeHelper
   @Produces(MediaType.APPLICATION_JSON)
-  public ArrayNode getObjects(@QueryParam("query") String query) {
-    return jsonMapper.valueToTree(objectUCC.getObjects(query));
+  public ArrayNode getObjects(@QueryParam("query") String query,
+      @QueryParam("type") Integer type) {
+    return jsonMapper.valueToTree(objectUCC.getObjects(query, type));
   }
 
   /**
    * Get a list of all public objects.
    *
    * @param query query to filter objects
+   * @param type  type of the object
    * @return a list of objects
    */
   @GET
   @Path("/public")
   @Produces(MediaType.APPLICATION_JSON)
-  public List<ObjectDTO> getPublicObjects(@QueryParam("query") String query) {
-    List<ObjectDTO> objects = objectUCC.getObjects(query);
+  public List<ObjectDTO> getPublicObjects(@QueryParam("query") String query,
+      @QueryParam("type") Integer type) {
+    List<ObjectDTO> objects = objectUCC.getObjects(query, type);
 
     return objects.stream().filter(
-        object -> object.getisVisible() && (object.getState().equals("en vente")
+        object -> object.getisVisible() && (object.getState().equals("en magasin")
+            || object.getState().equals("en vente")
             || object.getState().equals("vendu"))).toList();
   }
 
@@ -96,7 +102,8 @@ public class ObjectResource {
   public ArrayNode getObjectsByUser(@Context ContainerRequest request, @PathParam("id") int id) {
     User authorizedUser = (User) request.getProperty("user");
 
-    if (authorizedUser.getId() != id && authorizedUser.getRole() == null) {
+    if (authorizedUser.getId() != id && !authorizedUser.getRole().equals("aidant")
+        && !authorizedUser.getRole().equals("responsable")) {
       throw new WebApplicationException(
           "Vous n'avez pas le droit de voir les objets de cet utilisateur",
           Status.FORBIDDEN);
@@ -115,7 +122,7 @@ public class ObjectResource {
   @Path("/offers")
   @AuthorizeHelper
   @Produces(MediaType.APPLICATION_JSON)
-  public ArrayNode getoffers(@QueryParam("query") String query) {
+  public ArrayNode getOffers(@QueryParam("query") String query) {
     return jsonMapper.valueToTree(objectUCC.getOffers(query));
   }
 
@@ -197,8 +204,8 @@ public class ObjectResource {
 
     ObjectDTO objectUpdated = myDomainFactory.getObject();
 
-    objectUpdated.setObjectType(typeObject);
-    objectUpdated.setDescription(descriptionObject);
+    objectUpdated.setObjectType(StringEscapeUtils.escapeHtml4(typeObject));
+    objectUpdated.setDescription(StringEscapeUtils.escapeHtml4(descriptionObject));
     objectUpdated.setState(stateObject);
     objectUpdated.setIsVisible(isVisibleObject);
     objectUpdated.setPrice(priceObject);
@@ -239,8 +246,9 @@ public class ObjectResource {
     } else {
       String reasonForRefusal = "";
       if (json.get("reasonForRefusal") != null) {
-        reasonForRefusal = json.get("reasonForRefusal").asText("");
+        reasonForRefusal = StringEscapeUtils.escapeHtml4(json.get("reasonForRefusal").asText(""));
       }
+
       objectDTO = objectUCC.refuse(id, reasonForRefusal, versionNumber);
     }
 
@@ -375,7 +383,7 @@ public class ObjectResource {
 
     ObjectDTO objectDTO = myDomainFactory.getObject();
 
-    objectDTO.setDescription(description);
+    objectDTO.setDescription(StringEscapeUtils.escapeHtml4(description));
     objectDTO.setObjectType(objectType);
     objectDTO.setReceiptDate(LocalDate.parse(receiptDate));
     objectDTO.setTimeSlot(timeSlot);

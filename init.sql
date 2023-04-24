@@ -20,7 +20,7 @@ CREATE TABLE pae.users
     password       VARCHAR(100) NOT NULL,
     photo          BOOLEAN      NOT NULL,
     register_date  DATE         NOT NULL,
-    role           VARCHAR(12)
+    role           VARCHAR(12)  NOT NULL
 );
 
 CREATE TABLE pae.object_types

@@ -12,7 +12,7 @@ import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
 const AdminObjectsPage = () => {
   const authenticatedUser = getAuthenticatedUser();
 
-  if (!authenticatedUser || authenticatedUser.role === null) {
+  if (!authenticatedUser || authenticatedUser.role === 'utilisateur') {
     Navigate('/');
     return;
   }
@@ -240,12 +240,16 @@ function setPriceOrTimeRemaining(className, objects) {
 
       if (timeRemaining <= 3) {
         element.innerHTML = `
-          <p class="text-danger">${timeRemaining} jours restants pour répondre !</p>
-        `;
+        <h6 class="text-danger">${timeRemaining} jours restants pour répondre !</h6>
+      `;
+      } else if (timeRemaining < 0) {
+        element.innerHTML = `
+        <h6 class="text-danger">Date pour récupérer l'objet dépassée !</h6>
+      `;
       } else {
         element.innerHTML = `
-          <p class="text-primary">${timeRemaining} jours restants pour répondre</p>
-        `;
+        <h6>${timeRemaining} jours restants pour répondre</h6>
+      `;
       }
     } else if (object.status === 'refusé') {
       element.innerHTML = ``;
@@ -269,7 +273,7 @@ function setStateColor(className, objects) {
       `;
     } else if (object.state === 'proposé') {
       element.innerHTML = `
-        <h6 class="text-primary">${object.state}</h6>
+        <h6 class="text-info">${object.state}</h6>
       `;
     } else {
       element.innerHTML = `
@@ -292,15 +296,19 @@ function setButton(className, objects) {
       `;
     } else if (object.state === 'proposé') {
       element.innerHTML = `
-          <button class="btn btn-outline-primary btn-sm button-respond" type="button" data-id="${object.id}">
-            Répondre
-          </button>
+        <button
+          class="btn btn-primary text-secondary btn-sm button-respond"
+          type="button"
+          data-id="${object.id}"
+        >
+          Répondre
+        </button>
       `;
     } else {
       element.innerHTML = `
-          <button class="btn btn-primary btn-sm button-modify" type="button" data-id="${object.id}">
-            Modifier
-          </button>
+        <button class="btn btn-primary text-secondary btn-sm button-modify" type="button" data-id="${object.id}">
+          Modifier
+        </button>
       `;
     }
   }
