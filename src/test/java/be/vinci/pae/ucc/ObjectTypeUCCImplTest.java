@@ -1,6 +1,7 @@
 package be.vinci.pae.ucc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import be.vinci.pae.domain.objecttype.ObjectTypeDTO;
 import be.vinci.pae.domain.objecttype.ObjectTypeImpl;
@@ -8,6 +9,7 @@ import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.objecttype.ObjectTypeDAO;
 import be.vinci.pae.ucc.objecttype.ObjectTypeUCC;
 import be.vinci.pae.ucc.objecttype.ObjectTypeUCCImpl;
+import be.vinci.pae.utils.exceptions.DALException;
 import jakarta.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,5 +73,14 @@ class ObjectTypeUCCImplTest {
 
     assertEquals(objectTypes, objectTypeUCC.getObjectTypes(),
         "getObjectTypes() did not return the correct list");
+  }
+
+  @DisplayName("Try to get list of all object types")
+  @Test
+  void getAllObjectTypesException() {
+    Mockito.when(objectTypeDAO.getAll()).thenThrow(new DALException(""));
+
+    assertThrows(DALException.class, () -> objectTypeUCC.getObjectTypes(),
+        "getAllObjectTypesException did not throw an exception");
   }
 }
