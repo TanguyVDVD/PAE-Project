@@ -62,7 +62,7 @@ CREATE TABLE pae.objects (
 CREATE TABLE pae.notifications
 (
     id_notification   SERIAL PRIMARY KEY,
-    notification_text VARCHAR(50)                    NOT NULL,
+    notification_text VARCHAR(200)                    NOT NULL,
     id_object         INTEGER REFERENCES pae.objects NOT NULL
 );
 
