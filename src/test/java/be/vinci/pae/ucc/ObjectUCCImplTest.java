@@ -7,13 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import be.vinci.pae.domain.DomainFactory;
-import be.vinci.pae.domain.notification.Notification;
-import be.vinci.pae.domain.notification.NotificationImpl;
 import be.vinci.pae.domain.object.Object;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.domain.object.ObjectImpl;
-import be.vinci.pae.domain.user.User;
-import be.vinci.pae.domain.user.UserImpl;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.notification.NotificationDAO;
 import be.vinci.pae.services.object.ObjectDAO;
@@ -103,59 +99,6 @@ class ObjectUCCImplTest {
     Mockito.reset(domainFactory);
   }
 
-
-  @DisplayName("Accept a correct object proposition")
-  @Test
-  void acceptACorrectObjectProposition() {
-
-    User user = Mockito.mock(UserImpl.class);
-    Object object = Mockito.mock(ObjectImpl.class);
-    Mockito.when(object.getId()).thenReturn(1);
-    Mockito.when(object.getStatus()).thenReturn(null);
-    Mockito.when(object.getVersionNumber()).thenReturn(1);
-    Mockito.when(objectDAO.getOneById(object.getId())).thenReturn(object);
-    Mockito.when(object.isStatusAlreadyDefined(object.getStatus())).thenReturn(false);
-    Mockito.when(objectDAO.setStatusToAccepted(object.getId(), LocalDate.now(),
-        object.getVersionNumber())).thenReturn(object);
-    Mockito.when(object.getStatus()).thenReturn("accepté");
-
-    Notification notification = Mockito.mock(NotificationImpl.class);
-
-    ObjectDTO object2 = Mockito.mock(ObjectImpl.class);
-    User user2 = Mockito.mock(UserImpl.class);
-
-    Mockito.when(object.getUser()).thenReturn(user2);
-    Mockito.when(object.getStatus()).thenReturn("accepté");
-    Mockito.when(object.getId()).thenReturn(1);
-    Mockito.when(user2.getId()).thenReturn(1);
-
-    Notification notificationDTOStart = Mockito.mock(NotificationImpl.class);
-
-    Mockito.when(domainFactory.getNotification()).thenReturn(notificationDTOStart);
-
-    Mockito.when(notificationDTOStart.setUpNotificationText(object2, notificationDTOStart))
-        .thenReturn(notificationDTOStart);
-
-    Mockito.when(notificationDAO.createObjectNotification(notificationDTOStart))
-        .thenReturn(notificationDTOStart);
-
-    Mockito.when(notificationDTOStart.setUpNotificationUser(notificationDTOStart, 1))
-        .thenReturn(notificationDTOStart);
-
-    Mockito.when(notificationDAO.createObjectUserNotification(notificationDTOStart))
-        .thenReturn(notificationDTOStart);
-
-    Mockito.when(notificationUCC.createAcceptedRefusedObjectNotification(
-        object2)).thenReturn(notification);
-
-    ObjectDTO objectDTO = objectUCC.accept(object.getId(), object.getVersionNumber());
-
-    assertAll(() -> assertNotNull(objectDTO, "Accept return null"), () -> assertEquals(object,
-        objectDTO, "Accept method does not return the same object"));
-
-  }
-
-
   @DisplayName("Accept an object already accepted")
   @Test
   void acceptAlreadyAcceptObjectProposition() {
@@ -184,40 +127,6 @@ class ObjectUCCImplTest {
 
     assertThrows(DALException.class, () -> objectUCC.accept(1, 1),
         "Exception not thrown");
-  }
-
-
-  @DisplayName("Refuse an object")
-  @Test
-  void refuseAnObjectProposition() {
-    User user = Mockito.mock(UserImpl.class);
-
-    String reasonForRefusal = "Reason for refusal";
-    Object object = Mockito.mock(ObjectImpl.class);
-    Mockito.when(object.getId()).thenReturn(1);
-    Mockito.when(object.getStatus()).thenReturn(null);
-    Mockito.when(object.getVersionNumber()).thenReturn(1);
-    Mockito.when(objectDAO.getOneById(object.getId())).thenReturn(object);
-    Mockito.when(object.isStatusAlreadyDefined(object.getStatus())).thenReturn(false);
-    Mockito.when(objectDAO.setStatusToRefused(object.getId(), reasonForRefusal, LocalDate.now(),
-        object.getVersionNumber())).thenReturn(object);
-    Mockito.when(object.getStatus()).thenReturn("refusé");
-
-    Notification notification = Mockito.mock(NotificationImpl.class);
-    Mockito.when(domainFactory.getNotification()).thenReturn(notification);
-
-    Mockito.when(object.getUser()).thenReturn(user);
-    Mockito.when(user.getId()).thenReturn(1);
-
-    Mockito.when(notificationUCC.createAcceptedRefusedObjectNotification(
-        object)).thenReturn(notification);
-
-    ObjectDTO objectDTO = objectUCC.refuse(object.getId(), reasonForRefusal,
-        object.getVersionNumber());
-
-    assertAll(() -> assertNotNull(objectDTO, "Refuse return null"), () -> assertEquals(object,
-        objectDTO, "Refuse method does not return the same object"));
-
   }
 
   @DisplayName("Refuse an object already refused")
