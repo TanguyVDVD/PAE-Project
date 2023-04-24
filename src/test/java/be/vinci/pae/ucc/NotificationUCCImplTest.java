@@ -92,6 +92,7 @@ public class NotificationUCCImplTest {
     Mockito.when(user.getId()).thenReturn(1);
 
     Notification notificationDTOStart = Mockito.mock(NotificationImpl.class);
+    
     Mockito.when(domainFactory.getNotification()).thenReturn(notificationDTOStart);
 
     Mockito.when(notificationDTOStart.setUpNotificationText(object, notificationDTOStart))

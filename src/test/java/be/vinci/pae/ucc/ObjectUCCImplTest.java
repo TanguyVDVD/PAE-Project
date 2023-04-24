@@ -15,6 +15,7 @@ import be.vinci.pae.domain.object.ObjectImpl;
 import be.vinci.pae.domain.user.User;
 import be.vinci.pae.domain.user.UserImpl;
 import be.vinci.pae.services.DALServices;
+import be.vinci.pae.services.notification.NotificationDAO;
 import be.vinci.pae.services.object.ObjectDAO;
 import be.vinci.pae.services.object.ObjectDAOImpl;
 import be.vinci.pae.ucc.notification.NotificationUCC;
@@ -56,6 +57,11 @@ class ObjectUCCImplTest {
   private static NotificationUCC notificationUCC;
 
   /**
+   * Mocked notificationDAO.
+   */
+  private static NotificationDAO notificationDAO;
+
+  /**
    * DomainFactory to test.
    */
   private static DomainFactory domainFactory;
@@ -68,6 +74,7 @@ class ObjectUCCImplTest {
     objectDAO = Mockito.mock(ObjectDAOImpl.class);
     notificationUCC = Mockito.mock(NotificationUCC.class);
     domainFactory = Mockito.mock(DomainFactory.class);
+    notificationDAO = Mockito.mock(NotificationDAO.class);
 
     DALServices myDalServices = Mockito.mock(DALServices.class);
 
@@ -76,6 +83,7 @@ class ObjectUCCImplTest {
       protected void configure() {
         bind(ObjectUCCImpl.class).to(ObjectUCC.class).in(Singleton.class);
 
+        bind(notificationDAO).to(NotificationDAO.class);
         bind(domainFactory).to(DomainFactory.class);
         bind(notificationUCC).to(NotificationUCC.class);
         bind(objectDAO).to(ObjectDAO.class);
@@ -117,6 +125,18 @@ class ObjectUCCImplTest {
 
     Mockito.when(object.getUser()).thenReturn(user);
     Mockito.when(user.getId()).thenReturn(1);
+
+    Mockito.when(notification.setUpNotificationText(object, notification))
+        .thenReturn(notification);
+
+    Mockito.when(notificationDAO.createObjectNotification(notification))
+        .thenReturn(notification);
+
+    Mockito.when(notification.setUpNotificationUser(notification, 1))
+        .thenReturn(notification);
+
+    Mockito.when(notificationDAO.createObjectUserNotification(notification))
+        .thenReturn(notification);
 
     Mockito.when(notificationUCC.createAcceptedRefusedObjectNotification(
         object)).thenReturn(notification);
