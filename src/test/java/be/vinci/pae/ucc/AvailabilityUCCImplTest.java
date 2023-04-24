@@ -9,6 +9,7 @@ import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.availability.AvailabilityDAO;
 import be.vinci.pae.ucc.availability.AvailabilityUCC;
 import be.vinci.pae.ucc.availability.AvailabilityUCCImpl;
+import be.vinci.pae.utils.exceptions.DALException;
 import be.vinci.pae.utils.exceptions.UserException;
 import jakarta.inject.Singleton;
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ class AvailabilityUCCImplTest {
     Mockito.reset(availabilityDAO);
   }
 
-  @DisplayName("Get list of all availabilities")
+  @DisplayName("Get the list of all availabilities")
   @Test
   void getAllAvailabilities() {
     List<AvailabilityDTO> availabilities = new ArrayList<>();
@@ -75,6 +76,15 @@ class AvailabilityUCCImplTest {
         "getAvailabilities() did not return the correct list");
   }
 
+  @DisplayName("Try to get the list of all availabilities")
+  @Test
+  void getAllAvailabilitiesException() {
+    Mockito.when(availabilityDAO.getAll()).thenThrow(new DALException(""));
+
+    assertThrows(DALException.class, () -> availabilityUCC.getAvailabilities(),
+        "getAllObjectTypesException did not throw an exception");
+  }
+
   @DisplayName("Add a good availability")
   @Test
   void addOne() {
@@ -83,6 +93,28 @@ class AvailabilityUCCImplTest {
 
     assertEquals(availability, availabilityUCC.addOne(availability),
         "addOne did not return the correct availability");
+  }
+
+  @DisplayName("Try to add an existing availability")
+  @Test
+  void addExistingOne() {
+    AvailabilityDTO availability = Mockito.mock(AvailabilityImpl.class);
+    Mockito.when(availabilityDAO.getOneByDate(availability.getDate()))
+        .thenReturn(availability);
+
+    assertThrows(UserException.class, () -> availabilityUCC.addOne(availability),
+        "addExistingOne did not throw an exception");
+  }
+
+  @DisplayName("Try to add an existing availability")
+  @Test
+  void addOneException() {
+    AvailabilityDTO availability = Mockito.mock(AvailabilityImpl.class);
+    Mockito.when(availabilityDAO.getOneByDate(availability.getDate()))
+        .thenThrow(new DALException(""));
+
+    assertThrows(DALException.class, () -> availabilityUCC.addOne(availability),
+        "addOneException did not throw an exception");
   }
 
   @DisplayName("Delete an availability not linked to any object")
