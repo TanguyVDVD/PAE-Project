@@ -1,13 +1,12 @@
+import flatpickr from 'flatpickr';
+import "flatpickr/dist/l10n/fr";
 import Navigate from '../../Router/Navigate';
 import {getAuthenticatedUser} from '../../../utils/auths';
 import {clearPage, renderError} from '../../../utils/render';
 import API from '../../../utils/api';
-import {subtractDates} from '../../../utils/dates';
-import {
-  encodingHelp,
-  setReceiptDate,
-  setUserOrPhoneNumber
-} from '../../../utils/objects';
+import {invertDateFormat, subtractDates} from '../../../utils/dates';
+import {encodingHelp, setReceiptDate, setUserOrPhoneNumber} from '../../../utils/objects';
+
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
 import Navbar from "../../Navbar/Navbar";
 
@@ -25,7 +24,7 @@ const AdminObjectsPage = () => {
 };
 
 function renderAdminObjectsPage() {
-  let searchQuery = '';
+  // let searchQuery = '';
   const main = document.querySelector('main');
   const div = document.createElement('div');
   div.className = 'container my-5';
@@ -33,10 +32,47 @@ function renderAdminObjectsPage() {
   div.innerHTML = `
     <h2>Objets</h2>
     <form class="input-group">
-      <input type="text" class="form-control autocomplete border-end-0" id="search-bar" placeholder="Rechercher..."/>
-      <button class="btn border" type="submit">
-        <i class="bi bi-search"></i>
-      </button>
+      <div class="row g-3 justify-content-md-center">
+        <div class="col-md-12">
+          <input type="text" class="form-control autocomplete" id="search-bar" placeholder="Rechercher..." />
+        </div>
+        <div class="col-md-3">
+          <div class="input-group">
+            <span class="input-group-text bg-white">Prix minimum</span>
+            <input type="number" class="form-control form-filter" id="input-minPrice" placeholder="" />
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="input-group">
+            <span class="input-group-text bg-white">Prix maximum</span>
+            <input type="number" class="form-control form-filter" id="input-maxPrice" placeholder="" />
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="input-group">
+            <span class="input-group-text bg-white">Date de réception</span>
+            <input type="text" class="form-control form-filter" id="input-receipt-date" placeholder="Date de réception"/>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="mx-0 dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="type-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+              Types d'objets
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="type-dropdown">
+              <li><label class="dropdown-item"><input type="checkbox" value="Meuble" class="form-filter"> Meuble</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="Table" class="form-filter"> Table</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="Chaise" class="form-filter"> Chaise</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="Fauteuil" class="form-filter"> Fauteuil</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="Lit/sommier" class="form-filter"> Lit/sommier</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="Matelas" class="form-filter"> Matelas</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="Couverture" class="form-filter"> Couverture</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="Materiel de cuisine" class="form-filter"> Materiel de cuisine</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="Vaisselle" class="form-filter"> Vaisselle</label></li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </form>
     <div id="objects-list"></div>
   `;
@@ -51,16 +87,24 @@ function renderAdminObjectsPage() {
     </div>
   `;
 
-  const descriptions = [];
+  let enableDates = [];
+
+  API.get('/availabilities')
+    .then((availabilities) => {
+      enableDates = availabilities.map((item) => invertDateFormat(item.date));
+      renderDatePicker("#input-receipt-date",enableDates);
+  }).catch((err) => {
+    renderError(err.message);
+  });
+
+  let descriptions = [];
 
   API.get(`objects?query=${encodeURIComponent("")}`)
   .then((objects) => {
     if (objects !== null) {
       renderObjects(objects);
-
-      objects.forEach((object) => {
-        descriptions.push(object.description);
-      });
+      descriptions = objects.map((object) => object.description);
+      encodingHelp(descriptions);
     }
 
     encodingHelp(descriptions);
@@ -71,12 +115,17 @@ function renderAdminObjectsPage() {
 
   div.querySelector('form').addEventListener('keyup', (e) => {
     e.preventDefault();
-    const search = e.target.value;
-    e.currentTarget.dispatchEvent(new Event('submit'));
+
+    const search = document.getElementById('search-bar').value;
+    const minPrice = document.getElementById('input-minPrice').value;
+    const maxPrice = document.getElementById('input-maxPrice').value;
+    const date = document.getElementById('input-receipt-date').value;
+    const type = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
+
     API.get(`objects?query=${encodeURIComponent(search)}`)
     .then((objects) => {
-      if (objects !== null) {
-        renderObjects(objects);
+      if(objects !== null){
+        renderObjects(filterObjects(objects, minPrice, maxPrice, date, type));
       }
     })
     .catch((err) => {
@@ -84,40 +133,41 @@ function renderAdminObjectsPage() {
     });
   });
 
-  div.querySelector('form').addEventListener('submit', (e) => {
-    e.preventDefault();
+  div.querySelectorAll('.form-filter').forEach((e) => {
+    e.addEventListener('change', () => {
 
-    const search = e.target.querySelector('input').value;
-    if (search === searchQuery) {
-      return;
-    }
-    searchQuery = search;
-    API.get(`objects?query=${encodeURIComponent(searchQuery)}`)
-    .then((objects) => {
-      if (objects !== null) {
-        renderObjects(objects);
-      }
-    })
-    .catch((err) => {
-      renderError(err.message);
+    const search = document.getElementById('search-bar').value;
+    const minPrice = document.getElementById('input-minPrice').value;
+    const maxPrice = document.getElementById('input-maxPrice').value;
+    const date = document.getElementById('input-receipt-date').value;
+    const type = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
+
+    API.get(`objects?query=${encodeURIComponent(search)}`)
+      .then((objects) => {
+        if(objects !== null){
+          renderObjects(filterObjects(objects, minPrice, maxPrice, date, type));
+        }
+      })
+      .catch((err) => {
+        renderError(err.message);
+      });
     });
   });
 }
 
-async function renderObjects(objects) {
+async function renderObjects(objectsFiltered) {
   const objectslist = document.getElementById('objects-list');
 
   objectslist.innerHTML = `
       <div class="container mt-5 mb-5">
           <div class="d-flex justify-content-center row">
               <div class="col-md-10">
-                  ${objects.map((object) => `
+                  ${objectsFiltered.map((object) => `
                       <div class="row p-2 bg-white border rounded">
                           <div class="col-md-3 mt-1">
                               <img 
                                   class="rounded product-image object-fit-cover" 
-                                  src="${API.getEndpoint(
-          `objects/${object.id}/photo`)}"
+                                  src="${API.getEndpoint(`objects/${object.id}/photo`)}"
                                   width="180" height="180"
                                   onerror="this.src='${noFurniturePhoto}'"
                                   alt="${object.objectType}">
@@ -150,17 +200,17 @@ async function renderObjects(objects) {
                           </div>
                       </div>
                       `
-      ,).join('')}
+                  ,).join('')}
               </div>                     
           </div>
       </div>
     `;
 
-  setReceiptDate(document, 'div-receipt-date', objects);
-  setUserOrPhoneNumber(document, 'div-user', objects);
-  setPriceOrTimeRemaining('div-price-time-remaining', objects);
-  setStateColor('div-state', objects);
-  setButton('div-button', objects);
+  setReceiptDate(document, 'div-receipt-date', objectsFiltered);
+  setUserOrPhoneNumber(document, 'div-user', objectsFiltered);
+  setPriceOrTimeRemaining('div-price-time-remaining', objectsFiltered);
+  setStateColor('div-state', objectsFiltered);
+  setButton('div-button', objectsFiltered);
 
   objectslist.querySelectorAll('a[data-id]').forEach((link) => {
     link.addEventListener('click', (e) => {
@@ -263,6 +313,39 @@ function setButton(className, objects) {
       `;
     }
   }
+}
+
+function renderDatePicker(datePickerId, availabilities) {
+  flatpickr(datePickerId, {
+    locale: "fr",
+    dateFormat: "d-m-Y",
+    enable: availabilities,
+  });
+}
+
+function filterObjects(objects, minPrice,maxPrice, date, types){
+  return objects.filter((object) => {
+    if (minPrice && object.price < minPrice) {
+      return false;
+    }
+
+    // Filter by maxPrice if provided
+    if (maxPrice && object.price > maxPrice) {
+      return false;
+    }
+
+    // Filter by date if provided
+    if (date && invertDateFormat(object.receiptDate) !== date) {
+      return false;
+    }
+
+    // Filter by type if provided
+    if (types.length > 0 && !types.includes(object.objectType)) {
+      return false;
+    }
+
+    return true;
+  });
 }
 
 export default AdminObjectsPage;

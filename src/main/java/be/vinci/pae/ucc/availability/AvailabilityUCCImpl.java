@@ -78,8 +78,8 @@ public class AvailabilityUCCImpl implements AvailabilityUCC {
       }
 
       // Vérifie que la disponibilité à supprimer n'est pas encore liée à un objet
-      if (myAvailabilityDAO.isLinked(availability) == null ||
-          myAvailabilityDAO.isLinked(availability)) {
+      if (myAvailabilityDAO.isLinked(availability) == null
+          || myAvailabilityDAO.isLinked(availability)) {
         throw new UserException("Impossible de supprimer la disponibilité, "
             + "la disponibilité est déjà associée à un ou plusieurs objets");
       }

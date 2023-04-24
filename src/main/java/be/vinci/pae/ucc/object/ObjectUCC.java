@@ -15,10 +15,9 @@ public interface ObjectUCC {
    * Returns a list of all objects.
    *
    * @param query query to filter objects
-   * @param type  type of the object
    * @return a list of all objects
    */
-  List<ObjectDTO> getObjects(String query, Integer type);
+  List<ObjectDTO> getObjects(String query);
 
   /**
    * Get all objects by user.
