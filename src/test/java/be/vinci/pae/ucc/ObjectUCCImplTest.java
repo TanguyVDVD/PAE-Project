@@ -76,6 +76,8 @@ class ObjectUCCImplTest {
     domainFactory = Mockito.mock(DomainFactory.class);
     notificationDAO = Mockito.mock(NotificationDAO.class);
 
+    Mockito.when(domainFactory.getNotification()).thenReturn(Mockito.mock(NotificationImpl.class));
+
     DALServices myDalServices = Mockito.mock(DALServices.class);
 
     ServiceLocator locator = ServiceLocatorUtilities.bind(new AbstractBinder() {
