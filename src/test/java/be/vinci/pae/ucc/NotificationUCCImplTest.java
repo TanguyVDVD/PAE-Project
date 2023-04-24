@@ -121,10 +121,38 @@ public class NotificationUCCImplTest {
     assertAll(
         () -> assertNotNull(notificationDTOF, "Accept return null"),
         () -> assertEquals(notificationDTOStart, notificationDTOF,
-            "Accept method does not return the same object")
+            "Accept method does not return the same notification")
     );
 
   }
+
+  @DisplayName("create an accepted notification object who raise an exception")
+  @Test
+  void createAcceptedRefusedObjectNotificationNotWorking() {
+
+    ObjectDTO object = Mockito.mock(ObjectImpl.class);
+    User user = Mockito.mock(UserImpl.class);
+
+    Mockito.when(object.getUser()).thenReturn(user);
+    Mockito.when(object.getStatus()).thenReturn("accepté");
+    Mockito.when(object.getId()).thenReturn(1);
+    Mockito.when(user.getId()).thenReturn(1);
+
+    Notification notificationDTOStart = Mockito.mock(NotificationImpl.class);
+
+    Mockito.when(domainFactory.getNotification()).thenReturn(notificationDTOStart);
+
+    Mockito.when(notificationDTOStart.setUpNotificationText(object, notificationDTOStart))
+        .thenReturn(notificationDTOStart);
+
+    Mockito.when(notificationDAO.createObjectNotification(notificationDTOStart))
+        .thenThrow(new DALException(""));
+
+    assertThrows(Exception.class, () -> notificationUCC.createAcceptedRefusedObjectNotification(
+        object));
+
+  }
+
 
   @DisplayName("create correct new object notification")
   @Test
@@ -157,8 +185,34 @@ public class NotificationUCCImplTest {
     NotificationDTO notificationDTO = notificationUCC.createNewObjectPropositionNotification(1);
 
     assertAll(
-        () -> assertNotNull(notificationDTO, "Accept return null")
+        () -> assertNotNull(notificationDTO, "Accept return null"),
+        () -> assertEquals(notificationDTOStart, notificationDTO,
+            "new proposition notification method does not return the same notification")
     );
+
+
+  }
+
+  @DisplayName("create correct new object notification raise an exception")
+  @Test
+  void createNewObjectNotificationNotWorking() {
+
+    ObjectDTO object = Mockito.mock(ObjectImpl.class);
+    User user = Mockito.mock(UserImpl.class);
+
+    Mockito.when(object.getUser()).thenReturn(user);
+    Mockito.when(user.getId()).thenReturn(1);
+
+    NotificationDTO notificationDTOStart = Mockito.mock(NotificationImpl.class);
+    Mockito.when(domainFactory.getNotification()).thenReturn(notificationDTOStart);
+
+    notificationDTOStart.setIdObject(1);
+    notificationDTOStart.setNotificationText("New");
+
+    Mockito.when(notificationDAO.createObjectNotification(notificationDTOStart))
+        .thenThrow(new DALException(""));
+
+    assertThrows(Exception.class, () -> notificationUCC.createNewObjectPropositionNotification(1));
 
 
   }
@@ -210,6 +264,18 @@ public class NotificationUCCImplTest {
 
     assertNull(notificationUCC.markANotificationAsRead(notificationDTO),
         "Mark as read do not return null notification");
+  }
+
+  @DisplayName("mark a notification as read correctly not working and raise exception")
+  @Test
+  void markANotificationAsReadRaiseException() {
+    NotificationDTO notificationDTO = Mockito.mock(NotificationImpl.class);
+    Mockito.when(notificationDAO.markANotificationAsRead(notificationDTO))
+        .thenThrow(new DALException(""));
+
+    assertThrows(Exception.class, () -> notificationUCC.markANotificationAsRead(notificationDTO),
+        "Mark as read do not raise exception");
+
   }
 
 }
