@@ -9,29 +9,32 @@ import {
 } from "../../utils/dates";
 import {getAuthenticatedUser} from "../../utils/auths";
 import Navigate from "../Router/Navigate";
+import Navbar from "../Navbar/Navbar";
 
 const OfferPage = () => {
-    clearPage();
 
-    API.get('/objectTypes')
-    .then((objectTypes) => {
-        renderOfferPage(objectTypes);
-    }).catch((err) => {
-        renderError(err.message);
-    });
+  Navbar();
+  clearPage();
+
+  API.get('/objectTypes')
+  .then((objectTypes) => {
+    renderOfferPage(objectTypes);
+  }).catch((err) => {
+    renderError(err.message);
+  });
 };
 
 function renderOfferPage(objectTypes) {
-    let isSubmitting = false;
+  let isSubmitting = false;
 
-    const authenticatedUser = getAuthenticatedUser();
+  const authenticatedUser = getAuthenticatedUser();
 
-    const main = document.querySelector('main');
-    const form = document.createElement('div');
+  const main = document.querySelector('main');
+  const form = document.createElement('div');
 
-    form.className='container p-5'
+  form.className = 'container p-5'
 
-    form.innerHTML=`
+  form.innerHTML = `
     <h1 class="text-center">Proposez un objet</h1>
     <div class="row justify-content-center">
         <h5 class="text-center col-10">Vous avez un objet encore en bon état à proposer ? Remplissez le formulaire ci-dessous. Si la proposition est acceptée, vous pourrez venir déposer l’objet au parc à conteneurs à la date et plage horaire que vous aurez choisi.</h3>
@@ -68,11 +71,11 @@ function renderOfferPage(objectTypes) {
                         <div class="form-group">
                             <select class="form-select" type="text" aria-label="Default select example" id="input-objectType">
                                 ${objectTypes.map(
-                                    (objectType) =>
-                                        `
+      (objectType) =>
+          `
                                             <option>${objectType.label}</option>
                                         `,
-                                    )}
+  )}
                             </select>
                         </div>
 
@@ -98,14 +101,14 @@ function renderOfferPage(objectTypes) {
                     <textarea class="form-control" id="input-description" type="text"></textarea>
                 </div>
                 
-                ${authenticatedUser ? 
-                    `
+                ${authenticatedUser ?
+      `
                         <div class="form-group text-center">
                             <br>
                             <button type="submit" class="btn btn-primary btn-lg btn-block text-secondary" id="submit-btn">Soumettre</button>
                         </div>
-                    ` : 
-                    `
+                    ` :
+      `
                         <div class="form-group text-center">
                             <br>
                             <button type="button" class="btn btn-primary btn-lg btn-block text-secondary" id="register">S'inscrire</button>
@@ -123,113 +126,116 @@ function renderOfferPage(objectTypes) {
                             </div>
                         </div> 
                     `
-                }
+  }
                 
             </div>
         </form>
     
     `
-    main.appendChild(form);
+  main.appendChild(form);
 
-    const enableDates = [];
+  const enableDates = [];
 
-    API.get('/availabilities').then((availabilities) => {
-        availabilities.forEach((item) => {
-            enableDates.push(invertDateFormat(item.date));
-        });
-        renderDatePicker("#input-receipt-date",enableDates);
-    }).catch((err) => {
-        renderError(err.message);
+  API.get('/availabilities').then((availabilities) => {
+    availabilities.forEach((item) => {
+      enableDates.push(invertDateFormat(item.date));
+    });
+    renderDatePicker("#input-receipt-date", enableDates);
+  }).catch((err) => {
+    renderError(err.message);
+  });
+
+  if (!authenticatedUser) {
+    document.getElementById("register").addEventListener("click", () => {
+      Navigate('/register');
     });
 
-    if (!authenticatedUser){
-        document.getElementById("register").addEventListener("click", () => {
-            Navigate('/register');
-        });
+    document.getElementById("login").addEventListener("click", () => {
+      Navigate('/login');
+    });
+  }
 
-        document.getElementById("login").addEventListener("click", () => {
-            Navigate('/login');
-        });
+  form.querySelector('form').addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    if (isSubmitting) {
+      return;
+    }
+    isSubmitting = true;
+
+    renderError();
+
+    const formData = new FormData();
+
+    if (!authenticatedUser) {
+      formData.append("phoneNumber",
+          document.getElementById("input-phone-number").value);
     }
 
-    form.querySelector('form').addEventListener('submit', (e) => {
-        e.preventDefault();
+    if (document.getElementById("input-morning").checked) {
+      formData.append("timeSlot", "matin");
+    } else if (document.getElementById("input-afternoon").checked) {
+      formData.append("timeSlot", "après-midi");
+    }
 
-        if (isSubmitting) return;
-        isSubmitting = true;
+    ['description', 'objectType'].forEach((key) => {
+      const input = form.querySelector(`#input-${key}`);
 
-        renderError();
-
-        const formData = new FormData();
-
-        if(!authenticatedUser){
-            formData.append("phoneNumber", document.getElementById("input-phone-number").value);
-        }
-
-        if(document.getElementById("input-morning").checked){
-            formData.append("timeSlot", "matin");
-        } else if(document.getElementById("input-afternoon").checked){
-            formData.append("timeSlot", "après-midi");
-        }
-
-        ['description', 'objectType'].forEach((key) => {
-            const input = form.querySelector(`#input-${key}`);
-
-            formData.append(key, input.value);
-        });
-
-        const file = document.getElementById("input-photo").files[0];
-
-        if (file){
-            formData.append("photo", file);
-        }
-
-        const date = document.getElementById("input-receipt-date").value;
-
-        if (date){
-            formData.append("receiptDate", invertDateFormat(date));
-        }
-
-        API.post('objects', { body: formData })
-        .then(() => {
-            Navigate('/');
-        })
-        .catch((err) => {
-            renderError(err.message);
-        })
-        .finally(() => {
-            isSubmitting = false;
-        });
+      formData.append(key, input.value);
     });
+
+    const file = document.getElementById("input-photo").files[0];
+
+    if (file) {
+      formData.append("photo", file);
+    }
+
+    const date = document.getElementById("input-receipt-date").value;
+
+    if (date) {
+      formData.append("receiptDate", invertDateFormat(date));
+    }
+
+    API.post('objects', {body: formData})
+    .then(() => {
+      Navigate('/');
+    })
+    .catch((err) => {
+      renderError(err.message);
+    })
+    .finally(() => {
+      isSubmitting = false;
+    });
+  });
 }
 
 function renderDatePicker(datePickerId, availabilities) {
-    if (isThereEnableDate(availabilities)){
-        flatpickr(datePickerId, {
-            locale: "fr",
-            dateFormat: "d-m-Y",
-            minDate: "today",
-            enable: availabilities,
-        });
-    } else {
-        document.getElementById("div-date-picker").innerHTML = `
+  if (isThereEnableDate(availabilities)) {
+    flatpickr(datePickerId, {
+      locale: "fr",
+      dateFormat: "d-m-Y",
+      minDate: "today",
+      enable: availabilities,
+    });
+  } else {
+    document.getElementById("div-date-picker").innerHTML = `
             <p class="text-danger">Aucune date disponible : Réessayez ultérieurement</p>
         `;
-    }
+  }
 
 }
 
-function isThereEnableDate(dates){
-    const today = new Date(getTodaySDate());
-    let bool = false;
+function isThereEnableDate(dates) {
+  const today = new Date(getTodaySDate());
+  let bool = false;
 
-    dates.forEach((date) => {
-        if (subtractDates(today, new Date(invertDateFormat(date))) > 0){
-            bool = true;
-        }
-    })
+  dates.forEach((date) => {
+    if (subtractDates(today, new Date(invertDateFormat(date))) > 0) {
+      bool = true;
+    }
+  })
 
-    return bool;
+  return bool;
 }
 
 export default OfferPage;

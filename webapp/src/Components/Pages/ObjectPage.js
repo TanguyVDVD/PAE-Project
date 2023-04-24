@@ -8,8 +8,10 @@ import AdminObjectsPage from './admin/AdminObjectsPage';
 import {setReceiptDate, setUserOrPhoneNumber} from '../../utils/objects';
 
 import noFurniturePhoto from '../../img/no_furniture_photo.svg';
+import Navbar from "../Navbar/Navbar";
 
 const ObjectPage = (params) => {
+  Navbar();
   const id = parseInt(params.id, 10);
 
   clearPage();
