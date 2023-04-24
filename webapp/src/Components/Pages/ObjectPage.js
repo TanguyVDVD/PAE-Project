@@ -140,8 +140,8 @@ function renderObjectPage(object, objectTypes) {
                 </div>
                 <br>
                 <div class="hstack gap-2">
-                  <button type="submit" class="btn btn-primary" id="save-btn">Sauvegarder</button>
-                  <button type="submit" class="btn btn-outline-primary" id="cancel-btn">Annuler</button>
+                  <button type="submit" class="btn btn-primary text-secondary" id="save-btn">Sauvegarder</button>
+                  <button type="submit" class="btn btn-outline-primary text-secondary" id="cancel-btn">Annuler</button>
                 </div>
               </form> 
               `
@@ -170,8 +170,8 @@ function renderObjectPage(object, objectTypes) {
                 </div>   
                 
                 <div class="hstack gap-5 my-3">
-                  <button type="button" class="btn btn-lg btn-success" id="accept-btn">Accepter l'objet <i class="bi bi-check-lg"></i></button>
-                  <button type="button" class="btn btn-lg btn-danger" id="deny-btn">Refuser l'objet <i class="bi bi-x-lg"></i></button>
+                  <button type="button" class="btn btn-lg btn-success text-secondary" id="accept-btn">Accepter l'objet <i class="bi bi-check-lg"></i></button>
+                  <button type="button" class="btn btn-lg btn-danger text-secondary" id="deny-btn">Refuser l'objet <i class="bi bi-x-lg"></i></button>
                 </div>
               `
                 : ''

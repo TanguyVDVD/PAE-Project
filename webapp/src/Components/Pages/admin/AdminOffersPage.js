@@ -143,7 +143,7 @@ async function renderOffers(offers) {
                               </div>
                                                               
                               <div class="d-flex flex-column mb-4 div-button">
-                                  <button class="btn btn-primary btn-sm button-respond" type="button" data-id="${
+                                  <button class="btn btn-primary text-secondary btn-sm button-respond" type="button" data-id="${
                                     offer.id
                                   }">Répondre</button>
                               </div>

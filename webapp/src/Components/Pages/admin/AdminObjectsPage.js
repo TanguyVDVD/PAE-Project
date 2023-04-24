@@ -244,7 +244,7 @@ function setButton(className, objects) {
     } else if (object.state === 'proposé') {
       element.innerHTML = `
         <button
-          class="btn btn-primary btn-sm button-respond"
+          class="btn btn-primary text-secondary btn-sm button-respond"
           type="button"
           data-id="${object.id}"
         >
@@ -253,7 +253,7 @@ function setButton(className, objects) {
       `;
     } else {
       element.innerHTML = `
-        <button class="btn btn-primary btn-sm button-modify" type="button" data-id="${object.id}">
+        <button class="btn btn-primary text-secondary btn-sm button-modify" type="button" data-id="${object.id}">
           Modifier
         </button>
       `;
