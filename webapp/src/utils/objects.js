@@ -14,7 +14,7 @@ function setUserOrPhoneNumber(document, className, objects) {
     const element = elements.item(i);
     if (object.user === null) {
       element.innerHTML = `
-          <p>Proposé anonymement au ${formatPhoneNumber(
+          <p>Proposé au ${formatPhoneNumber(
             object.phoneNumber,
           )} le ${dateStringtoGoodFormat(object.offerDate)}</p>
       `;

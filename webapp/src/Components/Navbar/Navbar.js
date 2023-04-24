@@ -32,7 +32,7 @@ const Navbar = () => {
               <a class="nav-link" href="#" data-uri="/">Accueil</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#" data-uri="/propose">Proposer un objet</a>
+              <a class="nav-link" href="#" data-uri="/offer">Proposer un objet</a>
             </li>
             ${
               authenticatedUser && authenticatedUser.role !== 'utilisateur'

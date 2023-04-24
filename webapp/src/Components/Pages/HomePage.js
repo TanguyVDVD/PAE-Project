@@ -34,7 +34,7 @@ function renderHomePage() {
           >
           Rue de Heuseux 77ter, 4671 Blégny</a>.
         </p>
-        <a class="btn btn-light btn-lg" href="#" role="button" id="propose-btn">
+        <a class="btn btn-light text-secondary btn-lg" href="#" role="button" id="propose-btn">
           Proposer un objet
         </a>
       </div>

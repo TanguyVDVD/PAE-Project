@@ -16,7 +16,7 @@ const routes = {
   '/404': PageNotFoundPage,
   '/': HomePage,
   '/objects': ObjectsPage,
-  '/propose': OfferPage,
+  '/offer': OfferPage,
   '/admin/availabilities': AdminAvailabilitiesPage,
   '/admin/offers': AdminOffersPage,
   '/admin/objects': AdminObjectsPage,

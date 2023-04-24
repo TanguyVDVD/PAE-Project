@@ -49,7 +49,7 @@ function renderLoginForm() {
           <input class="form-check-input" type="checkbox" value="" id="input-remember" />
           <label class="form-check-label" for="input-remember">Se souvenir de moi</label>
         </div>
-        <button type="submit" class="btn btn-primary w-100">S'identifier</button>
+        <button type="submit" class="btn btn-primary text-secondary w-100">S'identifier</button>
         <div class="hstack gap-2 mt-3 justify-content-between">
           <span>Pas de compte ?</span>
           <a href="#" id="register-link">Inscrivez-vous ici</a>

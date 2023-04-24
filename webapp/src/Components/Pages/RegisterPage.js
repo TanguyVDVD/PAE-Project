@@ -105,7 +105,7 @@ function renderRegisterForm() {
             />
           </div>
           <div class="col mb-3 align-self-end">
-            <button type="submit" class="btn btn-primary w-100">S'inscrire</button>
+            <button type="submit" class="btn btn-primary text-secondary w-100">S'inscrire</button>
           </div>
         </div>
         <div>
