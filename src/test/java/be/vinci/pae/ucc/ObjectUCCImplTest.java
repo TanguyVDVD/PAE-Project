@@ -88,7 +88,7 @@ class ObjectUCCImplTest {
     });
 
     objectUCC = locator.getService(ObjectUCC.class);
-    notificationUCC = locator.getService(NotificationUCC.class);
+    //notificationUCC = locator.getService(NotificationUCC.class);
 
   }
 
