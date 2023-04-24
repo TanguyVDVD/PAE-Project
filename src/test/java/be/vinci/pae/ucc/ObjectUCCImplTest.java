@@ -121,22 +121,25 @@ class ObjectUCCImplTest {
 
     Notification notification = Mockito.mock(NotificationImpl.class);
 
-    Mockito.when(domainFactory.getNotification()).thenReturn(notification);
+    /**
 
-    Mockito.when(object.getUser()).thenReturn(user);
-    Mockito.when(user.getId()).thenReturn(1);
+     Mockito.when(domainFactory.getNotification()).thenReturn(notification);
 
-    Mockito.when(notification.setUpNotificationText(object, notification))
-        .thenReturn(notification);
+     Mockito.when(object.getUser()).thenReturn(user);
+     Mockito.when(user.getId()).thenReturn(1);
 
-    Mockito.when(notificationDAO.createObjectNotification(notification))
-        .thenReturn(notification);
+     Mockito.when(notification.setUpNotificationText(object, notification))
+     .thenReturn(notification);
 
-    Mockito.when(notification.setUpNotificationUser(notification, 1))
-        .thenReturn(notification);
+     Mockito.when(notificationDAO.createObjectNotification(notification))
+     .thenReturn(notification);
 
-    Mockito.when(notificationDAO.createObjectUserNotification(notification))
-        .thenReturn(notification);
+     Mockito.when(notification.setUpNotificationUser(notification, 1))
+     .thenReturn(notification);
+
+     Mockito.when(notificationDAO.createObjectUserNotification(notification))
+     .thenReturn(notification);
+     **/
 
     Mockito.when(notificationUCC.createAcceptedRefusedObjectNotification(
         object)).thenReturn(notification);
