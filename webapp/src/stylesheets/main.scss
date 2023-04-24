@@ -275,3 +275,17 @@ main > .alert:first-child {
     }
   }
 }
+
+.chart{
+  width: 500px; 
+  height: 500px;
+  display: flex;
+  margin-bottom: 50px;
+  padding-bottom: 50px;
+  padding-top: -50px;
+}
+
+.statistics{
+  display: inline-block;
+  
+}

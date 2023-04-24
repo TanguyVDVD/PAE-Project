@@ -50,7 +50,7 @@ const Navbar = () => {
                       <a class="nav-link" href="#" data-uri="/admin/users">Utilisateurs</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="#" data-uri="/admin">Tableau de bord</a>
+                      <a class="nav-link" href="#" data-uri="/admin/board">Tableau de bord</a>
                     </li>
                   `
           : ''

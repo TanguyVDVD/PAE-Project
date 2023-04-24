@@ -32,56 +32,10 @@ function renderBoardPage(){
                         <h1 class="h3 mb-0 text-gray-800">Tableau de bord</h1>
                     </div>
 
-                    <!-- Content Row -->
-                    <div class="row">
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Earnings (Monthly)</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">TO DO</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-success shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                Earnings (Annual)</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                            
-                                            <div id=nbOffers>
-                                            
-                                            </div>
-                                            
-                                            </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    <!-- Content Row -->
-
                     <div class="row">
 
                         <!-- Area Chart -->
-                        <div class="col-xl-8 col-lg-7">
+                        <div class="col-xl-12 col-lg-7">
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
@@ -100,13 +54,14 @@ function renderBoardPage(){
 
                                         <div class="dashboard">
                                             <div class="statistics">
+                                            <br>
                                                 <h2>Statistiques</h2>
                                                 <ul>
-                                                    <li>Nombre d'objets : <div id="totalObjects"></div></li>
-                                                    <li>Nombre d'objets proposés : <div id="offeredObjects"></div></li>
-                                                    <li>Nombre d'objets vendus : <div id="soldObjects"></div></li>
-                                                    <li>Nombre d'objets acceptés : <div id="acceptedObjects"></div></li>
-                                                    <li>Nombre d'objets refusés : <div id="rejectedObjects"></div></li>
+                                                    <li>Nombre d'objets : <span id="totalObjects"></span></li>
+                                                    <li>Nombre d'objets proposés : <span id="offeredObjects"></span></li>
+                                                    <li>Nombre d'objets vendus : <span id="soldObjects"></span></li>
+                                                    <li>Nombre d'objets acceptés : <span id="acceptedObjects"></span></li>
+                                                    <li>Nombre d'objets refusés : <span id="rejectedObjects"></span></li>
                                                 </ul>
                                             </div>
 
@@ -114,6 +69,9 @@ function renderBoardPage(){
                                             <h2>Graphique</h2>
                                                 <canvas id="myChart"></canvas>
                                             </div>
+
+
+                                            
                                       </div>
                                 </div>
                             </div>
@@ -124,9 +82,9 @@ function renderBoardPage(){
     `;
 
     API.get(`objects/offers?query=${encodeURIComponent('')}`).then((offers) => {
-        const count = offers.length;
+        const countOffers = offers.length;
         document.getElementById('offeredObjects').innerHTML =`
-        ${count}
+        ${countOffers}
         ` ;
     });
 
@@ -140,22 +98,31 @@ function renderBoardPage(){
         const vendu = objects.filter(object => object.state === 'vendu');
         // eslint-disable-next-line no-console
         console.log(vendu)
+        const countSolds = vendu.length;
         document.getElementById('soldObjects').innerHTML =`
-        ${vendu}
+        ${countSolds}
         ` ;
-        
-    });
 
+        const acceptes = objects.filter(object => object.state === 'accepté');
+        // eslint-disable-next-line no-console
+        console.log(acceptes)
+        const countAccep = acceptes.length;
+        document.getElementById('acceptedObjects').innerHTML =`
+        ${countAccep}
+        ` ;
 
-    main.appendChild(board);
-}
+        const refuses = objects.filter(object => object.state === 'refusé');
+        // eslint-disable-next-line no-console
+        console.log(refuses)
+        const countRefuses = vendu.length;
+        document.getElementById('rejectedObjects').innerHTML =`
+        ${countRefuses}
+        ` ;
 
-function renderBoardData(){
-
-        const totalObjects = 100;
-        const soldObjects = 30;
-        const acceptedObjects = 60;
-        const rejectedObjects = 10;
+        const totalObjects = count;
+        const soldObjects = countSolds;
+        const acceptedObjects = countAccep;
+        const rejectedObjects = countRefuses;
         
     
         const chartElement = document.getElementById("myChart");
@@ -189,13 +156,24 @@ function renderBoardData(){
           
         };
 
+        // eslint-disable-next-line no-unused-vars
         const myChart = new Chart(chartElement, {
           type: 'pie',
           data: chartData,
           options: chartOptions,
         });
         
-        document.getElementById("myChart").appendChild(myChart.canvas);
+
+
+    });
+
+
+    main.appendChild(board);
+}
+
+function renderBoardData(){
+
+        
     
     }
 
