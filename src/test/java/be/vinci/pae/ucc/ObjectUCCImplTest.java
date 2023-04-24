@@ -6,14 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.notification.Notification;
 import be.vinci.pae.domain.notification.NotificationImpl;
 import be.vinci.pae.domain.object.Object;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.domain.object.ObjectImpl;
 import be.vinci.pae.services.DALServices;
-import be.vinci.pae.services.notification.NotificationDAO;
-import be.vinci.pae.services.notification.NotificationDAOImpl;
 import be.vinci.pae.services.object.ObjectDAO;
 import be.vinci.pae.services.object.ObjectDAOImpl;
 import be.vinci.pae.ucc.notification.NotificationUCC;
@@ -45,11 +44,6 @@ class ObjectUCCImplTest {
   private static ObjectDAO objectDAO;
 
   /**
-   * Mocked notificationDAO.
-   */
-  private static NotificationDAO notificationDAO;
-
-  /**
    * ObjectUCC to test.
    */
   private static ObjectUCC objectUCC;
@@ -60,26 +54,29 @@ class ObjectUCCImplTest {
   private static NotificationUCC notificationUCC;
 
   /**
+   * DomainFactory to test.
+   */
+  private static DomainFactory domainFactory;
+
+  /**
    * Set up the test.
    */
   @BeforeAll
   static void setUp() {
     objectDAO = Mockito.mock(ObjectDAOImpl.class);
-    notificationDAO = Mockito.mock(NotificationDAOImpl.class);
     notificationUCC = Mockito.mock(NotificationUCC.class);
+    domainFactory = Mockito.mock(DomainFactory.class);
 
     DALServices myDalServices = Mockito.mock(DALServices.class);
 
     ServiceLocator locator = ServiceLocatorUtilities.bind(new AbstractBinder() {
       @Override
       protected void configure() {
-        //bind(DomainFactoryImpl.class).to(DomainFactory.class).in(Singleton.class);
         bind(ObjectUCCImpl.class).to(ObjectUCC.class).in(Singleton.class);
-        //bind(NotificationUCCImpl.class).to(NotificationUCC.class).in(Singleton.class);
 
+        bind(domainFactory).to(DomainFactory.class);
         bind(notificationUCC).to(NotificationUCC.class);
         bind(objectDAO).to(ObjectDAO.class);
-        bind(notificationDAO).to(NotificationDAO.class);
         bind(myDalServices).to(DALServices.class);
       }
     });
@@ -92,7 +89,6 @@ class ObjectUCCImplTest {
   @BeforeEach
   void cleanUp() {
     Mockito.reset(objectDAO);
-    Mockito.reset(notificationDAO);
     Mockito.reset(notificationUCC);
   }
 
@@ -112,6 +108,8 @@ class ObjectUCCImplTest {
     Mockito.when(object.getStatus()).thenReturn("accepté");
 
     Notification notification = Mockito.mock(NotificationImpl.class);
+
+    Mockito.when(domainFactory.getNotification()).thenReturn(notification);
 
     Mockito.when(notificationUCC.createAcceptedRefusedObjectNotification(
         object)).thenReturn(notification);
@@ -171,6 +169,7 @@ class ObjectUCCImplTest {
     Mockito.when(object.getStatus()).thenReturn("refusé");
 
     Notification notification = Mockito.mock(NotificationImpl.class);
+    Mockito.when(domainFactory.getNotification()).thenReturn(notification);
 
     Mockito.when(notificationUCC.createAcceptedRefusedObjectNotification(
         object)).thenReturn(notification);
