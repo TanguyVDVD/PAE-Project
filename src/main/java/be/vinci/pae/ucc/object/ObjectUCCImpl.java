@@ -203,18 +203,15 @@ public class ObjectUCCImpl implements ObjectUCC {
     try {
       Object objectFromDB = (Object) myObjectDAO.getOneById(id);
 
-      if (!objectFromDB.getStatus().equals("accepté")) {
-        return null;
-      }
+      String newState = objectDTO.getState();
 
-      if (objectFromDB.setStateDate(objectDTO, objectFromDB, date, user) == null) {
-        return null;
-      }
+      objectFromDB.isStateChangeAllowed(newState, user);
 
+      objectFromDB.setStateDate(newState, date);
       objectFromDB.setObjectType(objectDTO.getObjectType());
       objectFromDB.setDescription(objectDTO.getDescription());
       objectFromDB.setPrice(objectDTO.getPrice());
-      objectFromDB.setState(objectDTO.getState());
+      objectFromDB.setState(newState);
       objectFromDB.setIsVisible(objectDTO.getisVisible());
       objectFromDB.setVersionNumber(objectDTO.getVersionNumber());
 

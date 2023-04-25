@@ -35,22 +35,18 @@ public interface Object extends ObjectDTO {
   boolean savePhoto(InputStream photo);
 
   /**
-   * Check if the state is "en magasain" of "à l'atelier".
+   * Check if it is allowed to change the object state.
    *
-   * @param objectDTO the object to check the state
-   * @return true if the state correspond else false
+   * @param newState the new state
+   * @param user     the user trying to update the object
    */
-  boolean isStateWorkshopOrShop(ObjectDTO objectDTO);
+  void isStateChangeAllowed(String newState, UserDTO user);
 
   /**
-   * Check and set the correct change state date.
+   * Set the state date to the good date.
    *
-   * @param objectDTO       the object after the state change
-   * @param objectDTOFromDb the object before the state change
-   * @param dateChange      the date of de change
-   * @param user            the user trying to update the object
-   * @return the objectDTO change, null if there is a problem
+   * @param state the state
+   * @param date  the date
    */
-  ObjectDTO setStateDate(ObjectDTO objectDTO, ObjectDTO objectDTOFromDb, LocalDate dateChange,
-      UserDTO user);
+  void setStateDate(String state, LocalDate date);
 }
