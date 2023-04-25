@@ -112,7 +112,7 @@ function renderObjectPage(object, objectTypes) {
                 <div class="form-group" id="object-state-form">
                   <label>État</label>
                   <select class="form-control" id="object-state-select">
-                    ${getAvailableStates(object).map(
+                    ${getAvailableStates(object, authenticatedUser).map(
           (state) => `
                         <option>${state}</option>
                       `,
@@ -407,7 +407,7 @@ function setStateDate(state, object) {
   }
 }
 
-function getAvailableStates(object) {
+function getAvailableStates(object, user) {
   if (object.state === "accepté") {
     return ["accepté", "à l'atelier", "en magasin"];
   }
@@ -415,6 +415,9 @@ function getAvailableStates(object) {
     return ["à l'atelier", "en magasin"];
   }
   if (object.state === "en magasin") {
+    if (user.role === "responsable"){
+      return ["en magasin", "en vente", "vendu", "retiré"];
+    }
     return ["en magasin", "en vente", "retiré"];
   }
   if (object.state === "en vente") {
@@ -433,12 +436,12 @@ function setPrice(state, object) {
   const priceInput = document.getElementById('object-price-input');
   const priceLabel = document.getElementById('object-price-label');
 
-  if (state === "accepté" || state === "à l'atelier" || state
-      === "en magasin") {
+  if (state === "accepté" || state === "à l'atelier" ||
+      state === "en magasin") {
     priceInput.value = null;
     priceInput.disabled = true;
     priceLabel.style.color = "#909294";
-  } else if (state === "en vente") {
+  } else if (state === "en vente" || state === "vendu") {
     priceInput.value = object.price;
     priceInput.disabled = false;
     priceLabel.style.color = "text-primary";
