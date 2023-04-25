@@ -5,7 +5,7 @@ import {getAuthenticatedUser} from '../../../utils/auths';
 import {clearPage, renderError} from '../../../utils/render';
 import API from '../../../utils/api';
 import {invertDateFormat, subtractDates} from '../../../utils/dates';
-import {encodingHelp, setReceiptDate, setUserOrPhoneNumber} from '../../../utils/objects';
+import {encodingHelp, setReceiptDate, setUserOrPhoneNumber, filterObjects} from '../../../utils/objects';
 
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
 import Navbar from "../../Navbar/Navbar";
@@ -141,6 +141,8 @@ function renderAdminObjectsPage() {
     const maxPrice = document.getElementById('input-maxPrice').value;
     const date = document.getElementById('input-receipt-date').value;
     const type = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
+
+    console.log(date);
 
     API.get(`objects?query=${encodeURIComponent(search)}`)
       .then((objects) => {
@@ -317,34 +319,10 @@ function setButton(className, objects) {
 
 function renderDatePicker(datePickerId, availabilities) {
   flatpickr(datePickerId, {
+    mode: "multiple",
     locale: "fr",
     dateFormat: "d-m-Y",
     enable: availabilities,
-  });
-}
-
-function filterObjects(objects, minPrice,maxPrice, date, types){
-  return objects.filter((object) => {
-    if (minPrice && object.price < minPrice) {
-      return false;
-    }
-
-    // Filter by maxPrice if provided
-    if (maxPrice && object.price > maxPrice) {
-      return false;
-    }
-
-    // Filter by date if provided
-    if (date && invertDateFormat(object.receiptDate) !== date) {
-      return false;
-    }
-
-    // Filter by type if provided
-    if (types.length > 0 && !types.includes(object.objectType)) {
-      return false;
-    }
-
-    return true;
   });
 }
 

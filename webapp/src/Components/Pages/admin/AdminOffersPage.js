@@ -5,7 +5,7 @@ import {getAuthenticatedUser} from '../../../utils/auths';
 import {clearPage, renderError} from '../../../utils/render';
 import API from '../../../utils/api';
 import {invertDateFormat,dateStringtoGoodFormat, subtractDates} from '../../../utils/dates';
-import {encodingHelp, setUserOrPhoneNumber} from '../../../utils/objects';
+import {encodingHelp, setUserOrPhoneNumber, filterObjects} from '../../../utils/objects';
 
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
 
@@ -129,7 +129,7 @@ function renderAdminOffersPage() {
     API.get(`objects/offers?query=${encodeURIComponent(search)}`)
     .then((offers) => {
       if(offers !== null){
-        renderOffers(filterOffers(offers, minPrice, maxPrice, date, type));
+        renderOffers(filterObjects(offers, minPrice, maxPrice, date, type));
       }
     })
     .catch((err) => {
@@ -149,7 +149,7 @@ function renderAdminOffersPage() {
       API.get(`objects/offers?query=${encodeURIComponent(search)}`)
       .then((offers) => {
         if(offers !== null){
-          renderOffers(filterOffers(offers, minPrice, maxPrice, date, type));
+          renderOffers(filterObjects(offers, minPrice, maxPrice, date, type));
         }
       })
       .catch((err) => {
@@ -269,31 +269,6 @@ function renderDatePicker(datePickerId, availabilities) {
     dateFormat: "d-m-Y",
     minDate: "today",
     enable: availabilities,
-  });
-}
-
-function filterOffers(offers, minPrice, maxPrice, date, type){
-  return  offers.filter((object) => {
-    if (minPrice && object.price < minPrice) {
-      return false;
-    }
-
-    // Filter by maxPrice if provided
-    if (maxPrice && object.price > maxPrice) {
-      return false;
-    }
-
-    // Filter by date if provided
-    if (date && invertDateFormat(object.receiptDate) !== date) {
-      return false;
-    }
-
-    // Filter by type if provided
-    if (type.length > 0 && !type.includes(object.objectType)) {
-      return false;
-    }
-
-    return true;
   });
 }
 

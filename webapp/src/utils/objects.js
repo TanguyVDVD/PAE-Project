@@ -1,6 +1,6 @@
 import Autocomplete from 'bootstrap5-autocomplete';
 import Navigate from '../Components/Router/Navigate';
-import { dateStringtoGoodFormat } from './dates';
+import {dateStringtoGoodFormat, invertDateFormat} from './dates';
 import { formatPhoneNumber } from './format';
 import API from './api';
 import { renderError } from './render';
@@ -15,15 +15,15 @@ function setUserOrPhoneNumber(document, className, objects) {
     if (object.user === null) {
       element.innerHTML = `
           <p>Proposé au ${formatPhoneNumber(
-            object.phoneNumber,
-          )} le ${dateStringtoGoodFormat(object.offerDate)}</p>
+          object.phoneNumber,
+      )} le ${dateStringtoGoodFormat(object.offerDate)}</p>
       `;
     } else {
       element.innerHTML = `
           <p>
           Proposé par
               <a href="#" class="btn-link link-primary" role="button" data-id="${object.user.id}">${
-        object.user.firstName
+          object.user.firstName
       } ${object.user.lastName}</a>
           le ${dateStringtoGoodFormat(object.offerDate)}
           </p>
@@ -48,7 +48,7 @@ function setReceiptDate(document, className, objects) {
       element.innerHTML = `
           <p>
               À récupérer le ${dateStringtoGoodFormat(object.receiptDate)} ${
-        object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
+          object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
       }
           </p>
       `;
@@ -62,7 +62,7 @@ function setReceiptDate(document, className, objects) {
       element.innerHTML = `
           <p>
               Récupéré le ${dateStringtoGoodFormat(object.receiptDate)} ${
-        object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
+          object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
       }
           </p>
       `;
@@ -74,24 +74,24 @@ function encodingHelp(descriptions) {
   const objectTypes = [];
 
   API.get('objectTypes')
-    .then((types) => {
-      types.forEach((item) => {
-        objectTypes.push(item.label);
-      });
-
-      const src = descriptions.concat(objectTypes);
-
-      Autocomplete.init('input.autocomplete', {
-        items: src,
-        fullWidth: true,
-        fixed: true,
-        autoselectFirst: false,
-        updateOnSelect: true,
-      });
-    })
-    .catch((err) => {
-      renderError(err.message);
+  .then((types) => {
+    types.forEach((item) => {
+      objectTypes.push(item.label);
     });
+
+    const src = descriptions.concat(objectTypes);
+
+    Autocomplete.init('input.autocomplete', {
+      items: src,
+      fullWidth: true,
+      fixed: true,
+      autoselectFirst: false,
+      updateOnSelect: true,
+    });
+  })
+  .catch((err) => {
+    renderError(err.message);
+  });
 }
 
 function createObjectCard(_object) {
@@ -116,16 +116,16 @@ function createObjectCard(_object) {
     >
       <div class="object-card-img">
         ${
-          object.id !== undefined
-            ? `
+      object.id !== undefined
+          ? `
               <img
                 src="${API.getEndpoint(`objects/${object.id}/photo`)}"
                 onerror="this.src='${noFurniturePhoto}'"
                 alt="${object.description ? `Photo : ${object.description}` : ''}"
               />
             `
-            : ''
-        }
+          : ''
+  }
       </div>
       <div>
         <div class="object-card-title">${object.objectType}</div>
@@ -150,4 +150,29 @@ async function getObjectTypes() {
   return objectTypes;
 }
 
-export { setUserOrPhoneNumber, setReceiptDate, createObjectCard, encodingHelp, getObjectTypes };
+function filterObjects(objects, minPrice, maxPrice, date, type){
+  return objects.filter((object) => {
+    if (minPrice && object.price < minPrice) {
+      return false;
+    }
+
+    // Filter by maxPrice if provided
+    if (maxPrice && object.price > maxPrice) {
+      return false;
+    }
+
+    // Filter by date if provided
+    if (date && date.includes(invertDateFormat(object.receiptDate)) === false) {
+      return false;
+    }
+
+    // Filter by type if provided
+    if (type.length > 0 && !type.includes(object.objectType)) {
+      return false;
+    }
+
+    return true;
+  });
+}
+
+export { setUserOrPhoneNumber, setReceiptDate, createObjectCard, encodingHelp, getObjectTypes, filterObjects };
