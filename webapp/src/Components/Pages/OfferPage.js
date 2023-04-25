@@ -1,27 +1,23 @@
 import flatpickr from 'flatpickr';
-import "flatpickr/dist/l10n/fr";
-import {clearPage, renderError} from '../../utils/render';
-import API from "../../utils/api";
-import {
-    getTodaySDate,
-    invertDateFormat,
-    subtractDates
-} from "../../utils/dates";
-import {getAuthenticatedUser} from "../../utils/auths";
-import Navigate from "../Router/Navigate";
-import Navbar from "../Navbar/Navbar";
+import 'flatpickr/dist/l10n/fr';
+import { clearPage, renderError } from '../../utils/render';
+import API from '../../utils/api';
+import { getTodaySDate, invertDateFormat, subtractDates } from '../../utils/dates';
+import { getAuthenticatedUser, setAuthenticatedUser } from '../../utils/auths';
+import Navigate from '../Router/Navigate';
+import Navbar from '../Navbar/Navbar';
 
 const OfferPage = () => {
-
   Navbar();
   clearPage();
 
   API.get('/objectTypes')
-  .then((objectTypes) => {
-    renderOfferPage(objectTypes);
-  }).catch((err) => {
-    renderError(err.message);
-  });
+    .then((objectTypes) => {
+      renderOfferPage(objectTypes);
+    })
+    .catch((err) => {
+      renderError(err.message);
+    });
 };
 
 function renderOfferPage(objectTypes) {
@@ -32,7 +28,7 @@ function renderOfferPage(objectTypes) {
   const main = document.querySelector('main');
   const form = document.createElement('div');
 
-  form.className = 'container p-5'
+  form.className = 'container p-5';
 
   form.innerHTML = `
     <h1 class="text-center">Proposez un objet</h1>
@@ -71,11 +67,11 @@ function renderOfferPage(objectTypes) {
                         <div class="form-group">
                             <select class="form-select" type="text" aria-label="Default select example" id="input-objectType">
                                 ${objectTypes.map(
-      (objectType) =>
-          `
-                                            <option>${objectType.label}</option>
-                                        `,
-  )}
+                                  (objectType) =>
+                                    `
+                                      <option>${objectType.label}</option>
+                                    `,
+                                )}
                             </select>
                         </div>
 
@@ -101,59 +97,28 @@ function renderOfferPage(objectTypes) {
                     <textarea class="form-control" id="input-description" type="text"></textarea>
                 </div>
                 
-                ${authenticatedUser ?
-      `
-                        <div class="form-group text-center">
-                            <br>
-                            <button type="submit" class="btn btn-primary btn-lg btn-block text-secondary" id="submit-btn">Soumettre</button>
-                        </div>
-                    ` :
-      `
-                        <div class="form-group text-center">
-                            <br>
-                            <button type="button" class="btn btn-primary btn-lg btn-block text-secondary" id="register">S'inscrire</button>
-                            <button type="button" class="btn btn-primary btn-lg btn-block text-secondary" id="login">Se connecter</button>
-                        </div>
-        
-                        <br>
-        
-                        <p class="text-center">ou</p>
-        
-                        <div class="form-group">
-                            <div class="input-group w-auto">
-                                <input type="text" class="form-control" placeholder="Numéro de téléphone" id="input-phone-number"/>
-                                <button class="btn btn-primary text-secondary" type="submit" id="submit-btn-anonymous" data-mdb-ripple-color="dark">Soumettre anonymement</button>
-                            </div>
-                        </div> 
-                    `
-  }
+                <div id="submission-part"></div>
                 
             </div>
         </form>
     
-    `
+    `;
   main.appendChild(form);
+
+  renderSubmissionPart();
 
   const enableDates = [];
 
-  API.get('/availabilities').then((availabilities) => {
-    availabilities.forEach((item) => {
-      enableDates.push(invertDateFormat(item.date));
+  API.get('/availabilities')
+    .then((availabilities) => {
+      availabilities.forEach((item) => {
+        enableDates.push(invertDateFormat(item.date));
+      });
+      renderDatePicker('#input-receipt-date', enableDates);
+    })
+    .catch((err) => {
+      renderError(err.message);
     });
-    renderDatePicker("#input-receipt-date", enableDates);
-  }).catch((err) => {
-    renderError(err.message);
-  });
-
-  if (!authenticatedUser) {
-    document.getElementById("register").addEventListener("click", () => {
-      Navigate('/register');
-    });
-
-    document.getElementById("login").addEventListener("click", () => {
-      Navigate('/login');
-    });
-  }
 
   form.querySelector('form').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -168,14 +133,13 @@ function renderOfferPage(objectTypes) {
     const formData = new FormData();
 
     if (!authenticatedUser) {
-      formData.append("phoneNumber",
-          document.getElementById("input-phone-number").value);
+      formData.append('phoneNumber', document.getElementById('input-phone-number').value);
     }
 
-    if (document.getElementById("input-morning").checked) {
-      formData.append("timeSlot", "matin");
-    } else if (document.getElementById("input-afternoon").checked) {
-      formData.append("timeSlot", "après-midi");
+    if (document.getElementById('input-morning').checked) {
+      formData.append('timeSlot', 'matin');
+    } else if (document.getElementById('input-afternoon').checked) {
+      formData.append('timeSlot', 'après-midi');
     }
 
     ['description', 'objectType'].forEach((key) => {
@@ -184,45 +148,122 @@ function renderOfferPage(objectTypes) {
       formData.append(key, input.value);
     });
 
-    const file = document.getElementById("input-photo").files[0];
+    const file = document.getElementById('input-photo').files[0];
 
     if (file) {
-      formData.append("photo", file);
+      formData.append('photo', file);
     }
 
-    const date = document.getElementById("input-receipt-date").value;
+    const date = document.getElementById('input-receipt-date').value;
 
     if (date) {
-      formData.append("receiptDate", invertDateFormat(date));
+      formData.append('receiptDate', invertDateFormat(date));
     }
 
-    API.post('objects', {body: formData})
-    .then(() => {
-      Navigate('/');
-    })
-    .catch((err) => {
-      renderError(err.message);
-    })
-    .finally(() => {
-      isSubmitting = false;
-    });
+    API.post('objects', { body: formData })
+      .then(() => {
+        Navigate('/');
+      })
+      .catch((err) => {
+        renderError(err.message);
+      })
+      .finally(() => {
+        isSubmitting = false;
+      });
   });
+}
+
+// This is its own function so that it can be re-rendered when the user logs in
+function renderSubmissionPart() {
+  const authenticatedUser = getAuthenticatedUser();
+
+  const submissionPart = document.getElementById('submission-part');
+
+  submissionPart.innerHTML = `
+    ${
+      authenticatedUser
+        ? `
+          <div class="form-group text-center">
+            <br />
+            <button
+              type="submit"
+              class="btn btn-primary btn-lg btn-block text-secondary"
+              id="submit-btn"
+            >
+              Soumettre
+            </button>
+          </div>
+        `
+        : `
+          <div class="form-group text-center">
+            <br />
+            <button
+              type="button"
+              class="btn btn-primary btn-lg btn-block text-secondary"
+              id="register"
+            >
+              S'inscrire
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary btn-lg btn-block text-secondary"
+              id="login"
+            >
+              S'identifier
+            </button>
+          </div>
+
+          <br />
+
+          <p class="text-center">ou</p>
+
+          <div class="form-group">
+            <div class="input-group w-auto">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Numéro de téléphone"
+                id="input-phone-number"
+              />
+              <button
+                class="btn btn-primary text-secondary"
+                type="submit"
+                id="submit-btn-anonymous"
+                data-mdb-ripple-color="dark"
+              >
+                Soumettre anonymement
+              </button>
+            </div>
+          </div>
+        `
+    }
+  `;
+
+  if (!authenticatedUser) {
+    document.getElementById('register').addEventListener('click', () => {
+      // open in new tab, NOT popup, since the page is a bit too big for a popup
+      window.open('/register', '_blank');
+    });
+
+    document.getElementById('login').addEventListener('click', () => {
+      popupWindow('/login', 'Login', 500, 500);
+    });
+  }
 }
 
 function renderDatePicker(datePickerId, availabilities) {
   if (isThereEnableDate(availabilities)) {
     flatpickr(datePickerId, {
-      locale: "fr",
-      dateFormat: "d-m-Y",
-      minDate: "today",
+      locale: 'fr',
+      dateFormat: 'd-m-Y',
+      minDate: 'today',
       enable: availabilities,
     });
   } else {
-    document.getElementById("div-date-picker").innerHTML = `
+    document.getElementById('div-date-picker').innerHTML = `
             <p class="text-danger">Aucune date disponible : Réessayez ultérieurement</p>
         `;
   }
-
 }
 
 function isThereEnableDate(dates) {
@@ -233,9 +274,28 @@ function isThereEnableDate(dates) {
     if (subtractDates(today, new Date(invertDateFormat(date))) > 0) {
       bool = true;
     }
-  })
+  });
 
   return bool;
 }
+
+function popupWindow(url, windowName, w, h) {
+  const y = window.top.outerHeight / 2 + window.top.screenY - h / 2;
+  const x = window.top.outerWidth / 2 + window.top.screenX - w / 2;
+
+  return window.open(
+    url,
+    windowName,
+    `toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=${w}, height=${h}, top=${y}, left=${x}`,
+  );
+}
+
+// Listen for message from child window
+window.addEventListener('message', (event) => {
+  if ('type' in event.data && event.data.type === 'login-success') {
+    setAuthenticatedUser(event.data.data);
+    renderSubmissionPart();
+  }
+});
 
 export default OfferPage;
