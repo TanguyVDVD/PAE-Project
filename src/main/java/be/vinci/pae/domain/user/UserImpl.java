@@ -1,7 +1,9 @@
 package be.vinci.pae.domain.user;
 
 import be.vinci.pae.utils.Config;
+import be.vinci.pae.utils.serializers.EscapeHTMLSerializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.awt.Color;
 import java.io.File;
 import java.io.InputStream;
@@ -19,7 +21,9 @@ import org.mindrot.jbcrypt.BCrypt;
 public class UserImpl implements User {
 
   private int id;
+  @JsonSerialize(using = EscapeHTMLSerializer.class)
   private String lastName;
+  @JsonSerialize(using = EscapeHTMLSerializer.class)
   private String firstName;
   private String phoneNumber;
   private String email;
