@@ -10,6 +10,8 @@ import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.object.Object;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.domain.object.ObjectImpl;
+import be.vinci.pae.domain.user.UserDTO;
+import be.vinci.pae.domain.user.UserImpl;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.notification.NotificationDAO;
 import be.vinci.pae.services.object.ObjectDAO;
@@ -167,6 +169,7 @@ class ObjectUCCImplTest {
 
     Object object = Mockito.mock(ObjectImpl.class);
     Object object1 = Mockito.mock(ObjectImpl.class);
+
     Mockito.when(object.getId()).thenReturn(1);
     Mockito.when(object.getStatus()).thenReturn("accepté");
     Mockito.when(object.getState()).thenReturn("à l'atelier");
@@ -177,11 +180,13 @@ class ObjectUCCImplTest {
     Mockito.when(object1.getStatus()).thenReturn("accepté");
     Mockito.when(object1.getState()).thenReturn("accepté");
 
-    Mockito.when(object1.setStateDate(object, object1, dateToday)).thenReturn(object);
+    UserDTO user = Mockito.mock(UserImpl.class);
+
+    Mockito.when(object1.setStateDate(object, object1, dateToday, user)).thenReturn(object);
 
     Mockito.when(objectDAO.updateObject(object1.getId(), object1)).thenReturn(object);
 
-    ObjectDTO objectDTO = objectUCC.update(object.getId(), object, dateToday);
+    ObjectDTO objectDTO = objectUCC.update(object.getId(), object, dateToday, user);
 
     assertAll(
         () -> assertNotNull(objectDTO, "Update return null"),
@@ -208,11 +213,13 @@ class ObjectUCCImplTest {
 
     LocalDate dateToday = LocalDate.now();
 
-    Mockito.when(object1.setStateDate(object, object1, dateToday)).thenReturn(object);
+    UserDTO user = Mockito.mock(UserImpl.class);
+
+    Mockito.when(object1.setStateDate(object, object1, dateToday, user)).thenReturn(object);
 
     Mockito.when(objectDAO.updateObject(object1.getId(), object1)).thenReturn(object);
 
-    ObjectDTO objectDTO = objectUCC.update(object.getId(), object, dateToday);
+    ObjectDTO objectDTO = objectUCC.update(object.getId(), object, dateToday, user);
 
     assertAll(
         () -> assertNotNull(objectDTO, "Update return null"),
@@ -237,13 +244,15 @@ class ObjectUCCImplTest {
     Mockito.when(object1.getStatus()).thenReturn("accepté");
     Mockito.when(object1.getState()).thenReturn("accepté");
 
-    Mockito.when(object1.setStateDate(object, object1, null)).thenReturn(null);
+    UserDTO user = Mockito.mock(UserImpl.class);
+
+    Mockito.when(object1.setStateDate(object, object1, null, user)).thenReturn(null);
 
     Mockito.when(objectDAO.updateObject(object1.getId(), object1)).thenReturn(object);
 
     LocalDate dateToday = LocalDate.now();
 
-    assertNull(objectUCC.update(object.getId(), null, dateToday),
+    assertNull(objectUCC.update(object.getId(), null, dateToday, user),
         "Update return is not null");
   }
 
@@ -263,13 +272,15 @@ class ObjectUCCImplTest {
     Mockito.when(object1.getStatus()).thenReturn("refusé");
     Mockito.when(object1.getState()).thenReturn("refusé");
 
-    Mockito.when(object1.setStateDate(object, object1, null)).thenReturn(null);
+    UserDTO user = Mockito.mock(UserImpl.class);
+
+    Mockito.when(object1.setStateDate(object, object1, null, user)).thenReturn(null);
 
     Mockito.when(objectDAO.updateObject(object1.getId(), object1)).thenReturn(object);
 
     LocalDate dateToday = LocalDate.now();
 
-    assertNull(objectUCC.update(object.getId(), null, dateToday),
+    assertNull(objectUCC.update(object.getId(), null, dateToday, user),
         "Update return is not null");
   }
 
@@ -278,7 +289,9 @@ class ObjectUCCImplTest {
   void updateAnObjectException() {
     Mockito.when(objectDAO.getOneById(1)).thenThrow(new DALException("Exception"));
 
-    assertThrows(DALException.class, () -> objectUCC.update(1, null, null),
+    UserDTO user = Mockito.mock(UserImpl.class);
+
+    assertThrows(DALException.class, () -> objectUCC.update(1, null, null, user),
         "Exception not thrown");
   }
 
