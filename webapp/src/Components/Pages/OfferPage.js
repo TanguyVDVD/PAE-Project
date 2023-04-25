@@ -93,8 +93,9 @@ function renderOfferPage(objectTypes) {
                 </div>
 
                 <div class="form-group">
-                    <label for="exampleFormControlTextarea1">Description de l'objet (max. 120 caractères)</label>
-                    <textarea class="form-control" id="input-description" type="text"></textarea>
+                    <label for="input-description">Description de l'objet (max. 120 caractères)</label>
+                    <textarea class="form-control" id="input-description" type="text" maxlength="120" rows="2"></textarea>
+                    <div id="character-limit" class="form-text text-end">120</div>
                 </div>
                 
                 <div id="submission-part"></div>
@@ -170,6 +171,15 @@ function renderOfferPage(objectTypes) {
       .finally(() => {
         isSubmitting = false;
       });
+  });
+
+  form.querySelector('#input-description').addEventListener('input', (e) => {
+    const description = e.target.value;
+    const characterLimit = document.getElementById('character-limit');
+
+    characterLimit.innerText = 120 - description.length;
+    if (description.length > 120 - 20) characterLimit.classList.add('text-danger');
+    else characterLimit.classList.remove('text-danger');
   });
 }
 
