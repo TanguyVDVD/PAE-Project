@@ -23,8 +23,6 @@ const OfferPage = () => {
 function renderOfferPage(objectTypes) {
   let isSubmitting = false;
 
-  const authenticatedUser = getAuthenticatedUser();
-
   const main = document.querySelector('main');
   const form = document.createElement('div');
 
@@ -123,6 +121,8 @@ function renderOfferPage(objectTypes) {
 
   form.querySelector('form').addEventListener('submit', (e) => {
     e.preventDefault();
+
+    const authenticatedUser = getAuthenticatedUser();
 
     if (isSubmitting) {
       return;
