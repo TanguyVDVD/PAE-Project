@@ -521,16 +521,17 @@ public class ObjectImpl implements Object {
   }
 
   /**
-   * Set the correct change state date.
+   * Check and set the correct change state date.
    *
    * @param objectDTO       the object after the state change
    * @param objectDTOFromDb the object before the state change
    * @param dateChange      the date of de change
+   * @param user            the user trying to update the object
    * @return the objectDTO change, null if there is a problem
    */
   @Override
   public ObjectDTO setStateDate(ObjectDTO objectDTO, ObjectDTO objectDTOFromDb,
-      LocalDate dateChange) {
+      LocalDate dateChange, UserDTO user) {
 
     if (objectDTO == null || objectDTOFromDb == null || dateChange == null) {
       return null;
@@ -549,10 +550,11 @@ public class ObjectImpl implements Object {
       }
 
       if (objectDTO.getState().equals("vendu")) {
-        // If the object is being sold, the previous state must be "on sale"
-        if (!objectDTOFromDb.getState()
-            .equals("en vente")) {
-          throw new UserException("L'objet n'est pas en vente");
+        // If the object is being sold, the previous state must be "en vente" or "en magasin" and the user must be
+        if (!objectDTOFromDb.getState().equals("en vente") &&
+            (!objectDTOFromDb.getState().equals("en magasin") ||
+                !user.getRole().equals("responsable"))) {
+          throw new UserException("L'objet n'est pas en magasin ou en vente");
         }
 
         objectDTOFromDb.setSellingDate(dateChange);

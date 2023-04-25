@@ -157,9 +157,13 @@ public class ObjectResource {
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeHelper
-  public ObjectNode updateObject(JsonNode json, @PathParam("id") int id) {
-    if (!json.hasNonNull("type") || !json.hasNonNull("description") || !json.hasNonNull(
-        "state") || !json.hasNonNull("isVisible")) {
+  public ObjectNode updateObject(
+      @Context ContainerRequest request,
+      JsonNode json,
+      @PathParam("id") int id) {
+
+    if (!json.hasNonNull("type") || !json.hasNonNull("description") ||
+        !json.hasNonNull("state") || !json.hasNonNull("isVisible")) {
 
       throw new WebApplicationException("Tous les champs ne sont pas remplis",
           Status.UNAUTHORIZED);
@@ -207,7 +211,9 @@ public class ObjectResource {
     objectUpdated.setPrice(priceObject);
     objectUpdated.setVersionNumber(versionNumber);
 
-    ObjectDTO objectDTOAfterUpdate = objectUCC.update(id, objectUpdated, changeDate);
+    UserDTO user = (UserDTO) request.getProperty("user");
+
+    ObjectDTO objectDTOAfterUpdate = objectUCC.update(id, objectUpdated, changeDate, user);
 
     return jsonMapper.convertValue(objectDTOAfterUpdate, ObjectNode.class);
   }
