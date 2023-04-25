@@ -259,7 +259,7 @@ public class UserResource {
       }
 
     } else if (authorizedUser.getRole().equals("responsable")) {
-      // Only the admin can change the helper status
+      // Only the admin can change the role
       if (dataDTO.getRole() != null) {
         userDTO.setRole(dataDTO.getRole());
       }

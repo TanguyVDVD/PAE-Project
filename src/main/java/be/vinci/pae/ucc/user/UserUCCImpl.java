@@ -166,7 +166,7 @@ public class UserUCCImpl implements UserUCC {
         throw new UserException("Numéro de GSM déjà utilisé");
       }
 
-      // Check if role have been changed
+      // Check if role has been changed
       if (userDTO.getRole() == null) {
         userDTO.setRole(userDB.getRole());
       }
