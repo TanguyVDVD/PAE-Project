@@ -310,7 +310,7 @@ public class UserResource {
     File f = userUCC.getProfilePicture(user);
 
     if (f == null) {
-      throw new WebApplicationException("Photo non trouvé", Status.NOT_FOUND);
+      return Response.status(Status.NOT_FOUND).build();
     }
 
     return Response.ok(f, MediaType.APPLICATION_OCTET_STREAM)
