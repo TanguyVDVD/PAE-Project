@@ -107,7 +107,7 @@ VALUES (DEFAULT, 1, 'Chaise en bois brut avec cousin beige', 'matin', 2, 'en ven
 
 INSERT INTO pae.objects
 VALUES (DEFAULT, 1, 'Canapé 3 places blanc', 'matin', 3, 'vendu', 'accepté', null,
-        true, '2023-03-01', '2023-03-15', null, null, '2023-03-18', '2023-03-20', '2323-03-22', null, null, 3, 3, 4);
+        true, '2023-03-01', '2023-03-15', null, null, '2023-03-18', '2023-03-20', '2023-03-22', null, null, 3, 3, 4);
 
 INSERT INTO pae.objects
 VALUES (DEFAULT, 1, 'Secrétaire', 'après-midi', null, 'refusé', 'refusé', 'Ce meuble est magnifique mais fragile pour l’usage qui en sera fait.',
