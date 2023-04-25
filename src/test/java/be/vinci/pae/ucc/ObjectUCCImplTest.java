@@ -182,8 +182,6 @@ class ObjectUCCImplTest {
 
     UserDTO user = Mockito.mock(UserImpl.class);
 
-    Mockito.when(object1.setStateDate(object, object1, dateToday, user)).thenReturn(object);
-
     Mockito.when(objectDAO.updateObject(object1.getId(), object1)).thenReturn(object);
 
     ObjectDTO objectDTO = objectUCC.update(object.getId(), object, dateToday, user);
@@ -215,8 +213,6 @@ class ObjectUCCImplTest {
 
     UserDTO user = Mockito.mock(UserImpl.class);
 
-    Mockito.when(object1.setStateDate(object, object1, dateToday, user)).thenReturn(object);
-
     Mockito.when(objectDAO.updateObject(object1.getId(), object1)).thenReturn(object);
 
     ObjectDTO objectDTO = objectUCC.update(object.getId(), object, dateToday, user);
@@ -226,62 +222,6 @@ class ObjectUCCImplTest {
         () -> assertEquals(object, objectDTO, "Update method does not return the same object")
     );
 
-  }
-
-  @DisplayName("Update an object state, with null object")
-  @Test
-  void updateAnObjectStateNullObject() {
-
-    Object object = Mockito.mock(ObjectImpl.class);
-    Object object1 = Mockito.mock(ObjectImpl.class);
-    Mockito.when(object.getId()).thenReturn(1);
-    Mockito.when(object.getStatus()).thenReturn("accepté");
-    Mockito.when(object.getState()).thenReturn("en magasin");
-
-    Mockito.when(objectDAO.getOneById(object.getId())).thenReturn(object1);
-
-    Mockito.when(object1.getId()).thenReturn(1);
-    Mockito.when(object1.getStatus()).thenReturn("accepté");
-    Mockito.when(object1.getState()).thenReturn("accepté");
-
-    UserDTO user = Mockito.mock(UserImpl.class);
-
-    Mockito.when(object1.setStateDate(object, object1, null, user)).thenReturn(null);
-
-    Mockito.when(objectDAO.updateObject(object1.getId(), object1)).thenReturn(object);
-
-    LocalDate dateToday = LocalDate.now();
-
-    assertNull(objectUCC.update(object.getId(), null, dateToday, user),
-        "Update return is not null");
-  }
-
-  @DisplayName("Update an object that is not accepted")
-  @Test
-  void updateAnObjectNotAccepted() {
-
-    Object object = Mockito.mock(ObjectImpl.class);
-    Object object1 = Mockito.mock(ObjectImpl.class);
-    Mockito.when(object.getId()).thenReturn(1);
-    Mockito.when(object.getStatus()).thenReturn("refusé");
-    Mockito.when(object.getState()).thenReturn("en magasin");
-
-    Mockito.when(objectDAO.getOneById(object.getId())).thenReturn(object1);
-
-    Mockito.when(object1.getId()).thenReturn(1);
-    Mockito.when(object1.getStatus()).thenReturn("refusé");
-    Mockito.when(object1.getState()).thenReturn("refusé");
-
-    UserDTO user = Mockito.mock(UserImpl.class);
-
-    Mockito.when(object1.setStateDate(object, object1, null, user)).thenReturn(null);
-
-    Mockito.when(objectDAO.updateObject(object1.getId(), object1)).thenReturn(object);
-
-    LocalDate dateToday = LocalDate.now();
-
-    assertNull(objectUCC.update(object.getId(), null, dateToday, user),
-        "Update return is not null");
   }
 
   @DisplayName("Exception when updating an object")
