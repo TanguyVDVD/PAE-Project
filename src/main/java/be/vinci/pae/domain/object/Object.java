@@ -1,5 +1,6 @@
 package be.vinci.pae.domain.object;
 
+import be.vinci.pae.domain.user.UserDTO;
 import java.io.File;
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -42,12 +43,14 @@ public interface Object extends ObjectDTO {
   boolean isStateWorkshopOrShop(ObjectDTO objectDTO);
 
   /**
-   * Set the correct change state date.
+   * Check and set the correct change state date.
    *
    * @param objectDTO       the object after the state change
    * @param objectDTOFromDb the object before the state change
    * @param dateChange      the date of de change
+   * @param user            the user trying to update the object
    * @return the objectDTO change, null if there is a problem
    */
-  ObjectDTO setStateDate(ObjectDTO objectDTO, ObjectDTO objectDTOFromDb, LocalDate dateChange);
+  ObjectDTO setStateDate(ObjectDTO objectDTO, ObjectDTO objectDTOFromDb, LocalDate dateChange,
+      UserDTO user);
 }

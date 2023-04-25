@@ -1,6 +1,7 @@
 package be.vinci.pae.ucc.object;
 
 import be.vinci.pae.domain.object.ObjectDTO;
+import be.vinci.pae.domain.user.UserDTO;
 import java.io.File;
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -68,9 +69,10 @@ public interface ObjectUCC {
    * @param id        the id of the object
    * @param objectDTO the object
    * @param date      the date the state has been updated
+   * @param user      the user trying to update the object
    * @return null if there is an error or the object updated
    */
-  ObjectDTO update(int id, ObjectDTO objectDTO, LocalDate date);
+  ObjectDTO update(int id, ObjectDTO objectDTO, LocalDate date, UserDTO user);
 
   /**
    * Get an object's photo.

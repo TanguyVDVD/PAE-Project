@@ -2,6 +2,7 @@ package be.vinci.pae.ucc.object;
 
 import be.vinci.pae.domain.object.Object;
 import be.vinci.pae.domain.object.ObjectDTO;
+import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.object.ObjectDAO;
 import be.vinci.pae.ucc.notification.NotificationUCC;
@@ -191,10 +192,11 @@ public class ObjectUCCImpl implements ObjectUCC {
    * @param id        the id of the object
    * @param objectDTO the object
    * @param date      the date the state has been updated
+   * @param user      the user trying to update the object
    * @return null if there is an error or the object updated
    */
   @Override
-  public ObjectDTO update(int id, ObjectDTO objectDTO, LocalDate date) {
+  public ObjectDTO update(int id, ObjectDTO objectDTO, LocalDate date, UserDTO user) {
 
     myDalServices.startTransaction();
 
@@ -205,7 +207,7 @@ public class ObjectUCCImpl implements ObjectUCC {
         return null;
       }
 
-      if (objectFromDB.setStateDate(objectDTO, objectFromDB, date) == null) {
+      if (objectFromDB.setStateDate(objectDTO, objectFromDB, date, user) == null) {
         return null;
       }
 
