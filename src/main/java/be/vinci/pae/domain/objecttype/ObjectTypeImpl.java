@@ -1,5 +1,8 @@
 package be.vinci.pae.domain.objecttype;
 
+import be.vinci.pae.utils.serializers.EscapeHTMLSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 /**
  * ObjectTypeImpl class that implements the ObjectTypeDTO interface Contains all the attribute of an
  * object type.
@@ -7,6 +10,7 @@ package be.vinci.pae.domain.objecttype;
 public class ObjectTypeImpl implements ObjectType {
 
   private int id;
+  @JsonSerialize(using = EscapeHTMLSerializer.class)
   private String label;
 
   /**

@@ -3,6 +3,8 @@ package be.vinci.pae.domain.object;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.utils.Config;
 import be.vinci.pae.utils.exceptions.UserException;
+import be.vinci.pae.utils.serializers.EscapeHTMLSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.awt.Color;
 import java.io.File;
 import java.io.InputStream;
@@ -20,6 +22,7 @@ import net.coobird.thumbnailator.geometry.Positions;
 public class ObjectImpl implements Object {
 
   private int id;
+  @JsonSerialize(using = EscapeHTMLSerializer.class)
   private String description;
   private boolean isVisible;
   private double price;
@@ -34,6 +37,7 @@ public class ObjectImpl implements Object {
   private LocalDate onSaleDate;
   private String timeSlot;
   private String status;
+  @JsonSerialize(using = EscapeHTMLSerializer.class)
   private String reasonForRefusal;
   private String phoneNumber;
   private LocalDate receiptDate;

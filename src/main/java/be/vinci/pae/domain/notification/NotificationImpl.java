@@ -1,6 +1,8 @@
 package be.vinci.pae.domain.notification;
 
 import be.vinci.pae.domain.object.ObjectDTO;
+import be.vinci.pae.utils.serializers.EscapeHTMLSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * NotificationImpl class that implements the NotificationDTO interface Contains all the attribute
@@ -9,6 +11,7 @@ import be.vinci.pae.domain.object.ObjectDTO;
 public class NotificationImpl implements Notification {
 
   private int id;
+  @JsonSerialize(using = EscapeHTMLSerializer.class)
   private String notificationText;
   private Boolean isRead;
   private int userId;
