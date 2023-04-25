@@ -5,10 +5,8 @@ import Navigate from "../../Router/Navigate";
 import {clearPage, renderError} from "../../../utils/render";
 import API from "../../../utils/api";
 import {invertDateFormat} from "../../../utils/dates";
-import Navbar from "../../Navbar/Navbar";
 
 const AdminAvailabilitiesPage = () => {
-  Navbar();
   const authenticatedUser = getAuthenticatedUser();
 
   if (!authenticatedUser || authenticatedUser.role === 'utilisateur') {

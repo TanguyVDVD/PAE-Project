@@ -2,10 +2,9 @@ import { clearPage } from '../../utils/render';
 import { isAuthenticated, setAuthenticatedUser } from '../../utils/auths';
 import Navigate from '../Router/Navigate';
 import API from '../../utils/api';
-import Navbar from '../Navbar/Navbar';
 
 const RegisterPage = () => {
-  Navbar();
+
 
   if (isAuthenticated()) {
     Navigate('/');

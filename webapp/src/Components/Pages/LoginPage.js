@@ -1,11 +1,9 @@
-import { clearPage } from '../../utils/render';
-import { isAuthenticated, setAuthenticatedUser } from '../../utils/auths';
+import {clearPage} from '../../utils/render';
+import {isAuthenticated, setAuthenticatedUser} from '../../utils/auths';
 import Navigate from '../Router/Navigate';
 import API from '../../utils/api';
-import Navbar from '../Navbar/Navbar';
 
 const LoginPage = () => {
-  Navbar();
   if (isAuthenticated()) {
     Navigate('/');
     return;
@@ -80,25 +78,26 @@ function renderLoginForm() {
     const password = document.querySelector('#input-password').value;
     const remember = document.querySelector('#input-remember').checked;
 
-    API.post('users/login', { body: { email, password } })
-      .then((data) => {
-        setAuthenticatedUser(data, remember);
+    API.post('users/login', {body: {email, password}})
+    .then((data) => {
+      setAuthenticatedUser(data, remember);
 
-        if (window.opener) {
-          // If the login page was opened in a popup, send a message to the opener
-          window.opener.postMessage({ type: 'login-success', data }, window.location.origin);
-          window.close();
-        } else {
-          Navigate('/');
-        }
-      })
-      .catch((err) => {
-        renderError(err.message);
-      })
-      .finally(() => {
-        isSubmitting = false;
-        loginForm.classList.remove('loading');
-      });
+      if (window.opener) {
+        // If the login page was opened in a popup, send a message to the opener
+        window.opener.postMessage({type: 'login-success', data},
+            window.location.origin);
+        window.close();
+      } else {
+        Navigate('/');
+      }
+    })
+    .catch((err) => {
+      renderError(err.message);
+    })
+    .finally(() => {
+      isSubmitting = false;
+      loginForm.classList.remove('loading');
+    });
   });
 
   main.appendChild(loginForm);
