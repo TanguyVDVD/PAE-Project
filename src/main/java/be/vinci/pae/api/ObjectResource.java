@@ -377,6 +377,10 @@ public class ObjectResource {
       throw new WebApplicationException("Photo manquante", Status.BAD_REQUEST);
     }
 
+    if (description.length() > 120) {
+      throw new WebApplicationException("Description trop longue", Status.BAD_REQUEST);
+    }
+
     ObjectDTO objectDTO = myDomainFactory.getObject();
 
     objectDTO.setDescription(StringEscapeUtils.escapeHtml4(description));
