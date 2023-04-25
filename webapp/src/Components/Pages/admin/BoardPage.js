@@ -119,6 +119,7 @@ function renderBoardPage(){
         ${countRefuses}
         ` ;
 
+        // eslint-disable-next-line no-unused-vars
         const totalObjects = count;
         const soldObjects = countSolds;
         const acceptedObjects = countAccep;
@@ -130,22 +131,22 @@ function renderBoardPage(){
         
         // Création du graphique
         const chartData = {
-          labels: ["Proposés", "Vendus", "Acceptés", "Refusés"],
+          labels: [ "Vendus", "Acceptés", "Refusés"],
           datasets: [
             {
               label: "Nombre d'objets",
-              data: [totalObjects, soldObjects, acceptedObjects, rejectedObjects],
+              data: [soldObjects, acceptedObjects, rejectedObjects],
               backgroundColor: [
                 "rgba(255, 99, 132, 0.2)",
                 "rgba(54, 162, 235, 0.2)",
                 "rgba(255, 206, 86, 0.2)",
-                "rgba(75, 192, 192, 0.2)",
+              
               ],
               borderColor: [
                 "rgba(255, 99, 132, 1)",
                 "rgba(54, 162, 235, 1)",
                 "rgba(255, 206, 86, 1)",
-                "rgba(75, 192, 192, 1)",
+              
               ],
               borderWidth: 1,
             },
