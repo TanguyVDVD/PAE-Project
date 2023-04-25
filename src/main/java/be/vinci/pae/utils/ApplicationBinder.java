@@ -2,9 +2,9 @@ package be.vinci.pae.utils;
 
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.DomainFactoryImpl;
+import be.vinci.pae.services.DALBackendServices;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.DALServicesImpl;
-import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.services.availability.AvailabilityDAO;
 import be.vinci.pae.services.availability.AvailabilityDAOImpl;
 import be.vinci.pae.services.notification.NotificationDAO;
@@ -55,7 +55,7 @@ public class ApplicationBinder extends AbstractBinder {
     bind(AvailabilityDAOImpl.class).to(AvailabilityDAO.class).in(Singleton.class);
     bind(NotificationDAOImpl.class).to(NotificationDAO.class).in(Singleton.class);
 
-    bind(DALServicesImpl.class).to(DalBackendServices.class).to(DALServices.class)
+    bind(DALServicesImpl.class).to(DALBackendServices.class).to(DALServices.class)
         .in(Singleton.class);
   }
 }

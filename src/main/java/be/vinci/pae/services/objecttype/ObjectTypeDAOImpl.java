@@ -2,7 +2,7 @@ package be.vinci.pae.services.objecttype;
 
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.objecttype.ObjectTypeDTO;
-import be.vinci.pae.services.DalBackendServices;
+import be.vinci.pae.services.DALBackendServices;
 import be.vinci.pae.utils.exceptions.DALException;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
@@ -17,7 +17,7 @@ import java.util.List;
 public class ObjectTypeDAOImpl implements ObjectTypeDAO {
 
   @Inject
-  private DalBackendServices dalBackendServices;
+  private DALBackendServices dalBackendServices;
 
   @Inject
   private DomainFactory myDomainFactory;
