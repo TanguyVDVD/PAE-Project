@@ -1,12 +1,13 @@
 import Navigate from '../Router/Navigate';
-import {clearPage, renderError} from '../../utils/render';
-import {createObjectCard, getObjectTypes} from '../../utils/objects';
+import { clearPage, renderError } from '../../utils/render';
+import { createObjectCard, getObjectTypes } from '../../utils/objects';
 // import { getAuthenticatedUser } from '../../utils/auths';
 import API from '../../utils/api';
-import Navbar from "../Navbar/Navbar";
+import Navbar from '../Navbar/Navbar';
 
 const objects = [];
 let params = null;
+let typeToFilter = null;
 
 const ObjectsPage = () => {
   Navbar();
@@ -54,34 +55,46 @@ function renderObjectsPage() {
   searchInput.value = params.get('query') || '';
 
   filterSelect.addEventListener('change', (e) => {
-    e.target.form.dispatchEvent(new Event('submit'));
+    typeToFilter = e.target.value === '' ? null : e.target.options[e.target.selectedIndex].text;
+
+    if (objects.length !== 0)
+      renderObjects(
+        objects.filter((object) => typeToFilter === null || object.objectType === typeToFilter),
+      );
+
+    params.set('type', e.target.value);
+    // only push state if it changed
+    if (window.location.search !== `?${params.toString()}`)
+      window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
   });
 
   getObjectTypes().then((types) => {
     filterSelect.innerHTML += `
       ${types
-    .map(
-        (objectType) => `
+        .map(
+          (objectType) => `
           <option value="${objectType.id}">${objectType.label}</option>
         `,
-    )
-    .join('')}
+        )
+        .join('')}
     `;
 
     filterSelect.value = params.get('type') || '';
+
+    if (params.get('type') !== null) {
+      filterSelect.dispatchEvent(new Event('change'));
+    }
   });
 
   objectsFilterForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const query = searchInput.value;
-    const type = filterSelect.value;
 
+    const newParams = new URLSearchParams(window.location.search);
     params.set('query', query);
-    params.set('type', type);
 
-    window.history.pushState({}, '',
-        `${window.location.pathname}?${params.toString()}`);
+    window.history.pushState({}, '', `${window.location.pathname}?${newParams.toString()}`);
 
     document.getElementById('objects').classList.add('opacity-25');
     getObjects();
@@ -92,18 +105,21 @@ function renderObjectsPage() {
 }
 
 function getObjects() {
-  API.get(`objects/public?${params.toString()}`)
-  .then((response) => {
-    objects.splice(0, objects.length, ...response);
-    renderObjects();
-  })
-  .catch((err) => {
-    renderError(err);
-  })
+  API.get(`objects/public?query=${params.get('query') || ''}`)
+    .then((response) => {
+      objects.splice(0, objects.length, ...response);
 
-  .finally(() => {
-    document.getElementById('objects').classList.remove('opacity-25');
-  });
+      renderObjects(
+        objects.filter((object) => typeToFilter === null || object.objectType === typeToFilter),
+      );
+    })
+    .catch((err) => {
+      renderError(err);
+    })
+
+    .finally(() => {
+      document.getElementById('objects').classList.remove('opacity-25');
+    });
 }
 
 function renderObjects(_objects = objects) {
@@ -120,22 +136,21 @@ function renderObjects(_objects = objects) {
   }
 
   div.innerHTML = _objects
-  .map(
+    .map(
       (object) => `
         <div class="col">
           ${createObjectCard(object)}
         </div>
       `,
-  )
-  .join('');
+    )
+    .join('');
 
   div.querySelectorAll('.object-card').forEach((card) => {
     card.addEventListener('click', (e) => {
       e.preventDefault();
 
       if (card.dataset.id !== 'undefined') {
-        Navigate(
-            `/object/${card.dataset.id}`);
+        Navigate(`/object/${card.dataset.id}`);
       }
     });
   });
