@@ -516,16 +516,18 @@ public class ObjectImpl implements Object {
   /**
    * Check if it is allowed to change the object state.
    *
-   * @param newState the new state
-   * @param user     the user trying to update the object
+   * @param object the object with the new state
+   * @param user   the user trying to update the object
    */
-  public void isStateChangeAllowed(String newState, UserDTO user) {
+  public void isStateChangeAllowed(ObjectDTO object, UserDTO user) {
 
     String oldState = this.getState();
 
-    if (newState == null || oldState == null || user == null) {
-      throw new UserException("Paramètre(s) du changement d'état manquant(s)");
+    if (object == null || oldState == null || user == null || object.getState() == null) {
+      throw new UserException("Paramètre(s) du changement d'état invalide(s)");
     }
+
+    String newState = object.getState();
 
     // Check if the object is already refused
     if (oldState.equals("refusé")) {
