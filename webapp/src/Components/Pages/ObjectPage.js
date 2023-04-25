@@ -1,7 +1,12 @@
+import flatpickr from "flatpickr";
 import {clearPage, renderError} from '../../utils/render';
 import {getAuthenticatedUser} from '../../utils/auths';
 import API from '../../utils/api';
-import {dateStringtoGoodFormat, getTodaySDate} from '../../utils/dates';
+import {
+  dateStringtoGoodFormat,
+  getTodaySDate,
+  invertDateFormat
+} from '../../utils/dates';
 import Navigate from '../Router/Navigate';
 import AdminOffersPage from './admin/AdminOffersPage';
 import AdminObjectsPage from './admin/AdminObjectsPage';
@@ -26,6 +31,9 @@ const ObjectPage = (params) => {
     API.get('/objectTypes').then((objectTypes) => {
       renderObjectPage(object, objectTypes);
     });
+  })
+  .catch((err) => {
+    renderError(err.message);
   });
 };
 
@@ -121,7 +129,7 @@ function renderObjectPage(object, objectTypes) {
                 <div class="form-group" id="object-state-date-form">
                   <br>
                   <label id="object-state-date-label"></label>
-                  <input type="date" id="object-state-date-input">
+                  <input type="text" id="date-picker">
                 </div>
                 
                 <div class="form-group" id="object-price-form">
@@ -279,6 +287,11 @@ function renderObjectPage(object, objectTypes) {
     setReceiptDate(document, "div-receipt-date", [object]);
     setDefaultValues(object);
 
+    flatpickr("#date-picker", {
+      locale: 'fr',
+      dateFormat: 'd-m-Y',
+    });
+
     const stateForm = document.getElementById('object-state-select');
 
     stateForm.addEventListener("change", () => {
@@ -297,7 +310,7 @@ function renderObjectPage(object, objectTypes) {
               'object-description-textarea').value;
           const type = document.getElementById('object-type-select').value;
           const state = document.getElementById('object-state-select').value;
-          const date = document.getElementById('object-state-date-input').value;
+          const date = invertDateFormat(document.getElementById('date-picker').value);
           const price = document.getElementById('object-price-input').value;
           const isVisible = document.getElementById('visible-switch').checked;
           const versionNbr = object.versionNumber;
@@ -313,13 +326,19 @@ function renderObjectPage(object, objectTypes) {
                 isVisible,
                 versionNbr
               },
+            })
+            .catch((err) => {
+              renderError(err.message);
             });
 
             const photo = document.getElementById('input-photo');
             if (photo.files.length > 0) {
               const formData = new FormData();
               formData.append('photo', photo.files[0]);
-              await API.put(`objects/${object.id}/photo`, {body: formData});
+              await API.put(`objects/${object.id}/photo`, {body: formData})
+              .catch((err) => {
+                renderError(err.message);
+              });
             }
 
             AdminObjectsPage();
@@ -357,52 +376,54 @@ function setDefaultValues(object) {
 }
 
 function setStateDate(state, object) {
-  const dateInput = document.getElementById('object-state-date-input');
+  const datePicker = document.getElementById('date-picker');
   const label = document.getElementById('object-state-date-label');
 
   if (state === "accepté") {
     if (state === object.state) {
-      dateInput.value = object.acceptanceDate;
+      datePicker.value = object.acceptanceDate;
     } else {
-      dateInput.value = getTodaySDate();
+      datePicker.value = getTodaySDate();
     }
     label.innerHTML = "Accepté le : ";
   } else if (state === "à l'atelier") {
     if (state === object.state) {
-      dateInput.value = object.workshopDate;
+      datePicker.value = object.workshopDate;
     } else {
-      dateInput.value = getTodaySDate();
+      datePicker.value = getTodaySDate();
     }
     label.innerHTML = "Mis à l'atelier le : ";
   } else if (state === "en magasin") {
     if (state === object.state) {
-      dateInput.value = object.depositDate;
+      datePicker.value = object.depositDate;
     } else {
-      dateInput.value = getTodaySDate();
+      datePicker.value = getTodaySDate();
     }
     label.innerHTML = "Déposé en magasin le : ";
   } else if (state === "en vente") {
     if (state === object.state) {
-      dateInput.value = object.onSaleDate;
+      datePicker.value = object.onSaleDate;
     } else {
-      dateInput.value = getTodaySDate();
+      datePicker.value = getTodaySDate();
     }
     label.innerHTML = "Mis en vente le : ";
   } else if (state === "vendu") {
     if (state === object.state) {
-      dateInput.value = object.sellingDate;
+      datePicker.value = object.sellingDate;
     } else {
-      dateInput.value = getTodaySDate();
+      datePicker.value = getTodaySDate();
     }
     label.innerHTML = "Vendu le : ";
   } else if (state === "retiré") {
     if (state === object.state) {
-      dateInput.value = object.withdrawalDate;
+      datePicker.value = object.withdrawalDate;
     } else {
-      dateInput.value = getTodaySDate();
+      datePicker.value = getTodaySDate();
     }
     label.innerHTML = "Retiré le : ";
   }
+
+  datePicker.value = invertDateFormat(datePicker.value);
 }
 
 function getAvailableStates(object, user) {
