@@ -184,7 +184,7 @@ async function renderOffers(offersFiltered) {
                               <h5>${offer.objectType}</h5>
                              
                               <div class="mt-1 mb-1 spec-1">
-                                  <h6>${offer.description}</h6>
+                                  <h6 class="text-break">${offer.description}</h6>
                               </div>
                               <br>
                               <p>
