@@ -107,7 +107,14 @@ function renderObjectsPage() {
 function getObjects() {
   API.get(`objects/public?query=${params.get('query') || ''}`)
     .then((response) => {
-      objects.splice(0, objects.length, ...response);
+      const objectsObject = response.sort((a, b) => {
+        if (a.state === 'vendu' && b.state !== 'vendu') return 1;
+        if (a.state !== 'vendu' && b.state === 'vendu') return -1;
+
+        return 0;
+      });
+
+      objects.splice(0, objects.length, ...objectsObject);
 
       renderObjects(
         objects.filter((object) => typeToFilter === null || object.objectType === typeToFilter),
