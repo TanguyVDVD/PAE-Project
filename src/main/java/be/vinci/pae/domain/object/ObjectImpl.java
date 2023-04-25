@@ -548,15 +548,16 @@ public class ObjectImpl implements Object {
       }
 
       // Check if the object is already sold or withdrawn
-      if (objectDTOFromDb.getState().equals("vendu") || objectDTOFromDb.getState()
-          .equals("retiré")) {
+      if (objectDTOFromDb.getState().equals("vendu")
+          || objectDTOFromDb.getState().equals("retiré")) {
         throw new UserException("L'objet est déjà vendu ou retiré");
       }
 
       if (objectDTO.getState().equals("vendu")) {
         // If the object is being sold, the previous state must be "en vente" or "en magasin"
         // and the user must be "responsable"
-        if (!objectDTOFromDb.getState().equals("en vente")
+        if (!objectDTOFromDb.getState().equals("vendu")
+            && !objectDTOFromDb.getState().equals("en vente")
             && (!objectDTOFromDb.getState().equals("en magasin")
             || !user.getRole().equals("responsable"))) {
           throw new UserException("L'objet n'est pas en magasin ou en vente");
@@ -565,15 +566,17 @@ public class ObjectImpl implements Object {
         objectDTOFromDb.setSellingDate(dateChange);
       } else if (objectDTO.getState().equals("retiré")) {
         // If the object is being withdrawn, the previous state must be "on sale", or "in shop"
-        if (!objectDTOFromDb.getState().equals("en vente") && !objectDTOFromDb.getState()
-            .equals("en magasin")) {
+        if (!objectDTOFromDb.getState().equals("retiré")
+            && !objectDTOFromDb.getState().equals("en vente")
+            && !objectDTOFromDb.getState().equals("en magasin")) {
           throw new UserException("L'objet n'est pas en vente ou en magasin");
         }
 
         objectDTOFromDb.setWithdrawalDate(dateChange);
       } else if (objectDTO.getState().equals("en vente")) {
         // If the object is being put on sale, the previous state must be "in shop"
-        if (!objectDTOFromDb.getState().equals("en magasin")) {
+        if (!objectDTOFromDb.getState().equals("en vente")
+            && !objectDTOFromDb.getState().equals("en magasin")) {
           throw new UserException("L'objet n'est pas en magasin");
         }
 
@@ -581,15 +584,17 @@ public class ObjectImpl implements Object {
       } else if (objectDTO.getState().equals("en magasin")) {
         // If the object is being put in the shop, the previous state must be "accepted",
         // or "in workshop"
-        if (!objectDTOFromDb.getState().equals("accepté") && !objectDTOFromDb.getState()
-            .equals("à l'atelier")) {
+        if (!objectDTOFromDb.getState().equals("en magasin")
+            && !objectDTOFromDb.getState().equals("accepté")
+            && !objectDTOFromDb.getState().equals("à l'atelier")) {
           throw new UserException("L'objet n'est pas accepté ou à l'atelier");
         }
 
         objectDTOFromDb.setDepositDate(dateChange);
       } else if (objectDTO.getState().equals("à l'atelier")) {
         // If the object is being put in the workshop, the previous state must be "accepted"
-        if (!objectDTOFromDb.getState().equals("accepté")) {
+        if (!objectDTOFromDb.getState().equals("à l'atelier")
+            && !objectDTOFromDb.getState().equals("accepté")) {
           throw new UserException("L'objet n'est pas accepté");
         }
 
