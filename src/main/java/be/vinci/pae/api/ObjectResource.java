@@ -162,8 +162,8 @@ public class ObjectResource {
       JsonNode json,
       @PathParam("id") int id) {
 
-    if (!json.hasNonNull("type") || !json.hasNonNull("description") ||
-        !json.hasNonNull("state") || !json.hasNonNull("isVisible")) {
+    if (!json.hasNonNull("type") || !json.hasNonNull("description")
+        || !json.hasNonNull("state") || !json.hasNonNull("isVisible")) {
 
       throw new WebApplicationException("Tous les champs ne sont pas remplis",
           Status.UNAUTHORIZED);
