@@ -6,13 +6,10 @@ import {formatPhoneNumber} from '../../../utils/format';
 import {dateStringtoGoodFormat} from '../../../utils/dates';
 import API from '../../../utils/api';
 import noProfilePicture from '../../../img/no_profile_picture.svg';
-import Navbar from "../../Navbar/Navbar";
 
 let searchQuery = '';
 
 const AdminUsersPage = () => {
-
-  Navbar();
 
   searchQuery = '';
 
@@ -70,7 +67,9 @@ function renderAdminUsersPage() {
     e.preventDefault();
 
     const search = e.target.querySelector('input').value;
-    if (search === searchQuery) return;
+    if (search === searchQuery) {
+      return;
+    }
     searchQuery = search;
 
     searchUsers(searchQuery);
@@ -241,7 +240,7 @@ function renderUsersTable(table, users) {
   table.querySelectorAll('th').forEach((th) => {
     const index = th.cellIndex;
 
-    if (columns[index].sortable)
+    if (columns[index].sortable) {
       th.addEventListener('click', () => {
         // Reset sorting if the column is already sorted by
         if (sortingBy === index) {
@@ -269,6 +268,7 @@ function renderUsersTable(table, users) {
 
         renderUsersTable(table, sortedUsers);
       });
+    }
   });
 }
 

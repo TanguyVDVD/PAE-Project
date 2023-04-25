@@ -17,7 +17,9 @@ import {renderError} from "../../utils/render";
 
 const Navbar = () => {
   // Don't render the navbar if the page is in a popup
-  if (window.opener) return;
+  if (window.opener) {
+    return;
+  }
 
   const navbarWrapper = document.querySelector('#navbarWrapper');
 
@@ -119,15 +121,18 @@ const Navbar = () => {
 
   if (authenticatedUser) {
 
-    API.get(`notifications/user/${authenticatedUser.id}`).then(
-        notificationsAPI => {
-          if (notificationsAPI !== null) {
-            renderNotifications(notificationsAPI);
-          }
+    window.addEventListener('popstate',
+
+        API.get(`notifications/user/${authenticatedUser.id}`).then(
+            notificationsAPI => {
+              if (notificationsAPI !== null) {
+                renderNotifications(notificationsAPI);
+              }
+            })
+        .catch((err) => {
+          renderError(err.message);
         })
-    .catch((err) => {
-      renderError(err.message);
-    });
+    );
   }
 
   async function renderNotifications(notifications) {

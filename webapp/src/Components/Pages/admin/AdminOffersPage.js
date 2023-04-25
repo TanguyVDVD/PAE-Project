@@ -9,10 +9,8 @@ import {encodingHelp, setUserOrPhoneNumber, filterObjects} from '../../../utils/
 
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
 
-import Navbar from "../../Navbar/Navbar";
 
 const AdminOffersPage = () => {
-  Navbar();
   const authenticatedUser = getAuthenticatedUser();
 
   if (!authenticatedUser || authenticatedUser.role === 'utilisateur') {

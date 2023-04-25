@@ -1,13 +1,11 @@
 import Navigate from '../Router/Navigate';
-import { clearPage } from '../../utils/render';
-import { createObjectCard, getObjectTypes } from '../../utils/objects';
+import {clearPage} from '../../utils/render';
+import {createObjectCard, getObjectTypes} from '../../utils/objects';
 import API from '../../utils/api';
 
 import RessourceRieBrand from '../../img/ressourcerie_brand.svg';
-import Navbar from '../Navbar/Navbar';
 
 const HomePage = () => {
-  Navbar();
   clearPage();
   renderHomePage();
 };
@@ -95,12 +93,12 @@ function renderHomePage() {
   getObjectTypes().then((types) => {
     filterSelect.innerHTML += `
       ${types
-        .map(
-          (objectType) => `
+    .map(
+        (objectType) => `
           <option value="${objectType.id}">${objectType.label}</option>
         `,
-        )
-        .join('')}
+    )
+    .join('')}
     `;
   });
 
@@ -124,11 +122,16 @@ function renderHomePage() {
   });
 
   const objectsCarousel = document.getElementById('objects-carousel');
-  objectsCarousel.replaceChildren(renderObjectsCarousel([null, null, null, null]));
+  objectsCarousel.replaceChildren(
+      renderObjectsCarousel([null, null, null, null]));
   API.get('objects/public').then((response) => {
     const objectsObject = response.sort((a, b) => {
-      if (a.state === 'vendu' && b.state !== 'vendu') return 1;
-      if (a.state !== 'vendu' && b.state === 'vendu') return -1;
+      if (a.state === 'vendu' && b.state !== 'vendu') {
+        return 1;
+      }
+      if (a.state !== 'vendu' && b.state === 'vendu') {
+        return -1;
+      }
 
       return 0;
     });
@@ -167,30 +170,30 @@ function renderObjectsCarousel(objects = []) {
   div.innerHTML = `
     <div class="carousel-inner">
       ${
-        objectsGroups.length > 0
+      objectsGroups.length > 0
           ? `
             ${objectsGroups
-              .map(
-                (objectsGroup, index) => `
+          .map(
+              (objectsGroup, index) => `
                 <div class="carousel-item ${index === 0 ? 'active' : ''}">
                   <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-5 text-center">
                     ${objectsGroup
-                      .map(
-                        (object) => `
+              .map(
+                  (object) => `
                         <div class="col">
                           ${createObjectCard(object)}
                         </div>
                       `,
-                      )
-                      .join('')}
+              )
+              .join('')}
                   </div>
                 </div>
               `,
-              )
-              .join('')}
+          )
+          .join('')}
           `
           : ''
-      }
+  }
     </div>
     <button
       class="carousel-control-prev w-auto"

@@ -1,23 +1,26 @@
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/l10n/fr';
-import { clearPage, renderError } from '../../utils/render';
+import {clearPage, renderError} from '../../utils/render';
 import API from '../../utils/api';
-import { getTodaySDate, invertDateFormat, subtractDates } from '../../utils/dates';
-import { getAuthenticatedUser, setAuthenticatedUser } from '../../utils/auths';
+import {
+  getTodaySDate,
+  invertDateFormat,
+  subtractDates
+} from '../../utils/dates';
+import {getAuthenticatedUser, setAuthenticatedUser} from '../../utils/auths';
 import Navigate from '../Router/Navigate';
-import Navbar from '../Navbar/Navbar';
 
 const OfferPage = () => {
-  Navbar();
+
   clearPage();
 
   API.get('/objectTypes')
-    .then((objectTypes) => {
-      renderOfferPage(objectTypes);
-    })
-    .catch((err) => {
-      renderError(err.message);
-    });
+  .then((objectTypes) => {
+    renderOfferPage(objectTypes);
+  })
+  .catch((err) => {
+    renderError(err.message);
+  });
 };
 
 function renderOfferPage(objectTypes) {
@@ -65,11 +68,11 @@ function renderOfferPage(objectTypes) {
                         <div class="form-group">
                             <select class="form-select" type="text" aria-label="Default select example" id="input-objectType">
                                 ${objectTypes.map(
-                                  (objectType) =>
-                                    `
+      (objectType) =>
+          `
                                       <option>${objectType.label}</option>
                                     `,
-                                )}
+  )}
                             </select>
                         </div>
 
@@ -109,15 +112,15 @@ function renderOfferPage(objectTypes) {
   const enableDates = [];
 
   API.get('/availabilities')
-    .then((availabilities) => {
-      availabilities.forEach((item) => {
-        enableDates.push(invertDateFormat(item.date));
-      });
-      renderDatePicker('#input-receipt-date', enableDates);
-    })
-    .catch((err) => {
-      renderError(err.message);
+  .then((availabilities) => {
+    availabilities.forEach((item) => {
+      enableDates.push(invertDateFormat(item.date));
     });
+    renderDatePicker('#input-receipt-date', enableDates);
+  })
+  .catch((err) => {
+    renderError(err.message);
+  });
 
   form.querySelector('form').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -134,7 +137,8 @@ function renderOfferPage(objectTypes) {
     const formData = new FormData();
 
     if (!authenticatedUser) {
-      formData.append('phoneNumber', document.getElementById('input-phone-number').value);
+      formData.append('phoneNumber',
+          document.getElementById('input-phone-number').value);
     }
 
     if (document.getElementById('input-morning').checked) {
@@ -161,16 +165,16 @@ function renderOfferPage(objectTypes) {
       formData.append('receiptDate', invertDateFormat(date));
     }
 
-    API.post('objects', { body: formData })
-      .then(() => {
-        Navigate('/');
-      })
-      .catch((err) => {
-        renderError(err.message);
-      })
-      .finally(() => {
-        isSubmitting = false;
-      });
+    API.post('objects', {body: formData})
+    .then(() => {
+      Navigate('/');
+    })
+    .catch((err) => {
+      renderError(err.message);
+    })
+    .finally(() => {
+      isSubmitting = false;
+    });
   });
 
   form.querySelector('#input-description').addEventListener('input', (e) => {
@@ -178,8 +182,12 @@ function renderOfferPage(objectTypes) {
     const characterLimit = document.getElementById('character-limit');
 
     characterLimit.innerText = 120 - description.length;
-    if (description.length > 120 - 20) characterLimit.classList.add('text-danger');
-    else characterLimit.classList.remove('text-danger');
+    if (description.length > 120 - 20) {
+      characterLimit.classList.add(
+          'text-danger');
+    } else {
+      characterLimit.classList.remove('text-danger');
+    }
   });
 }
 
@@ -192,7 +200,7 @@ function renderSubmissionPart() {
   submissionPart.innerHTML = `
     ${
       authenticatedUser
-        ? `
+          ? `
           <div class="form-group text-center">
             <br />
             <button
@@ -204,7 +212,7 @@ function renderSubmissionPart() {
             </button>
           </div>
         `
-        : `
+          : `
           <div class="form-group text-center">
             <br />
             <button
@@ -246,7 +254,7 @@ function renderSubmissionPart() {
             </div>
           </div>
         `
-    }
+  }
   `;
 
   if (!authenticatedUser) {
@@ -294,9 +302,9 @@ function popupWindow(url, windowName, w, h) {
   const x = window.top.outerWidth / 2 + window.top.screenX - w / 2;
 
   return window.open(
-    url,
-    windowName,
-    `toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=${w}, height=${h}, top=${y}, left=${x}`,
+      url,
+      windowName,
+      `toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=${w}, height=${h}, top=${y}, left=${x}`,
   );
 }
 

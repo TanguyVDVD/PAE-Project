@@ -8,12 +8,10 @@ import {formatDate, formatPhoneNumber} from '../../utils/format';
 import {createObjectCard} from '../../utils/objects';
 
 import noProfilePicture from '../../img/no_profile_picture.svg';
-import Navbar from "../Navbar/Navbar";
 
 const objects = [];
 
 const UserPage = (params) => {
-  Navbar();
 
   objects.splice(0, objects.length);
 
@@ -207,7 +205,9 @@ function renderObjects(placeholder = false) {
   cards.forEach((card) => {
     card.addEventListener('click', (e) => {
       const {id} = e.currentTarget.dataset;
-      if (id !== 'undefined') Navigate(`/object/${id}`);
+      if (id !== 'undefined') {
+        Navigate(`/object/${id}`);
+      }
     });
   });
 }
@@ -390,7 +390,7 @@ function renderEditProfile(user) {
   const profilePicturePreview = editProfile.querySelector(
       '#profile-picture-preview');
   const removePhoto = editProfile.querySelector('#input-removePhoto');
-  if (removePhoto)
+  if (removePhoto) {
     removePhoto.addEventListener('change', (e) => {
       profilePicturePreview.src = e.target.checked ? noProfilePicture
           : currentProfilePicture;
@@ -401,6 +401,7 @@ function renderEditProfile(user) {
 
       photoInput.disabled = e.target.checked;
     });
+  }
 
   photoInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
@@ -420,7 +421,9 @@ function renderEditProfile(user) {
   editProfileForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    if (formIsSubmitting) return;
+    if (formIsSubmitting) {
+      return;
+    }
 
     renderError(null, editProfileForm);
 

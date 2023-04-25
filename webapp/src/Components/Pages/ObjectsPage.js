@@ -3,14 +3,12 @@ import { clearPage, renderError } from '../../utils/render';
 import { createObjectCard, getObjectTypes } from '../../utils/objects';
 // import { getAuthenticatedUser } from '../../utils/auths';
 import API from '../../utils/api';
-import Navbar from '../Navbar/Navbar';
 
 const objects = [];
 let params = null;
 let typeToFilter = null;
 
 const ObjectsPage = () => {
-  Navbar();
   objects.splice(0, objects.length);
   params = new URLSearchParams(window.location.search);
 

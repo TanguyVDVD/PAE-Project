@@ -5,13 +5,16 @@ import {getAuthenticatedUser} from '../../../utils/auths';
 import {clearPage, renderError} from '../../../utils/render';
 import API from '../../../utils/api';
 import {invertDateFormat, subtractDates} from '../../../utils/dates';
-import {encodingHelp, setReceiptDate, setUserOrPhoneNumber, filterObjects} from '../../../utils/objects';
+import {
+  encodingHelp,
+  filterObjects,
+  setReceiptDate,
+  setUserOrPhoneNumber
+} from '../../../utils/objects';
 
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
-import Navbar from "../../Navbar/Navbar";
 
 const AdminObjectsPage = () => {
-  Navbar();
   const authenticatedUser = getAuthenticatedUser();
 
   if (!authenticatedUser || authenticatedUser.role === 'utilisateur') {
@@ -90,9 +93,9 @@ function renderAdminObjectsPage() {
   let enableDates = [];
 
   API.get('/availabilities')
-    .then((availabilities) => {
-      enableDates = availabilities.map((item) => invertDateFormat(item.date));
-      renderDatePicker("#input-receipt-date",enableDates);
+  .then((availabilities) => {
+    enableDates = availabilities.map((item) => invertDateFormat(item.date));
+    renderDatePicker("#input-receipt-date", enableDates);
   }).catch((err) => {
     renderError(err.message);
   });
@@ -120,11 +123,12 @@ function renderAdminObjectsPage() {
     const minPrice = document.getElementById('input-minPrice').value;
     const maxPrice = document.getElementById('input-maxPrice').value;
     const date = document.getElementById('input-receipt-date').value;
-    const type = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
+    const type = [...document.querySelectorAll('.form-filter:checked')].map(
+        (cb) => cb.value);
 
     API.get(`objects?query=${encodeURIComponent(search)}`)
     .then((objects) => {
-      if(objects !== null){
+      if (objects !== null) {
         renderObjects(filterObjects(objects, minPrice, maxPrice, date, type));
       }
     })
@@ -136,17 +140,18 @@ function renderAdminObjectsPage() {
   div.querySelectorAll('.form-filter').forEach((e) => {
     e.addEventListener('change', () => {
 
-    const search = document.getElementById('search-bar').value;
-    const minPrice = document.getElementById('input-minPrice').value;
-    const maxPrice = document.getElementById('input-maxPrice').value;
-    const date = document.getElementById('input-receipt-date').value;
-    const type = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
+      const search = document.getElementById('search-bar').value;
+      const minPrice = document.getElementById('input-minPrice').value;
+      const maxPrice = document.getElementById('input-maxPrice').value;
+      const date = document.getElementById('input-receipt-date').value;
+      const type = [...document.querySelectorAll('.form-filter:checked')].map(
+          (cb) => cb.value);
 
-    console.log(date);
+      console.log(date);
 
-    API.get(`objects?query=${encodeURIComponent(search)}`)
+      API.get(`objects?query=${encodeURIComponent(search)}`)
       .then((objects) => {
-        if(objects !== null){
+        if (objects !== null) {
           renderObjects(filterObjects(objects, minPrice, maxPrice, date, type));
         }
       })
@@ -169,7 +174,8 @@ async function renderObjects(objectsFiltered) {
                           <div class="col-md-3 mt-1">
                               <img 
                                   class="rounded product-image object-fit-cover" 
-                                  src="${API.getEndpoint(`objects/${object.id}/photo`)}"
+                                  src="${API.getEndpoint(
+          `objects/${object.id}/photo`)}"
                                   width="180" height="180"
                                   onerror="this.src='${noFurniturePhoto}'"
                                   alt="${object.objectType}">
@@ -202,7 +208,7 @@ async function renderObjects(objectsFiltered) {
                           </div>
                       </div>
                       `
-                  ,).join('')}
+      ,).join('')}
               </div>                     
           </div>
       </div>
