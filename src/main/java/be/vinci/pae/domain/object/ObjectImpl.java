@@ -604,6 +604,7 @@ public class ObjectImpl implements Object {
       case "retiré" -> {
         this.setWithdrawalDate(date);
       }
+      default -> throw new UserException("Le nouvel d'état de l'objet est invalide");
     }
   }
 
