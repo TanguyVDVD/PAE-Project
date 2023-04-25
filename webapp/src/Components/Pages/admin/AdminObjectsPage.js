@@ -147,8 +147,6 @@ function renderAdminObjectsPage() {
       const type = [...document.querySelectorAll('.form-filter:checked')].map(
           (cb) => cb.value);
 
-      console.log(date);
-
       API.get(`objects?query=${encodeURIComponent(search)}`)
       .then((objects) => {
         if (objects !== null) {
