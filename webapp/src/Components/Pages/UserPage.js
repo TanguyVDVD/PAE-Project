@@ -97,18 +97,29 @@ function renderUserPage(user) {
       authenticatedUser.role === 'responsable' && authenticatedUser.id
       !== user.id
           ? `
-              <div>
-                <div class="form-check form-switch">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    role="switch"
-                    id="helper-switch"
-                    ${user.role === 'aidant' ? 'checked' : ''}
-                  />
-                  <label class="form-check-label" for="helper-switch">Aidant</label>
-                </div>
+          <div>
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  id="helper-switch"
+                  ${user.role === 'aidant' || user.role === 'responsable' ? 'checked' : ''}
+                />
+                <label class="form-check-label" for="helper-switch">Aidant</label>
               </div>
+              
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  id="manager-switch"
+                  ${user.role === 'responsable' ? 'checked' : ''}
+                />
+                <label class="form-check-label" for="helper-switch">Responsable</label>
+              </div>
+          </div>
             `
           : ''
   }
@@ -130,9 +141,12 @@ function renderUserPage(user) {
   }
 
   const helperSwitch = userPage.querySelector('#helper-switch');
+  const managerSwitch = userPage.querySelector('#manager-switch');
+
   if (helperSwitch) {
     helperSwitch.addEventListener('change', (e) => {
       e.target.disabled = true;
+      managerSwitch.disabled = true;
       e.target.checked = !e.target.checked;
 
       API.patch(`users/${user.id}`, {
@@ -144,12 +158,41 @@ function renderUserPage(user) {
       .then((updatedUser) => {
         user.versionNumber = updatedUser.versionNumber;
         e.target.checked = updatedUser.role === 'aidant';
+        managerSwitch.checked = updatedUser.role === 'responsable';
       })
       .catch((error) => {
         renderError(error.message);
       })
       .finally(() => {
         e.target.disabled = false;
+        managerSwitch.disabled = false;
+      });
+    });
+  }
+
+  if (managerSwitch) {
+    managerSwitch.addEventListener('change', (e) => {
+      e.target.disabled = true;
+      helperSwitch.disabled = true;
+      e.target.checked = !e.target.checked;
+
+      API.patch(`users/${user.id}`, {
+        body: {
+          role: e.target.checked ? 'aidant' : 'responsable',
+          versionNbr: user.versionNumber
+        },
+      })
+      .then((updatedUser) => {
+        user.versionNumber = updatedUser.versionNumber;
+        e.target.checked = updatedUser.role === 'responsable';
+        helperSwitch.checked = updatedUser.role !== 'utilisateur';
+      })
+      .catch((error) => {
+        renderError(error.message);
+      })
+      .finally(() => {
+        e.target.disabled = false;
+        helperSwitch.disabled = false;
       });
     });
   }
