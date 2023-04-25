@@ -103,7 +103,7 @@ function renderBoardPage(){
         ${countSolds}
         ` ;
 
-        const acceptes = objects.filter(object => object.state === 'accepté');
+        const acceptes = objects.filter(object => object.state === 'accepté' || object.state === 'en vente');
         // eslint-disable-next-line no-console
         console.log(acceptes)
         const countAccep = acceptes.length;
@@ -114,7 +114,7 @@ function renderBoardPage(){
         const refuses = objects.filter(object => object.state === 'refusé');
         // eslint-disable-next-line no-console
         console.log(refuses)
-        const countRefuses = vendu.length;
+        const countRefuses = refuses.length;
         document.getElementById('rejectedObjects').innerHTML =`
         ${countRefuses}
         ` ;
