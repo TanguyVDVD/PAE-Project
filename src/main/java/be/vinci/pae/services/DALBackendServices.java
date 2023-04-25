@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 /**
  * DALServices interface that provide the method to create PreparedStatements.
  */
-public interface DalBackendServices {
+public interface DALBackendServices {
 
   /**
    * Return the PreparedStatement associated at the request.

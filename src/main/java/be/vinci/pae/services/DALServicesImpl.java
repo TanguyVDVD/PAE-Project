@@ -11,7 +11,7 @@ import org.apache.commons.dbcp2.BasicDataSource;
 /**
  * DALServicesImpl class that implements DALServices interface Provide the different methods.
  */
-public class DALServicesImpl implements DALServices, DalBackendServices {
+public class DALServicesImpl implements DALServices, DALBackendServices {
 
   private final ThreadLocal<Connection> connectionThreadLocal
       = new ThreadLocal<Connection>();

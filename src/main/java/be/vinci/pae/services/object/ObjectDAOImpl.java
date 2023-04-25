@@ -2,7 +2,7 @@ package be.vinci.pae.services.object;
 
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.object.ObjectDTO;
-import be.vinci.pae.services.DalBackendServices;
+import be.vinci.pae.services.DALBackendServices;
 import be.vinci.pae.services.availability.AvailabilityDAO;
 import be.vinci.pae.services.objecttype.ObjectTypeDAO;
 import be.vinci.pae.services.user.UserDAO;
@@ -26,7 +26,7 @@ public class ObjectDAOImpl implements ObjectDAO {
   private DomainFactory myDomainFactory;
 
   @Inject
-  private DalBackendServices dalBackendServices;
+  private DALBackendServices dalBackendServices;
 
   @Inject
   private UserDAO myUserDao;
