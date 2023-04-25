@@ -19,7 +19,7 @@ const ObjectPage = (params) => {
   const main = document.querySelector('main');
 
   main.innerHTML = `
-    <div class="text-center my-5">
+    <div class="position-absolute top-50 start-50 translate-middle">
       <div class="spinner-border" role="status"></div>
     </div>
   `;
