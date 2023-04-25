@@ -40,7 +40,7 @@ public interface Object extends ObjectDTO {
    * @param object the object with the new state
    * @param user   the user trying to update the object
    */
-  public void isStateChangeAllowed(ObjectDTO object, UserDTO user);
+  void isStateChangeAllowed(ObjectDTO object, UserDTO user);
 
   /**
    * Set the state date to the good date.
