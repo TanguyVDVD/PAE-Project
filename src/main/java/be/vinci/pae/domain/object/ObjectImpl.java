@@ -550,10 +550,11 @@ public class ObjectImpl implements Object {
       }
 
       if (objectDTO.getState().equals("vendu")) {
-        // If the object is being sold, the previous state must be "en vente" or "en magasin" and the user must be
-        if (!objectDTOFromDb.getState().equals("en vente") &&
-            (!objectDTOFromDb.getState().equals("en magasin") ||
-                !user.getRole().equals("responsable"))) {
+        // If the object is being sold, the previous state must be "en vente" or "en magasin"
+        // and the user must be "responsable"
+        if (!objectDTOFromDb.getState().equals("en vente")
+            && (!objectDTOFromDb.getState().equals("en magasin")
+            || !user.getRole().equals("responsable"))) {
           throw new UserException("L'objet n'est pas en magasin ou en vente");
         }
 
