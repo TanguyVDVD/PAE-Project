@@ -128,3 +128,8 @@ VALUES (DEFAULT, 1, 'Fauteuil design très confortable', 'après-midi', null, 'p
 INSERT INTO pae.objects
 VALUES (DEFAULT, 1, 'Tabouret de bar en cuir', 'après-midi', null, 'proposé', null, null,
         true, '2023-03-01', null, null, null, null, null, null, null, null, 2, 5, 3);
+
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA pae TO manal_hebbal;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA pae TO erman_sayin;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA pae TO louis_vanbel;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA pae TO tanguy_vandervelden;
