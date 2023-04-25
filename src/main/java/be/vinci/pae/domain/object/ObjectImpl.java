@@ -521,12 +521,11 @@ public class ObjectImpl implements Object {
    */
   public void isStateChangeAllowed(ObjectDTO object, UserDTO user) {
 
-    String oldState = this.getState();
-
-    if (object == null || oldState == null || user == null || object.getState() == null) {
+    if (object == null || this.getState() == null || user == null || object.getState() == null) {
       throw new UserException("Paramètre(s) du changement d'état invalide(s)");
     }
 
+    String oldState = this.getState();
     String newState = object.getState();
 
     // Check if the object is already refused
