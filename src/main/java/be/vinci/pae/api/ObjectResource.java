@@ -147,8 +147,9 @@ public class ObjectResource {
   /**
    * Method that update the state of an object.
    *
-   * @param json the json
-   * @param id   the id of the object
+   * @param request the request
+   * @param json    the json
+   * @param id      the id of the object
    * @return the object that was just updated
    */
 
@@ -157,8 +158,7 @@ public class ObjectResource {
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeHelper
-  public ObjectNode updateObject(
-      @Context ContainerRequest request,
+  public ObjectNode updateObject(@Context ContainerRequest request,
       JsonNode json,
       @PathParam("id") int id) {
 
