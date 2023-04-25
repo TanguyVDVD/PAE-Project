@@ -48,7 +48,7 @@ function renderHomePage() {
   document.getElementById('propose-btn').addEventListener('click', (e) => {
     e.preventDefault();
 
-    Navigate('/propose');
+    Navigate('/offer');
   });
 
   const objects = document.createElement('div');
