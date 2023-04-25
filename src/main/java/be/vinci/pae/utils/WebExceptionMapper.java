@@ -1,6 +1,6 @@
 package be.vinci.pae.utils;
 
-import be.vinci.pae.utils.exceptions.UserException;
+import be.vinci.pae.utils.exceptions.BusinessException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.ws.rs.WebApplicationException;
@@ -31,7 +31,7 @@ public class WebExceptionMapper implements ExceptionMapper<Throwable> {
   public Response toResponse(Throwable exception) {
     exception.printStackTrace();
 
-    if (exception instanceof WebApplicationException || exception instanceof UserException) {
+    if (exception instanceof WebApplicationException || exception instanceof BusinessException) {
       int status = exception instanceof WebApplicationException
           ? ((WebApplicationException) exception).getResponse().getStatus()
           : Response.Status.BAD_REQUEST.getStatusCode();

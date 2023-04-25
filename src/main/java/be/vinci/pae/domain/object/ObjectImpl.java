@@ -2,7 +2,7 @@ package be.vinci.pae.domain.object;
 
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.utils.Config;
-import be.vinci.pae.utils.exceptions.UserException;
+import be.vinci.pae.utils.exceptions.BusinessException;
 import be.vinci.pae.utils.serializers.EscapeHTMLSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.awt.Color;
@@ -526,7 +526,7 @@ public class ObjectImpl implements Object {
         || user == null
         || object.getState() == null
         || object.getStatus() == null) {
-      throw new UserException("Paramètre(s) du changement d'état invalide(s)");
+      throw new BusinessException("Paramètre(s) du changement d'état invalide(s)");
     }
 
     String oldState = this.getState();
@@ -534,7 +534,7 @@ public class ObjectImpl implements Object {
 
     // Check if the object is already refused
     if (oldState.equals("refusé") || object.getStatus().equals("refusé")) {
-      throw new UserException("L'objet est refusé");
+      throw new BusinessException("L'objet est refusé");
     }
 
     switch (newState) {
@@ -543,7 +543,7 @@ public class ObjectImpl implements Object {
         // or "en magasin" and the user must be "responsable" too
         if (!oldState.equals("vendu") && !oldState.equals("en vente")
             && (!oldState.equals("en magasin") || !user.getRole().equals("responsable"))) {
-          throw new UserException("Soit l'objet n'est pas en vente ou vendu ou en magasin, "
+          throw new BusinessException("Soit l'objet n'est pas en vente ou vendu ou en magasin, "
               + "soit vous n'êtes pas responsable si l'objet était en magasin");
         }
       }
@@ -552,13 +552,13 @@ public class ObjectImpl implements Object {
         if (!oldState.equals("retiré")
             && !oldState.equals("en vente")
             && !oldState.equals("en magasin")) {
-          throw new UserException("L'objet n'est pas retiré ou en vente ou en magasin");
+          throw new BusinessException("L'objet n'est pas retiré ou en vente ou en magasin");
         }
       }
       case "en vente" -> {
         // If the object is being put on sale, the previous state must be "en magasin"
         if (!oldState.equals("en vente") && !oldState.equals("en magasin")) {
-          throw new UserException("L'objet n'est pas en vente ou en magasin");
+          throw new BusinessException("L'objet n'est pas en vente ou en magasin");
         }
       }
       case "en magasin" -> {
@@ -567,16 +567,16 @@ public class ObjectImpl implements Object {
         if (!oldState.equals("en magasin")
             && !oldState.equals("accepté")
             && !oldState.equals("à l'atelier")) {
-          throw new UserException("L'objet n'est pas en magasin ou accepté ou à l'atelier");
+          throw new BusinessException("L'objet n'est pas en magasin ou accepté ou à l'atelier");
         }
       }
       case "à l'atelier" -> {
         // If the object is being put in the workshop, the previous state must be "accepted"
         if (!oldState.equals("à l'atelier") && !oldState.equals("accepté")) {
-          throw new UserException("L'objet n'est pas accepté ou à l'atelier");
+          throw new BusinessException("L'objet n'est pas accepté ou à l'atelier");
         }
       }
-      default -> throw new UserException("Le changement d'état de l'objet est impossible");
+      default -> throw new BusinessException("Le changement d'état de l'objet est impossible");
     }
   }
 
@@ -604,7 +604,7 @@ public class ObjectImpl implements Object {
       case "retiré" -> {
         this.setWithdrawalDate(date);
       }
-      default -> throw new UserException("Le nouvel d'état de l'objet est invalide");
+      default -> throw new BusinessException("Le nouvel d'état de l'objet est invalide");
     }
   }
 
