@@ -129,7 +129,7 @@ function createObjectCard(_object) {
       </div>
       <div>
         <div class="object-card-title">${object.objectType}</div>
-        <div>
+        <div class="object-card-description">
           ${object.description}
         </div>
       </div>

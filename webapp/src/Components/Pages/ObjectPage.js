@@ -151,7 +151,7 @@ function renderObjectPage(object, objectTypes) {
               `
       : `
                 <h2>${object.objectType}</h2>
-                <p>Description : ${object.description}</p>
+                <p class="text-break">Description : ${object.description}</p>
               `
   }
             
