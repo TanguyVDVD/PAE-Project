@@ -16,6 +16,9 @@ import {renderError} from "../../utils/render";
  */
 
 const Navbar = () => {
+  // Don't render the navbar if the page is in a popup
+  if (window.opener) return;
+
   const navbarWrapper = document.querySelector('#navbarWrapper');
 
   const authenticatedUser = getAuthenticatedUser();
