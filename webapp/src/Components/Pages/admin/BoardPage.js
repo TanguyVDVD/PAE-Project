@@ -80,21 +80,24 @@ function renderBoardPage(){
                 <!-- /.container-fluid -->
     `;
 
-    API.get(`objects/offers?query=${encodeURIComponent('')}`).then((offers) => {
-        const countOffers = offers.length;
-        document.getElementById('offeredObjects').innerHTML =`
-        ${countOffers}
-        ` ;
-    });
+    
+
 
     API.get(`objects/`).then((objects) => {
+        const periode = document.getElementById('bday-month').value;
+
         const count = objects.length;
         document.getElementById('totalObjects').innerHTML =`
         ${count}
         ` ;
 
-        
-        const vendu = objects.filter(object => object.state === 'vendu');
+        const offers = objects.filter(object => object.state === 'proposé' );
+        const countOffers= offers.length;
+        document.getElementById('offeredObjects').innerHTML =`
+        ${countOffers}
+        ` ;
+
+        const vendu = objects.filter(object => object.state === 'vendu' );
         // eslint-disable-next-line no-console
         console.log(vendu)
         const countSolds = vendu.length;
@@ -102,7 +105,9 @@ function renderBoardPage(){
         ${countSolds}
         ` ;
 
-        const acceptes = objects.filter(object => object.state === 'accepté' || object.state === 'en vente');
+        
+        const acceptes = objects.filter(object => object.state === 'accepté' || object.state === 'en vente' || object.state ==="en magasin" );
+        
         // eslint-disable-next-line no-console
         console.log(acceptes)
         const countAccep = acceptes.length;
@@ -110,7 +115,7 @@ function renderBoardPage(){
         ${countAccep}
         ` ;
 
-        const refuses = objects.filter(object => object.state === 'refusé');
+        const refuses = objects.filter(object => object.state === 'refusé' );
         // eslint-disable-next-line no-console
         console.log(refuses)
         const countRefuses = refuses.length;
@@ -119,7 +124,7 @@ function renderBoardPage(){
         ` ;
 
         // eslint-disable-next-line no-unused-vars
-        const totalObjects = count;
+        const proposedObjects = countOffers;
         const soldObjects = countSolds;
         const acceptedObjects = countAccep;
         const rejectedObjects = countRefuses;
@@ -130,21 +135,22 @@ function renderBoardPage(){
         
         // Création du graphique
         const chartData = {
-          labels: [ "Vendus", "Acceptés", "Refusés"],
+          labels: [ "Proposés","Vendus", "Acceptés", "Refusés"],
           datasets: [
             {
               label: "Nombre d'objets",
-              data: [soldObjects, acceptedObjects, rejectedObjects],
+              data: [proposedObjects ,soldObjects, acceptedObjects, rejectedObjects],
               backgroundColor: [
                 "rgba(255, 99, 132, 0.2)",
                 "rgba(54, 162, 235, 0.2)",
                 "rgba(255, 206, 86, 0.2)",
-              
+                "rgba(75, 192, 192, 0.2)",
               ],
               borderColor: [
                 "rgba(255, 99, 132, 1)",
                 "rgba(54, 162, 235, 1)",
                 "rgba(255, 206, 86, 1)",
+                "rgba(75, 192, 192, 1)",
               
               ],
               borderWidth: 1,
