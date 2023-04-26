@@ -3,7 +3,6 @@ import Navigate from '../Components/Router/Navigate';
 import {dateStringtoGoodFormat, invertDateFormat} from './dates';
 import { formatPhoneNumber } from './format';
 import API from './api';
-import { renderError } from './render';
 
 import noFurniturePhoto from '../img/no_furniture_photo.svg';
 
