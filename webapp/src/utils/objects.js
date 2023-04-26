@@ -80,6 +80,7 @@ function encodingHelp(descriptions) {
       });
 
       const src = descriptions.concat(objectTypes);
+
       Autocomplete.init('input.autocomplete', {
         items: src,
         fullWidth: true,
@@ -89,7 +90,7 @@ function encodingHelp(descriptions) {
         onSelectItem: (item, inst) => {
           // bootstrap5-autocomplete doesn't escape HTML entities when rendering an item
           // but it also doesn't decode them when an item is selected
-          // This is important because user data is included in the list of items!
+          // This is important because user input is included in the list of items!
           // Our solution: give escaped value, then decode it ourselves when an item is selected
           const escaper = document.createElement('textarea');
           escaper.innerHTML = item.label;
