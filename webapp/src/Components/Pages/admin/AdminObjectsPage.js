@@ -114,7 +114,7 @@ function renderAdminObjectsPage() {
     renderError(err.message);
   });
 
-  div.querySelector('form').addEventListener('change', (e) => {
+  div.querySelector('form').addEventListener('keyup', (e) => {
     e.preventDefault();
 
     const search = document.getElementById('search-bar').value;
