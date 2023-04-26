@@ -1,6 +1,6 @@
 import Autocomplete from 'bootstrap5-autocomplete';
 import Navigate from '../Components/Router/Navigate';
-import {dateStringtoGoodFormat, invertDateFormat} from './dates';
+import { dateStringtoGoodFormat, invertDateFormat } from './dates';
 import { formatPhoneNumber } from './format';
 import API from './api';
 import { renderError } from './render';
@@ -14,16 +14,16 @@ function setUserOrPhoneNumber(document, className, objects) {
     const element = elements.item(i);
     if (object.user === null) {
       element.innerHTML = `
-          <p>Proposé au ${formatPhoneNumber(
-          object.phoneNumber,
-      )} le ${dateStringtoGoodFormat(object.offerDate)}</p>
+          <p>Proposé au ${formatPhoneNumber(object.phoneNumber)} le ${dateStringtoGoodFormat(
+        object.offerDate,
+      )}</p>
       `;
     } else {
       element.innerHTML = `
           <p>
           Proposé par
               <a href="#" class="btn-link link-primary" role="button" data-id="${object.user.id}">${
-          object.user.firstName
+        object.user.firstName
       } ${object.user.lastName}</a>
           le ${dateStringtoGoodFormat(object.offerDate)}
           </p>
@@ -48,7 +48,7 @@ function setReceiptDate(document, className, objects) {
       element.innerHTML = `
           <p>
               À récupérer le ${dateStringtoGoodFormat(object.receiptDate)} ${
-          object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
+        object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
       }
           </p>
       `;
@@ -62,7 +62,7 @@ function setReceiptDate(document, className, objects) {
       element.innerHTML = `
           <p>
               Récupéré le ${dateStringtoGoodFormat(object.receiptDate)} ${
-          object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
+        object.timeSlot === 'matin' ? ' au '.concat(object.timeSlot) : " l'".concat(object.timeSlot)
       }
           </p>
       `;
@@ -73,25 +73,35 @@ function setReceiptDate(document, className, objects) {
 function encodingHelp(descriptions) {
   const objectTypes = [];
 
-  API.get('objectTypes')
-  .then((types) => {
-    types.forEach((item) => {
-      objectTypes.push(item.label);
-    });
+  getObjectTypes()
+    .then((types) => {
+      types.forEach((item) => {
+        objectTypes.push(item.label);
+      });
 
-    const src = descriptions.concat(objectTypes);
+      const src = descriptions.concat(objectTypes);
+      Autocomplete.init('input.autocomplete', {
+        items: src,
+        fullWidth: true,
+        fixed: true,
+        autoselectFirst: false,
+        updateOnSelect: true,
+        onSelectItem: (item, inst) => {
+          // bootstrap5-autocomplete doesn't escape HTML entities when rendering an item
+          // but it also doesn't decode them when an item is selected
+          // This is important because user data is included in the list of items!
+          // Our solution: give escaped value, then decode it ourselves when an item is selected
+          const escaper = document.createElement('textarea');
+          escaper.innerHTML = item.label;
 
-    Autocomplete.init('input.autocomplete', {
-      items: src,
-      fullWidth: true,
-      fixed: true,
-      autoselectFirst: false,
-      updateOnSelect: true,
+          // eslint-disable-next-line no-underscore-dangle -- library API
+          inst._searchInput.value = escaper.value;
+        },
+      });
+    })
+    .catch((err) => {
+      renderError(err.message);
     });
-  })
-  .catch((err) => {
-    renderError(err.message);
-  });
 }
 
 function createObjectCard(_object) {
@@ -116,16 +126,16 @@ function createObjectCard(_object) {
     >
       <div class="object-card-img">
         ${
-      object.id !== undefined
-          ? `
+          object.id !== undefined
+            ? `
               <img
                 src="${API.getEndpoint(`objects/${object.id}/photo`)}"
                 onerror="this.src='${noFurniturePhoto}'"
                 alt="${object.description ? `Photo : ${object.description}` : ''}"
               />
             `
-          : ''
-  }
+            : ''
+        }
       </div>
       <div>
         <div class="object-card-title">${object.objectType}</div>
@@ -150,7 +160,7 @@ async function getObjectTypes() {
   return objectTypes;
 }
 
-function filterObjects(objects, minPrice, maxPrice, date, type){
+function filterObjects(objects, minPrice, maxPrice, date, type) {
   return objects.filter((object) => {
     if (minPrice && object.price < minPrice) {
       return false;
@@ -175,4 +185,11 @@ function filterObjects(objects, minPrice, maxPrice, date, type){
   });
 }
 
-export { setUserOrPhoneNumber, setReceiptDate, createObjectCard, encodingHelp, getObjectTypes, filterObjects };
+export {
+  setUserOrPhoneNumber,
+  setReceiptDate,
+  createObjectCard,
+  encodingHelp,
+  getObjectTypes,
+  filterObjects,
+};
