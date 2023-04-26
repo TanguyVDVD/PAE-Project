@@ -70,27 +70,13 @@ function setReceiptDate(document, className, objects) {
   }
 }
 
-function encodingHelp(descriptions) {
-  const objectTypes = [];
-
-  API.get('objectTypes')
-  .then((types) => {
-    types.forEach((item) => {
-      objectTypes.push(item.label);
-    });
-
-    const src = descriptions.concat(objectTypes);
-
-    Autocomplete.init('input.autocomplete', {
-      items: src,
-      fullWidth: true,
-      fixed: true,
-      autoselectFirst: false,
-      updateOnSelect: true,
-    });
-  })
-  .catch((err) => {
-    renderError(err.message);
+function encodingHelp(src) {
+  Autocomplete.init('input.autocomplete', {
+    items: src,
+    fullWidth: true,
+    fixed: true,
+    autoselectFirst: false,
+    updateOnSelect: true,
   });
 }
 
