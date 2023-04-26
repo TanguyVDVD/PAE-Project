@@ -115,7 +115,7 @@ function renderAdminOffersPage() {
     renderError(err.message);
   });
 
-  div.querySelector('form').addEventListener('keyup', (e) => {
+  div.querySelector('form').addEventListener('change', (e) => {
     e.preventDefault();
 
     const search = document.getElementById('search-bar').value;

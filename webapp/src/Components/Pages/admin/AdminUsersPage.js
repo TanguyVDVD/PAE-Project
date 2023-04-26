@@ -75,7 +75,7 @@ function renderAdminUsersPage() {
     searchUsers(searchQuery);
   });
 
-  div.querySelector('form').addEventListener('keyup', (e) => {
+  div.querySelector('form').addEventListener('change', (e) => {
     e.preventDefault();
 
     e.currentTarget.dispatchEvent(new Event('submit'));
