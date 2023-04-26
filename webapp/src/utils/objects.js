@@ -76,6 +76,7 @@ function encodingHelp(src) {
     fixed: true,
     autoselectFirst: false,
     updateOnSelect: true,
+    highlightTyped: true,
   });
 }
 
