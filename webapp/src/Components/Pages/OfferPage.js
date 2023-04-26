@@ -7,6 +7,7 @@ import {
   invertDateFormat,
   subtractDates
 } from '../../utils/dates';
+import { getObjectTypes } from '../../utils/objects';
 import {getAuthenticatedUser, setAuthenticatedUser} from '../../utils/auths';
 import Navigate from '../Router/Navigate';
 
@@ -14,13 +15,13 @@ const OfferPage = () => {
 
   clearPage();
 
-  API.get('/objectTypes')
-  .then((objectTypes) => {
-    renderOfferPage(objectTypes);
-  })
-  .catch((err) => {
-    renderError(err.message);
-  });
+  getObjectTypes()
+    .then((objectTypes) => {
+      renderOfferPage(objectTypes);
+    })
+    .catch((err) => {
+      renderError(err.message);
+    });
 };
 
 function renderOfferPage(objectTypes) {
