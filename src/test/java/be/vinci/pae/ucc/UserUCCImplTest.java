@@ -14,8 +14,8 @@ import be.vinci.pae.services.user.UserDAO;
 import be.vinci.pae.services.user.UserDAOImpl;
 import be.vinci.pae.ucc.user.UserUCC;
 import be.vinci.pae.ucc.user.UserUCCImpl;
+import be.vinci.pae.utils.exceptions.BusinessException;
 import be.vinci.pae.utils.exceptions.DALException;
-import be.vinci.pae.utils.exceptions.UserException;
 import jakarta.inject.Singleton;
 import java.io.File;
 import java.io.InputStream;
@@ -160,13 +160,13 @@ class UserUCCImplTest {
   @DisplayName("Login with incorrect email")
   @Test
   void loginWithIncorrectEmail() {
-    assertThrows(UserException.class, () -> userUCC.login("invalid@example.com", "password"));
+    assertThrows(BusinessException.class, () -> userUCC.login("invalid@example.com", "password"));
   }
 
   @DisplayName("Login with incorrect password")
   @Test
   void loginWithIncorrectPassword() {
-    assertThrows(UserException.class,
+    assertThrows(BusinessException.class,
         () -> userUCC.login("validUser1@example.com", "wrongPassword"));
   }
 
@@ -183,7 +183,7 @@ class UserUCCImplTest {
   void registerWithAlreadyUsedEmail() {
     Mockito.when(notInDBUser.getEmail()).thenReturn("validUser1@example.com");
 
-    assertThrows(UserException.class, () -> userUCC.register(notInDBUser));
+    assertThrows(BusinessException.class, () -> userUCC.register(notInDBUser));
   }
 
   @DisplayName("Register with already used phone number")
@@ -191,7 +191,7 @@ class UserUCCImplTest {
   void registerWithAlreadyUsedPhoneNumber() {
     Mockito.when(notInDBUser.getPhoneNumber()).thenReturn("0493111111");
 
-    assertThrows(UserException.class, () -> userUCC.register(notInDBUser));
+    assertThrows(BusinessException.class, () -> userUCC.register(notInDBUser));
   }
 
   @DisplayName("Get all users")
@@ -281,7 +281,7 @@ class UserUCCImplTest {
     UserDTO userDTO = Mockito.mock(UserDTO.class);
     Mockito.when(userDTO.getId()).thenReturn(1);
 
-    assertThrows(UserException.class, () -> userUCC.updateUser(userDTO, "wrongPassword"));
+    assertThrows(BusinessException.class, () -> userUCC.updateUser(userDTO, "wrongPassword"));
   }
 
   @DisplayName("Update user with already used email")
@@ -291,7 +291,7 @@ class UserUCCImplTest {
     Mockito.when(userDTO.getId()).thenReturn(1);
     Mockito.when(userDTO.getEmail()).thenReturn("validUser2@example.com");
 
-    assertThrows(UserException.class, () -> userUCC.updateUser(userDTO),
+    assertThrows(BusinessException.class, () -> userUCC.updateUser(userDTO),
         "Update hasn't thrown an exception");
   }
 
@@ -313,7 +313,7 @@ class UserUCCImplTest {
     Mockito.when(userDTO.getId()).thenReturn(1);
     Mockito.when(userDTO.getPhoneNumber()).thenReturn("0493111112");
 
-    assertThrows(UserException.class, () -> userUCC.updateUser(userDTO),
+    assertThrows(BusinessException.class, () -> userUCC.updateUser(userDTO),
         "Update hasn't thrown an exception");
   }
 
@@ -372,7 +372,7 @@ class UserUCCImplTest {
   void updateProfilePictureWithExistingUserAndWrongPassword() {
     InputStream file = Mockito.mock(InputStream.class);
 
-    assertThrows(UserException.class,
+    assertThrows(BusinessException.class,
         () -> userUCC.updateProfilePicture(validUser, "wrongPassword", file),
         "Update profile picture hasn't thrown an exception");
   }
@@ -404,7 +404,7 @@ class UserUCCImplTest {
   @DisplayName("Remove profile picture with existing user and wrong password")
   @Test
   void removeProfilePictureWithExistingUserAndWrongPassword() {
-    assertThrows(UserException.class,
+    assertThrows(BusinessException.class,
         () -> userUCC.removeProfilePicture(validUser, "wrongPassword"),
         "Remove profile picture hasn't thrown an exception");
   }

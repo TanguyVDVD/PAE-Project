@@ -4,7 +4,7 @@ import be.vinci.pae.domain.user.User;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.user.UserDAO;
-import be.vinci.pae.utils.exceptions.UserException;
+import be.vinci.pae.utils.exceptions.BusinessException;
 import jakarta.inject.Inject;
 import java.io.File;
 import java.io.InputStream;
@@ -39,7 +39,7 @@ public class UserUCCImpl implements UserUCC {
       User userDB = (User) myUserDAO.getOneByEmail(email);
 
       if (userDB == null || !userDB.isPasswordCorrect(password)) {
-        throw new UserException("Adresse mail ou mot de passe incorrect");
+        throw new BusinessException("Adresse mail ou mot de passe incorrect");
       }
 
       return userDB;
@@ -65,11 +65,11 @@ public class UserUCCImpl implements UserUCC {
     try {
       // Check if email or phone number already exists
       if (myUserDAO.getOneByEmail(userDTO.getEmail()) != null) {
-        throw new UserException("Adresse mail déjà utilisé");
+        throw new BusinessException("Adresse mail déjà utilisé");
       }
 
       if (myUserDAO.getOneByPhoneNumber(userDTO.getPhoneNumber()) != null) {
-        throw new UserException("Numéro de GSM déjà utilisé");
+        throw new BusinessException("Numéro de GSM déjà utilisé");
       }
 
       userDTO.setPassword(User.hashPassword(userDTO.getPassword()));
@@ -149,21 +149,21 @@ public class UserUCCImpl implements UserUCC {
 
       // Check if password is correct
       if (password != null && !userDB.isPasswordCorrect(password)) {
-        throw new UserException("Mot de passe incorrect");
+        throw new BusinessException("Mot de passe incorrect");
       }
 
       // Check if email is not already used
       String email = userDTO.getEmail();
       if (email != null && !email.equals(userDB.getEmail())
           && myUserDAO.getOneByEmail(email) != null) {
-        throw new UserException("Adresse mail déjà utilisé");
+        throw new BusinessException("Adresse mail déjà utilisé");
       }
 
       // Check if phone number is not already used
       String phoneNumber = userDTO.getPhoneNumber();
       if (phoneNumber != null && !phoneNumber.equals(userDB.getPhoneNumber())
           && myUserDAO.getOneByPhoneNumber(phoneNumber) != null) {
-        throw new UserException("Numéro de GSM déjà utilisé");
+        throw new BusinessException("Numéro de GSM déjà utilisé");
       }
 
       // Check if role has been changed
@@ -232,7 +232,7 @@ public class UserUCCImpl implements UserUCC {
       }
 
       if (!user.isPasswordCorrect(password)) {
-        throw new UserException("Mot de passe incorrect");
+        throw new BusinessException("Mot de passe incorrect");
       }
 
       user.saveProfilePicture(file);
@@ -268,7 +268,7 @@ public class UserUCCImpl implements UserUCC {
       }
 
       if (!user.isPasswordCorrect(password)) {
-        throw new UserException("Mot de passe incorrect");
+        throw new BusinessException("Mot de passe incorrect");
       }
 
       user.removeProfilePicture();

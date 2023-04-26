@@ -3,7 +3,7 @@ package be.vinci.pae.ucc.availability;
 import be.vinci.pae.domain.availability.AvailabilityDTO;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.availability.AvailabilityDAO;
-import be.vinci.pae.utils.exceptions.UserException;
+import be.vinci.pae.utils.exceptions.BusinessException;
 import jakarta.inject.Inject;
 import java.util.List;
 
@@ -47,7 +47,7 @@ public class AvailabilityUCCImpl implements AvailabilityUCC {
     myDalServices.startTransaction();
     try {
       if (myAvailabilityDAO.getOneByDate(availability.getDate()) != null) {
-        throw new UserException(
+        throw new BusinessException(
             "Impossible d'insérer la date, la date existe déjà");
       }
 
@@ -73,14 +73,14 @@ public class AvailabilityUCCImpl implements AvailabilityUCC {
     try {
       AvailabilityDTO availability = myAvailabilityDAO.getOneById(id);
       if (availability == null) {
-        throw new UserException(
+        throw new BusinessException(
             "Impossible de supprimer la disponibilité, la disponibilité n'existe pas");
       }
 
       // Vérifie que la disponibilité à supprimer n'est pas encore liée à un objet
       if (myAvailabilityDAO.isLinked(availability) == null
           || myAvailabilityDAO.isLinked(availability)) {
-        throw new UserException("Impossible de supprimer la disponibilité, "
+        throw new BusinessException("Impossible de supprimer la disponibilité, "
             + "la disponibilité est déjà associée à un ou plusieurs objets");
       }
 
