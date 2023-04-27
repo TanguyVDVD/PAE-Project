@@ -3,7 +3,6 @@ import Navigate from '../Components/Router/Navigate';
 import {dateStringtoGoodFormat, invertDateFormat} from './dates';
 import { formatPhoneNumber } from './format';
 import API from './api';
-import { renderError } from './render';
 
 import noFurniturePhoto from '../img/no_furniture_photo.svg';
 
@@ -70,27 +69,14 @@ function setReceiptDate(document, className, objects) {
   }
 }
 
-function encodingHelp(descriptions) {
-  const objectTypes = [];
-
-  API.get('objectTypes')
-  .then((types) => {
-    types.forEach((item) => {
-      objectTypes.push(item.label);
-    });
-
-    const src = descriptions.concat(objectTypes);
-
-    Autocomplete.init('input.autocomplete', {
-      items: src,
-      fullWidth: true,
-      fixed: true,
-      autoselectFirst: false,
-      updateOnSelect: true,
-    });
-  })
-  .catch((err) => {
-    renderError(err.message);
+function encodingHelp(src) {
+  Autocomplete.init('input.autocomplete', {
+    items: src,
+    fullWidth: true,
+    fixed: true,
+    autoselectFirst: false,
+    updateOnSelect: true,
+    highlightTyped: true,
   });
 }
 

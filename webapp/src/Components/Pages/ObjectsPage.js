@@ -1,7 +1,10 @@
 import Navigate from '../Router/Navigate';
 import { clearPage, renderError } from '../../utils/render';
-import { createObjectCard, getObjectTypes } from '../../utils/objects';
-// import { getAuthenticatedUser } from '../../utils/auths';
+import {
+  createObjectCard,
+  encodingHelp,
+  getObjectTypes
+} from '../../utils/objects';
 import API from '../../utils/api';
 
 const objects = [];
@@ -26,7 +29,7 @@ function renderObjectsPage() {
       <h2>Objets</h2>
       <form class="hstack flex-column flex-md-row gap-3" id="objects-filter-form">
         <div class="input-group">
-          <input type="text" class="form-control border-end-0" placeholder="Rechercher..." />
+          <input type="text" class="form-control border-end-0 autocomplete" placeholder="Rechercher..." />
           <button class="btn border" type="submit">
             <i class="bi bi-search"></i>
           </button>
@@ -114,8 +117,19 @@ function getObjects() {
 
       objects.splice(0, objects.length, ...objectsObject);
 
+      const objectsToRender = objects.filter((object) =>
+          typeToFilter === null || object.objectType === typeToFilter);
+
+      const descriptions = [];
+
+      objectsToRender.forEach((object) => {
+        descriptions.push(object.description);
+      });
+
+      encodingHelp(descriptions);
+
       renderObjects(
-        objects.filter((object) => typeToFilter === null || object.objectType === typeToFilter),
+        objectsToRender,
       );
     })
     .catch((err) => {

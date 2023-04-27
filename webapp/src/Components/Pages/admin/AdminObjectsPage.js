@@ -107,9 +107,7 @@ function renderAdminObjectsPage() {
     if (objects !== null) {
       renderObjects(objects);
       descriptions = objects.map((object) => object.description);
-      encodingHelp(descriptions);
     }
-
     encodingHelp(descriptions);
   })
   .catch((err) => {
