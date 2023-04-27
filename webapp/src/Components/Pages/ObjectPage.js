@@ -10,7 +10,7 @@ import {
 import Navigate from '../Router/Navigate';
 import AdminOffersPage from './admin/AdminOffersPage';
 import AdminObjectsPage from './admin/AdminObjectsPage';
-import {setReceiptDate, setUserOrPhoneNumber} from '../../utils/objects';
+import { setReceiptDate, setUserOrPhoneNumber, getObjectTypes } from '../../utils/objects';
 
 import noFurniturePhoto from '../../img/no_furniture_photo.svg';
 
@@ -28,7 +28,7 @@ const ObjectPage = (params) => {
   `;
 
   API.get(`/objects/${id}`).then((object) => {
-    API.get('/objectTypes').then((objectTypes) => {
+    getObjectTypes().then((objectTypes) => {
       renderObjectPage(object, objectTypes);
     });
   })
