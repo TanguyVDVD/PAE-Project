@@ -5,6 +5,8 @@ import { getAuthenticatedUser } from '../../../utils/auths';
 import { clearPage } from '../../../utils/render';
 // eslint-disable-next-line no-unused-vars
 import API from '../../../utils/api'
+// eslint-disable-next-line no-unused-vars
+import { onlyYearAndMonthDateFormat } from '../../../utils/dates';
 
 const BoardPage = () => {
     const authenticatedUser = getAuthenticatedUser();
@@ -16,7 +18,6 @@ const BoardPage = () => {
 
   clearPage();
   renderBoardPage();
-  renderBoardData();
 };
 
 function renderBoardPage(){
@@ -49,9 +50,13 @@ function renderBoardPage(){
                                     <!-- Card Body -->
                                     <div class="card-body">
                                         <div id="chart-area">
-                                            <label for="bday-month">Période:</label>
-                                            <input id="bday-month" type="month" name="bday-month" value="2023-03">
+
+                                        <form>
+                                            <label for="inputMonth">Période:</label>
+                                            <input id="inputMonth" type="month" name="inputMonth" value="2023-03">
+                                            <button type="submit" class="btn btn-primary text-primary" ">Afficher</button>
                                             <br>
+                                        </form>
 
                                             <div class="dashboard">
                                                 <div class="statistics">
@@ -82,16 +87,19 @@ function renderBoardPage(){
 
     
 
+    const inputMonth = document.getElementById('inputMonth');
+    const valueInputMonth = onlyYearAndMonthDateFormat(inputMonth.value);
 
     API.get(`objects/`).then((objects) => {
-        const periode = document.getElementById('bday-month').value;
+
+      if(valueInputMonth === objects.offersDate){
 
         const count = objects.length;
         document.getElementById('totalObjects').innerHTML =`
         ${count}
         ` ;
-
-        const offers = objects.filter(object => object.state === 'proposé' );
+        
+        const offers = objects.filter(object => object.state === 'proposé'  );
         const countOffers= offers.length;
         document.getElementById('offeredObjects').innerHTML =`
         ${countOffers}
@@ -107,7 +115,6 @@ function renderBoardPage(){
 
         
         const acceptes = objects.filter(object => object.state === 'accepté' || object.state === 'en vente' || object.state ==="en magasin" );
-        
         // eslint-disable-next-line no-console
         console.log(acceptes)
         const countAccep = acceptes.length;
@@ -122,6 +129,7 @@ function renderBoardPage(){
         document.getElementById('rejectedObjects').innerHTML =`
         ${countRefuses}
         ` ;
+
 
         // eslint-disable-next-line no-unused-vars
         const proposedObjects = countOffers;
@@ -151,7 +159,6 @@ function renderBoardPage(){
                 "rgba(54, 162, 235, 1)",
                 "rgba(255, 206, 86, 1)",
                 "rgba(75, 192, 192, 1)",
-              
               ],
               borderWidth: 1,
             },
@@ -161,6 +168,7 @@ function renderBoardPage(){
         const chartOptions = {
           
         };
+      
 
         // eslint-disable-next-line no-unused-vars
         const myChart = new Chart(chartElement, {
@@ -169,18 +177,15 @@ function renderBoardPage(){
           options: chartOptions,
         });
         
-
+      }
 
     });
 
+   
 
     main.appendChild(board);
 }
 
-function renderBoardData(){
 
-        
-    
-    }
 
 export default BoardPage;
