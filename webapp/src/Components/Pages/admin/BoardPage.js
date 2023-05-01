@@ -92,7 +92,7 @@ function renderBoardPage(){
 
     API.get(`objects/`).then((objects) => {
 
-      if(valueInputMonth === objects.offersDate){
+     if(valueInputMonth === objects.offersDate){
 
         const count = objects.length;
         document.getElementById('totalObjects').innerHTML =`
@@ -177,7 +177,7 @@ function renderBoardPage(){
           options: chartOptions,
         });
         
-      }
+     }
 
     });
 
