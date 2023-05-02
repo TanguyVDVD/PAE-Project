@@ -9,8 +9,8 @@ import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.availability.AvailabilityDAO;
 import be.vinci.pae.ucc.availability.AvailabilityUCC;
 import be.vinci.pae.ucc.availability.AvailabilityUCCImpl;
+import be.vinci.pae.utils.exceptions.BusinessException;
 import be.vinci.pae.utils.exceptions.DALException;
-import be.vinci.pae.utils.exceptions.UserException;
 import jakarta.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,7 +102,7 @@ class AvailabilityUCCImplTest {
     Mockito.when(availabilityDAO.getOneByDate(availability.getDate()))
         .thenReturn(availability);
 
-    assertThrows(UserException.class, () -> availabilityUCC.addOne(availability),
+    assertThrows(BusinessException.class, () -> availabilityUCC.addOne(availability),
         "addExistingOne did not throw an exception");
   }
 
@@ -139,7 +139,7 @@ class AvailabilityUCCImplTest {
     Mockito.when(availabilityDAO.isLinked(availability)).thenReturn(false);
     Mockito.when(availabilityDAO.getOneById(availability.getId())).thenReturn(null);
 
-    assertThrows(UserException.class, () -> availabilityUCC.deleteOne(availability.getId()),
+    assertThrows(BusinessException.class, () -> availabilityUCC.deleteOne(availability.getId()),
         "deleteBadOne did not throw an exception");
   }
 
@@ -152,7 +152,7 @@ class AvailabilityUCCImplTest {
     Mockito.when(availabilityDAO.isLinked(availability)).thenReturn(true);
     Mockito.when(availabilityDAO.getOneById(availability.getId())).thenReturn(availability);
 
-    assertThrows(UserException.class, () -> availabilityUCC.deleteOne(availability.getId()),
+    assertThrows(BusinessException.class, () -> availabilityUCC.deleteOne(availability.getId()),
         "deleteGoodOneButLinked did not throw an exception");
   }
 
@@ -165,7 +165,7 @@ class AvailabilityUCCImplTest {
     Mockito.when(availabilityDAO.isLinked(availability)).thenReturn(null);
     Mockito.when(availabilityDAO.getOneById(availability.getId())).thenReturn(availability);
 
-    assertThrows(UserException.class, () -> availabilityUCC.deleteOne(availability.getId()),
+    assertThrows(BusinessException.class, () -> availabilityUCC.deleteOne(availability.getId()),
         "deleteGoodOneButLinked did not throw an exception");
   }
 }

@@ -2,7 +2,7 @@ package be.vinci.pae.services.user;
 
 import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.user.UserDTO;
-import be.vinci.pae.services.DalBackendServices;
+import be.vinci.pae.services.DALBackendServices;
 import be.vinci.pae.utils.exceptions.DALException;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
@@ -25,7 +25,7 @@ public class UserDAOImpl implements UserDAO {
   private DomainFactory myDomainFactory;
 
   @Inject
-  private DalBackendServices dalBackendServices;
+  private DALBackendServices dalBackendServices;
 
   /**
    * Map a ResultSet to a UserDTO.

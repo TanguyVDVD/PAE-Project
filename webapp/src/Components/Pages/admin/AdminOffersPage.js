@@ -30,7 +30,7 @@ function renderAdminOffersPage() {
 
   div.innerHTML = `
     <h2>Propositions</h2>
-    <form class="input-group">
+    <form class="input-group" id="form">
       <div class="row g-3 justify-content-md-center">
         <div class="col-md-12">
           <input type="text" class="form-control autocomplete" id="search-bar" placeholder="Rechercher..." />
@@ -115,7 +115,7 @@ function renderAdminOffersPage() {
     renderError(err.message);
   });
 
-  div.querySelector('form').addEventListener('keyup', (e) => {
+  document.getElementById("form").addEventListener('keyup', (e) => {
     e.preventDefault();
 
     const search = document.getElementById('search-bar').value;

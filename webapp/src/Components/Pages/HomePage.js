@@ -1,6 +1,9 @@
 import Navigate from '../Router/Navigate';
 import {clearPage} from '../../utils/render';
-import {createObjectCard, getObjectTypes} from '../../utils/objects';
+import {
+  createObjectCard, encodingHelp,
+  getObjectTypes
+} from '../../utils/objects';
 import API from '../../utils/api';
 
 import RessourceRieBrand from '../../img/ressourcerie_brand.svg';
@@ -57,7 +60,7 @@ function renderHomePage() {
       <h2>Objets proposés</h2>
       <form class="hstack flex-column flex-md-row gap-3" id="objects-filter-form">
         <div class="input-group">
-          <input type="text" class="form-control border-end-0" placeholder="Rechercher..." />
+          <input type="text" class="form-control border-end-0 autocomplete" placeholder="Rechercher..." />
           <button class="btn border" type="submit">
             <i class="bi bi-search"></i>
           </button>
@@ -124,7 +127,16 @@ function renderHomePage() {
   const objectsCarousel = document.getElementById('objects-carousel');
   objectsCarousel.replaceChildren(
       renderObjectsCarousel([null, null, null, null]));
+
   API.get('objects/public').then((response) => {
+    const descriptions = [];
+
+    response.forEach((object) => {
+      descriptions.push(object.description);
+    });
+
+    encodingHelp(descriptions);
+
     const objectsObject = response.sort((a, b) => {
       if (a.state === 'vendu' && b.state !== 'vendu') {
         return 1;
@@ -160,6 +172,8 @@ function renderObjectsCarousel(objects = []) {
 
     return div;
   }
+
+
 
   // Split objects into groups of 4
   const objectsGroups = [];

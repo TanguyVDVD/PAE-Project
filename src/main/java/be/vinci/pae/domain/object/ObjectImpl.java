@@ -2,7 +2,9 @@ package be.vinci.pae.domain.object;
 
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.utils.Config;
-import be.vinci.pae.utils.exceptions.UserException;
+import be.vinci.pae.utils.exceptions.BusinessException;
+import be.vinci.pae.utils.serializers.EscapeHTMLSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.awt.Color;
 import java.io.File;
 import java.io.InputStream;
@@ -20,6 +22,7 @@ import net.coobird.thumbnailator.geometry.Positions;
 public class ObjectImpl implements Object {
 
   private int id;
+  @JsonSerialize(using = EscapeHTMLSerializer.class)
   private String description;
   private boolean isVisible;
   private double price;
@@ -34,6 +37,7 @@ public class ObjectImpl implements Object {
   private LocalDate onSaleDate;
   private String timeSlot;
   private String status;
+  @JsonSerialize(using = EscapeHTMLSerializer.class)
   private String reasonForRefusal;
   private String phoneNumber;
   private LocalDate receiptDate;
@@ -510,91 +514,98 @@ public class ObjectImpl implements Object {
   }
 
   /**
-   * Check if the state is "en magasain" of "à l'atelier".
+   * Check if it is allowed to change the object state.
    *
-   * @param objectDTO the object to check the state
-   * @return true if the state correspond else false
+   * @param object the object with the new state
+   * @param user   the user trying to update the object
    */
-  @Override
-  public boolean isStateWorkshopOrShop(ObjectDTO objectDTO) {
-    return objectDTO.getState().equals("à l'atelier") || objectDTO.getState().equals("en magasin");
+  public void isStateChangeAllowed(ObjectDTO object, UserDTO user) {
+
+    if (object == null
+        || this.getState() == null
+        || user == null
+        || object.getState() == null
+        || object.getStatus() == null) {
+      throw new BusinessException("Paramètre(s) du changement d'état invalide(s)");
+    }
+
+    String oldState = this.getState();
+    String newState = object.getState();
+
+    // Check if the object is already refused
+    if (oldState.equals("refusé") || object.getStatus().equals("refusé")) {
+      throw new BusinessException("L'objet est refusé");
+    }
+
+    switch (newState) {
+      case "vendu" -> {
+        // If the object is being sold, the previous state must be "en vente"
+        // or "en magasin" and the user must be "responsable" too
+        if (!oldState.equals("vendu") && !oldState.equals("en vente")
+            && (!oldState.equals("en magasin") || !user.getRole().equals("responsable"))) {
+          throw new BusinessException("Soit l'objet n'est pas en vente ou vendu ou en magasin, "
+              + "soit vous n'êtes pas responsable si l'objet était en magasin");
+        }
+      }
+      case "retiré" -> {
+        // If the object is being withdrawn, the previous state must be "on sale", or "in shop"
+        if (!oldState.equals("retiré")
+            && !oldState.equals("en vente")
+            && !oldState.equals("en magasin")) {
+          throw new BusinessException("L'objet n'est pas retiré ou en vente ou en magasin");
+        }
+      }
+      case "en vente" -> {
+        // If the object is being put on sale, the previous state must be "en magasin"
+        if (!oldState.equals("en vente") && !oldState.equals("en magasin")) {
+          throw new BusinessException("L'objet n'est pas en vente ou en magasin");
+        }
+      }
+      case "en magasin" -> {
+        // If the object is being put in the shop, the previous state must be "accepté",
+        // or "à l'atelier"
+        if (!oldState.equals("en magasin")
+            && !oldState.equals("accepté")
+            && !oldState.equals("à l'atelier")) {
+          throw new BusinessException("L'objet n'est pas en magasin ou accepté ou à l'atelier");
+        }
+      }
+      case "à l'atelier" -> {
+        // If the object is being put in the workshop, the previous state must be "accepted"
+        if (!oldState.equals("à l'atelier") && !oldState.equals("accepté")) {
+          throw new BusinessException("L'objet n'est pas accepté ou à l'atelier");
+        }
+      }
+      default -> throw new BusinessException("Le changement d'état de l'objet est impossible");
+    }
   }
 
   /**
-   * Check and set the correct change state date.
+   * Set the state date to the good date.
    *
-   * @param objectDTO       the object after the state change
-   * @param objectDTOFromDb the object before the state change
-   * @param dateChange      the date of de change
-   * @param user            the user trying to update the object
-   * @return the objectDTO change, null if there is a problem
+   * @param state the state
+   * @param date  the date
    */
   @Override
-  public ObjectDTO setStateDate(ObjectDTO objectDTO, ObjectDTO objectDTOFromDb,
-      LocalDate dateChange, UserDTO user) {
-
-    if (objectDTO == null || objectDTOFromDb == null || dateChange == null) {
-      return null;
+  public void setStateDate(String state, LocalDate date) {
+    switch (state) {
+      case "à l'atelier" -> {
+        this.setWorkshopDate(date);
+      }
+      case "en magasin" -> {
+        this.setDepositDate(date);
+      }
+      case "en vente" -> {
+        this.setOnSaleDate(date);
+      }
+      case "vendu" -> {
+        this.setSellingDate(date);
+      }
+      case "retiré" -> {
+        this.setWithdrawalDate(date);
+      }
+      default -> throw new BusinessException("Le nouvel d'état de l'objet est invalide");
     }
-
-    if (!objectDTO.getState().equals(objectDTOFromDb.getState())) {
-      // Check if the object is already refused
-      if (objectDTOFromDb.getState().equals("refusé")) {
-        throw new UserException("L'objet est déjà refusé");
-      }
-
-      // Check if the object is already sold or withdrawn
-      if (objectDTOFromDb.getState().equals("vendu") || objectDTOFromDb.getState()
-          .equals("retiré")) {
-        throw new UserException("L'objet est déjà vendu ou retiré");
-      }
-
-      if (objectDTO.getState().equals("vendu")) {
-        // If the object is being sold, the previous state must be "en vente" or "en magasin" and the user must be
-        if (!objectDTOFromDb.getState().equals("en vente") &&
-            (!objectDTOFromDb.getState().equals("en magasin") ||
-                !user.getRole().equals("responsable"))) {
-          throw new UserException("L'objet n'est pas en magasin ou en vente");
-        }
-
-        objectDTOFromDb.setSellingDate(dateChange);
-      } else if (objectDTO.getState().equals("retiré")) {
-        // If the object is being withdrawn, the previous state must be "on sale", or "in shop"
-        if (!objectDTOFromDb.getState().equals("en vente") && !objectDTOFromDb.getState()
-            .equals("en magasin")) {
-          throw new UserException("L'objet n'est pas en vente ou en magasin");
-        }
-
-        objectDTOFromDb.setWithdrawalDate(dateChange);
-      } else if (objectDTO.getState().equals("en vente")) {
-        // If the object is being put on sale, the previous state must be "in shop"
-        if (!objectDTOFromDb.getState().equals("en magasin")) {
-          throw new UserException("L'objet n'est pas en magasin");
-        }
-
-        objectDTOFromDb.setOnSaleDate(dateChange);
-      } else if (objectDTO.getState().equals("en magasin")) {
-        // If the object is being put in the shop, the previous state must be "accepted",
-        // or "in workshop"
-        if (!objectDTOFromDb.getState().equals("accepté") && !objectDTOFromDb.getState()
-            .equals("à l'atelier")) {
-          throw new UserException("L'objet n'est pas accepté ou à l'atelier");
-        }
-
-        objectDTOFromDb.setDepositDate(dateChange);
-      } else if (objectDTO.getState().equals("à l'atelier")) {
-        // If the object is being put in the workshop, the previous state must be "accepted"
-        if (!objectDTOFromDb.getState().equals("accepté")) {
-          throw new UserException("L'objet n'est pas accepté");
-        }
-
-        objectDTOFromDb.setWorkshopDate(dateChange);
-      } else {
-        throw new UserException("L'état de l'objet n'est pas valide");
-      }
-    }
-
-    return objectDTO;
   }
 
 }

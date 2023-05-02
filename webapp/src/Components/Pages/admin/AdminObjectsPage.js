@@ -107,9 +107,7 @@ function renderAdminObjectsPage() {
     if (objects !== null) {
       renderObjects(objects);
       descriptions = objects.map((object) => object.description);
-      encodingHelp(descriptions);
     }
-
     encodingHelp(descriptions);
   })
   .catch((err) => {
@@ -146,8 +144,6 @@ function renderAdminObjectsPage() {
       const date = document.getElementById('input-receipt-date').value;
       const type = [...document.querySelectorAll('.form-filter:checked')].map(
           (cb) => cb.value);
-
-      console.log(date);
 
       API.get(`objects?query=${encodeURIComponent(search)}`)
       .then((objects) => {
