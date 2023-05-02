@@ -121,18 +121,17 @@ const Navbar = () => {
 
   if (authenticatedUser) {
 
-    window.addEventListener('popstate',
-
-        API.get(`notifications/user/${authenticatedUser.id}`).then(
-            notificationsAPI => {
-              if (notificationsAPI !== null) {
-                renderNotifications(notificationsAPI);
-              }
-            })
-        .catch((err) => {
-          renderError(err.message);
-        })
-    );
+    setInterval(() => {
+      API.get(`notifications/user/${authenticatedUser.id}`).then(
+          notificationsAPI => {
+            if (notificationsAPI !== null) {
+              renderNotifications(notificationsAPI);
+            }
+          })
+      .catch((err) => {
+        renderError(err.message);
+      })
+    }, 5000);
   }
 
   async function renderNotifications(notifications) {
@@ -157,14 +156,14 @@ const Navbar = () => {
                         ${numberNotificationsUnSeen}
                       </span>` : ''}
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end shadow">
+                    <ul class="dropdown-menu dropdown-menu-end shadow" style="max-height: 250px; overflow-y: auto;">
                     ${notifications
     .map(
         (notification) => `
                       <li>
   ${notification.read === true
-            ? `<a href="#" data-id="${notification.idObject}" data-id-read="${notification.id}" class="dropdown-item text-muted">${notification.notificationText}</a>`
-            : `<a href="#" data-id="${notification.idObject}" data-id-read="${notification.id}" class="dropdown-item ">${notification.notificationText}</a>`
+            ? `<a href="#" data-id="${notification.idObject}" data-id-read="${notification.id}" class="dropdown-item text-muted" style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${notification.notificationText}</a>`
+            : `<a href="#" data-id="${notification.idObject}" data-id-read="${notification.id}" class="dropdown-item " style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${notification.notificationText}</a>`
         }
 </li>
 
@@ -183,7 +182,7 @@ const Navbar = () => {
 
         API.patch(`notifications/${idNotification}/read`)
         .then(() => {
-          Navbar();
+          // Navbar();
           Navigate(`/object/${e.target.dataset.id}`);
         })
         .catch((err) => {
