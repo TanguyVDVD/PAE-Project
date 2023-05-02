@@ -98,7 +98,7 @@ public class NotificationDAOImpl implements NotificationDAO {
   public List<NotificationDTO> getNotificationsByUserID(int id) {
     String request = "SELECT * FROM pae.notifications n, pae.users_notifications un "
         + "WHERE n.id_notification = un.id_notification AND un.id_user = "
-        + "? ORDER BY un.id_notification DESC;";
+        + "? ORDER BY un.id_notification DESC LIMIT 20 ; ";
 
     ArrayList<NotificationDTO> objects = new ArrayList<>();
 
