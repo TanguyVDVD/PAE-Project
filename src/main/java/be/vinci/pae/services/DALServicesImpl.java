@@ -32,6 +32,7 @@ public class DALServicesImpl implements DALServices, DalBackendServices {
     bds.setUsername(Config.getProperty("DatabaseUser"));
     bds.setPassword(Config.getProperty("DatabasePassword"));
     bds.setDriverClassName("org.postgresql.Driver");
+    bds.setMaxTotal(1);
   }
 
   /**
@@ -105,7 +106,6 @@ public class DALServicesImpl implements DALServices, DalBackendServices {
       } catch (SQLException e) {
         throw new DALException("Error during the commit of the transaction", e);
       }
-
     } else {
       integerThreadLocalVerification.set(integerThreadLocalVerification.get() - 1);
     }
