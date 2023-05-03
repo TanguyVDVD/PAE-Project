@@ -6,6 +6,7 @@ import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.services.DALServices;
 import be.vinci.pae.services.object.ObjectDAO;
 import be.vinci.pae.ucc.notification.NotificationUCC;
+import be.vinci.pae.utils.exceptions.BusinessException;
 import jakarta.inject.Inject;
 import java.io.File;
 import java.io.InputStream;
@@ -128,7 +129,7 @@ public class ObjectUCCImpl implements ObjectUCC {
       String status = object.getStatus();
 
       if (object.isStatusAlreadyDefined(status)) {
-        return null;
+        throw new BusinessException("L'objet a déjà été accepté ou refusé");
       }
 
       ObjectDTO objectDTOToReturn = myObjectDAO.setStatusToAccepted(id, LocalDate.now(),
@@ -167,7 +168,7 @@ public class ObjectUCCImpl implements ObjectUCC {
       String status = object.getStatus();
 
       if (object.isStatusAlreadyDefined(status)) {
-        return null;
+        throw new BusinessException("L'objet a déjà été accepté ou refusé");
       }
 
       ObjectDTO objectDTOToReturn = myObjectDAO.setStatusToRefused(id, reasonForRefusal,

@@ -19,6 +19,7 @@ import be.vinci.pae.services.object.ObjectDAOImpl;
 import be.vinci.pae.ucc.notification.NotificationUCC;
 import be.vinci.pae.ucc.object.ObjectUCC;
 import be.vinci.pae.ucc.object.ObjectUCCImpl;
+import be.vinci.pae.utils.exceptions.BusinessException;
 import be.vinci.pae.utils.exceptions.DALException;
 import jakarta.inject.Singleton;
 import java.io.File;
@@ -116,9 +117,9 @@ class ObjectUCCImplTest {
                 object.getVersionNumber()))
         .thenReturn(object);
 
-    ObjectDTO objectDTO = objectUCC.accept(object.getId(), object.getVersionNumber());
-
-    assertNull(objectDTO, "Accept return is not null");
+    assertThrows(BusinessException.class,
+        () -> objectUCC.accept(object.getId(), object.getVersionNumber()),
+        "Exception not thrown");
 
   }
 
@@ -146,11 +147,9 @@ class ObjectUCCImplTest {
             object.getVersionNumber()))
         .thenReturn(object);
 
-    ObjectDTO objectDTO = objectUCC.refuse(object.getId(), reasonForRefusal,
-        object.getVersionNumber());
-
-    assertNull(objectDTO, "Refuse return is not null");
-
+    assertThrows(BusinessException.class, () -> objectUCC.refuse(object.getId(), reasonForRefusal,
+            object.getVersionNumber()),
+        "Exception not thrown");
   }
 
   @DisplayName("Exception when refusing an object")
