@@ -163,7 +163,7 @@ VALUES (DEFAULT, 1, 'Grand canapé 4 places bleu usé', 'après-midi', 3.5, 'ven
 
 INSERT INTO pae.objects
 VALUES (DEFAULT, 1, 'Fauteuil design très confortable', 'après-midi', 5.2, 'retiré', 'accepté', null,
-        true, '2023-03-09', '2023-03-15', null, null, '2023-03-18', null, null, '2023-03-29', null, 5, 3, 4);
+        true, '2023-03-09', '2023-03-15', null, null, '2023-03-18', null, null, '2023-04-29', null, 5, 3, 4);
 
 INSERT INTO pae.objects
 VALUES (DEFAULT, 1, 'Tabouret de bar en cuir', 'après-midi', null, 'refusé', 'refusé', 'Ceci n''est pas une chaise',
