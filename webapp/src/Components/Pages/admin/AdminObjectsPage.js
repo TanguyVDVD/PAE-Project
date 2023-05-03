@@ -4,7 +4,11 @@ import Navigate from '../../Router/Navigate';
 import {getAuthenticatedUser} from '../../../utils/auths';
 import {clearPage, renderError} from '../../../utils/render';
 import API from '../../../utils/api';
-import {invertDateFormat, subtractDates} from '../../../utils/dates';
+import {
+  getTodaySDate,
+  invertDateFormat,
+  subtractDates
+} from '../../../utils/dates';
 import {
   encodingHelp,
   filterObjects,
@@ -195,8 +199,11 @@ async function renderObjects(objectsFiltered) {
                                 <div class="div-state">
                                 </div>
                                 
-                                <div class="d-flex flex-row align-items-center div-price-time-remaining">
+                                <div class="div-price-time-remaining">
                                 </div>
+                              </div>
+                              
+                              <div class="div-withdrawal-warning">
                               </div>
                                                    
                               <div class="d-flex flex-column mb-4 div-button">
@@ -213,6 +220,7 @@ async function renderObjects(objectsFiltered) {
   setReceiptDate(document, 'div-receipt-date', objectsFiltered);
   setUserOrPhoneNumber(document, 'div-user', objectsFiltered);
   setPriceOrTimeRemaining('div-price-time-remaining', objectsFiltered);
+  setWithdrawalWarning('div-withdrawal-warning', objectsFiltered)
   setStateColor('div-state', objectsFiltered);
   setButton('div-button', objectsFiltered);
 
@@ -264,6 +272,35 @@ function setPriceOrTimeRemaining(className, objects) {
       `;
     }
   }
+}
+
+function setWithdrawalWarning(className, objects) {
+  const elements = document.getElementsByClassName(className);
+  for (let i = 0; i < elements.length; i += 1) {
+    const object = objects[i];
+    const element = elements.item(i);
+
+    if (object.depositDate !== null && object.state !== "retiré" && object.state !== "vendu") {
+      const delta = getBusinessDatesCount(new Date(object.depositDate), new Date(getTodaySDate()));
+      if (delta >= 30){
+        element.innerHTML = `
+          <h6 class="text-danger">Date de dépôt en magasin dépassée de ${delta} jours ouvrables</h6>
+        `;
+      }
+    }
+  }
+}
+
+function getBusinessDatesCount(startDate, endDate) {
+  let count = 0;
+  const curDate = new Date(startDate.getTime());
+  while (curDate <= endDate) {
+    const dayOfWeek = curDate.getDay();
+    if(dayOfWeek !== 0 && dayOfWeek !== 6)
+      count += 1;
+    curDate.setDate(curDate.getDate() + 1);
+  }
+  return count;
 }
 
 function setStateColor(className, objects) {
