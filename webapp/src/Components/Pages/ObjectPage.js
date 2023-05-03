@@ -463,7 +463,7 @@ function setPrice(state, object) {
   } else if (state === "en vente" || state === "vendu") {
     priceInput.value = object.price;
     priceInput.disabled = false;
-    priceLabel.style.color = "text-primary";
+    priceLabel.style.color = "#0f161c";
   } else {
     priceInput.value = object.price;
     priceInput.disabled = true;
