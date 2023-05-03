@@ -174,19 +174,19 @@ VALUES (DEFAULT, 1, 'Fauteuil ancien, pieds et accoudoir en bois', 'matin', null
         true, '2023-04-07', '2023-04-11', null, '2023-04-22', null, null, null, null, null, 6, 7, 4);
 
 INSERT INTO pae.objects
-VALUES (DEFAULT, 1, '6 bols à soupe', 'matin', 3, 'en magasin', 'accepté', null,
+VALUES (DEFAULT, 1, '6 bols à soupe', 'matin', null, 'en magasin', 'accepté', null,
         true, '2023-04-08', '2023-04-11', null, null, '2023-04-25', null, null, null, null, 6, 7, 9);
 
 INSERT INTO pae.objects
-VALUES (DEFAULT, 1, 'Lit cage blanc', 'après-midi', 3, 'en magasin', 'accepté', null,
+VALUES (DEFAULT, 1, 'Lit cage blanc', 'après-midi', null, 'en magasin', 'accepté', null,
         true, '2023-04-08', '2023-04-11', null, null, '2023-04-25', null, null, null, null, 7, 7, 1);
 
 INSERT INTO pae.objects
-VALUES (DEFAULT, 1, '30 pots à épices', 'matin', 3, 'en magasin', 'accepté', null,
+VALUES (DEFAULT, 1, '30 pots à épices', 'matin', null, 'en magasin', 'accepté', null,
         true, '2023-04-12', '2023-04-18', null, null, '2023-05-05', null, null, null, null, 7, 8, 9);
 
 INSERT INTO pae.objects
-VALUES (DEFAULT, 1, '4 tasses à café et leurs sous-tasses', 'matin', 3, 'en magasin', 'accepté', null,
+VALUES (DEFAULT, 1, '4 tasses à café et leurs sous-tasses', 'matin', null, 'en magasin', 'accepté', null,
         true, '2023-04-15', '2023-04-18', null, null, '2023-05-05', null, null, null, null, 4, 8, 9);
 
 
