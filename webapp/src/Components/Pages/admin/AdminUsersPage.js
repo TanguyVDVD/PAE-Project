@@ -116,7 +116,7 @@ const columns = [
           onerror="this.src='${noProfilePicture}'"
           width="64"
           height="64"
-          class="rounded-circle object-fit-cover"
+          class="rounded-circle object-fit-contain"
           alt="Photo de ${user.firstName} ${user.lastName}"
           loading="lazy"
         />

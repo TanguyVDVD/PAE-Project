@@ -173,7 +173,7 @@ async function renderObjects(objectsFiltered) {
                       <div class="row p-2 bg-white border rounded">
                           <div class="col-md-3 mt-1">
                               <img 
-                                  class="rounded product-image object-fit-cover" 
+                                  class="rounded product-image object-fit-contain" 
                                   src="${API.getEndpoint(
           `objects/${object.id}/photo`)}"
                                   width="180" height="180"
