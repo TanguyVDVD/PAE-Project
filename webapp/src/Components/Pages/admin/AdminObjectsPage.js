@@ -266,7 +266,7 @@ function setPriceOrTimeRemaining(className, objects) {
       }
     } else if (object.status === 'refusé') {
       element.innerHTML = ``;
-    } else {
+    } else if (object.price > 0){
       element.innerHTML = `
         <h4 class="mr-1">${object.price} €</h4>
       `;
