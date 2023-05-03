@@ -524,8 +524,7 @@ public class ObjectImpl implements Object {
     if (object == null
         || this.getState() == null
         || user == null
-        || object.getState() == null
-        || object.getStatus() == null) {
+        || object.getState() == null) {
       throw new BusinessException("Paramètre(s) du changement d'état invalide(s)");
     }
 
@@ -533,7 +532,7 @@ public class ObjectImpl implements Object {
     String newState = object.getState();
 
     // Check if the object is already refused
-    if (oldState.equals("refusé") || object.getStatus().equals("refusé")) {
+    if (oldState.equals("refusé")) {
       throw new BusinessException("L'objet est refusé");
     }
 
@@ -604,7 +603,7 @@ public class ObjectImpl implements Object {
       case "retiré" -> {
         this.setWithdrawalDate(date);
       }
-      default -> throw new BusinessException("Le nouvel d'état de l'objet est invalide");
+      default -> throw new BusinessException("Le nouvel état de l'objet est invalide");
     }
   }
 
