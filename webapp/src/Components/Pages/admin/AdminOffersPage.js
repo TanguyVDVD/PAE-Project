@@ -171,7 +171,7 @@ async function renderOffers(offersFiltered) {
                       <div class="row p-2 bg-white border rounded">
                           <div class="col-md-3 mt-1">
                               <img 
-                                  class="object-fit-cover rounded product-image" 
+                                  class="object-fit-contain rounded product-image" 
                                   src="${API.getEndpoint(`objects/${offer.id}/photo`)}"
                                   onerror="this.src='${noFurniturePhoto}'"
                                   width="180"
