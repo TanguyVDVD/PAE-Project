@@ -8,13 +8,14 @@ import logo from '../../img/RieCochet_Logo.svg';
 import noProfilePicture from '../../img/no_profile_picture.svg';
 import {renderError} from "../../utils/render";
 
+let intervalNotification;
+
 /**
  * Render the Navbar which is styled by using Bootstrap
  * Each item in the Navbar is tightly coupled with the Router configuration :
  * - the URI associated to a page shall be given in the attribute "data-uri" of the Navbar
  * - the router will show the Page associated to this URI when the user click on a nav-link
  */
-
 const Navbar = () => {
   // Don't render the navbar if the page is in a popup
   if (window.opener) {
@@ -121,7 +122,7 @@ const Navbar = () => {
 
   if (authenticatedUser) {
 
-    setInterval(() => {
+    intervalNotification = setInterval(() => {
       API.get(`notifications/user/${authenticatedUser.id}`).then(
           notificationsAPI => {
             if (notificationsAPI !== null) {
@@ -225,6 +226,10 @@ function setActiveLink() {
   }
 }
 
-export {setActiveLink};
+function stopInterval() {
+  clearInterval(intervalNotification);
+}
+
+export {setActiveLink, stopInterval};
 
 export default Navbar;
