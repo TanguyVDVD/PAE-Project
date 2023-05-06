@@ -120,7 +120,7 @@ const Navbar = () => {
 
   navbarWrapper.innerHTML = navbar;
 
-  if (authenticatedUser) {
+  if (authenticatedUser && !intervalNotification) {
 
     intervalNotification = setInterval(() => {
       API.get(`notifications/user/${authenticatedUser.id}`).then(
