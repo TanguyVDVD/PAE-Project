@@ -85,7 +85,7 @@ function renderBoardPage(){
                 <!-- /.container-fluid -->
     `;
 
-    
+    main.appendChild(board);
 
     const inputMonth = document.getElementById('inputMonth');
     const valueInputMonth = onlyYearAndMonthDateFormat(inputMonth.value);
@@ -180,10 +180,6 @@ function renderBoardPage(){
      }
 
     });
-
-   
-
-    main.appendChild(board);
 }
 
 
