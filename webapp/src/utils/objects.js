@@ -69,7 +69,12 @@ function setReceiptDate(document, className, objects) {
   }
 }
 
-function encodingHelp(src) {
+function encodingHelp(_src) {
+  // bootstrap5-autocomplete doesn't escape HTML entities when rendering an item
+  // but it also doesn't decode them when an item is selected
+  // This is important because user input is included in the list of items!
+  const src = _src.map((item) => escapeHTML(item));
+
   Autocomplete.init('input.autocomplete', {
     items: src,
     fullWidth: true,
@@ -77,15 +82,11 @@ function encodingHelp(src) {
     autoselectFirst: false,
     updateOnSelect: true,
     highlightTyped: true,
-    onSelectItem: (item, inst) => {
-      // bootstrap5-autocomplete doesn't escape HTML entities when rendering an item
-      // but it also doesn't decode them when an item is selected
-      // This is important because user input is included in the list of items!
-      // Our solution: give escaped value, then decode it ourselves when an item is selected
-
-      // eslint-disable-next-line no-underscore-dangle -- library API
-      inst._searchInput.value = escapeHTML(item.label);
-    },
+    onRenderItem: (_, label) =>
+      label
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/&lt;(.?)mark&gt;/g, '<$1mark>'),
   });
 }
 
