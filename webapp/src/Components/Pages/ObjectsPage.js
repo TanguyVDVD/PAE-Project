@@ -1,11 +1,12 @@
 import Navigate from '../Router/Navigate';
-import { clearPage, renderError } from '../../utils/render';
+import {clearPage, renderError} from '../../utils/render';
 import {
   createObjectCard,
   encodingHelp,
   getObjectTypes
 } from '../../utils/objects';
 import API from '../../utils/api';
+import {reloadNotification} from "../Navbar/Navbar";
 
 const objects = [];
 let params = null;
@@ -17,6 +18,7 @@ const ObjectsPage = () => {
 
   clearPage();
   renderObjectsPage();
+  reloadNotification();
 };
 
 function renderObjectsPage() {
@@ -56,28 +58,33 @@ function renderObjectsPage() {
   searchInput.value = params.get('query') || '';
 
   filterSelect.addEventListener('change', (e) => {
-    typeToFilter = e.target.value === '' ? null : e.target.options[e.target.selectedIndex].text;
+    typeToFilter = e.target.value === '' ? null
+        : e.target.options[e.target.selectedIndex].text;
 
-    if (objects.length !== 0)
+    if (objects.length !== 0) {
       renderObjects(
-        objects.filter((object) => typeToFilter === null || object.objectType === typeToFilter),
+          objects.filter((object) => typeToFilter === null || object.objectType
+              === typeToFilter),
       );
+    }
 
     params.set('type', e.target.value);
     // only push state if it changed
-    if (window.location.search !== `?${params.toString()}`)
-      window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
+    if (window.location.search !== `?${params.toString()}`) {
+      window.history.pushState({}, '',
+          `${window.location.pathname}?${params.toString()}`);
+    }
   });
 
   getObjectTypes().then((types) => {
     filterSelect.innerHTML += `
       ${types
-        .map(
-          (objectType) => `
+    .map(
+        (objectType) => `
           <option value="${objectType.id}">${objectType.label}</option>
         `,
-        )
-        .join('')}
+    )
+    .join('')}
     `;
 
     filterSelect.value = params.get('type') || '';
@@ -95,7 +102,8 @@ function renderObjectsPage() {
     const newParams = new URLSearchParams(window.location.search);
     params.set('query', query);
 
-    window.history.pushState({}, '', `${window.location.pathname}?${newParams.toString()}`);
+    window.history.pushState({}, '',
+        `${window.location.pathname}?${newParams.toString()}`);
 
     document.getElementById('objects').classList.add('opacity-25');
     getObjects();
@@ -107,38 +115,42 @@ function renderObjectsPage() {
 
 function getObjects() {
   API.get(`objects/public?query=${params.get('query') || ''}`)
-    .then((response) => {
-      const objectsObject = response.sort((a, b) => {
-        if (a.state === 'vendu' && b.state !== 'vendu') return 1;
-        if (a.state !== 'vendu' && b.state === 'vendu') return -1;
+  .then((response) => {
+    const objectsObject = response.sort((a, b) => {
+      if (a.state === 'vendu' && b.state !== 'vendu') {
+        return 1;
+      }
+      if (a.state !== 'vendu' && b.state === 'vendu') {
+        return -1;
+      }
 
-        return 0;
-      });
-
-      objects.splice(0, objects.length, ...objectsObject);
-
-      const objectsToRender = objects.filter((object) =>
-          typeToFilter === null || object.objectType === typeToFilter);
-
-      const descriptions = [];
-
-      objectsToRender.forEach((object) => {
-        descriptions.push(object.description);
-      });
-
-      encodingHelp(descriptions);
-
-      renderObjects(
-        objectsToRender,
-      );
-    })
-    .catch((err) => {
-      renderError(err);
-    })
-
-    .finally(() => {
-      document.getElementById('objects').classList.remove('opacity-25');
+      return 0;
     });
+
+    objects.splice(0, objects.length, ...objectsObject);
+
+    const objectsToRender = objects.filter((object) =>
+        typeToFilter === null || object.objectType === typeToFilter);
+
+    const descriptions = [];
+
+    objectsToRender.forEach((object) => {
+      descriptions.push(object.description);
+    });
+
+    encodingHelp(descriptions);
+
+    renderObjects(
+        objectsToRender,
+    );
+  })
+  .catch((err) => {
+    renderError(err);
+  })
+
+  .finally(() => {
+    document.getElementById('objects').classList.remove('opacity-25');
+  });
 }
 
 function renderObjects(_objects = objects) {
@@ -155,14 +167,14 @@ function renderObjects(_objects = objects) {
   }
 
   div.innerHTML = _objects
-    .map(
+  .map(
       (object) => `
         <div class="col">
           ${createObjectCard(object)}
         </div>
       `,
-    )
-    .join('');
+  )
+  .join('');
 
   div.querySelectorAll('.object-card').forEach((card) => {
     card.addEventListener('click', (e) => {

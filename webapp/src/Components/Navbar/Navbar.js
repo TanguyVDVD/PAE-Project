@@ -8,15 +8,13 @@ import logo from '../../img/RieCochet_Logo.svg';
 import noProfilePicture from '../../img/no_profile_picture.svg';
 import {renderError} from "../../utils/render";
 
-let intervalNotification;
-
 /**
  * Render the Navbar which is styled by using Bootstrap
  * Each item in the Navbar is tightly coupled with the Router configuration :
  * - the URI associated to a page shall be given in the attribute "data-uri" of the Navbar
  * - the router will show the Page associated to this URI when the user click on a nav-link
  */
-const Navbar = () => {
+function Navbar() {
   // Don't render the navbar if the page is in a popup
   if (window.opener) {
     return;
@@ -120,9 +118,9 @@ const Navbar = () => {
 
   navbarWrapper.innerHTML = navbar;
 
-  if (authenticatedUser && !intervalNotification) {
+  function displayNotification() {
+    if (authenticatedUser) {
 
-    intervalNotification = setInterval(() => {
       API.get(`notifications/user/${authenticatedUser.id}`).then(
           notificationsAPI => {
             if (notificationsAPI !== null) {
@@ -131,8 +129,12 @@ const Navbar = () => {
           })
       .catch((err) => {
         renderError(err.message);
-      })
-    }, 5000);
+      });
+    }
+  }
+
+  if (authenticatedUser) {
+    displayNotification();
   }
 
   async function renderNotifications(notifications) {
@@ -207,6 +209,8 @@ const Navbar = () => {
 
   // Set the active link (this is ran before any transitions)
   setActiveLink();
+// eslint-disable-next-line
+  return displayNotification();
 };
 
 function setActiveLink() {
@@ -226,10 +230,8 @@ function setActiveLink() {
   }
 }
 
-function stopInterval() {
-  clearInterval(intervalNotification);
-}
+const reloadNotification = Navbar;
 
-export {setActiveLink, stopInterval};
+export {setActiveLink, reloadNotification};
 
 export default Navbar;

@@ -1,16 +1,19 @@
 import Navigate from '../Router/Navigate';
 import {clearPage} from '../../utils/render';
 import {
-  createObjectCard, encodingHelp,
+  createObjectCard,
+  encodingHelp,
   getObjectTypes
 } from '../../utils/objects';
 import API from '../../utils/api';
 
 import RessourceRieBrand from '../../img/ressourcerie_brand.svg';
+import {reloadNotification} from "../Navbar/Navbar";
 
 const HomePage = () => {
   clearPage();
   renderHomePage();
+  reloadNotification();
 };
 
 function renderHomePage() {
@@ -172,8 +175,6 @@ function renderObjectsCarousel(objects = []) {
 
     return div;
   }
-
-
 
   // Split objects into groups of 4
   const objectsGroups = [];

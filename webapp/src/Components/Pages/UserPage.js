@@ -8,10 +8,12 @@ import {formatDate, formatPhoneNumber} from '../../utils/format';
 import {createObjectCard} from '../../utils/objects';
 
 import noProfilePicture from '../../img/no_profile_picture.svg';
+import {reloadNotification} from "../Navbar/Navbar";
 
 const objects = [];
 
 const UserPage = (params) => {
+  reloadNotification();
 
   objects.splice(0, objects.length);
 
@@ -104,7 +106,8 @@ function renderUserPage(user) {
                   type="checkbox"
                   role="switch"
                   id="helper-switch"
-                  ${user.role === 'aidant' || user.role === 'responsable' ? 'checked' : ''}
+                  ${user.role === 'aidant' || user.role === 'responsable'
+              ? 'checked' : ''}
                 />
                 <label class="form-check-label" for="helper-switch">Aidant</label>
               </div>

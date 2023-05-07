@@ -7,21 +7,23 @@ import {
   invertDateFormat,
   subtractDates
 } from '../../utils/dates';
-import { getObjectTypes } from '../../utils/objects';
+import {getObjectTypes} from '../../utils/objects';
 import {getAuthenticatedUser, setAuthenticatedUser} from '../../utils/auths';
 import Navigate from '../Router/Navigate';
+import {reloadNotification} from "../Navbar/Navbar";
 
 const OfferPage = () => {
 
   clearPage();
 
   getObjectTypes()
-    .then((objectTypes) => {
-      renderOfferPage(objectTypes);
-    })
-    .catch((err) => {
-      renderError(err.message);
-    });
+  .then((objectTypes) => {
+    renderOfferPage(objectTypes);
+  })
+  .catch((err) => {
+    renderError(err.message);
+  });
+  reloadNotification();
 };
 
 function renderOfferPage(objectTypes) {

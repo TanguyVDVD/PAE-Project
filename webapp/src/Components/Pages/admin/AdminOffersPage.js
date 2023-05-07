@@ -4,11 +4,19 @@ import Navigate from '../../Router/Navigate';
 import {getAuthenticatedUser} from '../../../utils/auths';
 import {clearPage, renderError} from '../../../utils/render';
 import API from '../../../utils/api';
-import {invertDateFormat,dateStringtoGoodFormat, subtractDates} from '../../../utils/dates';
-import {encodingHelp, setUserOrPhoneNumber, filterObjects} from '../../../utils/objects';
+import {
+  dateStringtoGoodFormat,
+  invertDateFormat,
+  subtractDates
+} from '../../../utils/dates';
+import {
+  encodingHelp,
+  filterObjects,
+  setUserOrPhoneNumber
+} from '../../../utils/objects';
 
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
-
+import {reloadNotification} from "../../Navbar/Navbar";
 
 const AdminOffersPage = () => {
   const authenticatedUser = getAuthenticatedUser();
@@ -20,6 +28,7 @@ const AdminOffersPage = () => {
 
   clearPage();
   renderAdminOffersPage();
+  reloadNotification();
 };
 
 function renderAdminOffersPage() {
@@ -92,7 +101,7 @@ function renderAdminOffersPage() {
     availabilities.forEach((item) => {
       enableDates.push(invertDateFormat(item.date));
     });
-    renderDatePicker("#input-receipt-date",enableDates);
+    renderDatePicker("#input-receipt-date", enableDates);
   }).catch((err) => {
     renderError(err.message);
   });
@@ -101,7 +110,7 @@ function renderAdminOffersPage() {
 
   API.get(`objects/offers?query=${encodeURIComponent("")}`)
   .then((offers) => {
-    if(offers !== null){
+    if (offers !== null) {
       renderOffers(offers);
 
       offers.forEach((offer) => {
@@ -122,11 +131,12 @@ function renderAdminOffersPage() {
     const minPrice = document.getElementById('input-minPrice').value;
     const maxPrice = document.getElementById('input-maxPrice').value;
     const date = document.getElementById('input-receipt-date').value;
-    const type = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
+    const type = [...document.querySelectorAll('.form-filter:checked')].map(
+        (cb) => cb.value);
 
     API.get(`objects/offers?query=${encodeURIComponent(search)}`)
     .then((offers) => {
-      if(offers !== null){
+      if (offers !== null) {
         renderOffers(filterObjects(offers, minPrice, maxPrice, date, type));
       }
     })
@@ -142,11 +152,12 @@ function renderAdminOffersPage() {
       const minPrice = document.getElementById('input-minPrice').value;
       const maxPrice = document.getElementById('input-maxPrice').value;
       const date = document.getElementById('input-receipt-date').value;
-      const type = [...document.querySelectorAll('.form-filter:checked')].map((cb) => cb.value);
+      const type = [...document.querySelectorAll('.form-filter:checked')].map(
+          (cb) => cb.value);
 
       API.get(`objects/offers?query=${encodeURIComponent(search)}`)
       .then((offers) => {
-        if(offers !== null){
+        if (offers !== null) {
           renderOffers(filterObjects(offers, minPrice, maxPrice, date, type));
         }
       })
@@ -166,13 +177,14 @@ async function renderOffers(offersFiltered) {
           <div class="d-flex justify-content-center row">
               <div class="col-md-10">
                   ${offersFiltered
-                    .map(
-                      (offer) => `
+  .map(
+      (offer) => `
                       <div class="row p-2 bg-white border rounded">
                           <div class="col-md-3 mt-1">
                               <img 
                                   class="object-fit-contain rounded product-image" 
-                                  src="${API.getEndpoint(`objects/${offer.id}/photo`)}"
+                                  src="${API.getEndpoint(
+          `objects/${offer.id}/photo`)}"
                                   onerror="this.src='${noFurniturePhoto}'"
                                   width="180"
                                   height="180"
@@ -186,11 +198,12 @@ async function renderOffers(offersFiltered) {
                               </div>
                               <br>
                               <p>
-                                  À récupérer le ${dateStringtoGoodFormat(offer.receiptDate)} ${
-                                    offer.timeSlot === 'matin'
-                                      ? ' au '.concat(offer.timeSlot)
-                                      : " l'".concat(offer.timeSlot)
-                                  }
+                                  À récupérer le ${dateStringtoGoodFormat(
+          offer.receiptDate)} ${
+          offer.timeSlot === 'matin'
+              ? ' au '.concat(offer.timeSlot)
+              : " l'".concat(offer.timeSlot)
+      }
                               </p>
                               
                               <div class="div-user">
@@ -203,14 +216,14 @@ async function renderOffers(offersFiltered) {
                                                               
                               <div class="d-flex flex-column mb-4 div-button">
                                   <button class="btn btn-primary text-secondary btn-sm button-respond" type="button" data-id="${
-                                    offer.id
-                                  }">Répondre</button>
+          offer.id
+      }">Répondre</button>
                               </div>
                           </div>
                       </div>
               `,
-                    )
-                    .join('')}
+  )
+  .join('')}
               </div>                     
           </div>
       </div>
@@ -269,6 +282,5 @@ function renderDatePicker(datePickerId, availabilities) {
     enable: availabilities,
   });
 }
-
 
 export default AdminOffersPage;
