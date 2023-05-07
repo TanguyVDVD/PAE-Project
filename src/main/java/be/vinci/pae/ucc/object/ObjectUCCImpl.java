@@ -48,6 +48,20 @@ public class ObjectUCCImpl implements ObjectUCC {
     }
   }
 
+  @Override
+  public List<ObjectDTO> getPublicObjects(String query) {
+    List<ObjectDTO> objects = getObjects(query);
+
+    return objects.stream().filter(
+            object -> object.getisVisible() && (
+                object.getState().equals("en magasin")
+                    || object.getState().equals("en vente")
+                    || object.getState().equals("vendu")
+            )
+        )
+        .toList();
+  }
+
   /**
    * Get all objects by user.
    *

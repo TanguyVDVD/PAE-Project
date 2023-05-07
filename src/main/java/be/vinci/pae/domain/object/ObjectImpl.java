@@ -4,6 +4,8 @@ import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.utils.Config;
 import be.vinci.pae.utils.exceptions.BusinessException;
 import be.vinci.pae.utils.serializers.EscapeHTMLSerializer;
+import be.vinci.pae.utils.views.Views;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.awt.Color;
 import java.io.File;
@@ -24,25 +26,40 @@ public class ObjectImpl implements Object {
   private int id;
   @JsonSerialize(using = EscapeHTMLSerializer.class)
   private String description;
+  @JsonView(Views.Helper.class)
   private boolean isVisible;
   private double price;
   private String state;
+  @JsonView(Views.Helper.class)
   private LocalDate offerDate;
+  @JsonView(Views.Helper.class)
   private LocalDate acceptanceDate;
+  @JsonView(Views.Helper.class)
   private LocalDate refusalDate;
+  @JsonView(Views.Helper.class)
   private LocalDate workshopDate;
+  @JsonView(Views.Helper.class)
   private LocalDate depositDate;
+  @JsonView(Views.Helper.class)
   private LocalDate sellingDate;
+  @JsonView(Views.Helper.class)
   private LocalDate withdrawalDate;
+  @JsonView(Views.Helper.class)
   private LocalDate onSaleDate;
+  @JsonView(Views.Helper.class)
   private String timeSlot;
   private String status;
+  @JsonView(Views.Helper.class)
   @JsonSerialize(using = EscapeHTMLSerializer.class)
   private String reasonForRefusal;
+  @JsonView(Views.Helper.class)
   private String phoneNumber;
+  @JsonView(Views.Helper.class)
   private LocalDate receiptDate;
+  @JsonView(Views.Helper.class)
   private UserDTO user;
   private String objectType;
+  @JsonView(Views.Helper.class)
   private int versionNumber;
 
   /**
