@@ -4,7 +4,7 @@ import Navigate from '../Router/Navigate';
 import API from '../../utils/api';
 import {getAuthenticatedUser, setAuthenticatedUser} from '../../utils/auths';
 import {clearPage, renderError} from '../../utils/render';
-import {formatDate, formatPhoneNumber} from '../../utils/format';
+import {formatDate, formatPhoneNumber, escapeHTML} from '../../utils/format';
 import {createObjectCard} from '../../utils/objects';
 
 import noProfilePicture from '../../img/no_profile_picture.svg';
@@ -420,7 +420,7 @@ function renderEditProfile(user) {
 
   // Fill the form with the current user data
   ['firstName', 'lastName', 'email'].forEach((field) => {
-    editProfile.querySelector(`#input-${field}`).value = user[field];
+    editProfile.querySelector(`#input-${field}`).value = escapeHTML(user[field]);
   });
   editProfile.querySelector(`#input-phoneNumber`).value = formatPhoneNumber(
       user.phoneNumber);
