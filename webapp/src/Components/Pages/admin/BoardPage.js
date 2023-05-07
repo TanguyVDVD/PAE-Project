@@ -1,30 +1,31 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { Chart } from 'chart.js/auto';
+import {Chart} from 'chart.js/auto';
 import Navigate from '../../Router/Navigate';
-import { getAuthenticatedUser } from '../../../utils/auths';
-import { clearPage } from '../../../utils/render';
+import {getAuthenticatedUser} from '../../../utils/auths';
+import {clearPage} from '../../../utils/render';
 // eslint-disable-next-line no-unused-vars
 import API from '../../../utils/api'
+import {reloadNotification} from "../../Navbar/Navbar";
 
 const BoardPage = () => {
-    const authenticatedUser = getAuthenticatedUser();
+  const authenticatedUser = getAuthenticatedUser();
 
-    if (!authenticatedUser || authenticatedUser.role === null) {
-      Navigate('/');
-      return;
-    }
+  if (!authenticatedUser || authenticatedUser.role === null) {
+    Navigate('/');
+    return;
+  }
 
   clearPage();
   renderBoardPage();
   renderBoardData();
+  reloadNotification();
 };
 
-function renderBoardPage(){
-    const main = document.querySelector('main');
-    const board = document.createElement('div');
+function renderBoardPage() {
+  const main = document.querySelector('main');
+  const board = document.createElement('div');
 
-    
-    board.innerHTML=`
+  board.innerHTML = `
     <div class="container-fluid">
 
                     <!-- Page Heading -->
@@ -81,100 +82,90 @@ function renderBoardPage(){
                 <!-- /.container-fluid -->
     `;
 
-    API.get(`objects/offers?query=${encodeURIComponent('')}`).then((offers) => {
-        const countOffers = offers.length;
-        document.getElementById('offeredObjects').innerHTML =`
+  API.get(`objects/offers?query=${encodeURIComponent('')}`).then((offers) => {
+    const countOffers = offers.length;
+    document.getElementById('offeredObjects').innerHTML = `
         ${countOffers}
-        ` ;
-    });
+        `;
+  });
 
-    API.get(`objects/`).then((objects) => {
-        const count = objects.length;
-        document.getElementById('totalObjects').innerHTML =`
+  API.get(`objects/`).then((objects) => {
+    const count = objects.length;
+    document.getElementById('totalObjects').innerHTML = `
         ${count}
-        ` ;
+        `;
 
-        
-        const vendu = objects.filter(object => object.state === 'vendu');
-        // eslint-disable-next-line no-console
-        console.log(vendu)
-        const countSolds = vendu.length;
-        document.getElementById('soldObjects').innerHTML =`
+    const vendu = objects.filter(object => object.state === 'vendu');
+    // eslint-disable-next-line no-console
+    console.log(vendu)
+    const countSolds = vendu.length;
+    document.getElementById('soldObjects').innerHTML = `
         ${countSolds}
-        ` ;
+        `;
 
-        const acceptes = objects.filter(object => object.state === 'accepté');
-        // eslint-disable-next-line no-console
-        console.log(acceptes)
-        const countAccep = acceptes.length;
-        document.getElementById('acceptedObjects').innerHTML =`
+    const acceptes = objects.filter(object => object.state === 'accepté');
+    // eslint-disable-next-line no-console
+    console.log(acceptes)
+    const countAccep = acceptes.length;
+    document.getElementById('acceptedObjects').innerHTML = `
         ${countAccep}
-        ` ;
+        `;
 
-        const refuses = objects.filter(object => object.state === 'refusé');
-        // eslint-disable-next-line no-console
-        console.log(refuses)
-        const countRefuses = vendu.length;
-        document.getElementById('rejectedObjects').innerHTML =`
+    const refuses = objects.filter(object => object.state === 'refusé');
+    // eslint-disable-next-line no-console
+    console.log(refuses)
+    const countRefuses = vendu.length;
+    document.getElementById('rejectedObjects').innerHTML = `
         ${countRefuses}
-        ` ;
+        `;
 
-        const totalObjects = count;
-        const soldObjects = countSolds;
-        const acceptedObjects = countAccep;
-        const rejectedObjects = countRefuses;
-        
-    
-        const chartElement = document.getElementById("myChart");
-        
-        
-        // Création du graphique
-        const chartData = {
-          labels: ["Proposés", "Vendus", "Acceptés", "Refusés"],
-          datasets: [
-            {
-              label: "Nombre d'objets",
-              data: [totalObjects, soldObjects, acceptedObjects, rejectedObjects],
-              backgroundColor: [
-                "rgba(255, 99, 132, 0.2)",
-                "rgba(54, 162, 235, 0.2)",
-                "rgba(255, 206, 86, 0.2)",
-                "rgba(75, 192, 192, 0.2)",
-              ],
-              borderColor: [
-                "rgba(255, 99, 132, 1)",
-                "rgba(54, 162, 235, 1)",
-                "rgba(255, 206, 86, 1)",
-                "rgba(75, 192, 192, 1)",
-              ],
-              borderWidth: 1,
-            },
+    const totalObjects = count;
+    const soldObjects = countSolds;
+    const acceptedObjects = countAccep;
+    const rejectedObjects = countRefuses;
+
+    const chartElement = document.getElementById("myChart");
+
+    // Création du graphique
+    const chartData = {
+      labels: ["Proposés", "Vendus", "Acceptés", "Refusés"],
+      datasets: [
+        {
+          label: "Nombre d'objets",
+          data: [totalObjects, soldObjects, acceptedObjects, rejectedObjects],
+          backgroundColor: [
+            "rgba(255, 99, 132, 0.2)",
+            "rgba(54, 162, 235, 0.2)",
+            "rgba(255, 206, 86, 0.2)",
+            "rgba(75, 192, 192, 0.2)",
           ],
-        };
-        
-        const chartOptions = {
-          
-        };
+          borderColor: [
+            "rgba(255, 99, 132, 1)",
+            "rgba(54, 162, 235, 1)",
+            "rgba(255, 206, 86, 1)",
+            "rgba(75, 192, 192, 1)",
+          ],
+          borderWidth: 1,
+        },
+      ],
+    };
 
-        // eslint-disable-next-line no-unused-vars
-        const myChart = new Chart(chartElement, {
-          type: 'pie',
-          data: chartData,
-          options: chartOptions,
-        });
-        
+    const chartOptions = {};
 
-
+    // eslint-disable-next-line no-unused-vars
+    const myChart = new Chart(chartElement, {
+      type: 'pie',
+      data: chartData,
+      options: chartOptions,
     });
 
+  });
 
-    main.appendChild(board);
+  main.appendChild(board);
 }
 
-function renderBoardData(){
+function renderBoardData() {
 
-        
-    
-    }
+}
 
 export default BoardPage;

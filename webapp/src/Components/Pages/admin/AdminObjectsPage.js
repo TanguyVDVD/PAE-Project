@@ -17,6 +17,7 @@ import {
 } from '../../../utils/objects';
 
 import noFurniturePhoto from '../../../img/no_furniture_photo.svg';
+import {reloadNotification} from "../../Navbar/Navbar";
 
 const AdminObjectsPage = () => {
   const authenticatedUser = getAuthenticatedUser();
@@ -28,6 +29,7 @@ const AdminObjectsPage = () => {
 
   clearPage();
   renderAdminObjectsPage();
+  reloadNotification();
 };
 
 function renderAdminObjectsPage() {
@@ -266,7 +268,7 @@ function setPriceOrTimeRemaining(className, objects) {
       }
     } else if (object.status === 'refusé') {
       element.innerHTML = ``;
-    } else if (object.price > 0){
+    } else if (object.price > 0) {
       element.innerHTML = `
         <h4 class="mr-1">${object.price} €</h4>
       `;
@@ -280,9 +282,11 @@ function setWithdrawalWarning(className, objects) {
     const object = objects[i];
     const element = elements.item(i);
 
-    if (object.depositDate !== null && object.state !== "retiré" && object.state !== "vendu") {
-      const delta = getBusinessDatesCount(new Date(object.depositDate), new Date(getTodaySDate()));
-      if (delta >= 30){
+    if (object.depositDate !== null && object.state !== "retiré" && object.state
+        !== "vendu") {
+      const delta = getBusinessDatesCount(new Date(object.depositDate),
+          new Date(getTodaySDate()));
+      if (delta >= 30) {
         element.innerHTML = `
           <h6 class="text-danger">Date de dépôt en magasin dépassée de ${delta} jours ouvrables</h6>
         `;
@@ -296,8 +300,9 @@ function getBusinessDatesCount(startDate, endDate) {
   const curDate = new Date(startDate.getTime());
   while (curDate <= endDate) {
     const dayOfWeek = curDate.getDay();
-    if(dayOfWeek !== 0 && dayOfWeek !== 6)
+    if (dayOfWeek !== 0 && dayOfWeek !== 6) {
       count += 1;
+    }
     curDate.setDate(curDate.getDate() + 1);
   }
   return count;

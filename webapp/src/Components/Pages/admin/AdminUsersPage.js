@@ -6,6 +6,7 @@ import {formatPhoneNumber} from '../../../utils/format';
 import {dateStringtoGoodFormat} from '../../../utils/dates';
 import API from '../../../utils/api';
 import noProfilePicture from '../../../img/no_profile_picture.svg';
+import {reloadNotification} from "../../Navbar/Navbar";
 
 let searchQuery = '';
 
@@ -23,6 +24,7 @@ const AdminUsersPage = () => {
   clearPage();
   renderAdminUsersPage();
   searchUsers();
+  reloadNotification();
 };
 
 function renderAdminUsersPage() {

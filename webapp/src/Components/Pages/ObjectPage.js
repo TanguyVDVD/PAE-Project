@@ -10,11 +10,17 @@ import {
 import Navigate from '../Router/Navigate';
 import AdminOffersPage from './admin/AdminOffersPage';
 import AdminObjectsPage from './admin/AdminObjectsPage';
-import { setReceiptDate, setUserOrPhoneNumber, getObjectTypes } from '../../utils/objects';
+import {
+  getObjectTypes,
+  setReceiptDate,
+  setUserOrPhoneNumber
+} from '../../utils/objects';
 
 import noFurniturePhoto from '../../img/no_furniture_photo.svg';
+import {reloadNotification} from "../Navbar/Navbar";
 
 const ObjectPage = (params) => {
+  reloadNotification();
   const id = parseInt(params.id, 10);
 
   clearPage();
@@ -310,7 +316,8 @@ function renderObjectPage(object, objectTypes) {
               'object-description-textarea').value;
           const type = document.getElementById('object-type-select').value;
           const state = document.getElementById('object-state-select').value;
-          const date = invertDateFormat(document.getElementById('date-picker').value);
+          const date = invertDateFormat(
+              document.getElementById('date-picker').value);
           const price = document.getElementById('object-price-input').value;
           const isVisible = document.getElementById('visible-switch').checked;
           const versionNbr = object.versionNumber;
@@ -434,7 +441,7 @@ function getAvailableStates(object, user) {
     return ["à l'atelier", "en magasin"];
   }
   if (object.state === "en magasin") {
-    if (user.role === "responsable"){
+    if (user.role === "responsable") {
       return ["en magasin", "en vente", "vendu", "retiré"];
     }
     return ["en magasin", "en vente", "retiré"];

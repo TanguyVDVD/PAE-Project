@@ -5,6 +5,7 @@ import Navigate from "../../Router/Navigate";
 import {clearPage, renderError} from "../../../utils/render";
 import API from "../../../utils/api";
 import {invertDateFormat} from "../../../utils/dates";
+import {reloadNotification} from "../../Navbar/Navbar";
 
 const AdminAvailabilitiesPage = () => {
   const authenticatedUser = getAuthenticatedUser();
@@ -16,6 +17,7 @@ const AdminAvailabilitiesPage = () => {
 
   clearPage();
   renderAdminAvailabilitiesPage();
+  reloadNotification();
 };
 
 function renderAdminAvailabilitiesPage() {

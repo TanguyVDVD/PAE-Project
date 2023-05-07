@@ -1,10 +1,9 @@
-import { clearPage } from '../../utils/render';
-import { isAuthenticated, setAuthenticatedUser } from '../../utils/auths';
+import {clearPage} from '../../utils/render';
+import {isAuthenticated, setAuthenticatedUser} from '../../utils/auths';
 import Navigate from '../Router/Navigate';
 import API from '../../utils/api';
 
 const RegisterPage = () => {
-
 
   if (isAuthenticated()) {
     Navigate('/');
@@ -119,11 +118,12 @@ function renderRegisterForm() {
 
   // Check if the password and the password confirmation are the same
   const passwordInput = registerForm.querySelector('#input-password');
-  const passwordConfirmInput = registerForm.querySelector('#input-password-confirm');
+  const passwordConfirmInput = registerForm.querySelector(
+      '#input-password-confirm');
   passwordConfirmInput.addEventListener('input', () => {
     if (passwordInput.value !== passwordConfirmInput.value) {
       passwordConfirmInput.setCustomValidity(
-        'La confirmation du mot de passe doit être identique au mot de passe.',
+          'La confirmation du mot de passe doit être identique au mot de passe.',
       );
     } else {
       passwordConfirmInput.setCustomValidity('');
@@ -143,31 +143,34 @@ function renderRegisterForm() {
 
     const formData = new FormData();
 
-    ['lastname', 'firstname', 'email', 'phone', 'password', 'photo'].forEach((key) => {
-      const input = registerForm.querySelector(`#input-${key}`);
+    ['lastname', 'firstname', 'email', 'phone', 'password', 'photo'].forEach(
+        (key) => {
+          const input = registerForm.querySelector(`#input-${key}`);
 
-      formData.append(key, input.type === 'file' ? input.files[0] : input.value);
+          formData.append(key,
+              input.type === 'file' ? input.files[0] : input.value);
+        });
+
+    API.post('users/register', {body: formData})
+    .then((data) => {
+      setAuthenticatedUser(data);
+
+      if (window.opener) {
+        // If the login page was opened in a popup, send a message to the opener
+        window.opener.postMessage({type: 'login-success', data},
+            window.location.origin);
+        window.close();
+      } else {
+        Navigate('/');
+      }
+    })
+    .catch((err) => {
+      renderError(err.message);
+    })
+    .finally(() => {
+      isSubmitting = false;
+      registerForm.classList.remove('loading');
     });
-
-    API.post('users/register', { body: formData })
-      .then((data) => {
-        setAuthenticatedUser(data);
-
-        if (window.opener) {
-          // If the login page was opened in a popup, send a message to the opener
-          window.opener.postMessage({ type: 'login-success', data }, window.location.origin);
-          window.close();
-        } else {
-          Navigate('/');
-        }
-      })
-      .catch((err) => {
-        renderError(err.message);
-      })
-      .finally(() => {
-        isSubmitting = false;
-        registerForm.classList.remove('loading');
-      });
   });
 
   main.appendChild(registerForm);
