@@ -1,7 +1,7 @@
 import Autocomplete from 'bootstrap5-autocomplete';
 import Navigate from '../Components/Router/Navigate';
 import { dateStringtoGoodFormat, invertDateFormat } from './dates';
-import { formatPhoneNumber } from './format';
+import { formatPhoneNumber, escapeHTML } from './format';
 import API from './api';
 
 import noFurniturePhoto from '../img/no_furniture_photo.svg';
@@ -82,11 +82,9 @@ function encodingHelp(src) {
       // but it also doesn't decode them when an item is selected
       // This is important because user input is included in the list of items!
       // Our solution: give escaped value, then decode it ourselves when an item is selected
-      const escaper = document.createElement('textarea');
-      escaper.innerHTML = item.label;
 
       // eslint-disable-next-line no-underscore-dangle -- library API
-      inst._searchInput.value = escaper.value;
+      inst._searchInput.value = escapeHTML(item.label);
     },
   });
 }

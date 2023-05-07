@@ -13,4 +13,11 @@ const formatPhoneNumber = (phoneNumber) => {
   return num;
 };
 
-export { formatDate, formatPhoneNumber };
+const escapeHTML = (text) => {
+  const escaper = document.createElement('textarea');
+
+  escaper.innerHTML = text;
+  return escaper.value;
+};
+
+export { formatDate, formatPhoneNumber, escapeHTML };
