@@ -146,7 +146,7 @@ async function getObjectTypes() {
   return objectTypes;
 }
 
-function filterObjects(objects, minPrice, maxPrice, date, type) {
+function filterObjects(objects, minPrice, maxPrice, date, states, types) {
   return objects.filter((object) => {
     if (minPrice && object.price < minPrice) {
       return false;
@@ -162,8 +162,13 @@ function filterObjects(objects, minPrice, maxPrice, date, type) {
       return false;
     }
 
+    // Filter by state if provided
+    if (states.length > 0 && !states.includes(object.state)) {
+      return false;
+    }
+
     // Filter by type if provided
-    if (type.length > 0 && !type.includes(object.objectType)) {
+    if (types.length > 0 && !types.includes(object.objectType)) {
       return false;
     }
 

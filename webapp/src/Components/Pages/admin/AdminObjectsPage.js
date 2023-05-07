@@ -45,13 +45,13 @@ function renderAdminObjectsPage() {
         <div class="col-md-12">
           <input type="text" class="form-control autocomplete" id="search-bar" placeholder="Rechercher..." />
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
           <div class="input-group">
             <span class="input-group-text bg-white">Prix minimum</span>
             <input type="number" class="form-control form-filter" id="input-minPrice" placeholder="" />
           </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
           <div class="input-group">
             <span class="input-group-text bg-white">Prix maximum</span>
             <input type="number" class="form-control form-filter" id="input-maxPrice" placeholder="" />
@@ -60,24 +60,41 @@ function renderAdminObjectsPage() {
         <div class="col-md-3">
           <div class="input-group">
             <span class="input-group-text bg-white">Date de réception</span>
-            <input type="text" class="form-control form-filter" id="input-receipt-date" placeholder="Date de réception"/>
+            <input type="text" class="form-control form-filter" id="input-receipt-date"/>
           </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-1 state-filter">
           <div class="mx-0 dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="type-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <button class="btn btn-primary dropdown-toggle text-secondary" type="button" id="state-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+              États
+            </button>
+            <ul class="dropdown-menu state-menu" aria-labelledby="state-dropdown">
+              <li><label class="dropdown-item"><input type="checkbox" value="proposé" class="state-filter"> Proposé</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="accepté" class="state-filter"> Accepté</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="refusé" class="state-filter"> Refusé</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="à l'atelier" class="state-filter"> À l'atelier</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="en magasin" class="state-filter"> En magasin</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="en vente" class="state-filter"> En vente</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="vendu" class="state-filter"> Vendu</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="retiré" class="state-filter"> Retiré</label></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-2 type-filter">
+          <div class="mx-0 dropdown">
+            <button class="btn btn-primary dropdown-toggle text-secondary" type="button" id="type-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
               Types d'objets
             </button>
-            <ul class="dropdown-menu" aria-labelledby="type-dropdown">
-              <li><label class="dropdown-item"><input type="checkbox" value="Meuble" class="form-filter"> Meuble</label></li>
-              <li><label class="dropdown-item"><input type="checkbox" value="Table" class="form-filter"> Table</label></li>
-              <li><label class="dropdown-item"><input type="checkbox" value="Chaise" class="form-filter"> Chaise</label></li>
-              <li><label class="dropdown-item"><input type="checkbox" value="Fauteuil" class="form-filter"> Fauteuil</label></li>
-              <li><label class="dropdown-item"><input type="checkbox" value="Lit/sommier" class="form-filter"> Lit/sommier</label></li>
-              <li><label class="dropdown-item"><input type="checkbox" value="Matelas" class="form-filter"> Matelas</label></li>
-              <li><label class="dropdown-item"><input type="checkbox" value="Couverture" class="form-filter"> Couverture</label></li>
-              <li><label class="dropdown-item"><input type="checkbox" value="Materiel de cuisine" class="form-filter"> Materiel de cuisine</label></li>
-              <li><label class="dropdown-item"><input type="checkbox" value="Vaisselle" class="form-filter"> Vaisselle</label></li>
+            <ul class="dropdown-menu type-menu" aria-labelledby="type-dropdown">
+              <li><label class="dropdown-item"><input type="checkbox" value="Meuble" class="type-filter"> Meuble</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="Table" class="type-filter"> Table</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="Chaise" class="type-filter"> Chaise</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="Fauteuil" class="type-filter"> Fauteuil</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="Lit/sommier" class="type-filter"> Lit/sommier</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="Matelas" class="type-filter"> Matelas</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="Couverture" class="type-filter"> Couverture</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="Materiel de cuisine" class="type-filter"> Materiel de cuisine</label></li>
+              <li><label class="dropdown-item"><input type="checkbox" value="Vaisselle" class="type-filter"> Vaisselle</label></li>
             </ul>
           </div>
         </div>
@@ -127,13 +144,15 @@ function renderAdminObjectsPage() {
     const minPrice = document.getElementById('input-minPrice').value;
     const maxPrice = document.getElementById('input-maxPrice').value;
     const date = document.getElementById('input-receipt-date').value;
-    const type = [...document.querySelectorAll('.form-filter:checked')].map(
+    const states = [...document.querySelectorAll('.state-filter:checked')].map(
+        (cb) => cb.value);
+    const types = [...document.querySelectorAll('.type-filter:checked')].map(
         (cb) => cb.value);
 
     API.get(`objects?query=${encodeURIComponent(search)}`)
     .then((objects) => {
       if (objects !== null) {
-        renderObjects(filterObjects(objects, minPrice, maxPrice, date, type));
+        renderObjects(filterObjects(objects, minPrice, maxPrice, date, states, types));
       }
     })
     .catch((err) => {
@@ -141,20 +160,22 @@ function renderAdminObjectsPage() {
     });
   });
 
-  div.querySelectorAll('.form-filter').forEach((e) => {
+  div.querySelectorAll('.state-filter, .type-filter').forEach((e) => {
     e.addEventListener('change', () => {
 
       const search = document.getElementById('search-bar').value;
       const minPrice = document.getElementById('input-minPrice').value;
       const maxPrice = document.getElementById('input-maxPrice').value;
       const date = document.getElementById('input-receipt-date').value;
-      const type = [...document.querySelectorAll('.form-filter:checked')].map(
+      const states = [...document.querySelectorAll('.state-filter:checked')].map(
+          (cb) => cb.value);
+      const types = [...document.querySelectorAll('.type-filter:checked')].map(
           (cb) => cb.value);
 
       API.get(`objects?query=${encodeURIComponent(search)}`)
       .then((objects) => {
         if (objects !== null) {
-          renderObjects(filterObjects(objects, minPrice, maxPrice, date, type));
+          renderObjects(filterObjects(objects, minPrice, maxPrice, date, states, types));
         }
       })
       .catch((err) => {
