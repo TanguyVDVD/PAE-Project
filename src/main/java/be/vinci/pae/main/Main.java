@@ -4,6 +4,7 @@ import be.vinci.pae.utils.ApplicationBinder;
 import be.vinci.pae.utils.Config;
 import be.vinci.pae.utils.MyObjectMapper;
 import be.vinci.pae.utils.WebExceptionMapper;
+import be.vinci.pae.utils.views.Views;
 import java.io.IOException;
 import java.net.URI;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -36,6 +37,7 @@ public class Main {
     // Create a JacksonJaxbJsonProvider with our custom ObjectMapper
     final JacksonJaxbJsonProvider jacksonJaxbJsonProvider = new JacksonJaxbJsonProvider();
     jacksonJaxbJsonProvider.setMapper(MyObjectMapper.getJsonMapper());
+    jacksonJaxbJsonProvider.setDefaultWriteView(Views.Public.class);
 
     // create a resource config that scans for JAX-RS resources and providers
     // in vinci.be package

@@ -61,8 +61,8 @@ public class ObjectResource {
   @GET
   @AuthorizeHelper
   @Produces(MediaType.APPLICATION_JSON)
-  public ArrayNode getObjects(@QueryParam("query") String query) {
-    return jsonMapper.valueToTree(objectUCC.getObjects(query));
+  public List<ObjectDTO> getObjects(@QueryParam("query") String query) {
+    return objectUCC.getObjects(query);
   }
 
   /**
@@ -75,12 +75,7 @@ public class ObjectResource {
   @Path("/public")
   @Produces(MediaType.APPLICATION_JSON)
   public List<ObjectDTO> getPublicObjects(@QueryParam("query") String query) {
-    List<ObjectDTO> objects = objectUCC.getObjects(query);
-
-    return objects.stream().filter(
-        object -> object.getisVisible() && (object.getState().equals("en magasin")
-            || object.getState().equals("en vente")
-            || object.getState().equals("vendu"))).toList();
+    return objectUCC.getPublicObjects(query);
   }
 
   /**

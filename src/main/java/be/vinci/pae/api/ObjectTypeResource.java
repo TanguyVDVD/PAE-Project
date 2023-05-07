@@ -1,6 +1,7 @@
 package be.vinci.pae.api;
 
 import be.vinci.pae.ucc.objecttype.ObjectTypeUCC;
+import be.vinci.pae.utils.MyObjectMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import jakarta.inject.Inject;
@@ -18,7 +19,7 @@ import jakarta.ws.rs.core.MediaType;
 @Path("/objectTypes")
 public class ObjectTypeResource {
 
-  private final ObjectMapper jsonMapper = new ObjectMapper();
+  private final ObjectMapper jsonMapper = MyObjectMapper.getJsonMapper();
   @Inject
   private ObjectTypeUCC objectTypeUCC;
 
