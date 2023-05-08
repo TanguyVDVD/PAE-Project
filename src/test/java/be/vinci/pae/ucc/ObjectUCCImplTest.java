@@ -426,6 +426,23 @@ class ObjectUCCImplTest {
 
     assertAll(() -> assertNotNull(objectDTO, "Accept return null"), () -> assertEquals(object,
         objectDTO, "Accept method does not return the same object"));
+  }
+
+  @DisplayName("Get all public objects")
+  @Test
+  void getPublicObjects() {
+    List<ObjectDTO> objects = new ArrayList<>();
+    ObjectDTO object = Mockito.mock(ObjectImpl.class);
+
+    Mockito.when(object.getisVisible()).thenReturn(true);
+    Mockito.when(object.getState()).thenReturn("en magasin");
+
+    objects.add(object);
+
+    Mockito.when(objectDAO.getAll("")).thenReturn(objects);
+
+    assertEquals(objects, objectUCC.getPublicObjects(""),
+        "getPublicObjects not returning the correct list");
 
   }
 
