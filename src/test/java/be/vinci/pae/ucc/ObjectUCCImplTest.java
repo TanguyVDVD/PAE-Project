@@ -6,14 +6,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import be.vinci.pae.domain.DomainFactory;
+import be.vinci.pae.domain.notification.Notification;
+import be.vinci.pae.domain.notification.NotificationImpl;
 import be.vinci.pae.domain.object.Object;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.domain.object.ObjectImpl;
+import be.vinci.pae.domain.user.User;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.user.UserImpl;
 import be.vinci.pae.services.DALServices;
-import be.vinci.pae.services.notification.NotificationDAO;
 import be.vinci.pae.services.object.ObjectDAO;
 import be.vinci.pae.services.object.ObjectDAOImpl;
 import be.vinci.pae.ucc.notification.NotificationUCC;
@@ -56,24 +57,12 @@ class ObjectUCCImplTest {
   private static NotificationUCC notificationUCC;
 
   /**
-   * Mocked notificationDAO.
-   */
-  private static NotificationDAO notificationDAO;
-
-  /**
-   * DomainFactory to test.
-   */
-  private static DomainFactory domainFactory;
-
-  /**
    * Set up the test.
    */
   @BeforeAll
   static void setUp() {
     objectDAO = Mockito.mock(ObjectDAOImpl.class);
     notificationUCC = Mockito.mock(NotificationUCC.class);
-    domainFactory = Mockito.mock(DomainFactory.class);
-    notificationDAO = Mockito.mock(NotificationDAO.class);
 
     DALServices myDalServices = Mockito.mock(DALServices.class);
 
@@ -82,8 +71,6 @@ class ObjectUCCImplTest {
       protected void configure() {
         bind(ObjectUCCImpl.class).to(ObjectUCC.class).in(Singleton.class);
 
-        bind(notificationDAO).to(NotificationDAO.class);
-        bind(domainFactory).to(DomainFactory.class);
         bind(notificationUCC).to(NotificationUCC.class);
         bind(objectDAO).to(ObjectDAO.class);
         bind(myDalServices).to(DALServices.class);
@@ -91,15 +78,12 @@ class ObjectUCCImplTest {
     });
 
     objectUCC = locator.getService(ObjectUCC.class);
-    //notificationUCC = locator.getService(NotificationUCC.class);
 
   }
 
   @BeforeEach
   void cleanUp() {
     Mockito.reset(objectDAO);
-    Mockito.reset(notificationUCC);
-    Mockito.reset(domainFactory);
   }
 
   @DisplayName("Accept an object already accepted")
@@ -161,7 +145,7 @@ class ObjectUCCImplTest {
         "Exception not thrown");
   }
 
-  @DisplayName("Update an object state, set to in workshop")
+  @DisplayName("Update an object state, set in workshop")
   @Test
   void updateAnObjectStateToInWorkshop() {
     LocalDate dateToday = LocalDate.now();
@@ -192,7 +176,7 @@ class ObjectUCCImplTest {
 
   }
 
-  @DisplayName("Update an object state, set to in shop")
+  @DisplayName("Update an object state, set in shop")
   @Test
   void updateAnObjectStateToInShop() {
 
@@ -387,6 +371,138 @@ class ObjectUCCImplTest {
 
     assertThrows(DALException.class, () -> objectUCC.add(object),
         "addObject did not throw an exception");
+  }
+
+  @DisplayName("Accept a correct object proposition")
+  @Test
+  void acceptACorrectObjectProposition() {
+
+    Object object = Mockito.mock(ObjectImpl.class);
+    Mockito.when(object.getId()).thenReturn(1);
+    Mockito.when(object.getStatus()).thenReturn(null);
+    Mockito.when(object.getVersionNumber()).thenReturn(1);
+    Mockito.when(objectDAO.getOneById(object.getId())).thenReturn(object);
+    Mockito.when(object.isStatusAlreadyDefined(object.getStatus())).thenReturn(false);
+    Mockito.when(objectDAO.setStatusToAccepted(object.getId(), LocalDate.now(),
+        object.getVersionNumber())).thenReturn(object);
+    Mockito.when(object.getStatus()).thenReturn("accepté");
+
+    Notification notification = Mockito.mock(NotificationImpl.class);
+
+    ObjectDTO object2 = Mockito.mock(ObjectImpl.class);
+    User user2 = Mockito.mock(UserImpl.class);
+
+    Mockito.when(object.getUser()).thenReturn(user2);
+    Mockito.when(object.getStatus()).thenReturn("accepté");
+    Mockito.when(object.getId()).thenReturn(1);
+    Mockito.when(user2.getId()).thenReturn(1);
+
+    Mockito.when(notificationUCC.createAcceptedRefusedObjectNotification(
+        object2)).thenReturn(notification);
+
+    ObjectDTO objectDTO = objectUCC.accept(object.getId(), object.getVersionNumber());
+
+    assertAll(() -> assertNotNull(objectDTO, "Accept return null"), () -> assertEquals(object,
+        objectDTO, "Accept method does not return the same object"));
+  }
+
+  @DisplayName("Refuse an object")
+  @Test
+  void refuseAnObjectProposition() {
+
+    String reasonForRefusal = "Reason for refusal";
+    Object object = Mockito.mock(ObjectImpl.class);
+    Mockito.when(object.getId()).thenReturn(1);
+    Mockito.when(object.getStatus()).thenReturn(null);
+    Mockito.when(object.getVersionNumber()).thenReturn(1);
+    Mockito.when(objectDAO.getOneById(object.getId())).thenReturn(object);
+    Mockito.when(object.isStatusAlreadyDefined(object.getStatus())).thenReturn(false);
+    Mockito.when(objectDAO.setStatusToRefused(object.getId(), reasonForRefusal, LocalDate.now(),
+        object.getVersionNumber())).thenReturn(object);
+    Mockito.when(object.getStatus()).thenReturn("refusé");
+
+    Notification notification = Mockito.mock(NotificationImpl.class);
+
+    Mockito.when(notificationUCC.createAcceptedRefusedObjectNotification(
+        object)).thenReturn(notification);
+
+    ObjectDTO objectDTO = objectUCC.refuse(object.getId(), reasonForRefusal,
+        object.getVersionNumber());
+
+    assertAll(() -> assertNotNull(objectDTO, "Refuse return null"), () -> assertEquals(object,
+        objectDTO, "Refuse method does not return the same object"));
+
+  }
+
+  @DisplayName("Get all public objects")
+  @Test
+  void getPublicObjects() {
+    List<ObjectDTO> objects = new ArrayList<>();
+    List<ObjectDTO> expectedObjects = new ArrayList<>();
+
+    ObjectDTO object1 = Mockito.mock(ObjectImpl.class);
+
+    Mockito.when(object1.getisVisible()).thenReturn(true);
+    Mockito.when(object1.getState()).thenReturn("en magasin");
+
+    objects.add(object1);
+    expectedObjects.add(object1);
+
+    ObjectDTO object2 = Mockito.mock(ObjectImpl.class);
+
+    Mockito.when(object2.getisVisible()).thenReturn(true);
+    Mockito.when(object2.getState()).thenReturn("en vente");
+
+    objects.add(object2);
+    expectedObjects.add(object2);
+
+    ObjectDTO object3 = Mockito.mock(ObjectImpl.class);
+
+    Mockito.when(object3.getisVisible()).thenReturn(true);
+    Mockito.when(object3.getState()).thenReturn("vendu");
+
+    objects.add(object3);
+    expectedObjects.add(object3);
+
+    ObjectDTO object4 = Mockito.mock(ObjectImpl.class);
+
+    Mockito.when(object4.getisVisible()).thenReturn(true);
+    Mockito.when(object4.getState()).thenReturn("retiré");
+
+    objects.add(object4);
+
+    ObjectDTO object5 = Mockito.mock(ObjectImpl.class);
+
+    Mockito.when(object5.getisVisible()).thenReturn(false);
+    Mockito.when(object5.getState()).thenReturn("en magasin");
+
+    objects.add(object5);
+
+    ObjectDTO object6 = Mockito.mock(ObjectImpl.class);
+
+    Mockito.when(object6.getisVisible()).thenReturn(false);
+    Mockito.when(object6.getState()).thenReturn("en vente");
+
+    objects.add(object6);
+
+    ObjectDTO object7 = Mockito.mock(ObjectImpl.class);
+
+    Mockito.when(object7.getisVisible()).thenReturn(false);
+    Mockito.when(object7.getState()).thenReturn("vendu");
+
+    objects.add(object7);
+
+    ObjectDTO object8 = Mockito.mock(ObjectImpl.class);
+
+    Mockito.when(object8.getisVisible()).thenReturn(false);
+    Mockito.when(object8.getState()).thenReturn("retiré");
+
+    objects.add(object8);
+
+    Mockito.when(objectDAO.getAll("")).thenReturn(objects);
+
+    assertEquals(expectedObjects, objectUCC.getPublicObjects(""),
+        "getPublicObjects not returning the correct list");
   }
 
 }
