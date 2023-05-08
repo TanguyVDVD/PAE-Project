@@ -17,7 +17,6 @@ const BoardPage = () => {
 
   clearPage();
   renderBoardPage();
-  renderBoardData();
   reloadNotification();
 };
 
@@ -70,9 +69,7 @@ function renderBoardPage() {
                                             <h2>Graphique</h2>
                                                 <canvas id="myChart"></canvas>
                                             </div>
-
-
-                                            
+  
                                       </div>
                                 </div>
                             </div>
@@ -164,8 +161,5 @@ function renderBoardPage() {
   main.appendChild(board);
 }
 
-function renderBoardData() {
-
-}
 
 export default BoardPage;
