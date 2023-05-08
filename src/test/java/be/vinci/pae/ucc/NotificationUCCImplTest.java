@@ -195,7 +195,8 @@ public class NotificationUCCImplTest {
     Mockito.when(notificationDAO.createObjectUserNotification(notificationDTOStart))
         .thenReturn(notificationDTOStart);
 
-    NotificationDTO notificationDTO = notificationUCC.createNewObjectPropositionNotification(1);
+    NotificationDTO notificationDTO = notificationUCC.createNewObjectPropositionNotification(
+        object);
 
     assertAll(
         () -> assertNotNull(notificationDTO, "Accept return null"),
@@ -225,7 +226,8 @@ public class NotificationUCCImplTest {
     Mockito.when(notificationDAO.createObjectNotification(notificationDTOStart))
         .thenThrow(new DALException(""));
 
-    assertThrows(Exception.class, () -> notificationUCC.createNewObjectPropositionNotification(1));
+    assertThrows(Exception.class,
+        () -> notificationUCC.createNewObjectPropositionNotification(object));
 
 
   }

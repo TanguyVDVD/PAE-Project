@@ -29,10 +29,10 @@ public interface NotificationUCC {
   /**
    * Creates a NotificationDTO to notify that a new object has been proposed.
    *
-   * @param idObject the ID of the object that has been proposed
+   * @param objectDTO the object that has been proposed
    * @return a NotificationDTO object containing the notification message
    */
-  NotificationDTO createNewObjectPropositionNotification(int idObject);
+  NotificationDTO createNewObjectPropositionNotification(ObjectDTO objectDTO);
 
   /**
    * Marks a notification with the specified ID as read and returns the updated notification

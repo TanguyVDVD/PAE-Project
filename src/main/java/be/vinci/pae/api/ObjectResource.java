@@ -10,6 +10,8 @@ import be.vinci.pae.domain.user.User;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.ucc.object.ObjectUCC;
 import be.vinci.pae.utils.MyObjectMapper;
+import be.vinci.pae.utils.views.Views;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -119,13 +121,17 @@ public class ObjectResource {
   /**
    * Get an object corresponding to the id.
    *
-   * @param id the id of the object
+   * @param request the request
+   * @param id      the id of the object
    * @return an object
    */
   @GET
   @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
-  public ObjectDTO getOne(@PathParam("id") int id) {
+  @GetUser
+  public Response getOne(
+      @Context ContainerRequest request,
+      @PathParam("id") int id) {
     if (id <= 0) {
       throw new WebApplicationException("Mauvais id indiqué",
           Response.Status.BAD_REQUEST);
@@ -135,7 +141,24 @@ public class ObjectResource {
       throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
           .entity("Impossible de trouver les informations de l'objet").type("text/plain").build());
     }
-    return objectDTO;
+
+    UserDTO authorizedUser = (UserDTO) request.getProperty("user");
+
+    // Change the view of json if user is helper
+    if (
+        authorizedUser != null && (authorizedUser.getRole().equals("aidant")
+            || authorizedUser.getRole().equals("responsable"))
+    ) {
+      try {
+        return Response.ok(
+                jsonMapper.writerWithView(Views.Helper.class).writeValueAsString(objectDTO))
+            .build();
+      } catch (JsonProcessingException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    return Response.ok(objectDTO).build();
   }
 
   /**

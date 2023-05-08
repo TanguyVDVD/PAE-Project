@@ -48,13 +48,13 @@ function renderAdminObjectsPage() {
         <div class="col-md-2">
           <div class="input-group">
             <span class="input-group-text bg-white">Prix minimum</span>
-            <input type="number" class="form-control form-filter" id="input-minPrice" placeholder="" />
+            <input type="number" class="form-control form-filter" id="input-minPrice" min="0" max="10" step=".01" />
           </div>
         </div>
         <div class="col-md-2">
           <div class="input-group">
             <span class="input-group-text bg-white">Prix maximum</span>
-            <input type="number" class="form-control form-filter" id="input-maxPrice" placeholder="" />
+            <input type="number" class="form-control form-filter" id="input-maxPrice" min="0" max="10" step=".01" />
           </div>
         </div>
         <div class="col-md-3">
