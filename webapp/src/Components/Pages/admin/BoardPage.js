@@ -27,56 +27,53 @@ function renderBoardPage() {
   board.innerHTML = `
     <div class="container-fluid">
 
-                    <!-- Page Heading -->
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Tableau de bord</h1>
-                    </div>
+      <!-- Page Heading -->
+      <div class="d-sm-flex align-items-center justify-content-between mb-4">
+          <h1 class="h3 mb-0 text-gray-800">Tableau de bord</h1>
+      </div>
 
-                    <div class="row">
-
-                        <!-- Area Chart -->
-                        <div class="col-xl-12 col-lg-7">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Suivi des objets</h6>
-                                    <div class="dropdown no-arrow">
-                                    </div>
-                                </div>
-
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div id="chart-area">
-                                        <label for="bday-month">Période:</label>
-                                        <input id="bday-month" type="month" name="bday-month" value="2023-03">
-                                        <br>
-
-                                        <div class="dashboard">
-                                            <div class="statistics">
-                                            <br>
-                                                <h2>Statistiques</h2>
-                                                <ul>
-                                                    <li>Nombre d'objets : <span id="totalObjects"></span></li>
-                                                    <li>Nombre d'objets proposés : <span id="offeredObjects"></span></li>
-                                                    <li>Nombre d'objets vendus : <span id="soldObjects"></span></li>
-                                                    <li>Nombre d'objets acceptés : <span id="acceptedObjects"></span></li>
-                                                    <li>Nombre d'objets refusés : <span id="rejectedObjects"></span></li>
-                                                </ul>
-                                            </div>
-
-                                            <div class="chart">
-                                            <h2>Graphique</h2>
-                                                <canvas id="myChart"></canvas>
-                                            </div>
-  
-                                      </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+      <div class="row">
+        <!-- Area Chart -->
+        <div class="col-xl-12 col-lg-7">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Suivi des objets</h6>
                 </div>
-                <!-- /.container-fluid -->
+
+                <!-- Card Body -->
+                <div class="card-body">
+                  <div id="chart-area">
+                    <label for="bday-month">Période:</label>
+                    <input id="bday-month" type="month" name="bday-month" value="2023-03">
+                    <br>
+
+                      <div class="dashboard">
+
+                        <div class="statistics">
+                          <br>
+                          <h2>Statistiques</h2>
+                            <ul>
+                              <li>Nombre d'objets : <span id="totalObjects"></span></li>
+                              <li>Nombre d'objets proposés : <span id="offeredObjects"></span></li>
+                              <li>Nombre d'objets vendus : <span id="soldObjects"></span></li>
+                              <li>Nombre d'objets acceptés : <span id="acceptedObjects"></span></li>
+                              <li>Nombre d'objets refusés : <span id="rejectedObjects"></span></li>
+                            </ul>
+                        </div>
+
+                        <div class="chart">
+                          <h2>Graphique</h2>
+                            <canvas id="myChart"></canvas>
+                        </div>
+  
+                      </div>
+                  </div>
+                </div>
+          </div>
+      </div>
+    </div>
+    <!-- /.container-fluid -->
     `;
 
   API.get(`objects/offers?query=${encodeURIComponent('')}`).then((offers) => {
