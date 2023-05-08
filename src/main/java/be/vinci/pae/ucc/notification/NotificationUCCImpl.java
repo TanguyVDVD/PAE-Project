@@ -94,19 +94,20 @@ public class NotificationUCCImpl implements NotificationUCC {
   /**
    * Creates a NotificationDTO to notify that a new object has been proposed.
    *
-   * @param idObject the ID of the object that has been proposed
+   * @param objectDTO the object that has been proposed
    * @return a NotificationDTO object containing the notification message
    */
   @Override
-  public NotificationDTO createNewObjectPropositionNotification(int idObject) {
+  public NotificationDTO createNewObjectPropositionNotification(ObjectDTO objectDTO) {
 
     myDalServices.startTransaction();
     try {
 
       NotificationDTO notificationDTO = domainFactory.getNotification();
 
-      notificationDTO.setIdObject(idObject);
-      notificationDTO.setNotificationText("Un nouvel objet vient d'être proposé");
+      notificationDTO.setIdObject(objectDTO.getId());
+      notificationDTO.setNotificationText(
+          "Un nouvel objet vient d'être proposé : " + objectDTO.getDescription());
 
       NotificationDTO notificationDTOWithoutUser = myNotificationDAO.createObjectNotification(
           notificationDTO);
