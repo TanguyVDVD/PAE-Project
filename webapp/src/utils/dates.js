@@ -16,6 +16,8 @@ function invertDateFormat(date) {
 }
 
 function onlyYearAndMonthDateFormat(date) {
+  if (!date)
+    return null;
   const dateParts = date.split("-");
   return dateParts[0].concat("-", dateParts[1]);
 }
