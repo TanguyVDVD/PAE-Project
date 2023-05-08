@@ -6,7 +6,7 @@ import {clearPage} from '../../../utils/render';
 // eslint-disable-next-line no-unused-vars
 import API from '../../../utils/api'
 import {reloadNotification} from "../../Navbar/Navbar";
-import { onlyYearAndMonthDateFormat } from '../../../../../../../PAECODE1/webapp/src/utils/dates';
+import { onlyYearAndMonthDateFormat } from '../../../utils/dates';
 
 const BoardPage = () => {
   const authenticatedUser = getAuthenticatedUser();
@@ -77,65 +77,74 @@ function renderBoardPage() {
     <!-- /.container-fluid -->
     `;
 
-    main.appendChild(board);
+  main.appendChild(board);
 
-    const inputMonth = document.getElementById('inputMonth');
-    let valueInputMonth = inputMonth.value;
+  const chartElement = document.getElementById("myChart");
 
-    inputMonth.addEventListener('change', (e) => {
-      e.preventDefault();
-      valueInputMonth= inputMonth.value;
+  // eslint-disable-next-line no-unused-vars
+  const myChart = new Chart(chartElement, {
+    type: 'pie',
+  });
 
-    });
+  const inputMonth = document.getElementById('inputMonth');
+  let valueInputMonth = inputMonth.value;
 
+  API.get(`objects/`).then((objects) => {
+    renderChart(objects, valueInputMonth, myChart);
+  });
 
+  inputMonth.addEventListener('change', () => {
+    valueInputMonth= inputMonth.value;
     API.get(`objects/`).then((objects) => {
-     
-        const count = objects.length;
-        document.getElementById('totalObjects').innerHTML =`
-        ${count}
-        ` ;
+      renderChart(objects, valueInputMonth, myChart);
+    });
+  });
+}
 
-        const offers = objects.filter(object => object.state === 'proposé' || valueInputMonth === onlyYearAndMonthDateFormat(object.offerDate));
-        const countOffers= offers.length;
-        document.getElementById('offeredObjects').innerHTML =`
-        ${countOffers}
-        ` ;
+function renderChart(objects, valueInputMonth, myChart){
 
-        const vendu = objects.filter(object => object.state === 'vendu'|| valueInputMonth === onlyYearAndMonthDateFormat(object.offerDate));
-        // eslint-disable-next-line no-console
-        console.log(vendu)
-        const countSolds = vendu.length;
-        document.getElementById('soldObjects').innerHTML =`
-        ${countSolds}
-        ` ;
+    const count = objects.length;
+    document.getElementById('totalObjects').innerHTML =`
+      ${count}
+      ` ;
 
-        
-        const acceptes = objects.filter(object => object.state === 'accepté' || object.state === 'en vente' || object.state ==="en magasin" || valueInputMonth === onlyYearAndMonthDateFormat(object.offerDate));
-        // eslint-disable-next-line no-console
-        console.log(acceptes)
-        const countAccep = acceptes.length;
-        document.getElementById('acceptedObjects').innerHTML =`
-        ${countAccep}
-        ` ;
+    const offers = objects.filter(object => object.state === 'proposé' || valueInputMonth === onlyYearAndMonthDateFormat(object.offerDate));
+    const countOffers= offers.length;
+    document.getElementById('offeredObjects').innerHTML =`
+      ${countOffers}
+      ` ;
 
-        const refuses = objects.filter(object => object.state === 'refusé'|| valueInputMonth === onlyYearAndMonthDateFormat(object.offerDate) );
-        // eslint-disable-next-line no-console
-        console.log(refuses)
-        const countRefuses = refuses.length;
-        document.getElementById('rejectedObjects').innerHTML =`
-        ${countRefuses}
-        ` ;
+    const vendu = objects.filter(object => object.state === 'vendu'|| valueInputMonth === onlyYearAndMonthDateFormat(object.offerDate));
+    // eslint-disable-next-line no-console
+    console.log(vendu)
+    const countSolds = vendu.length;
+    document.getElementById('soldObjects').innerHTML =`
+      ${countSolds}
+      ` ;
 
 
-        // eslint-disable-next-line no-unused-vars
-        const proposedObjects = countOffers;
-        const soldObjects = countSolds;
-        const acceptedObjects = countAccep;
-        const rejectedObjects = countRefuses;
-     
+    const acceptes = objects.filter(object => object.state === 'accepté' || object.state === 'en vente' || object.state ==="en magasin" || valueInputMonth === onlyYearAndMonthDateFormat(object.offerDate));
+    // eslint-disable-next-line no-console
+    console.log(acceptes)
+    const countAccep = acceptes.length;
+    document.getElementById('acceptedObjects').innerHTML =`
+      ${countAccep}
+      ` ;
 
-    const chartElement = document.getElementById("myChart");
+    const refuses = objects.filter(object => object.state === 'refusé'|| valueInputMonth === onlyYearAndMonthDateFormat(object.offerDate) );
+    // eslint-disable-next-line no-console
+    console.log(refuses)
+    const countRefuses = refuses.length;
+    document.getElementById('rejectedObjects').innerHTML =`
+      ${countRefuses}
+      ` ;
+
+
+    // eslint-disable-next-line no-unused-vars
+    const proposedObjects = countOffers;
+    const soldObjects = countSolds;
+    const acceptedObjects = countAccep;
+    const rejectedObjects = countRefuses;
 
     // Création du graphique
     const chartData = {
@@ -160,19 +169,9 @@ function renderBoardPage() {
         },
       ],
     };
-    
-    const chartOptions = {};
 
-    // eslint-disable-next-line no-unused-vars
-    const myChart = new Chart(chartElement, {
-      type: 'pie',
-      data: chartData,
-      options: chartOptions,
-    });
-  
-  });
-
- 
+    myChart.data = chartData;
+    myChart.update();
 }
 
 export default BoardPage;
