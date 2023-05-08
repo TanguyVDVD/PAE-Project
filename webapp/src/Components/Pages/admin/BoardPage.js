@@ -55,7 +55,6 @@ function renderBoardPage() {
                           <br>
                           <h2>Statistiques</h2>
                             <ul>
-                              <li>Nombre d'objets : <span id="totalObjects"></span></li>
                               <li>Nombre d'objets proposés : <span id="offeredObjects"></span></li>
                               <li>Nombre d'objets vendus : <span id="soldObjects"></span></li>
                               <li>Nombre d'objets acceptés : <span id="acceptedObjects"></span></li>
@@ -103,18 +102,13 @@ function renderBoardPage() {
 
 function renderChart(objects, valueInputMonth, myChart){
 
-    const count = objects.length;
-    document.getElementById('totalObjects').innerHTML =`
-      ${count}
-      ` ;
-
-    const offers = objects.filter(object => object.state === 'proposé' || valueInputMonth === onlyYearAndMonthDateFormat(object.offerDate));
+    const offers = objects.filter(object => valueInputMonth === onlyYearAndMonthDateFormat(object.offerDate));
     const countOffers= offers.length;
     document.getElementById('offeredObjects').innerHTML =`
       ${countOffers}
       ` ;
 
-    const vendu = objects.filter(object => object.state === 'vendu'|| valueInputMonth === onlyYearAndMonthDateFormat(object.offerDate));
+    const vendu = objects.filter(object => valueInputMonth === onlyYearAndMonthDateFormat(object.sellingDate));
     // eslint-disable-next-line no-console
     console.log(vendu)
     const countSolds = vendu.length;
@@ -123,7 +117,7 @@ function renderChart(objects, valueInputMonth, myChart){
       ` ;
 
 
-    const acceptes = objects.filter(object => object.state === 'accepté' || object.state === 'en vente' || object.state ==="en magasin" || valueInputMonth === onlyYearAndMonthDateFormat(object.offerDate));
+    const acceptes = objects.filter(object => valueInputMonth === onlyYearAndMonthDateFormat(object.acceptanceDate));
     // eslint-disable-next-line no-console
     console.log(acceptes)
     const countAccep = acceptes.length;
@@ -131,7 +125,7 @@ function renderChart(objects, valueInputMonth, myChart){
       ${countAccep}
       ` ;
 
-    const refuses = objects.filter(object => object.state === 'refusé'|| valueInputMonth === onlyYearAndMonthDateFormat(object.offerDate) );
+    const refuses = objects.filter(object => valueInputMonth === onlyYearAndMonthDateFormat(object.refusalDate) );
     // eslint-disable-next-line no-console
     console.log(refuses)
     const countRefuses = refuses.length;
