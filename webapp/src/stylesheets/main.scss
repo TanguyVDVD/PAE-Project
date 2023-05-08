@@ -287,13 +287,27 @@ main > .alert:first-child {
 .chart{
   width: 500px; 
   height: 500px;
-  display: flex;
+  position:relative;
   margin-bottom: 50px;
   padding-bottom: 50px;
-  padding-top: -50px;
+  margin-top: 20px;
+  float: left;
+  padding-left: 100px;
 }
 
 .statistics{
+  margin-top: 130px;
   display: inline-block;
-  
+  position: relative;
+  padding-left: 150px;
+}
+
+.tab{
+  margin-left: 150px;
+}
+
+.titreTab{
+  margin-left: 670px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }

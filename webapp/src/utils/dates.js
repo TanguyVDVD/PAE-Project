@@ -15,6 +15,11 @@ function invertDateFormat(date) {
   return dateParts[2].concat("-", dateParts[1], "-", dateParts[0]);
 }
 
+function onlyYearAndMonthDateFormat(date) {
+  const dateParts = date.split("-");
+  return dateParts[0].concat("-", dateParts[1]);
+}
+
 function getTodaySDate() {
   const date = new Date();
   const yyyy = String(date.getFullYear());
@@ -23,4 +28,4 @@ function getTodaySDate() {
   return yyyy.concat('-', mm, '-', dd);
 }
 
-export { subtractDates, dateStringtoGoodFormat, invertDateFormat, getTodaySDate };
+export { subtractDates, dateStringtoGoodFormat, invertDateFormat, getTodaySDate, onlyYearAndMonthDateFormat };
