@@ -6,6 +6,7 @@ import {clearPage} from '../../../utils/render';
 // eslint-disable-next-line no-unused-vars
 import API from '../../../utils/api'
 import {reloadNotification} from "../../Navbar/Navbar";
+import { onlyYearAndMonthDateFormat } from '../../../../../../../PAECODE1/webapp/src/utils/dates';
 
 const BoardPage = () => {
   const authenticatedUser = getAuthenticatedUser();
@@ -76,47 +77,59 @@ function renderBoardPage() {
     <!-- /.container-fluid -->
     `;
 
-  API.get(`objects/offers?query=${encodeURIComponent('')}`).then((offers) => {
-    const countOffers = offers.length;
-    document.getElementById('offeredObjects').innerHTML = `
-        ${countOffers}
-        `;
-  });
+    main.appendChild(board);
 
-  API.get(`objects/`).then((objects) => {
-    const count = objects.length;
-    document.getElementById('totalObjects').innerHTML = `
+    const inputMonth = document.getElementById('inputMonth');
+    const valueInputMonth = onlyYearAndMonthDateFormat(inputMonth.value);
+
+    API.get(`objects/`).then((objects) => {
+
+     
+
+        const count = objects.length;
+        document.getElementById('totalObjects').innerHTML =`
         ${count}
-        `;
+        ` ;
+        if(valueInputMonth === objects.offersDate){
+          
+        const offers = objects.filter(object => object.state === 'proposé');
+        const countOffers= offers.length;
+        document.getElementById('offeredObjects').innerHTML =`
+        ${countOffers}
+        ` ;
 
-    const vendu = objects.filter(object => object.state === 'vendu');
-    // eslint-disable-next-line no-console
-    console.log(vendu)
-    const countSolds = vendu.length;
-    document.getElementById('soldObjects').innerHTML = `
+        const vendu = objects.filter(object => object.state === 'vendu' );
+        // eslint-disable-next-line no-console
+        console.log(vendu)
+        const countSolds = vendu.length;
+        document.getElementById('soldObjects').innerHTML =`
         ${countSolds}
-        `;
+        ` ;
 
-    const acceptes = objects.filter(object => object.state === 'accepté');
-    // eslint-disable-next-line no-console
-    console.log(acceptes)
-    const countAccep = acceptes.length;
-    document.getElementById('acceptedObjects').innerHTML = `
+        
+        const acceptes = objects.filter(object => object.state === 'accepté' || object.state === 'en vente' || object.state ==="en magasin" );
+        // eslint-disable-next-line no-console
+        console.log(acceptes)
+        const countAccep = acceptes.length;
+        document.getElementById('acceptedObjects').innerHTML =`
         ${countAccep}
-        `;
+        ` ;
 
-    const refuses = objects.filter(object => object.state === 'refusé');
-    // eslint-disable-next-line no-console
-    console.log(refuses)
-    const countRefuses = vendu.length;
-    document.getElementById('rejectedObjects').innerHTML = `
+        const refuses = objects.filter(object => object.state === 'refusé' );
+        // eslint-disable-next-line no-console
+        console.log(refuses)
+        const countRefuses = refuses.length;
+        document.getElementById('rejectedObjects').innerHTML =`
         ${countRefuses}
-        `;
+        ` ;
 
-    const totalObjects = count;
-    const soldObjects = countSolds;
-    const acceptedObjects = countAccep;
-    const rejectedObjects = countRefuses;
+
+        // eslint-disable-next-line no-unused-vars
+        const proposedObjects = countOffers;
+        const soldObjects = countSolds;
+        const acceptedObjects = countAccep;
+        const rejectedObjects = countRefuses;
+     
 
     const chartElement = document.getElementById("myChart");
 
@@ -126,7 +139,7 @@ function renderBoardPage() {
       datasets: [
         {
           label: "Nombre d'objets",
-          data: [totalObjects, soldObjects, acceptedObjects, rejectedObjects],
+          data: [proposedObjects,soldObjects, acceptedObjects, rejectedObjects],
           backgroundColor: [
             "rgba(255, 99, 132, 0.2)",
             "rgba(54, 162, 235, 0.2)",
@@ -143,7 +156,7 @@ function renderBoardPage() {
         },
       ],
     };
-
+  
     const chartOptions = {};
 
     // eslint-disable-next-line no-unused-vars
@@ -152,10 +165,10 @@ function renderBoardPage() {
       data: chartData,
       options: chartOptions,
     });
-
+  }
   });
 
-  main.appendChild(board);
+ 
 }
 
 
