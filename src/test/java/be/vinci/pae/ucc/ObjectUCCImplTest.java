@@ -468,9 +468,30 @@ class ObjectUCCImplTest {
     ObjectDTO object5 = Mockito.mock(ObjectImpl.class);
 
     Mockito.when(object5.getisVisible()).thenReturn(false);
-    Mockito.when(object5.getState()).thenReturn("en vente");
+    Mockito.when(object5.getState()).thenReturn("en magasin");
 
     objects.add(object5);
+
+    ObjectDTO object6 = Mockito.mock(ObjectImpl.class);
+
+    Mockito.when(object6.getisVisible()).thenReturn(false);
+    Mockito.when(object6.getState()).thenReturn("en vente");
+
+    objects.add(object6);
+
+    ObjectDTO object7 = Mockito.mock(ObjectImpl.class);
+
+    Mockito.when(object7.getisVisible()).thenReturn(false);
+    Mockito.when(object7.getState()).thenReturn("vendu");
+
+    objects.add(object7);
+
+    ObjectDTO object8 = Mockito.mock(ObjectImpl.class);
+
+    Mockito.when(object8.getisVisible()).thenReturn(false);
+    Mockito.when(object8.getState()).thenReturn("retiré");
+
+    objects.add(object8);
 
     Mockito.when(objectDAO.getAll("")).thenReturn(objects);
 
