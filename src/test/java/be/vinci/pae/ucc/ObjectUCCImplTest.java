@@ -432,18 +432,43 @@ class ObjectUCCImplTest {
   @Test
   void getPublicObjects() {
     List<ObjectDTO> objects = new ArrayList<>();
-    ObjectDTO object = Mockito.mock(ObjectImpl.class);
+    List<ObjectDTO> expectedObjects = new ArrayList<>();
 
-    Mockito.when(object.getisVisible()).thenReturn(true);
-    Mockito.when(object.getState()).thenReturn("en magasin");
+    ObjectDTO object1 = Mockito.mock(ObjectImpl.class);
 
-    objects.add(object);
+    Mockito.when(object1.getisVisible()).thenReturn(true);
+    Mockito.when(object1.getState()).thenReturn("en magasin");
+
+    objects.add(object1);
+    expectedObjects.add(object1);
+
+    ObjectDTO object2 = Mockito.mock(ObjectImpl.class);
+
+    Mockito.when(object2.getisVisible()).thenReturn(true);
+    Mockito.when(object2.getState()).thenReturn("en vente");
+
+    objects.add(object2);
+    expectedObjects.add(object2);
+
+    ObjectDTO object3 = Mockito.mock(ObjectImpl.class);
+
+    Mockito.when(object3.getisVisible()).thenReturn(true);
+    Mockito.when(object3.getState()).thenReturn("vendu");
+
+    objects.add(object3);
+    expectedObjects.add(object3);
+
+    ObjectDTO object4 = Mockito.mock(ObjectImpl.class);
+
+    Mockito.when(object4.getisVisible()).thenReturn(true);
+    Mockito.when(object4.getState()).thenReturn("retiré");
+
+    objects.add(object4);
 
     Mockito.when(objectDAO.getAll("")).thenReturn(objects);
 
-    assertEquals(objects, objectUCC.getPublicObjects(""),
+    assertEquals(expectedObjects, objectUCC.getPublicObjects(""),
         "getPublicObjects not returning the correct list");
-
   }
 
 }
