@@ -66,6 +66,9 @@ public class NotificationUCCImpl implements NotificationUCC {
       notificationDTO.setRead(false);
       notificationDTO.setIdUser(objectDTO.getUser().getId());
 
+      notificationDTO = ((Notification) notificationDTO).setUpNotificationText(
+          objectDTO, notificationDTO);
+
       NotificationDTO notificationDTOFromDb = myNotificationDAO.createObjectNotification(
           notificationDTO);
 
