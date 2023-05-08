@@ -56,9 +56,9 @@ function renderBoardPage() {
                           <h2>Statistiques</h2>
                             <ul>
                               <li>Nombre d'objets proposés : <span id="offeredObjects"></span></li>
-                              <li>Nombre d'objets vendus : <span id="soldObjects"></span></li>
                               <li>Nombre d'objets acceptés : <span id="acceptedObjects"></span></li>
                               <li>Nombre d'objets refusés : <span id="rejectedObjects"></span></li>
+                              <li>Nombre d'objets vendus : <span id="soldObjects"></span></li>
                             </ul>
                         </div>
 
@@ -102,70 +102,68 @@ function renderBoardPage() {
 
 function renderChart(objects, valueInputMonth, myChart){
 
-    const offers = objects.filter(object => valueInputMonth === onlyYearAndMonthDateFormat(object.offerDate));
-    const countOffers= offers.length;
-    document.getElementById('offeredObjects').innerHTML =`
-      ${countOffers}
-      ` ;
+  const offers = objects.filter(object => valueInputMonth === onlyYearAndMonthDateFormat(object.offerDate));
+  const countOffers= offers.length;
+  document.getElementById('offeredObjects').innerHTML =`
+    ${countOffers}
+    ` ;
 
-    const vendu = objects.filter(object => valueInputMonth === onlyYearAndMonthDateFormat(object.sellingDate));
-    // eslint-disable-next-line no-console
-    console.log(vendu)
-    const countSolds = vendu.length;
-    document.getElementById('soldObjects').innerHTML =`
-      ${countSolds}
-      ` ;
-
-
-    const acceptes = objects.filter(object => valueInputMonth === onlyYearAndMonthDateFormat(object.acceptanceDate));
-    // eslint-disable-next-line no-console
-    console.log(acceptes)
-    const countAccep = acceptes.length;
-    document.getElementById('acceptedObjects').innerHTML =`
+  const acceptes = objects.filter(object => valueInputMonth === onlyYearAndMonthDateFormat(object.acceptanceDate));
+  // eslint-disable-next-line no-console
+  console.log(acceptes)
+  const countAccep = acceptes.length;
+  document.getElementById('acceptedObjects').innerHTML =`
       ${countAccep}
       ` ;
 
-    const refuses = objects.filter(object => valueInputMonth === onlyYearAndMonthDateFormat(object.refusalDate) );
-    // eslint-disable-next-line no-console
-    console.log(refuses)
-    const countRefuses = refuses.length;
-    document.getElementById('rejectedObjects').innerHTML =`
+  const refuses = objects.filter(object => valueInputMonth === onlyYearAndMonthDateFormat(object.refusalDate) );
+  // eslint-disable-next-line no-console
+  console.log(refuses)
+  const countRefuses = refuses.length;
+  document.getElementById('rejectedObjects').innerHTML =`
       ${countRefuses}
       ` ;
 
+  const vendu = objects.filter(object => valueInputMonth === onlyYearAndMonthDateFormat(object.sellingDate));
+  // eslint-disable-next-line no-console
+  console.log(vendu)
+  const countSolds = vendu.length;
+  document.getElementById('soldObjects').innerHTML =`
+    ${countSolds}
+    ` ;
 
-    // eslint-disable-next-line no-unused-vars
-    const proposedObjects = countOffers;
-    const soldObjects = countSolds;
-    const acceptedObjects = countAccep;
-    const rejectedObjects = countRefuses;
+  // eslint-disable-next-line no-unused-vars
+  const proposedObjects = countOffers;
+  const acceptedObjects = countAccep;
+  const rejectedObjects = countRefuses;
+  const soldObjects = countSolds;
 
-    // Création du graphique
-    const chartData = {
-      labels: ["Proposés", "Vendus", "Acceptés", "Refusés"],
-      datasets: [
-        {
-          label: "Nombre d'objets",
-          data: [proposedObjects,soldObjects, acceptedObjects, rejectedObjects],
-          backgroundColor: [
-            "rgba(255, 99, 132, 0.2)",
-            "rgba(54, 162, 235, 0.2)",
-            "rgba(255, 206, 86, 0.2)",
-            "rgba(75, 192, 192, 0.2)",
-          ],
-          borderColor: [
-            "rgba(255, 99, 132, 1)",
-            "rgba(54, 162, 235, 1)",
-            "rgba(255, 206, 86, 1)",
-            "rgba(75, 192, 192, 1)",
-          ],
-          borderWidth: 1,
-        },
-      ],
-    };
+  // Création du graphique
+  const chartData = {
+    labels: ["Proposés", "Acceptés", "Refusés", "Vendus"],
+    datasets: [
+      {
+        label: "Nombre d'objets",
+        data: [proposedObjects, acceptedObjects, rejectedObjects, soldObjects],
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.2)",
+          "rgba(54, 162, 235, 0.2)",
+          "rgba(255, 206, 86, 0.2)",
+          "rgba(75, 192, 192, 0.2)",
+        ],
+        borderColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)",
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
 
-    myChart.data = chartData;
-    myChart.update();
+  myChart.data = chartData;
+  myChart.update();
 }
 
 export default BoardPage;
