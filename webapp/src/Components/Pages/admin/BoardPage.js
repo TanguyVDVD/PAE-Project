@@ -46,7 +46,7 @@ function renderBoardPage() {
                 <div class="card-body">
                   <div id="chart-area">
                     <label for="bday-month">Période:</label>
-                    <input id="bday-month" type="month" name="bday-month" value="2023-03">
+                    <input id="inputMonth" type="month" name="inputMonth" value="2023-03">
                     <br>
 
                       <div class="dashboard">
@@ -80,25 +80,29 @@ function renderBoardPage() {
     main.appendChild(board);
 
     const inputMonth = document.getElementById('inputMonth');
-    const valueInputMonth = onlyYearAndMonthDateFormat(inputMonth.value);
+    let valueInputMonth = inputMonth.value;
+
+    inputMonth.addEventListener('change', (e) => {
+      e.preventDefault();
+      valueInputMonth= inputMonth.value;
+
+    });
+
 
     API.get(`objects/`).then((objects) => {
-
      
-
         const count = objects.length;
         document.getElementById('totalObjects').innerHTML =`
         ${count}
         ` ;
-        if(valueInputMonth === objects.offersDate){
-          
-        const offers = objects.filter(object => object.state === 'proposé');
+
+        const offers = objects.filter(object => object.state === 'proposé' || valueInputMonth === onlyYearAndMonthDateFormat(object.offerDate));
         const countOffers= offers.length;
         document.getElementById('offeredObjects').innerHTML =`
         ${countOffers}
         ` ;
 
-        const vendu = objects.filter(object => object.state === 'vendu' );
+        const vendu = objects.filter(object => object.state === 'vendu'|| valueInputMonth === onlyYearAndMonthDateFormat(object.offerDate));
         // eslint-disable-next-line no-console
         console.log(vendu)
         const countSolds = vendu.length;
@@ -107,7 +111,7 @@ function renderBoardPage() {
         ` ;
 
         
-        const acceptes = objects.filter(object => object.state === 'accepté' || object.state === 'en vente' || object.state ==="en magasin" );
+        const acceptes = objects.filter(object => object.state === 'accepté' || object.state === 'en vente' || object.state ==="en magasin" || valueInputMonth === onlyYearAndMonthDateFormat(object.offerDate));
         // eslint-disable-next-line no-console
         console.log(acceptes)
         const countAccep = acceptes.length;
@@ -115,7 +119,7 @@ function renderBoardPage() {
         ${countAccep}
         ` ;
 
-        const refuses = objects.filter(object => object.state === 'refusé' );
+        const refuses = objects.filter(object => object.state === 'refusé'|| valueInputMonth === onlyYearAndMonthDateFormat(object.offerDate) );
         // eslint-disable-next-line no-console
         console.log(refuses)
         const countRefuses = refuses.length;
@@ -156,7 +160,7 @@ function renderBoardPage() {
         },
       ],
     };
-  
+    
     const chartOptions = {};
 
     // eslint-disable-next-line no-unused-vars
@@ -165,11 +169,10 @@ function renderBoardPage() {
       data: chartData,
       options: chartOptions,
     });
-  }
+  
   });
 
  
 }
-
 
 export default BoardPage;
