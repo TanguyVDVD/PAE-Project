@@ -465,6 +465,13 @@ class ObjectUCCImplTest {
 
     objects.add(object4);
 
+    ObjectDTO object5 = Mockito.mock(ObjectImpl.class);
+
+    Mockito.when(object5.getisVisible()).thenReturn(false);
+    Mockito.when(object5.getState()).thenReturn("en vente");
+
+    objects.add(object5);
+
     Mockito.when(objectDAO.getAll("")).thenReturn(objects);
 
     assertEquals(expectedObjects, objectUCC.getPublicObjects(""),
