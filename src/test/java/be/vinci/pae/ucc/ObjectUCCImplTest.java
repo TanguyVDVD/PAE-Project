@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import be.vinci.pae.domain.DomainFactory;
 import be.vinci.pae.domain.notification.Notification;
 import be.vinci.pae.domain.notification.NotificationImpl;
 import be.vinci.pae.domain.object.Object;
@@ -16,7 +15,6 @@ import be.vinci.pae.domain.user.User;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.user.UserImpl;
 import be.vinci.pae.services.DALServices;
-import be.vinci.pae.services.notification.NotificationDAO;
 import be.vinci.pae.services.object.ObjectDAO;
 import be.vinci.pae.services.object.ObjectDAOImpl;
 import be.vinci.pae.ucc.notification.NotificationUCC;
@@ -59,24 +57,12 @@ class ObjectUCCImplTest {
   private static NotificationUCC notificationUCC;
 
   /**
-   * Mocked notificationDAO.
-   */
-  private static NotificationDAO notificationDAO;
-
-  /**
-   * DomainFactory to test.
-   */
-  private static DomainFactory domainFactory;
-
-  /**
    * Set up the test.
    */
   @BeforeAll
   static void setUp() {
     objectDAO = Mockito.mock(ObjectDAOImpl.class);
     notificationUCC = Mockito.mock(NotificationUCC.class);
-    domainFactory = Mockito.mock(DomainFactory.class);
-    //notificationDAO = Mockito.mock(NotificationDAO.class);
 
     DALServices myDalServices = Mockito.mock(DALServices.class);
 
@@ -85,8 +71,6 @@ class ObjectUCCImplTest {
       protected void configure() {
         bind(ObjectUCCImpl.class).to(ObjectUCC.class).in(Singleton.class);
 
-        //bind(notificationDAO).to(NotificationDAO.class);
-        bind(domainFactory).to(DomainFactory.class);
         bind(notificationUCC).to(NotificationUCC.class);
         bind(objectDAO).to(ObjectDAO.class);
         bind(myDalServices).to(DALServices.class);
@@ -94,15 +78,12 @@ class ObjectUCCImplTest {
     });
 
     objectUCC = locator.getService(ObjectUCC.class);
-    //notificationUCC = locator.getService(NotificationUCC.class);
 
   }
 
   @BeforeEach
   void cleanUp() {
     Mockito.reset(objectDAO);
-    Mockito.reset(notificationUCC);
-    Mockito.reset(domainFactory);
   }
 
   @DisplayName("Accept an object already accepted")
@@ -164,7 +145,7 @@ class ObjectUCCImplTest {
         "Exception not thrown");
   }
 
-  @DisplayName("Update an object state, set to in workshop")
+  @DisplayName("Update an object state, set in workshop")
   @Test
   void updateAnObjectStateToInWorkshop() {
     LocalDate dateToday = LocalDate.now();
@@ -195,7 +176,7 @@ class ObjectUCCImplTest {
 
   }
 
-  @DisplayName("Update an object state, set to in shop")
+  @DisplayName("Update an object state, set in shop")
   @Test
   void updateAnObjectStateToInShop() {
 

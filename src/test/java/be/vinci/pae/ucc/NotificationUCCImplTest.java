@@ -153,7 +153,7 @@ public class NotificationUCCImplTest {
 
   }
 
-  @DisplayName("do not create a notification no user")
+  @DisplayName("create a notification with null user")
   @Test
   void createAcceptedRefusedObjectNotificationNReturnNullNoUser() {
 
@@ -207,7 +207,7 @@ public class NotificationUCCImplTest {
 
   }
 
-  @DisplayName("create correct new object notification raise an exception")
+  @DisplayName("create new object notification raised an exception")
   @Test
   void createNewObjectNotificationNotWorking() {
 
@@ -251,7 +251,7 @@ public class NotificationUCCImplTest {
 
   }
 
-  @DisplayName("get all the notification of a user with exception")
+  @DisplayName("get all the notification of a user (id -1) with exception")
   @Test
   void getNotificationUserWithException() {
     Mockito.when(notificationDAO.getNotificationsByUserID(-1)).thenThrow(new DALException(""));
@@ -270,7 +270,7 @@ public class NotificationUCCImplTest {
         "Mark as read has not returned the same notification");
   }
 
-  @DisplayName("mark a notification as read correctly not working")
+  @DisplayName("mark a notification as read not working")
   @Test
   void markANotificationAsReadNotWorking() {
     NotificationDTO notificationDTO = Mockito.mock(NotificationImpl.class);
@@ -281,7 +281,7 @@ public class NotificationUCCImplTest {
         "Mark as read do not return null notification");
   }
 
-  @DisplayName("mark a notification as read correctly not working and raise exception")
+  @DisplayName("mark a notification as read not working and raise exception")
   @Test
   void markANotificationAsReadRaiseException() {
     NotificationDTO notificationDTO = Mockito.mock(NotificationImpl.class);
