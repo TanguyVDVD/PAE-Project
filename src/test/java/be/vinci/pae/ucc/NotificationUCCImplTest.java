@@ -103,9 +103,6 @@ public class NotificationUCCImplTest {
 
     Mockito.when(domainFactory.getNotification()).thenReturn(notificationDTOStart);
 
-    Mockito.when(notificationDTOStart.setUpNotificationText(object, notificationDTOStart))
-        .thenReturn(notificationDTOStart);
-
     Mockito.when(notificationDAO.createObjectNotification(notificationDTOStart))
         .thenReturn(notificationDTOStart);
 
@@ -141,9 +138,6 @@ public class NotificationUCCImplTest {
     Notification notificationDTOStart = Mockito.mock(NotificationImpl.class);
 
     Mockito.when(domainFactory.getNotification()).thenReturn(notificationDTOStart);
-
-    Mockito.when(notificationDTOStart.setUpNotificationText(object, notificationDTOStart))
-        .thenReturn(notificationDTOStart);
 
     Mockito.when(notificationDAO.createObjectNotification(notificationDTOStart))
         .thenThrow(new DALException(""));

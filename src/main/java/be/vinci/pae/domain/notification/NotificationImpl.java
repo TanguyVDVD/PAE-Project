@@ -1,6 +1,5 @@
 package be.vinci.pae.domain.notification;
 
-import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.utils.serializers.EscapeHTMLSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -116,32 +115,6 @@ public class NotificationImpl implements Notification {
   @Override
   public void setIdObject(int id) {
     this.objectId = id;
-  }
-
-  /**
-   * Set up the notification text based on the object.
-   *
-   * @param objectDTO       the object the notification is from
-   * @param notificationDTO the notification to set up
-   * @return the notification when all attributes are set
-   */
-  @Override
-  public NotificationDTO setUpNotificationText(ObjectDTO objectDTO,
-      NotificationDTO notificationDTO) {
-
-    notificationDTO.setIdObject(objectDTO.getId());
-
-    if (!objectDTO.getStatus().equals("accepté") && !objectDTO.getStatus().equals("refusé")) {
-      return null;
-    }
-
-    if (objectDTO.getStatus().equals("accepté")) {
-      notificationDTO.setNotificationText("Votre objet a été accepté !");
-    } else {
-      notificationDTO.setNotificationText(
-          "Malheureusement votre objet a été refusé : " + objectDTO.getReasonForRefusal());
-    }
-    return notificationDTO;
   }
 
   /**
