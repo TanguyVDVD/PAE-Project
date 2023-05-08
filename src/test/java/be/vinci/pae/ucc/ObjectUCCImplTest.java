@@ -7,9 +7,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import be.vinci.pae.domain.DomainFactory;
+import be.vinci.pae.domain.notification.Notification;
+import be.vinci.pae.domain.notification.NotificationImpl;
 import be.vinci.pae.domain.object.Object;
 import be.vinci.pae.domain.object.ObjectDTO;
 import be.vinci.pae.domain.object.ObjectImpl;
+import be.vinci.pae.domain.user.User;
 import be.vinci.pae.domain.user.UserDTO;
 import be.vinci.pae.domain.user.UserImpl;
 import be.vinci.pae.services.DALServices;
@@ -73,7 +76,7 @@ class ObjectUCCImplTest {
     objectDAO = Mockito.mock(ObjectDAOImpl.class);
     notificationUCC = Mockito.mock(NotificationUCC.class);
     domainFactory = Mockito.mock(DomainFactory.class);
-    notificationDAO = Mockito.mock(NotificationDAO.class);
+    //notificationDAO = Mockito.mock(NotificationDAO.class);
 
     DALServices myDalServices = Mockito.mock(DALServices.class);
 
@@ -82,7 +85,7 @@ class ObjectUCCImplTest {
       protected void configure() {
         bind(ObjectUCCImpl.class).to(ObjectUCC.class).in(Singleton.class);
 
-        bind(notificationDAO).to(NotificationDAO.class);
+        //bind(notificationDAO).to(NotificationDAO.class);
         bind(domainFactory).to(DomainFactory.class);
         bind(notificationUCC).to(NotificationUCC.class);
         bind(objectDAO).to(ObjectDAO.class);
@@ -387,6 +390,43 @@ class ObjectUCCImplTest {
 
     assertThrows(DALException.class, () -> objectUCC.add(object),
         "addObject did not throw an exception");
+  }
+
+  @DisplayName("Accept a correct object proposition")
+  @Test
+  void acceptACorrectObjectProposition() {
+
+    User user = Mockito.mock(UserImpl.class);
+    Object object = Mockito.mock(ObjectImpl.class);
+    Mockito.when(object.getId()).thenReturn(1);
+    Mockito.when(object.getStatus()).thenReturn(null);
+    Mockito.when(object.getVersionNumber()).thenReturn(1);
+    Mockito.when(objectDAO.getOneById(object.getId())).thenReturn(object);
+    Mockito.when(object.isStatusAlreadyDefined(object.getStatus())).thenReturn(false);
+    Mockito.when(objectDAO.setStatusToAccepted(object.getId(), LocalDate.now(),
+        object.getVersionNumber())).thenReturn(object);
+    Mockito.when(object.getStatus()).thenReturn("accepté");
+
+    //Notification notification = Mockito.mock(DomainFactory.class).getNotification();
+
+    Notification notification = Mockito.mock(NotificationImpl.class);
+
+    ObjectDTO object2 = Mockito.mock(ObjectImpl.class);
+    User user2 = Mockito.mock(UserImpl.class);
+
+    Mockito.when(object.getUser()).thenReturn(user2);
+    Mockito.when(object.getStatus()).thenReturn("accepté");
+    Mockito.when(object.getId()).thenReturn(1);
+    Mockito.when(user2.getId()).thenReturn(1);
+
+    Mockito.when(notificationUCC.createAcceptedRefusedObjectNotification(
+        object2)).thenReturn(notification);
+
+    ObjectDTO objectDTO = objectUCC.accept(object.getId(), object.getVersionNumber());
+
+    assertAll(() -> assertNotNull(objectDTO, "Accept return null"), () -> assertEquals(object,
+        objectDTO, "Accept method does not return the same object"));
+
   }
 
 }
