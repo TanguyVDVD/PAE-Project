@@ -396,7 +396,6 @@ class ObjectUCCImplTest {
   @Test
   void acceptACorrectObjectProposition() {
 
-    User user = Mockito.mock(UserImpl.class);
     Object object = Mockito.mock(ObjectImpl.class);
     Mockito.when(object.getId()).thenReturn(1);
     Mockito.when(object.getStatus()).thenReturn(null);
@@ -406,8 +405,6 @@ class ObjectUCCImplTest {
     Mockito.when(objectDAO.setStatusToAccepted(object.getId(), LocalDate.now(),
         object.getVersionNumber())).thenReturn(object);
     Mockito.when(object.getStatus()).thenReturn("accepté");
-
-    //Notification notification = Mockito.mock(DomainFactory.class).getNotification();
 
     Notification notification = Mockito.mock(NotificationImpl.class);
 
@@ -426,6 +423,34 @@ class ObjectUCCImplTest {
 
     assertAll(() -> assertNotNull(objectDTO, "Accept return null"), () -> assertEquals(object,
         objectDTO, "Accept method does not return the same object"));
+  }
+
+  @DisplayName("Refuse an object")
+  @Test
+  void refuseAnObjectProposition() {
+
+    String reasonForRefusal = "Reason for refusal";
+    Object object = Mockito.mock(ObjectImpl.class);
+    Mockito.when(object.getId()).thenReturn(1);
+    Mockito.when(object.getStatus()).thenReturn(null);
+    Mockito.when(object.getVersionNumber()).thenReturn(1);
+    Mockito.when(objectDAO.getOneById(object.getId())).thenReturn(object);
+    Mockito.when(object.isStatusAlreadyDefined(object.getStatus())).thenReturn(false);
+    Mockito.when(objectDAO.setStatusToRefused(object.getId(), reasonForRefusal, LocalDate.now(),
+        object.getVersionNumber())).thenReturn(object);
+    Mockito.when(object.getStatus()).thenReturn("refusé");
+
+    Notification notification = Mockito.mock(NotificationImpl.class);
+
+    Mockito.when(notificationUCC.createAcceptedRefusedObjectNotification(
+        object)).thenReturn(notification);
+
+    ObjectDTO objectDTO = objectUCC.refuse(object.getId(), reasonForRefusal,
+        object.getVersionNumber());
+
+    assertAll(() -> assertNotNull(objectDTO, "Refuse return null"), () -> assertEquals(object,
+        objectDTO, "Refuse method does not return the same object"));
+
   }
 
   @DisplayName("Get all public objects")
